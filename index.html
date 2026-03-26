@@ -234,7 +234,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       </div>
       <!-- Scroll indicator dots — 20px above pricing (pricing top:560px → dots at 536px) -->
       <div id="p3-photo-dots" style="position:absolute;left:50%;transform:translateX(-50%);top:536px;display:flex;gap:5px;align-items:center;z-index:4;pointer-events:none;"></div>
-      <div id="p3-vibes-wrap" style="position:absolute;display:flex;flex-direction:column;gap:5px;height:90px;left:0;top:69px;width:393px;overflow:hidden;">
+      <div id="p3-vibes-wrap" style="position:absolute;display:flex;flex-direction:column;gap:5px;height:90px;left:0;top:56px;width:393px;overflow:hidden;">
         <p id="p3-vibe-1" class="fi" style="font-weight:200;font-size:11px;color:white;letter-spacing:2.2px;text-align:center;width:100%;line-height:normal;">feel fancy</p>
         <p id="p3-vibe-2" class="fi" style="font-weight:200;font-size:11px;color:white;letter-spacing:2.2px;text-align:center;width:100%;line-height:normal;">cozy stuff</p>
         <p id="p3-vibe-3" class="fi" style="font-weight:200;font-size:11px;color:white;letter-spacing:2.2px;text-align:center;width:100%;line-height:normal;">vegan</p>
@@ -365,7 +365,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <div style="position:absolute;left:16px;top:50.5px;transform:translateY(-50%);width:136px;"><p id="p3-walkin-title" class="fi" style="font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;text-transform:capitalize;line-height:12px;">walk - in</p></div>
         <div style="position:absolute;height:24px;left:16px;overflow:hidden;top:59.5px;width:136px;">
           <div style="position:absolute;left:0;top:12px;transform:translateY(-50%);"><p id="p3-walkin-mins" class="fa" style="font-weight:600;font-size:32px;color:black;letter-spacing:3.2px;white-space:nowrap;line-height:12px;">14</p></div>
-          <div id="p3-walkin-unit" style="position:absolute;left:49px;top:0;display:flex;height:24px;align-items:flex-end;padding:10px 2px 0;"><p class="fi" style="font-weight:400;font-size:10px;color:black;letter-spacing:0.8px;text-transform:lowercase;width:20px;">min</p></div>
+          <div id="p3-walkin-unit" style="position:absolute;left:49px;top:0;display:flex;height:24px;align-items:flex-end;padding:10px 2px 0;"><p class="fi" style="font-weight:400;font-size:12px;color:black;letter-spacing:0.5px;text-transform:lowercase;">min</p></div>
         </div>
         <div style="position:absolute;left:16px;top:92.5px;transform:translateY(-50%);width:139px;"><p id="p3-walkin-subtitle" class="fi" style="font-weight:300;font-size:9px;color:black;letter-spacing:0;text-transform:lowercase;line-height:12px;white-space:nowrap;">avg wait · community reported</p></div>
         <div style="position:absolute;left:16px;top:125.5px;transform:translateY(-50%);width:139px;"><p id="p3-walkin-reports" class="fi" style="font-weight:300;font-style:italic;font-size:10px;color:black;letter-spacing:0.8px;text-transform:lowercase;line-height:14px;">52 reports</p></div>
@@ -387,7 +387,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <div style="position:absolute;left:16px;top:50.5px;transform:translateY(-50%);width:136px;"><p id="p3-parking-title" class="fi" style="font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;text-transform:capitalize;line-height:12px;">street parking</p></div>
         <div style="position:absolute;height:24px;left:16px;overflow:hidden;top:59.5px;width:136px;">
           <div style="position:absolute;left:0;top:12px;transform:translateY(-50%);"><p id="p3-parking-mins" class="fa" style="font-weight:600;font-size:32px;color:black;letter-spacing:3.2px;white-space:nowrap;line-height:12px;">16</p></div>
-          <div id="p3-parking-unit" style="position:absolute;left:49px;top:0;display:flex;height:24px;align-items:flex-end;padding:10px 2px 0;"><p class="fi" style="font-weight:400;font-size:10px;color:black;letter-spacing:0.8px;text-transform:lowercase;width:20px;">min</p></div>
+          <div id="p3-parking-unit" style="position:absolute;left:49px;top:0;display:flex;height:24px;align-items:flex-end;padding:10px 2px 0;"><p class="fi" style="font-weight:400;font-size:12px;color:black;letter-spacing:0.5px;text-transform:lowercase;">min</p></div>
         </div>
         <div style="position:absolute;left:16px;top:92.5px;transform:translateY(-50%);width:139px;"><p id="p3-parking-subtitle" class="fi" style="font-weight:300;font-size:9px;color:black;letter-spacing:0;text-transform:lowercase;line-height:12px;white-space:nowrap;">avg to find · community reported</p></div>
         <div style="position:absolute;left:16px;top:125.5px;transform:translateY(-50%);width:139px;"><p id="p3-parking-reports" class="fi" style="font-weight:300;font-style:italic;font-size:10px;color:black;letter-spacing:0.8px;text-transform:lowercase;line-height:14px;">52 reports</p></div>
@@ -406,30 +406,24 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
     <!-- Transportations -->
     <div style="position:absolute;display:flex;gap:18px;height:46px;align-items:center;left:0;overflow:hidden;top:674px;width:393px;">
-      <div style="display:flex;flex-wrap:wrap;gap:1px 6px;height:44px;align-items:center;justify-content:center;flex-shrink:0;width:106px;">
-        <div style="display:flex;flex-direction:column;justify-content:center;height:29px;flex-shrink:0;text-align:right;width:62px;"><p class="fm" style="font-weight:300;font-size:10px;color:#030303;letter-spacing:6px;line-height:normal;">/</p></div>
-        <div style="display:flex;flex-direction:column;justify-content:center;height:12px;flex-shrink:0;width:20px;"><p id="t3-walk" class="fa" style="font-weight:600;font-size:20px;color:black;letter-spacing:-1.2px;line-height:12px;">—</p></div>
-        <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;width:12px;height:12px;"><p class="fi" style="font-weight:400;font-size:8px;color:black;letter-spacing:-0.8px;text-align:center;line-height:12px;">min</p></div>
-        <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;"><p class="fi" style="font-weight:300;font-size:12px;color:#030303;letter-spacing:7.2px;text-align:center;white-space:nowrap;line-height:normal;">walk</p></div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;width:106px;height:44px;">
+        <div style="display:flex;align-items:flex-end;gap:2px;padding-left:50%;box-sizing:border-box;"><p class="fm" style="font-weight:300;font-size:10px;color:#030303;line-height:1;padding-bottom:2px;">/</p><p id="t3-walk" class="fa" style="font-weight:600;font-size:20px;color:black;letter-spacing:-1.2px;line-height:1;">—</p><p class="fi" style="font-weight:400;font-size:12px;color:black;letter-spacing:-0.5px;line-height:1;padding-bottom:1px;">min</p></div>
+        <p class="fi" style="font-weight:300;font-size:12px;color:#030303;letter-spacing:7.2px;text-align:center;white-space:nowrap;line-height:normal;margin-top:2px;">walk</p>
       </div>
-      <div style="display:flex;flex-wrap:wrap;gap:0px 6px;align-items:center;justify-content:center;flex-shrink:0;width:106px;">
-        <div style="display:flex;flex-direction:column;justify-content:center;height:29px;flex-shrink:0;text-align:right;width:62px;"><p class="fm" style="font-weight:300;font-size:10px;color:#030303;letter-spacing:6px;line-height:normal;">/</p></div>
-        <div style="display:flex;flex-direction:column;justify-content:center;height:12px;flex-shrink:0;width:20px;"><p id="t3-drive" class="fa" style="font-weight:600;font-size:20px;color:black;letter-spacing:-1.2px;line-height:12px;">—</p></div>
-        <div style="display:flex;flex-direction:column;justify-content:flex-end;flex-shrink:0;width:12px;height:12px;"><p class="fi" style="font-weight:400;font-size:8px;color:black;letter-spacing:-0.8px;text-align:center;line-height:12px;">min</p></div>
-        <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;"><p class="fi" style="font-weight:300;font-size:12px;color:#030303;letter-spacing:7.2px;text-align:center;white-space:nowrap;line-height:normal;">drive</p></div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;width:106px;height:44px;">
+        <div style="display:flex;align-items:flex-end;gap:2px;padding-left:50%;box-sizing:border-box;"><p class="fm" style="font-weight:300;font-size:10px;color:#030303;line-height:1;padding-bottom:2px;">/</p><p id="t3-drive" class="fa" style="font-weight:600;font-size:20px;color:black;letter-spacing:-1.2px;line-height:1;">—</p><p class="fi" style="font-weight:400;font-size:12px;color:black;letter-spacing:-0.5px;line-height:1;padding-bottom:1px;">min</p></div>
+        <p class="fi" style="font-weight:300;font-size:12px;color:#030303;letter-spacing:7.2px;text-align:center;white-space:nowrap;line-height:normal;margin-top:2px;">drive</p>
       </div>
-      <div style="display:flex;flex-wrap:wrap;gap:1px 6px;height:44px;align-items:center;justify-content:center;flex-shrink:0;width:106px;">
-        <div style="display:flex;flex-direction:column;justify-content:center;height:29px;flex-shrink:0;text-align:right;width:62px;"><p class="fm" style="font-weight:300;font-size:10px;color:#030303;letter-spacing:6px;line-height:normal;">/</p></div>
-        <div style="display:flex;flex-direction:column;justify-content:center;height:12px;flex-shrink:0;width:20px;"><p id="t3-transit" class="fa" style="font-weight:600;font-size:20px;color:black;letter-spacing:-1.2px;line-height:12px;">—</p></div>
-        <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;width:12px;height:12px;"><p class="fi" style="font-weight:400;font-size:8px;color:black;letter-spacing:-0.8px;text-align:center;line-height:12px;">min</p></div>
-        <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;"><p class="fi" style="font-weight:300;font-size:12px;color:#030303;letter-spacing:7.2px;text-align:center;white-space:nowrap;line-height:normal;">transit</p></div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;width:106px;height:44px;">
+        <div style="display:flex;align-items:flex-end;gap:2px;padding-left:50%;box-sizing:border-box;"><p class="fm" style="font-weight:300;font-size:10px;color:#030303;line-height:1;padding-bottom:2px;">/</p><p id="t3-transit" class="fa" style="font-weight:600;font-size:20px;color:black;letter-spacing:-1.2px;line-height:1;">—</p><p class="fi" style="font-weight:400;font-size:12px;color:black;letter-spacing:-0.5px;line-height:1;padding-bottom:1px;">min</p></div>
+        <p class="fi" style="font-weight:300;font-size:12px;color:#030303;letter-spacing:7.2px;text-align:center;white-space:nowrap;line-height:normal;margin-top:2px;">transit</p>
       </div>
     </div>
 
     <!-- Community quote -->
     <div style="position:absolute;left:50%;top:calc(50% + 208px);transform:translate(-50%,-50%);display:flex;height:80px;align-items:center;justify-content:space-between;overflow:hidden;padding:22px 10px;width:393px;">
       <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;text-align:center;width:341px;overflow:hidden;">
-        <p id="p3-community-quote" class="fa" style="font-weight:400;font-style:italic;font-size:12px;color:black;letter-spacing:2.4px;text-align:center;line-height:14px;">'Unexpected lively after 8pm'</p>
+        <p id="p3-community-quote" class="fa" style="font-weight:400;font-style:italic;font-size:14px;color:black;letter-spacing:2px;text-align:center;line-height:18px;">'Unexpected lively after 8pm'</p>
       </div>
       <svg onclick="openQuoteModal()" style="flex-shrink:0;width:13px;height:13px;cursor:pointer;" fill="none" viewBox="0 0 13 13"><path d="M11.5 6.5C11.5 6.65913 11.4368 6.81174 11.3243 6.92426C11.2117 7.03679 11.0591 7.1 10.9 7.1H7.1V10.9C7.1 11.0591 7.03679 11.2117 6.92426 11.3243C6.81174 11.4368 6.65913 11.5 6.5 11.5C6.34087 11.5 6.18826 11.4368 6.07574 11.3243C5.96321 11.2117 5.9 11.0591 5.9 10.9V7.1H2.1C1.94087 7.1 1.78826 7.03679 1.67574 6.92426C1.56321 6.81174 1.5 6.65913 1.5 6.5C1.5 6.34087 1.56321 6.18826 1.67574 6.07574C1.78826 5.96321 1.94087 5.9 2.1 5.9H5.9V2.1C5.9 1.94087 5.96321 1.78826 6.07574 1.67574C6.18826 1.56321 6.34087 1.5 6.5 1.5C6.65913 1.5 6.81174 1.56321 6.92426 1.67574C7.03679 1.78826 7.1 1.94087 7.1 2.1V5.9H10.9C11.0591 5.9 11.2117 5.96321 11.3243 6.07574C11.4368 6.18826 11.5 6.34087 11.5 6.5Z" fill="black"/></svg>
     </div>
@@ -967,14 +961,24 @@ function p3WalkinToggle(mode) {
   const minsEl = document.getElementById('p3-walkin-mins');
   const unitEl = document.getElementById('p3-walkin-unit');
   if (isReso) {
-    // Show weeks ahead instead of minutes
     const weeks = mins >= 60 ? '2–3' : mins >= 45 ? '1–2' : '1';
     if (minsEl) { minsEl.textContent = weeks; minsEl.style.fontSize = '32px'; minsEl.style.letterSpacing = '1.5px'; }
     if (unitEl) { unitEl.querySelector('p').textContent = 'wks'; unitEl.style.left = '58px'; }
   } else {
-    const display = mins >= 60 ? '60+' : String(mins);
-    if (minsEl) { minsEl.textContent = display; minsEl.style.fontSize = '32px'; minsEl.style.letterSpacing = display === '60+' ? '1px' : '3.2px'; }
-    if (unitEl) { unitEl.querySelector('p').textContent = 'min'; unitEl.style.left = display === '60+' ? '58px' : '49px'; }
+    let display, unit, leftPos;
+    if (mins >= 60) {
+      const hrs = Math.floor(mins / 60);
+      const rem = mins % 60;
+      display = rem > 0 ? `${hrs}h${rem}` : `${hrs}h`;
+      unit = rem > 0 ? 'm' : '+';
+      leftPos = display.length >= 4 ? '72px' : '58px';
+    } else {
+      display = String(mins);
+      unit = 'min';
+      leftPos = mins >= 10 ? '52px' : '42px';
+    }
+    if (minsEl) { minsEl.textContent = display; minsEl.style.fontSize = '32px'; minsEl.style.letterSpacing = display.length >= 4 ? '0px' : '3.2px'; }
+    if (unitEl) { unitEl.querySelector('p').textContent = unit; unitEl.style.left = leftPos; }
   }
 
   // Subtitle
@@ -1121,9 +1125,24 @@ function p3ParkingToggle(mode) {
 
   // Minutes
   const minsEl = document.getElementById('p3-parking-mins');
-  if (minsEl) { minsEl.textContent = mins; minsEl.style.letterSpacing = mins >= 10 ? '1.5px' : '3.2px'; }
   const unitEl = document.getElementById('p3-parking-unit');
-  if (unitEl) { unitEl.style.left = mins >= 10 ? '52px' : '42px'; }
+  if (minsEl) {
+    let display, unit, leftPos;
+    if (mins >= 60) {
+      const hrs = Math.floor(mins / 60);
+      const rem = mins % 60;
+      display = rem > 0 ? `${hrs}h${rem}` : `${hrs}h`;
+      unit = rem > 0 ? 'm' : '+';
+      leftPos = display.length >= 4 ? '72px' : '58px';
+    } else {
+      display = String(mins);
+      unit = 'min';
+      leftPos = mins >= 10 ? '52px' : '42px';
+    }
+    minsEl.textContent = display;
+    minsEl.style.letterSpacing = display.length >= 4 ? '0px' : '3.2px';
+    if (unitEl) { unitEl.querySelector('p').textContent = unit; unitEl.style.left = leftPos; }
+  }
 
   // Reports
   const repEl = document.getElementById('p3-parking-reports');
@@ -1801,6 +1820,20 @@ function p3BuildPhotos(r) {
   }).join('');
 }
 
+function initP3PhotoSwipe() {
+  const strip = document.getElementById('p3-photo-strip');
+  if (!strip) return;
+  let startX = 0, isDragging = false;
+  strip.ontouchstart = e => { startX = e.touches[0].clientX; isDragging = true; };
+  strip.ontouchend = e => {
+    if (!isDragging) return;
+    isDragging = false;
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) p3PhotoNav(diff > 0 ? 1 : -1);
+  };
+  strip.ontouchmove = e => { if (isDragging) e.stopPropagation(); };
+}
+
 function p3UpdateArrows() {
   const left = document.getElementById('p3-arr-left');
   const right = document.getElementById('p3-arr-right');
@@ -1827,6 +1860,7 @@ function populatePage3(r) {
   const dots = document.getElementById('p3-photo-dots');
   if (dots) dots.innerHTML = p3BuildDots(P3_PHOTO_COUNT, 0);
   p3UpdateArrows();
+  initP3PhotoSwipe();
 
   // 1. Vibes: matched first, fill to 3 with restaurant fallbacks
   const userVibes = getSelectedVibeLabels();

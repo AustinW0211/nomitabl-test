@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -10,17 +10,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #111; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; font-family: 'Afacad', sans-serif; overflow: hidden; }
-.phone { width: 393px; height: 852px; position: relative; overflow: hidden; border-radius: 40px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
+body { background: #000; display: flex; justify-content: flex-start; align-items: flex-start; width: 100vw; height: 100vh; height: 100dvh; font-family: 'Afacad', sans-serif; overflow: hidden; }
+.phone { width: 393px; height: 852px; position: relative; overflow: hidden; border-radius: 40px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); flex-shrink: 0; }
 
-/* On actual mobile — scale the 393x852 frame to fit the screen */
 @media (max-width: 500px) {
-  body { background: #000; padding: 0; align-items: center; }
-  .phone {
-    border-radius: 0;
-    box-shadow: none;
-    transform-origin: top center;
-  }
+  .phone { border-radius: 0; box-shadow: none; }
 }
 .screen { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
 .screen.active { opacity: 1; pointer-events: all; }
@@ -1626,33 +1620,30 @@ function navigate(screen) {
   document.getElementById('screen-'+screen).classList.add('active');
 }
 
-// Scale phone to fit mobile screens
+// Scale phone to fit mobile screens — fill full screen
 function scalePhone() {
   const phone = document.querySelector('.phone');
   if (!phone) return;
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   if (vw <= 500) {
-    // Always scale to fill full width — height scrolls/clips if needed
-    const scale = vw / 393;
+    // Scale so the 393x852 frame fills the available screen
+    const scaleByW = vw / 393;
+    const scaleByH = vh / 852;
+    // Use whichever is larger to ensure no gaps
+    const scale = Math.max(scaleByW, scaleByH);
     phone.style.transform = `scale(${scale})`;
     phone.style.transformOrigin = 'top left';
+    // Center horizontally if scaled by height
+    const scaledW = 393 * scale;
+    const leftOffset = Math.max(0, (vw - scaledW) / 2);
+    phone.style.marginLeft = leftOffset + 'px';
     phone.style.marginTop = '0px';
-    phone.style.marginLeft = '0px';
-    // Set body/phone wrapper to actual scaled size so no scroll
-    document.body.style.width = vw + 'px';
-    document.body.style.height = vh + 'px';
-    document.body.style.alignItems = 'flex-start';
-    document.body.style.justifyContent = 'flex-start';
   } else {
     phone.style.transform = '';
     phone.style.transformOrigin = '';
-    phone.style.marginTop = '';
     phone.style.marginLeft = '';
-    document.body.style.width = '';
-    document.body.style.height = '';
-    document.body.style.alignItems = '';
-    document.body.style.justifyContent = '';
+    phone.style.marginTop = '';
   }
 }
 scalePhone();

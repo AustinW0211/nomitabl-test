@@ -28,7 +28,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 /* Page 3 two-state transition */
 #screen-page3s1.details-open .p3-hero {
   transform: translateY(-100%);
-  transition: transform .55s cubic-bezier(.32,.72,0,1);
+  transition: transform .25s cubic-bezier(.32,.72,0,1);
 }
 .p3-details-panel {
   position: absolute;
@@ -37,7 +37,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   z-index: 25;
   background: #d0cfcf;
   transform: translateY(100vh);
-  transition: transform .55s cubic-bezier(.32,.72,0,1);
+  transition: transform .25s cubic-bezier(.32,.72,0,1);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -46,7 +46,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 .p3-details-panel.revealed { transform: translateY(0); }
 .p3-hero {
   position: absolute; inset: 0;
-  transition: transform .55s cubic-bezier(.32,.72,0,1);
+  transition: transform .25s cubic-bezier(.32,.72,0,1);
 }
 @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(5px)} }
 
@@ -134,9 +134,9 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Tags -->
-    <!-- Bubble viewport: fixed 393px centered on screen, scrollable content inside -->
-    <div style="position:absolute;left:0;top:470px;width:393px;height:233px;">
-      <div id="tags-container" style="height:233px;overflow-x:auto;overflow-y:hidden;position:relative;width:393px;scrollbar-width:none;-ms-overflow-style:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;"></div>
+    <!-- Bubble viewport: fixed 393px, horizontally scrollable -->
+    <div style="position:absolute;left:0;top:470px;width:393px;height:233px;overflow:hidden;">
+      <div id="tags-container" style="position:absolute;top:0;left:0;height:233px;overflow-x:scroll;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x;scrollbar-width:none;-ms-overflow-style:none;"></div>
     </div>
 
     <!-- Foot: LET'S VIBE → Page 2 -->
@@ -1382,7 +1382,7 @@ function updateTransportTimes(r) {
       const { num, unit } = fmt(mins);
       el.textContent = num;
       // Loosen letter-spacing for hr format (e.g. "1h20") to avoid cramping
-      el.style.letterSpacing = mins >= 60 ? '0px' : '-1.2px';
+      el.style.letterSpacing = mins >= 60 ? '1px' : '0px';
       // Update the adjacent min label
       const unitEl = el.nextElementSibling;
       if (unitEl) unitEl.textContent = unit;
@@ -1933,12 +1933,18 @@ bubbles.forEach((b, i) => {
   allWrappers.push(wrapper);
 });
 
-// Set container width to fit all bubbles + padding, center if narrower than screen
-// Container: viewport is 393px (centered on screen). Content expands right for extra bubbles.
-// Original 10 cluster fills 4px→389px which is centered in the 393px viewport at scrollLeft=0.
+// Bubble scroll setup: container is the 393px viewport, inner div holds full content width
 const maxRight = Math.max(...bubbles.map(b => b.left + b.size));
-container.style.width = (maxRight + 20) + 'px';
-container.scrollLeft = 1; // Center original cluster in viewport
+const totalW = maxRight + 20;
+// Set container as 393px wide scroll viewport
+container.style.cssText += ';width:393px;';
+// Wrap all bubble content in an inner positioned div for correct scroll width
+const bubbleTrack = document.createElement('div');
+bubbleTrack.style.cssText = `position:relative;width:${totalW}px;height:233px;flex-shrink:0;`;
+// Move existing children into track
+while (container.firstChild) bubbleTrack.appendChild(container.firstChild);
+container.appendChild(bubbleTrack);
+container.scrollLeft = 1;
 
 // Hide scrollbar CSS
 const sbStyle = document.createElement('style');

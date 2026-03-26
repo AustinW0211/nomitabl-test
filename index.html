@@ -41,12 +41,18 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .p3-details-panel::-webkit-scrollbar { display: none; }
 .p3-details-panel.revealed { transform: translateY(0); }
 .p3-hero {
   position: absolute; inset: 0;
   transition: transform .25s cubic-bezier(.32,.72,0,1);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(5px)} }
 
@@ -1893,11 +1899,7 @@ const bubbles = [
   { label:"Fresh air & food", size:84, left:68, top:98, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(0,255,242,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(128,255,249,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(0,204,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(146,242,136,1)\" offset=\"0.75\"/><stop stop-color=\"rgba(195,255,135,1)\" offset=\"1\"/></radialGradient></defs></svg>')" }
 
 
-,
-  { label:"treat yourself", size:72, left:232, top:128, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(253,150,92,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(254,203,174,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(255,44,133,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,142,165,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(252,240,196,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"late night", size:72, left:420, top:25, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 92 92\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.3079 6.6674 -6.6674 3.3079 22.742 7.236)\"><stop stop-color=\"rgba(82,0,255,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(169,128,255,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 92 92\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.2225 5.3753 -5.3753 -2.2225 61.506 38.247)\"><stop stop-color=\"rgba(49,181,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(145,183,235,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(240,185,214,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"power lunch", size:78, left:504, top:10, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(183,129,31,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(219,192,143,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(55,179,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(122,202,247,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(188,225,239,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"vibe check", size:66, left:594, top:30, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(23,98,89,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(139,177,172,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(0,139,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(198,176,117,1)\" offset=\"1\"/></radialGradient></defs></svg>')" }
+
 ];
 
 const selected = new Set();
@@ -1953,18 +1955,32 @@ const repeatGap = 8;
 const leftShift = -(clusterW + repeatGap);  // = -419
 const rightShift = clusterW + repeatGap;     // = +419
 
-// Ghost left and right repeats (visual only, not interactive)
-bubbles.slice(0, 10).forEach(b => {
+// Ghost left and right repeats — randomized tags, 3 sizes, slight position variation
+const ghostTags = [
+  'late night', 'treat yourself', 'power lunch', 'vibe check',
+  'date night', 'girls night out', 'cozy vibes', 'quick bite',
+  'spicy mood', 'fresh air', 'something new', 'solo time'
+];
+const ghostSizes = [66, 78, 92]; // 3 sizes only
+
+bubbles.slice(0, 10).forEach((b, i) => {
   [-1, 1].forEach(dir => {
     const shift = dir === -1 ? leftShift : rightShift;
+    // Slightly randomize size and position for natural blend
+    const sizeOpts = ghostSizes;
+    const ghostSize = sizeOpts[i % sizeOpts.length];
+    const jitterX = (i % 3 - 1) * 8; // -8, 0, or +8
+    const jitterY = (i % 4 - 2) * 6; // -12, -6, 0, or +6
     const ghost = document.createElement('div');
-    ghost.style.cssText = `position:absolute;left:${b.left + shift}px;top:${b.top}px;width:${b.size}px;height:${b.size}px;border-radius:44.5px;pointer-events:none;opacity:0.7;`;
+    ghost.style.cssText = `position:absolute;left:${b.left + shift + jitterX}px;top:${Math.max(0, b.top + jitterY)}px;width:${ghostSize}px;height:${ghostSize}px;border-radius:44.5px;pointer-events:none;opacity:0.65;`;
     const bgDiv = document.createElement('div');
     bgDiv.style.cssText = `position:absolute;inset:0;border-radius:44.5px;filter:blur(2px);background-image:${b.bg};`;
     ghost.appendChild(bgDiv);
     const lbl = document.createElement('p');
     lbl.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:12px;line-height:1.3;color:white;text-align:center;text-transform:capitalize;padding:8px;word-break:normal;overflow-wrap:normal;hyphens:none;`;
-    lbl.textContent = b.label.trim();
+    // Use a different tag for ghost — cycle through ghost tags
+    const ghostLabel = ghostTags[(i + (dir === -1 ? 0 : 5)) % ghostTags.length];
+    lbl.textContent = ghostLabel;
     ghost.appendChild(lbl);
     bubbleTrack.appendChild(ghost);
   });

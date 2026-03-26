@@ -80,7 +80,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   <div class="screen active" id="screen-starter" style="background:#d0cfcf;">
 
     <!-- Header -->
-    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:48px;width:393px;">
+    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:58px;width:393px;">
       <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:30px;height:30px;">
         <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30">
           <rect fill="white" height="30" rx="15" width="30"/>
@@ -95,9 +95,9 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Logo -->
-    <div style="position:absolute;height:230px;left:0;overflow:hidden;color:black;top:74px;width:393px;display:flex;flex-direction:column;justify-content:center;padding:0 14px;">
+    <div style="position:absolute;height:230px;left:0;overflow:hidden;color:black;top:84px;width:393px;display:flex;flex-direction:column;justify-content:center;padding:0 14px;">
       <!-- NOMI row: flush left/right -->
-      <div style="display:flex;justify-content:space-between;width:100%;line-height:88px;">
+      <div style="display:flex;justify-content:space-between;width:100%;line-height:88px;margin-top:8px;">
         <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">N</span>
         <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">O</span>
         <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">M</span>
@@ -113,12 +113,12 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">L</span>
       </div>
       <!-- location + dynamic city -->
-      <div style="font-family:'Inter',sans-serif;font-weight:300;font-size:10px;letter-spacing:5px;text-transform:lowercase;color:black;text-align:center;line-height:18px;margin-top:16px;">location:</div>
+      <div style="font-family:'Inter',sans-serif;font-weight:300;font-size:10px;letter-spacing:5px;text-transform:lowercase;color:black;text-align:center;line-height:18px;margin-top:8px;">location:</div>
       <div id="city-name" style="font-family:'Afacad',sans-serif;font-weight:500;font-size:16px;letter-spacing:12.96px;text-transform:uppercase;color:black;text-align:center;margin-top:-2px;">VANCOUVER</div>
     </div>
 
     <!-- SearchBar -->
-    <div style="position:absolute;height:136px;left:0;overflow:hidden;top:324px;width:393px;">
+    <div style="position:absolute;height:136px;left:0;overflow:hidden;top:334px;width:393px;">
       <div style="position:absolute;left:calc(50% - 179.5px);top:9px;transform:translateY(-50%);font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;text-transform:capitalize;color:black;">Build For The Curiosity</div>
       <div style="position:absolute;right:16px;top:127px;transform:translateY(-50%);font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;color:black;text-align:right;white-space:nowrap;">Or Find Your Vibe</div>
       <div style="position:absolute;left:calc(50% - 179.5px);top:31px;transform:translateY(-50%);white-space:nowrap;">
@@ -134,8 +134,9 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Tags -->
-    <div style="position:absolute;display:flex;flex-direction:column;height:260px;align-items:center;justify-content:center;left:0;overflow:hidden;padding:14px 0;top:460px;width:393px;">
-      <div id="tags-container" style="height:233px;overflow:hidden;position:relative;flex-shrink:0;width:100%;"></div>
+    <!-- Bubble viewport: fixed 393px centered on screen, scrollable content inside -->
+    <div style="position:absolute;left:0;top:470px;width:393px;height:233px;overflow:hidden;">
+      <div id="tags-container" style="height:233px;overflow-x:auto;overflow-y:hidden;position:relative;width:393px;scrollbar-width:none;-ms-overflow-style:none;"></div>
     </div>
 
     <!-- Foot: LET'S VIBE → Page 2 -->
@@ -154,7 +155,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   <div class="screen" id="screen-page2" style="background:#d0cfcf;">
 
     <!-- Header -->
-    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:48px;width:393px;">
+    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:58px;width:393px;">
       <div onclick="navigate('starter')" style="position:absolute;left:calc(50% - 169.5px);top:50%;transform:translate(-50%,-50%);width:30px;height:30px;cursor:pointer;">
         <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30">
           <rect fill="white" height="30" rx="15" width="30"/>
@@ -171,7 +172,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- SelectedTags — dynamic -->
-    <div id="p2-tags" style="position:absolute;left:0;top:106px;width:393px;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;justify-content:center;padding:0 16px;box-sizing:border-box;"></div>
+    <div id="p2-tags" style="position:absolute;left:0;top:116px;width:393px;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;justify-content:center;padding:0 16px;box-sizing:border-box;"></div>
 
     <!-- Vibe add modal -->
 
@@ -234,7 +235,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       </div>
       <!-- Scroll indicator dots — 20px above pricing (pricing top:560px → dots at 536px) -->
       <div id="p3-photo-dots" style="position:absolute;left:50%;transform:translateX(-50%);top:536px;display:flex;gap:5px;align-items:center;z-index:4;pointer-events:none;"></div>
-      <div id="p3-vibes-wrap" style="position:absolute;display:flex;flex-direction:column;gap:5px;height:90px;left:0;top:56px;width:393px;overflow:hidden;">
+      <div id="p3-vibes-wrap" style="position:absolute;display:flex;flex-direction:column;gap:5px;height:90px;left:0;top:66px;width:393px;overflow:hidden;">
         <p id="p3-vibe-1" class="fi" style="font-weight:200;font-size:11px;color:white;letter-spacing:2.2px;text-align:center;width:100%;line-height:normal;">feel fancy</p>
         <p id="p3-vibe-2" class="fi" style="font-weight:200;font-size:11px;color:white;letter-spacing:2.2px;text-align:center;width:100%;line-height:normal;">cozy stuff</p>
         <p id="p3-vibe-3" class="fi" style="font-weight:200;font-size:11px;color:white;letter-spacing:2.2px;text-align:center;width:100%;line-height:normal;">vegan</p>
@@ -288,7 +289,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Header (z-index 3) -->
-    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:48px;width:393px;z-index:3;">
+    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:58px;width:393px;z-index:3;">
       <div style="position:absolute;height:67px;left:0;overflow:hidden;top:7px;width:393px;">
         <div onclick="backToPage2()" style="position:absolute;left:12px;top:calc(50% - 17.5px);transform:translateY(-50%);width:30px;height:30px;cursor:pointer;">
           <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30"><rect fill="white" height="30" rx="15" width="30"/><path d="M17.8054 8.85352C17.9406 8.8559 18.0702 8.91024 18.1658 9.00586C18.2613 9.10147 18.3157 9.23105 18.3181 9.36621C18.3204 9.50115 18.2704 9.63167 18.1785 9.73047L12.9197 14.9893L18.1726 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.323 20.4769 18.3384 20.5463 18.3396 20.6162C18.3408 20.6861 18.3277 20.7555 18.3015 20.8203C18.2753 20.8853 18.2358 20.9446 18.1863 20.9941C18.1368 21.0435 18.0782 21.0832 18.0134 21.1094C17.9485 21.1356 17.8784 21.1477 17.8083 21.1465C17.7383 21.1452 17.6692 21.1301 17.6052 21.1016C17.5423 21.0735 17.4855 21.0334 17.4382 20.9834L11.8132 15.3584C11.7155 15.2605 11.6609 15.1276 11.6609 14.9893C11.6609 14.8511 11.7156 14.7189 11.8132 14.6211L17.4382 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.54 8.90119 17.6704 8.8512 17.8054 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/></svg>
@@ -304,21 +305,21 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   <div class="p3-details-panel" id="p3DetailsPanel">
 
     <!-- Card: green top -->
-    <div style="position:absolute;left:50%;top:calc(50% - 312px);transform:translate(-50%,-50%);height:228px;overflow:hidden;width:393px;">
-      <div style="position:absolute;left:12px;top:0;width:370px;height:164px;border-radius:0 0 24px 24px;overflow:hidden;"><svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;"><defs><linearGradient id="gg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#beffb5"/><stop offset="100%" stop-color="#205820"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#gg2)"/><rect width="100%" height="100%" fill="url(#gg2)" filter="url(#greenGrain)" opacity="0.9"/></svg></div>
-      <div onclick="openResoModal()" style="position:absolute;left:267px;width:28px;height:28px;top:109px;cursor:pointer;z-index:5;">
+    <div style="position:absolute;left:50%;top:calc(50% - 312px);transform:translate(-50%,-50%);height:238px;overflow:hidden;width:393px;">
+      <div style="position:absolute;left:12px;top:0;width:370px;height:174px;border-radius:24px 24px 24px 24px;overflow:hidden;"><svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;"><defs><linearGradient id="gg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#beffb5"/><stop offset="100%" stop-color="#205820"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#gg2)"/><rect width="100%" height="100%" fill="url(#gg2)" filter="url(#greenGrain)" opacity="0.9"/></svg></div>
+      <div onclick="openResoModal()" style="position:absolute;left:267px;width:28px;height:28px;top:119px;cursor:pointer;z-index:5;">
         <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 28 28"><rect fill="#1E1E1E" height="28" rx="14" width="28"/><path d="M18.2785 19.8849L9.85806 11.4644V17.8656C9.85806 17.9793 9.81286 18.0885 9.7324 18.1689C9.65194 18.2494 9.54282 18.2946 9.42903 18.2946C9.31524 18.2946 9.20612 18.2494 9.12566 18.1689C9.0452 18.0885 9 17.9793 9 17.8656V10.429C9 10.3152 9.0452 10.2061 9.12566 10.1257C9.20612 10.0452 9.31524 10 9.42903 10H16.8656C16.9793 10 17.0885 10.0452 17.1689 10.1257C17.2494 10.2061 17.2946 10.3152 17.2946 10.429C17.2946 10.5428 17.2494 10.6519 17.1689 10.7324C17.0885 10.8129 16.9793 10.8581 16.8656 10.8581H10.4644L18.8849 19.2785C18.9606 19.3598 19.0019 19.4674 18.9999 19.5785C18.998 19.6897 18.9529 19.7957 18.8743 19.8743C18.7957 19.9529 18.6897 19.998 18.5785 19.9999C18.4674 20.0019 18.3598 19.9606 18.2785 19.8849Z" fill="white"/></svg>
       </div>
-      <div style="position:absolute;display:flex;height:40px;align-items:center;left:12px;overflow:hidden;padding-left:32px;padding-right:23px;padding-top:10px;padding-bottom:10px;top:124px;">
+      <div style="position:absolute;display:flex;height:40px;align-items:center;left:12px;overflow:hidden;padding-left:32px;padding-right:23px;padding-top:10px;padding-bottom:10px;top:134px;">
         <p class="fa" style="font-weight:400;font-size:12px;color:white;letter-spacing:1.2px;white-space:nowrap;line-height:14px;">AUSTIN C. WANG</p>
       </div>
-      <div style="position:absolute;left:296px;top:89px;width:86px;height:75px;overflow:hidden;">
+      <div style="position:absolute;left:296px;top:99px;width:86px;height:75px;overflow:hidden;">
         <div style="position:absolute;left:calc(50% - 15.5px);top:18px;transform:translate(-50%,-50%);height:12px;width:51px;display:flex;justify-content:center;align-items:center;"><p class="fi" style="font-weight:200;font-size:16px;color:white;letter-spacing:1.6px;text-transform:uppercase;text-align:center;line-height:12px;">make</p></div>
         <div style="position:absolute;left:calc(50% - 19.5px);top:34px;transform:translate(-50%,-50%);height:12px;width:39px;display:flex;justify-content:center;align-items:center;"><p class="fi" style="font-weight:200;font-size:16px;color:white;letter-spacing:1.6px;text-transform:uppercase;text-align:center;line-height:12px;">a</p></div>
         <div style="position:absolute;left:calc(50% - 0.5px);top:49px;transform:translate(-50%,-50%);height:12px;width:51px;display:flex;justify-content:center;align-items:center;"><p class="fi" style="font-weight:200;font-size:16px;color:white;letter-spacing:1.6px;text-transform:uppercase;text-align:center;line-height:12px;">reso</p></div>
       </div>
       <!-- BACK TO PHOTO → hideDetails -->
-      <div onclick="hideDetails()" style="position:absolute;height:64px;left:0;overflow:hidden;top:164px;width:393px;cursor:pointer;">
+      <div onclick="hideDetails()" style="position:absolute;height:64px;left:0;overflow:hidden;top:174px;width:393px;cursor:pointer;">
         <div style="position:absolute;height:36px;left:0;top:0;width:393px;">
           <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 393 36">
             <path d="M203.724 28.0888C203.637 28.1791 203.534 28.2506 203.42 28.2995C203.306 28.3483 203.184 28.3735 203.06 28.3735C202.937 28.3735 202.815 28.3483 202.701 28.2995C202.587 28.2506 202.483 28.1791 202.396 28.0888L196.811 22.3235L191.224 28.0888C191.048 28.2706 190.809 28.3728 190.56 28.3728C190.311 28.3728 190.072 28.2706 189.896 28.0888C189.72 27.907 189.621 27.6605 189.621 27.4034C189.621 27.1462 189.72 26.8997 189.896 26.7179L196.146 20.2663C196.233 20.176 196.337 20.1045 196.451 20.0556C196.565 20.0068 196.687 19.9816 196.81 19.9816C196.934 19.9816 197.056 20.0068 197.17 20.0556C197.284 20.1045 197.387 20.176 197.474 20.2663L203.724 26.7179C203.812 26.8078 203.881 26.9146 203.928 27.0322C203.976 27.1499 204 27.276 204 27.4034C204 27.5307 203.976 27.6568 203.928 27.7745C203.881 27.8921 203.812 27.9989 203.724 28.0888Z" fill="#A6A6A6"/>
@@ -332,7 +333,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Header -->
-    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:48px;width:393px;">
+    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:58px;width:393px;">
       <div style="position:absolute;height:67px;left:0;overflow:hidden;top:7px;width:393px;">
         <div onclick="backToPage2()" style="position:absolute;left:12px;top:calc(50% - 17.5px);transform:translateY(-50%);width:30px;height:30px;cursor:pointer;">
           <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30"><rect fill="white" height="30" rx="15" width="30"/><path d="M17.8054 8.85352C17.9406 8.8559 18.0702 8.91024 18.1658 9.00586C18.2613 9.10147 18.3157 9.23105 18.3181 9.36621C18.3204 9.50115 18.2704 9.63167 18.1785 9.73047L12.9197 14.9893L18.1726 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.323 20.4769 18.3384 20.5463 18.3396 20.6162C18.3408 20.6861 18.3277 20.7555 18.3015 20.8203C18.2753 20.8853 18.2358 20.9446 18.1863 20.9941C18.1368 21.0435 18.0782 21.0832 18.0134 21.1094C17.9485 21.1356 17.8784 21.1477 17.8083 21.1465C17.7383 21.1452 17.6692 21.1301 17.6052 21.1016C17.5423 21.0735 17.4855 21.0334 17.4382 20.9834L11.8132 15.3584C11.7155 15.2605 11.6609 15.1276 11.6609 14.9893C11.6609 14.8511 11.7156 14.7189 11.8132 14.6211L17.4382 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.54 8.90119 17.6704 8.8512 17.8054 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/></svg>
@@ -344,9 +345,84 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- GoldenHours: happy hour card -->
-    <div style="position:absolute;display:flex;flex-direction:column;height:206px;align-items:center;justify-content:space-between;left:0;overflow:hidden;padding:12px 6px;top:228px;width:393px;">
+    <div style="position:absolute;display:flex;flex-direction:column;height:206px;align-items:center;justify-content:space-between;left:0;overflow:hidden;padding:12px 6px;top:238px;width:393px;">
       <div style="background:white;height:172px;overflow:hidden;position:relative;border-radius:24px;flex-shrink:0;width:100%;">
-        <div style="position:absolute;left:-120px;width:240px;height:240px;top:-34px;"><svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 240 240"><circle cx="120" cy="120" fill="#B4B4B4" r="120"/></svg></div>
+        <div style="position:absolute;left:-120px;width:240px;height:240px;top:-34px;"><svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 240 240">
+          <g id="hh-clock-face">
+          <circle cx="120" cy="120" fill="#B4B4B4" r="120"/>
+          <!-- Clock tick marks -->
+            <!-- Generate ticks via JS-like approach: 72 positions -->
+            <!-- 0° = 12 o'clock (top), clockwise -->
+            <!-- Hour marks: 0,30,60,...330 — length 14, stroke #555, width 2 -->
+            <!-- Minor marks: every 6° except hours — length 7, stroke #999, width 1 -->
+            <line x1="120" y1="4" x2="120" y2="12" stroke="#000" stroke-width="3" stroke-linecap="round" transform="rotate(0 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(6 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(12 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(18 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(24 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="#000" stroke-width="3" stroke-linecap="round" transform="rotate(30 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(36 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(42 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(48 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(54 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="#000" stroke-width="3" stroke-linecap="round" transform="rotate(60 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(66 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(72 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(78 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(84 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="#000" stroke-width="3" stroke-linecap="round" transform="rotate(90 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(96 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(102 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(108 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(114 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="#000" stroke-width="3" stroke-linecap="round" transform="rotate(120 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(126 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(132 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(138 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(144 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="#000" stroke-width="3" stroke-linecap="round" transform="rotate(150 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(156 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(162 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(168 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(174 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="#000" stroke-width="3" stroke-linecap="round" transform="rotate(180 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(186 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(192 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(198 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(204 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="#000" stroke-width="3" stroke-linecap="round" transform="rotate(210 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(216 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(222 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(228 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(234 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="#000" stroke-width="3" stroke-linecap="round" transform="rotate(240 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(246 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(252 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(258 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(264 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="#000" stroke-width="3" stroke-linecap="round" transform="rotate(270 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(276 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(282 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(288 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(294 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="#000" stroke-width="3" stroke-linecap="round" transform="rotate(300 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(306 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(312 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(318 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(324 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="#000" stroke-width="3" stroke-linecap="round" transform="rotate(330 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(336 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(342 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(348 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(354 120 120)"/>
+          <!-- Happy hour arcs: part of rotating face -->
+          <path id="hh-arc1" d="M 120,120 L 232.0,120.0 A 112,112 0 0,1 176.0,216.99 Z" fill="rgba(255,140,40,0.5)" opacity="0"/>
+          <path id="hh-arc2" d="M 120,120 L 8.0,120.0 A 112,112 0 0,1 64.0,23.01 Z" fill="rgba(255,140,40,0.5)" opacity="0"/>
+          </g>
+          <!-- Arc 1: 3-5pm = 90°-150°, Arc 2: 9-11pm = 270°-330° -->
+          <!-- Hour hand -->
+          <line id="hh-hour-hand" x1="120" y1="120" x2="120" y2="40" stroke="#1e1e1e" stroke-width="12" stroke-linecap="round" transform="rotate(90 120 120)"/>
+        </svg></div>
         <p id="p3-hh-countdown" class="fa" style="position:absolute;font-weight:700;font-size:40px;color:black;letter-spacing:4px;white-space:nowrap;left:175px;top:45px;line-height:40px;">2h10m</p>
         <p id="p3-hh-label" class="fi" style="position:absolute;font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;white-space:nowrap;left:175px;top:85px;line-height:14px;">TO HAPPY HOUR</p>
         <p id="p3-hh-open" class="fi" style="position:absolute;font-weight:400;font-size:12px;color:black;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap;left:175px;top:16px;line-height:14px;">OPEN UNTIL 10 PM</p>
@@ -354,12 +430,12 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <div onclick="openReminderModal()" style="position:absolute;background:#1e1e1e;height:30px;left:171px;overflow:hidden;border-radius:80px;top:125px;width:149px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
           <p class="fi" style="font-weight:600;font-size:12px;color:white;letter-spacing:4.32px;text-transform:capitalize;line-height:12px;">Set reminder</p>
         </div>
-        <div style="position:absolute;left:320px;width:30px;height:30px;top:125px;"><svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30"><rect fill="#1E1E1E" height="30" rx="15" width="30"/><path d="M19.2785 19.8849L10.8581 11.4644V17.8656C10.8581 17.9793 10.8129 18.0885 10.7324 18.1689C10.6519 18.2494 10.5428 18.2946 10.429 18.2946C10.3152 18.2946 10.2061 18.2494 10.1257 18.1689C10.0452 18.0885 10 17.9793 10 17.8656V10.429C10 10.3152 10.0452 10.2061 10.1257 10.1257C10.2061 10.0452 10.3152 10 10.429 10H17.8656C17.9793 10 18.0885 10.0452 18.1689 10.1257C18.2494 10.2061 18.2946 10.3152 18.2946 10.429C18.2946 10.5428 18.2494 10.6519 18.1689 10.7324C18.0885 10.8129 17.9793 10.8581 17.8656 10.8581H11.4644L19.8849 19.2785C19.9606 19.3598 20.0019 19.4674 19.9999 19.5785C19.998 19.6897 19.9529 19.7957 19.8743 19.8743C19.7957 19.9529 19.6897 19.998 19.5785 19.9999C19.4674 20.0019 19.3598 19.9606 19.2785 19.8849Z" fill="white"/></svg></div>
+        <div onclick="openReminderModal()" style="position:absolute;left:320px;width:30px;height:30px;top:125px;cursor:pointer;z-index:5;"><svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30"><rect fill="#1E1E1E" height="30" rx="15" width="30"/><path d="M19.2785 19.8849L10.8581 11.4644V17.8656C10.8581 17.9793 10.8129 18.0885 10.7324 18.1689C10.6519 18.2494 10.5428 18.2946 10.429 18.2946C10.3152 18.2946 10.2061 18.2494 10.1257 18.1689C10.0452 18.0885 10 17.9793 10 17.8656V10.429C10 10.3152 10.0452 10.2061 10.1257 10.1257C10.2061 10.0452 10.3152 10 10.429 10H17.8656C17.9793 10 18.0885 10.0452 18.1689 10.1257C18.2494 10.2061 18.2946 10.3152 18.2946 10.429C18.2946 10.5428 18.2494 10.6519 18.1689 10.7324C18.0885 10.8129 17.9793 10.8581 17.8656 10.8581H11.4644L19.8849 19.2785C19.9606 19.3598 20.0019 19.4674 19.9999 19.5785C19.998 19.6897 19.9529 19.7957 19.8743 19.8743C19.7957 19.9529 19.6897 19.998 19.5785 19.9999C19.4674 20.0019 19.3598 19.9606 19.2785 19.8849Z" fill="white"/></svg></div>
       </div>
     </div>
 
     <!-- Walk-in + Parking cards -->
-    <div style="position:absolute;display:flex;height:160px;align-items:center;justify-content:space-between;left:0;overflow:hidden;padding:0 6px;top:434px;width:393px;">
+    <div style="position:absolute;display:flex;height:160px;align-items:center;justify-content:space-between;left:0;overflow:hidden;padding:0 6px;top:444px;width:393px;">
       <!-- Walk-in -->
       <div style="background:white;height:159px;overflow:hidden;position:relative;border-radius:24px;flex-shrink:0;width:186px;">
         <div style="position:absolute;left:16px;top:50.5px;transform:translateY(-50%);width:136px;"><p id="p3-walkin-title" class="fi" style="font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;text-transform:capitalize;line-height:12px;">walk - in</p></div>
@@ -405,7 +481,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Transportations -->
-    <div style="position:absolute;display:flex;gap:18px;height:46px;align-items:center;left:0;overflow:hidden;top:674px;width:393px;">
+    <div style="position:absolute;display:flex;gap:18px;height:46px;align-items:center;left:0;overflow:hidden;top:684px;width:393px;">
       <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;width:106px;height:44px;">
         <div style="display:flex;align-items:flex-end;gap:2px;padding-left:50%;box-sizing:border-box;"><p class="fm" style="font-weight:300;font-size:10px;color:#030303;line-height:1;padding-bottom:2px;">/</p><p id="t3-walk" class="fa" style="font-weight:600;font-size:20px;color:black;letter-spacing:-1.2px;line-height:1;">—</p><p class="fi" style="font-weight:400;font-size:12px;color:black;letter-spacing:-0.5px;line-height:1;padding-bottom:1px;">min</p></div>
         <p class="fi" style="font-weight:300;font-size:12px;color:#030303;letter-spacing:7.2px;text-align:center;white-space:nowrap;line-height:normal;margin-top:2px;">walk</p>
@@ -421,7 +497,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Community quote -->
-    <div style="position:absolute;left:50%;top:calc(50% + 208px);transform:translate(-50%,-50%);display:flex;height:80px;align-items:center;justify-content:space-between;overflow:hidden;padding:22px 10px;width:393px;">
+    <div style="position:absolute;left:0;top:604px;display:flex;height:80px;align-items:center;justify-content:space-between;overflow:hidden;padding:22px 10px;width:393px;">
       <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;text-align:center;width:341px;overflow:hidden;">
         <p id="p3-community-quote" class="fa" style="font-weight:400;font-style:italic;font-size:14px;color:black;letter-spacing:2px;text-align:center;line-height:18px;">'Unexpected lively after 8pm'</p>
       </div>
@@ -1295,9 +1371,23 @@ function updateTransportTimes(r) {
     // Transit: ~15 km/h avg with wait
     const transit = Math.max(2, Math.round(km / 15 * 60 + 4));
 
-    walkEl.textContent = walk > 60 ? '60+' : walk;
-    driveEl.textContent = drive > 60 ? '60+' : drive;
-    transitEl.textContent = transit > 60 ? '60+' : transit;
+    const fmt = (m) => {
+      if (m <= 60) return { num: String(m), unit: 'min' };
+      const h = Math.floor(m / 60), r = m % 60;
+      return { num: r > 0 ? `${h}h${r}` : `${h}h`, unit: r > 0 ? 'm' : '+' };
+    };
+    const setTime = (id, mins) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const { num, unit } = fmt(mins);
+      el.textContent = num;
+      // Update the adjacent min label
+      const unitEl = el.nextElementSibling;
+      if (unitEl) unitEl.textContent = unit;
+    };
+    setTime('t3-walk', walk);
+    setTime('t3-drive', drive);
+    setTime('t3-transit', transit);
   };
 
   const originLat = userLat || 49.2827;  // fallback: Gastown
@@ -1428,6 +1518,71 @@ function submitQuote() {
         el.style.opacity = '1';
       }));
     }, 400);
+  }
+}
+
+let hhClockInterval = null;
+
+function updateHHClock(r) {
+  // Clock face rotation
+  const hhFace = document.getElementById('hh-clock-face');
+  if (hhFace) {
+    const now = new Date();
+    const h = now.getHours();
+    const hourDeg = ((h % 12) + now.getMinutes() / 60) * 30;
+    hhFace.setAttribute('transform', `rotate(${90 - hourDeg} 120 120)`);
+
+    const arc1 = document.getElementById('hh-arc1');
+    const arc2 = document.getElementById('hh-arc2');
+    const arc1Visible = h >= 12 || h < 5;      // 3–5 PM: show from noon
+    const arc2Visible = h >= 20.5 || h < 5;    // 9 PM: show from 8:30 PM only
+    if (arc1) arc1.setAttribute('opacity', arc1Visible ? '1' : '0');
+    if (arc2 && arc2Visible) {
+      const closeH = r.close > 24 ? r.close - 12 : r.close;
+      const closeHour12 = ((closeH % 24) % 12) || 12;
+      const endDeg = closeHour12 * 30;
+      const ex = 120 + 112 * Math.sin(endDeg * Math.PI / 180);
+      const ey = 120 - 112 * Math.cos(endDeg * Math.PI / 180);
+      arc2.setAttribute('d', `M 120,120 L 8.0,120.0 A 112,112 0 0,1 ${ex.toFixed(1)},${ey.toFixed(1)} Z`);
+      arc2.setAttribute('opacity', '1');
+    } else if (arc2) {
+      arc2.setAttribute('opacity', '0');
+    }
+  }
+
+  // HH countdown update
+  const hhCountdown = document.getElementById('p3-hh-countdown');
+  const hhLabel = document.getElementById('p3-hh-label');
+  const hhOpen = document.getElementById('p3-hh-open');
+  if (!hhCountdown || !hhLabel || !hhOpen) return;
+
+  const now = new Date();
+  const closeH = r.close > 24 ? r.close - 24 : r.close;
+  const closeDisplay = (closeH % 12 || 12) + (closeH >= 12 ? ' PM' : ' AM');
+  hhOpen.textContent = `OPEN UNTIL ${closeDisplay}`;
+
+  const dow = now.getDay();
+  const isWeekend = dow === 0 || dow === 6;
+  const hhRange = isWeekend ? r.hhWeekend : r.hhWeekday;
+  const h2 = now.getHours() + now.getMinutes() / 60;
+
+  if (hhRange) {
+    let state = null, bestCountdown = null;
+    for (const [hhS, hhE] of hhRange) {
+      if (h2 >= hhS && h2 < hhE) {
+        const total = Math.round((hhE - h2) * 60);
+        const hrs = Math.floor(total / 60), mins = total % 60;
+        state = { label: 'LEFT IN HAPPY HOUR', time: hrs > 0 ? `${hrs}h${mins > 0 ? mins + 'm' : ''}` : `${mins}m` };
+        break;
+      } else if (h2 < hhS && !bestCountdown) {
+        const total = Math.round((hhS - h2) * 60);
+        const hrs = Math.floor(total / 60), mins = total % 60;
+        bestCountdown = { label: 'TO HAPPY HOUR', time: hrs > 0 ? `${hrs}h${mins > 0 ? mins + 'm' : ''}` : `${mins}m` };
+      }
+    }
+    const s = state || bestCountdown;
+    if (s) { hhCountdown.textContent = s.time; hhLabel.textContent = s.label; }
+    else { hhCountdown.textContent = '—'; hhLabel.textContent = 'HAPPY HOUR ENDED'; }
   }
 }
 
@@ -1608,8 +1763,34 @@ function hideDetails() {
   document.getElementById('p3DetailsPanel').classList.remove('revealed');
 }
 
+// Swipe up on State 1 → reveal State 2; swipe down on State 2 → hide
+(function initP3Swipe() {
+  let startY = 0, startX = 0;
+
+  const p3Screen = document.getElementById('screen-page3s1');
+  if (p3Screen) {
+    p3Screen.addEventListener('touchstart', e => {
+      startY = e.touches[0].clientY;
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    p3Screen.addEventListener('touchend', e => {
+      const dy = startY - e.changedTouches[0].clientY;
+      const dx = Math.abs(startX - e.changedTouches[0].clientX);
+      // Only trigger on mostly vertical swipe (dy > 50, dx < 60)
+      if (Math.abs(dy) > 50 && dx < 60) {
+        const isRevealed = document.getElementById('p3DetailsPanel').classList.contains('revealed');
+        if (dy > 0 && !isRevealed) revealDetails();   // swipe up → State 2
+        if (dy < 0 && isRevealed) hideDetails();       // swipe down → State 1
+      }
+    }, { passive: true });
+  }
+})();
+
 // Navigation
 function backToPage2() {
+  // Clear realtime clock interval
+  if (hhClockInterval) { clearInterval(hhClockInterval); hhClockInterval = null; }
   // 1. Always reset page 3 to State 1
   document.getElementById('screen-page3s1').classList.remove('details-open');
   const panel = document.getElementById('p3DetailsPanel');
@@ -1698,8 +1879,14 @@ const bubbles = [
   { label:"spicy", size:66, left:135, top:158, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)\"><stop stop-color=\"rgba(255,0,4,1)\" offset=\"0\"/><stop stop-color=\"rgba(255,128,130,0.5)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)\"><stop stop-color=\"rgba(254,38,0,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,115,53,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,193,106,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
   { label:"something different", size:66, left:306, top:106, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)\"><stop stop-color=\"rgba(255,0,4,1)\" offset=\"0\"/><stop stop-color=\"rgba(255,128,130,0.5)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)\"><stop stop-color=\"rgba(254,38,0,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,115,53,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,193,106,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
   { label:"hangover cure", size:72, left:2, top:65, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(23,98,89,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(139,177,172,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(0,139,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(198,176,117,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"hangover cure", size:72, left:232, top:128, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(23,98,89,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(139,177,172,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(0,139,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(149,167,123,1)\" offset=\"0.75\"/><stop stop-color=\"rgba(198,176,117,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"Fresh air & food", size:84, left:68, top:98, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(0,255,242,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(128,255,249,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(0,204,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(146,242,136,1)\" offset=\"0.75\"/><stop stop-color=\"rgba(195,255,135,1)\" offset=\"1\"/></radialGradient></defs></svg>')" }
+  { label:"Fresh air & food", size:84, left:68, top:98, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(0,255,242,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(128,255,249,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(0,204,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(146,242,136,1)\" offset=\"0.75\"/><stop stop-color=\"rgba(195,255,135,1)\" offset=\"1\"/></radialGradient></defs></svg>')" }
+
+
+,
+  { label:"treat yourself", size:72, left:232, top:128, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(253,150,92,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(254,203,174,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(255,44,133,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,142,165,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(252,240,196,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"late night", size:72, left:420, top:25, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 92 92\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.3079 6.6674 -6.6674 3.3079 22.742 7.236)\"><stop stop-color=\"rgba(82,0,255,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(169,128,255,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 92 92\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.2225 5.3753 -5.3753 -2.2225 61.506 38.247)\"><stop stop-color=\"rgba(49,181,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(145,183,235,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(240,185,214,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"power lunch", size:78, left:504, top:10, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(183,129,31,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(219,192,143,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(55,179,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(122,202,247,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(188,225,239,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"vibe check", size:66, left:594, top:30, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(23,98,89,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(139,177,172,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(0,139,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(198,176,117,1)\" offset=\"1\"/></radialGradient></defs></svg>')" }
 ];
 
 const selected = new Set();
@@ -1715,9 +1902,8 @@ bubbles.forEach((b, i) => {
   const bgDiv = document.createElement('div');
   bgDiv.style.cssText = `position:absolute;inset:0;border-radius:44.5px;filter:blur(2px);background-image:${b.bg};`;
   wrapper.appendChild(bgDiv);
-  const isAfacad = b.font === 'afacad';
   const label = document.createElement('p');
-  label.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:${isAfacad?"'Afacad',sans-serif":"'Inter',sans-serif"};font-weight:600;font-size:${isAfacad?'14px':'11.04px'};line-height:1.2;color:white;text-align:center;text-transform:capitalize;font-style:normal;padding:6px;word-break:break-word;`;
+  label.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:12px;line-height:1.3;color:white;text-align:center;text-transform:capitalize;font-style:normal;padding:8px;word-break:normal;overflow-wrap:normal;hyphens:none;`;
   label.textContent = b.label.trim();
   wrapper.appendChild(label);
   wrapper.addEventListener('mouseenter', () => { if (selected.has(i)||selected.size>=3) return; wrapper.style.transform='scale(1.05)'; });
@@ -1743,6 +1929,18 @@ bubbles.forEach((b, i) => {
   container.appendChild(wrapper);
   allWrappers.push(wrapper);
 });
+
+// Set container width to fit all bubbles + padding, center if narrower than screen
+// Container: viewport is 393px (centered on screen). Content expands right for extra bubbles.
+// Original 10 cluster fills 4px→389px which is centered in the 393px viewport at scrollLeft=0.
+const maxRight = Math.max(...bubbles.map(b => b.left + b.size));
+container.style.width = (maxRight + 20) + 'px';
+container.scrollLeft = 1; // Center original cluster in viewport
+
+// Hide scrollbar CSS
+const sbStyle = document.createElement('style');
+sbStyle.textContent = '#tags-container::-webkit-scrollbar { display: none; }';
+document.head.appendChild(sbStyle);
 
 document.getElementById('screen-starter').classList.add('active');
 
@@ -1914,6 +2112,13 @@ function populatePage3(r) {
 
   // 6. Name + address
   const nm = document.getElementById('p3-name'); if (nm) nm.textContent = r.name;
+
+  // Rotate clock face so hour hand points to real current time
+  // Hand points right (90°), so face needs to rotate: -(hourDeg - 90)
+  // Realtime clock face + HH countdown — update every second
+  if (hhClockInterval) clearInterval(hhClockInterval);
+  updateHHClock(r);
+  hhClockInterval = setInterval(() => updateHHClock(r), 1000);
 
   // State 2 walk-in data — default to dinner, call toggle to render correctly
   const wr = document.getElementById('p3-walkin-reports');

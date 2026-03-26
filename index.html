@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>NomiTabl</title>
+<link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #111; display: flex; justify-content: center; align-items: center; min-height: 100vh; min-height: 100dvh; font-family: 'Afacad', sans-serif; overflow: hidden; }
+.phone { width: 393px; height: 852px; position: relative; overflow: hidden; border-radius: 40px; box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
+
+/* On actual mobile — scale the 393x852 frame to fit the screen */
+@media (max-width: 500px) {
+  body { background: #000; padding: 0; align-items: center; }
+  .phone {
+    border-radius: 0;
+    box-shadow: none;
+    transform-origin: top center;
+  }
+}
+.screen { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.screen.active { opacity: 1; pointer-events: all; }
+.fa { font-family: 'Afacad', sans-serif !important; }
+.fi { font-family: 'Inter', sans-serif !important; }
+.fm { font-family: 'DM Mono', monospace !important; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+/* Page 3 two-state transition */
+#screen-page3s1.details-open .p3-hero {
+  transform: translateY(-100%);
+  transition: transform .55s cubic-bezier(.32,.72,0,1);
+}
+.p3-details-panel {
+  position: absolute;
+  top: 0;
+  left: 0; right: 0; bottom: 0;
+  z-index: 25;
+  background: #d0cfcf;
+  transform: translateY(100vh);
+  transition: transform .55s cubic-bezier(.32,.72,0,1);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.p3-details-panel::-webkit-scrollbar { display: none; }
+.p3-details-panel.revealed { transform: translateY(0); }
+.p3-hero {
+  position: absolute; inset: 0;
+  transition: transform .55s cubic-bezier(.32,.72,0,1);
+}
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(5px)} }
+
+@keyframes bubbleDrift1 { 0%,100%{transform:translate(0,0)} 40%{transform:translate(2px,-4px)} 70%{transform:translate(-2px,-2px)} }
+@keyframes bubbleDrift2 { 0%,100%{transform:translate(0,0)} 35%{transform:translate(-3px,-3px)} 65%{transform:translate(2px,-5px)} }
+@keyframes bubbleDrift3 { 0%,100%{transform:translate(0,0)} 45%{transform:translate(3px,-2px)} 75%{transform:translate(-1px,-4px)} }
+@keyframes bubbleDrift4 { 0%,100%{transform:translate(0,0)} 30%{transform:translate(-2px,-5px)} 60%{transform:translate(3px,-2px)} }
+@keyframes bubbleDrift5 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(2px,-3px)} 80%{transform:translate(-3px,-4px)} }
+@keyframes bubbleDrift6 { 0%,100%{transform:translate(0,0)} 40%{transform:translate(-2px,-2px)} 70%{transform:translate(2px,-5px)} }
+.p3-score-ring-bg   { fill: none; stroke: rgba(255,255,255,.1); stroke-width: 5; }
+.p3-score-ring-fill { fill: none; stroke: rgba(255,255,255,0.6); stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1); }
+
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <filter id="greenGrain" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
+      <feBlend in="SourceGraphic" in2="grayNoise" mode="soft-light" result="blended"/>
+      <feComposite in="blended" in2="SourceGraphic" operator="in"/>
+    </filter>
+  </defs>
+</svg>
+<div class="phone">
+
+  <!-- ============================================================ -->
+  <!-- SCREEN 1: StarterPage -->
+  <!-- ============================================================ -->
+  <div class="screen active" id="screen-starter" style="background:#d0cfcf;">
+
+    <!-- Header -->
+    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:48px;width:393px;">
+      <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:30px;height:30px;">
+        <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30">
+          <rect fill="white" height="30" rx="15" width="30"/>
+          <path d="M20 15C20 15.1105 19.9561 15.2165 19.878 15.2946C19.7998 15.3728 19.6938 15.4167 19.5833 15.4167H15.4167V19.5833C15.4167 19.6938 15.3728 19.7998 15.2946 19.878C15.2165 19.9561 15.1105 20 15 20C14.8895 20 14.7835 19.9561 14.7054 19.878C14.6272 19.7998 14.5833 19.6938 14.5833 19.5833V15.4167H10.4167C10.3062 15.4167 10.2002 15.3728 10.122 15.2946C10.0439 15.2165 10 15.1105 10 15C10 14.8895 10.0439 14.7835 10.122 14.7054C10.2002 14.6272 10.3062 14.5833 10.4167 14.5833H14.5833V10.4167C14.5833 10.3062 14.6272 10.2002 14.7054 10.122C14.7835 10.0439 14.8895 10 15 10C15.1105 10 15.2165 10.0439 15.2946 10.122C15.3728 10.2002 15.4167 10.3062 15.4167 10.4167V14.5833H19.5833C19.6938 14.5833 19.7998 14.6272 19.878 14.7054C19.9561 14.7835 20 14.8895 20 15Z" fill="black"/>
+        </svg>
+      </div>
+      <div style="position:absolute;left:353px;top:50%;transform:translateY(-50%);background:white;display:flex;align-items:center;justify-content:center;padding:5px;border-radius:18px;width:30px;height:30px;overflow:hidden;">
+        <svg style="width:14px;height:14px;" fill="none" viewBox="0 0 14 14">
+          <path d="M11.375 1.3125H3.9375C3.47337 1.3125 3.02825 1.49687 2.70006 1.82506C2.37187 2.15325 2.1875 2.59837 2.1875 3.0625V12.25C2.1875 12.366 2.23359 12.4773 2.31564 12.5594C2.39769 12.6414 2.50897 12.6875 2.625 12.6875H10.5C10.616 12.6875 10.7273 12.6414 10.8094 12.5594C10.8914 12.4773 10.9375 12.366 10.9375 12.25C10.9375 12.134 10.8914 12.0227 10.8094 11.9406C10.7273 11.8586 10.616 11.8125 10.5 11.8125H3.0625C3.0625 11.5804 3.15469 11.3579 3.31878 11.1938C3.48288 11.0297 3.70544 10.9375 3.9375 10.9375H11.375C11.491 10.9375 11.6023 10.8914 11.6844 10.8094C11.7664 10.7273 11.8125 10.616 11.8125 10.5V1.75C11.8125 1.63397 11.7664 1.52269 11.6844 1.44064C11.6023 1.35859 11.491 1.3125 11.375 1.3125ZM6.5625 2.1875H9.1875V6.125L8.13695 5.3375C8.06122 5.2807 7.96912 5.25 7.87445 5.25C7.77979 5.25 7.68768 5.2807 7.61195 5.3375L6.5625 6.125V2.1875ZM10.9375 10.0625H3.9375C3.63024 10.0621 3.32834 10.143 3.0625 10.2971V3.0625C3.0625 2.83044 3.15469 2.60788 3.31878 2.44378C3.48288 2.27969 3.70544 2.1875 3.9375 2.1875H5.6875V7C5.6875 7.08125 5.71013 7.16089 5.75284 7.23001C5.79556 7.29912 5.85667 7.35498 5.92934 7.39131C6.00202 7.42765 6.08337 7.44303 6.16429 7.43573C6.24521 7.42844 6.3225 7.39875 6.3875 7.35L7.875 6.23438L9.36305 7.35C9.43863 7.40668 9.53053 7.43738 9.625 7.4375C9.74103 7.4375 9.85231 7.39141 9.93436 7.30936C10.0164 7.22731 10.0625 7.11603 10.0625 7V2.1875H10.9375V10.0625Z" fill="black"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Logo -->
+    <div style="position:absolute;height:230px;left:0;overflow:hidden;color:black;top:74px;width:393px;display:flex;flex-direction:column;justify-content:center;padding:0 14px;">
+      <!-- NOMI row: flush left/right -->
+      <div style="display:flex;justify-content:space-between;width:100%;line-height:88px;">
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">N</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">O</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">M</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">I</span>
+      </div>
+      <!-- your mood your table -->
+      <div style="font-family:'Inter',sans-serif;font-weight:300;font-size:10px;letter-spacing:5px;text-transform:lowercase;color:black;text-align:center;line-height:18px;">your mood your table</div>
+      <!-- TABL row: flush left/right, moved up 20px -->
+      <div style="display:flex;justify-content:space-between;width:100%;line-height:88px;margin-top:-20px;">
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">T</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">A</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">B</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">L</span>
+      </div>
+      <!-- location + dynamic city -->
+      <div style="font-family:'Inter',sans-serif;font-weight:300;font-size:10px;letter-spacing:5px;text-transform:lowercase;color:black;text-align:center;line-height:18px;margin-top:16px;">location:</div>
+      <div id="city-name" style="font-family:'Afacad',sans-serif;font-weight:500;font-size:16px;letter-spacing:12.96px;text-transform:uppercase;color:black;text-align:center;margin-top:-2px;">VANCOUVER</div>
+    </div>
+
+    <!-- SearchBar -->
+    <div style="position:absolute;height:136px;left:0;overflow:hidden;top:324px;width:393px;">
+      <div style="position:absolute;left:calc(50% - 179.5px);top:9px;transform:translateY(-50%);font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;text-transform:capitalize;color:black;">Build For The Curiosity</div>
+      <div style="position:absolute;right:16px;top:127px;transform:translateY(-50%);font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;color:black;text-align:right;white-space:nowrap;">Or Find Your Vibe</div>
+      <div style="position:absolute;left:calc(50% - 179.5px);top:31px;transform:translateY(-50%);white-space:nowrap;">
+        <span style="font-family:'Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:2px;color:white;">So...what we </span><span style="font-family:'Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:2px;background:linear-gradient(90deg,rgb(174,0,255) 0%,rgb(0,255,106) 29.808%,rgb(245,90,24) 66.827%,rgb(255,0,153) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Vibing &gt;:)...</span>
+      </div>
+      <div style="position:absolute;left:calc(50% + 0.5px);top:calc(50% + 4px);transform:translate(-50%,-50%);background:white;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:32px;width:364px;overflow:hidden;">
+        <svg style="flex-shrink:0;width:28px;height:28px;" fill="none" viewBox="0 0 28 28">
+          <g clip-path="url(#c1)"><path d="M27.7537 26.4569L23.1168 21.8199C25.3575 19.2431 26.5101 15.897 26.3318 12.4869C26.1535 9.07679 24.6581 5.86914 22.1609 3.54008C19.6637 1.21103 16.3597 -0.0574641 12.9455 0.00200006C9.53122 0.0614642 6.27344 1.44424 3.85884 3.85884C1.44424 6.27344 0.0614642 9.53122 0.00200006 12.9455C-0.0574641 16.3597 1.21103 19.6637 3.54008 22.1609C5.86914 24.6581 9.07679 26.1535 12.4869 26.3318C15.897 26.5101 19.2431 25.3575 21.8199 23.1168L26.4569 27.7537C26.6308 27.9158 26.8609 28.0041 27.0986 27.9999C27.3363 27.9957 27.5631 27.8994 27.7312 27.7312C27.8994 27.5631 27.9957 27.3363 27.9999 27.0986C28.0041 26.8609 27.9158 26.6308 27.7537 26.4569ZM1.88096 13.1978C1.88096 10.9595 2.54468 8.77152 3.78819 6.91048C5.03169 5.04945 6.79913 3.59894 8.86701 2.7424C10.9349 1.88586 13.2103 1.66175 15.4056 2.09841C17.6008 2.53507 19.6173 3.61289 21.1999 5.19558C22.7826 6.77826 23.8604 8.79472 24.2971 10.99C24.7338 13.1852 24.5097 15.4606 23.6531 17.5285C22.7966 19.5964 21.3461 21.3638 19.485 22.6073C17.624 23.8508 15.436 24.5146 13.1978 24.5146C10.1975 24.5109 7.32112 23.3174 5.1996 21.1959C3.07808 19.0744 1.8846 16.198 1.88096 13.1978Z" fill="url(#p1)"/></g>
+          <defs><linearGradient id="p1" gradientUnits="userSpaceOnUse" x1="2.59463" x2="31.9571" y1="2.59463" y2="31.9571"><stop stop-color="#BDBDBD"/><stop offset="1" stop-color="#A1A1A1"/></linearGradient><clipPath id="c1"><rect fill="white" height="28" width="28"/></clipPath></defs>
+        </svg>
+        <input type="text" placeholder="describe your craving ..." onkeydown="if(event.key==='Enter') navigate('page2')" style="font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;text-transform:capitalize;color:black;border:none;outline:none;background:transparent;width:302px;flex-shrink:0;">
+      </div>
+    </div>
+
+    <!-- Tags -->
+    <div style="position:absolute;display:flex;flex-direction:column;height:260px;align-items:center;justify-content:center;left:0;overflow:hidden;padding:14px 0;top:460px;width:393px;">
+      <div id="tags-container" style="height:233px;overflow:hidden;position:relative;flex-shrink:0;width:100%;"></div>
+    </div>
+
+    <!-- Foot: LET'S VIBE → Page 2 -->
+    <div style="position:absolute;display:flex;flex-direction:column;height:132px;align-items:center;left:0;overflow:hidden;padding:30px 16px 42px;top:720px;width:393px;opacity:0;pointer-events:none;transition:opacity 0.4s ease 0.1s;" id="lets-vibe-foot">
+      <div style="background:white;height:48px;overflow:hidden;position:relative;border-radius:32px;flex-shrink:0;width:100%;">
+        <div onclick="populatePage2();navigate('page2');" id="lets-vibe-btn" style="position:absolute;background:white;height:48px;left:0;overflow:hidden;border-radius:32px;top:0;width:361px;cursor:pointer;display:flex;align-items:center;justify-content:center;" onmouseenter="this.style.background='#f5f5f5'" onmouseleave="this.style.background='white'">
+          <span style="font-family:'Inter',sans-serif;font-weight:700;font-size:14px;letter-spacing:8.4px;text-transform:capitalize;color:black;">LET'S VIBE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN 2: Page 2 -->
+  <!-- ============================================================ -->
+  <div class="screen" id="screen-page2" style="background:#d0cfcf;">
+
+    <!-- Header -->
+    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:48px;width:393px;">
+      <div onclick="navigate('starter')" style="position:absolute;left:calc(50% - 169.5px);top:50%;transform:translate(-50%,-50%);width:30px;height:30px;cursor:pointer;">
+        <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30">
+          <rect fill="white" height="30" rx="15" width="30"/>
+          <path d="M17.8055 8.85352C17.9407 8.8559 18.0702 8.91024 18.1658 9.00586C18.2614 9.10147 18.3158 9.23105 18.3182 9.36621C18.3204 9.50115 18.2705 9.63167 18.1785 9.73047L12.9197 14.9893L18.1727 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.3231 20.4769 18.3384 20.5463 18.3397 20.6162C18.3408 20.6861 18.3277 20.7555 18.3016 20.8203C18.2753 20.8853 18.2359 20.9446 18.1863 20.9941C18.1369 21.0435 18.0783 21.0832 18.0135 21.1094C17.9485 21.1356 17.8785 21.1477 17.8084 21.1465C17.7384 21.1452 17.6693 21.1301 17.6053 21.1016C17.5424 21.0735 17.4856 21.0334 17.4383 20.9834L11.8133 15.3584C11.7156 15.2605 11.6609 15.1276 11.6609 14.9893C11.661 14.8511 11.7157 14.7189 11.8133 14.6211L17.4383 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.5401 8.90119 17.6705 8.8512 17.8055 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/>
+        </svg>
+      </div>
+      <!-- NOMITABL logo centered -->
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;">
+        <span class="fa" style="font-weight:700;font-size:18px;letter-spacing:10px;color:black;">NOMITABL</span>
+      </div>
+      <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);">
+        <p id="p2-counter" class="fi" style="font-weight:400;font-style:italic;font-size:12px;color:black;letter-spacing:2.4px;line-height:normal;">1/0</p>
+      </div>
+    </div>
+
+    <!-- SelectedTags — dynamic -->
+    <div id="p2-tags" style="position:absolute;left:0;top:106px;width:393px;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;justify-content:center;padding:0 16px;box-sizing:border-box;"></div>
+
+    <!-- Vibe add modal -->
+
+
+    <!-- Swipeable card strip -->
+    <div id="p2-strip-wrap" style="position:absolute;top:148px;left:0;width:393px;height:704px;overflow:hidden;">
+      <div id="p2-strip" style="display:flex;height:100%;transition:transform 0.35s cubic-bezier(.4,0,.2,1);will-change:transform;"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN 3: Page 3 State 1 -->
+  <!-- ============================================================ -->
+  <div class="screen" id="screen-page3s1" style="background:#d0cfcf;">
+
+  <!-- p3-hero: slides up on details reveal -->
+  <div class="p3-hero">
+
+    <!-- Green card (z-index 1, behind) -->
+    <div style="position:absolute;left:50%;top:calc(50% + 340px);transform:translate(-50%,-50%);height:172px;width:393px;overflow:hidden;z-index:1;">
+      <div style="position:absolute;left:12px;top:-1px;width:370px;height:109px;border-radius:0 0 24px 24px;overflow:hidden;"><svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;"><defs><linearGradient id="gg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#beffb5"/><stop offset="100%" stop-color="#205820"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#gg1)"/><rect width="100%" height="100%" fill="url(#gg1)" filter="url(#greenGrain)" opacity="0.9"/></svg></div>
+      <div onclick="openResoModal()" style="position:absolute;left:267px;width:28px;height:28px;top:53px;cursor:pointer;z-index:5;">
+        <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 28 28"><rect fill="#1E1E1E" height="28" rx="14" width="28"/><path d="M18.2785 19.8849L9.85806 11.4644V17.8656C9.85806 17.9793 9.81286 18.0885 9.7324 18.1689C9.65194 18.2494 9.54282 18.2946 9.42903 18.2946C9.31524 18.2946 9.20612 18.2494 9.12566 18.1689C9.0452 18.0885 9 17.9793 9 17.8656V10.429C9 10.3152 9.0452 10.2061 9.12566 10.1257C9.20612 10.0452 9.31524 10 9.42903 10H16.8656C16.9793 10 17.0885 10.0452 17.1689 10.1257C17.2494 10.2061 17.2946 10.3152 17.2946 10.429C17.2946 10.5428 17.2494 10.6519 17.1689 10.7324C17.0885 10.8129 16.9793 10.8581 16.8656 10.8581H10.4644L18.8849 19.2785C18.9606 19.3598 19.0019 19.4674 18.9999 19.5785C18.998 19.6897 18.9529 19.7957 18.8743 19.8743C18.7957 19.9529 18.6897 19.998 18.5785 19.9999C18.4674 20.0019 18.3598 19.9606 18.2785 19.8849Z" fill="white"/></svg>
+      </div>
+      <div style="position:absolute;display:flex;height:40px;align-items:center;left:12px;overflow:hidden;padding-left:32px;padding-right:23px;padding-top:10px;padding-bottom:10px;top:68px;">
+        <p class="fa" style="font-weight:400;font-size:12px;color:white;letter-spacing:1.2px;white-space:nowrap;line-height:14px;">AUSTIN C. WANG</p>
+      </div>
+      <div style="position:absolute;left:296px;top:33px;width:86px;height:75px;overflow:hidden;">
+        <div style="position:absolute;left:calc(50% - 15.5px);top:18px;transform:translate(-50%,-50%);height:12px;width:51px;display:flex;justify-content:center;align-items:center;"><p class="fi" style="font-weight:200;font-size:16px;color:white;letter-spacing:1.6px;text-transform:uppercase;text-align:center;line-height:12px;">make</p></div>
+        <div style="position:absolute;left:calc(50% - 19.5px);top:34px;transform:translate(-50%,-50%);height:12px;width:39px;display:flex;justify-content:center;align-items:center;"><p class="fi" style="font-weight:200;font-size:16px;color:white;letter-spacing:1.6px;text-transform:uppercase;text-align:center;line-height:12px;">a</p></div>
+        <div style="position:absolute;left:calc(50% - 0.5px);top:49px;transform:translate(-50%,-50%);height:12px;width:51px;display:flex;justify-content:center;align-items:center;"><p class="fi" style="font-weight:200;font-size:16px;color:white;letter-spacing:1.6px;text-transform:uppercase;text-align:center;line-height:12px;">reso</p></div>
+      </div>
+      <!-- DETAILS chevrons → Page 3 State 2 -->
+      <div onclick="revealDetails()" style="position:absolute;height:64px;left:0;overflow:hidden;top:108px;width:393px;cursor:pointer;">
+        <div style="position:absolute;height:36px;left:0;top:0;width:393px;">
+          <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 393 36">
+            <path d="M189.897 11.6395C189.984 11.5493 190.087 11.4777 190.201 11.4288C190.315 11.38 190.437 11.3549 190.561 11.3549C190.684 11.3549 190.806 11.38 190.92 11.4288C191.034 11.4777 191.138 11.5493 191.225 11.6395L196.81 17.4048L202.397 11.6395C202.573 11.4577 202.812 11.3556 203.061 11.3556C203.31 11.3556 203.549 11.4577 203.725 11.6395C203.901 11.8213 204 12.0679 204 12.325C204 12.5821 203.901 12.8287 203.725 13.0105L197.475 19.4621C197.388 19.5523 197.284 19.6239 197.17 19.6727C197.056 19.7216 196.934 19.7467 196.811 19.7467C196.687 19.7467 196.565 19.7216 196.451 19.6727C196.337 19.6239 196.234 19.5523 196.147 19.4621L189.897 13.0105C189.809 12.9205 189.74 12.8137 189.693 12.6961C189.645 12.5785 189.621 12.4523 189.621 12.325C189.621 12.1976 189.645 12.0715 189.693 11.9539C189.74 11.8362 189.809 11.7294 189.897 11.6395Z" fill="#A6A6A6"/>
+            <path d="M189.897 20.2663C189.984 20.176 190.087 20.1045 190.201 20.0556C190.315 20.0068 190.437 19.9816 190.561 19.9816C190.684 19.9816 190.806 20.0068 190.92 20.0556C191.034 20.1045 191.138 20.176 191.225 20.2663L196.81 26.0316L202.397 20.2663C202.573 20.0845 202.812 19.9823 203.061 19.9823C203.31 19.9823 203.549 20.0845 203.725 20.2663C203.901 20.4481 204 20.6946 204 20.9517C204 21.2088 203.901 21.4554 203.725 21.6372L197.475 28.0888C197.388 28.1791 197.284 28.2506 197.17 28.2995C197.056 28.3483 196.934 28.3735 196.811 28.3735C196.687 28.3735 196.565 28.3483 196.451 28.2995C196.337 28.2506 196.234 28.1791 196.147 28.0888L189.897 21.6372C189.809 21.5473 189.74 21.4405 189.693 21.3229C189.645 21.2052 189.621 21.0791 189.621 20.9517C189.621 20.8244 189.645 20.6983 189.693 20.5806C189.74 20.463 189.809 20.3562 189.897 20.2663Z" fill="white"/>
+          </svg>
+        </div>
+        <div style="position:absolute;left:196.5px;top:44px;transform:translate(-50%,-50%);text-align:center;width:393px;">
+          <p class="fi" style="font-weight:300;font-size:12px;color:white;letter-spacing:4.8px;text-transform:uppercase;line-height:10px;">details</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero image (z-index 2, in front) -->
+    <div style="position:absolute;height:700px;left:0;top:0;width:393px;z-index:2;">
+      <!-- Swipeable photo strip -->
+      <div style="position:absolute;left:0;height:700px;border-radius:0 0 24px 24px;top:0;width:393px;overflow:hidden;" id="p3-photo-wrap">
+        <div id="p3-photo-strip" style="display:flex;height:100%;transition:transform 0.3s ease;will-change:transform;touch-action:pan-y;"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,0.85) 100%);pointer-events:none;"></div>
+        <!-- Arrow nav buttons -->
+        <div id="p3-arr-left" onclick="p3PhotoNav(-1)" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:5;cursor:pointer;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;transition:opacity 0.2s;">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M6.5 1.5L3 5l3.5 3.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div id="p3-arr-right" onclick="p3PhotoNav(1)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:5;cursor:pointer;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;transition:opacity 0.2s;">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3.5 1.5L7 5l-3.5 3.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <!-- Scroll indicator dots — 20px above pricing (pricing top:560px → dots at 536px) -->
+      <div id="p3-photo-dots" style="position:absolute;left:50%;transform:translateX(-50%);top:536px;display:flex;gap:5px;align-items:center;z-index:4;pointer-events:none;"></div>
+      <div id="p3-vibes-wrap" style="position:absolute;display:flex;flex-direction:column;gap:5px;height:90px;left:0;top:69px;width:393px;overflow:hidden;">
+        <p id="p3-vibe-1" class="fi" style="font-weight:200;font-size:11px;color:white;letter-spacing:2.2px;text-align:center;width:100%;line-height:normal;">feel fancy</p>
+        <p id="p3-vibe-2" class="fi" style="font-weight:200;font-size:11px;color:white;letter-spacing:2.2px;text-align:center;width:100%;line-height:normal;">cozy stuff</p>
+        <p id="p3-vibe-3" class="fi" style="font-weight:200;font-size:11px;color:white;letter-spacing:2.2px;text-align:center;width:100%;line-height:normal;">vegan</p>
+        <div style="height:36px;flex-shrink:0;width:100%;display:flex;align-items:center;justify-content:center;">
+          <div id="p3-add-vibe" onclick="p3OpenAddVibe()" style="display:flex;gap:10px;align-items:center;padding:14px 10px 6px;cursor:pointer;">
+            <svg style="width:10px;height:10px;" fill="none" viewBox="0 0 10 10"><path d="M10 5C10 5.15913 9.93679 5.31174 9.82426 5.42426C9.71174 5.53679 9.55913 5.6 9.4 5.6H5.6V9.4C5.6 9.55913 5.53679 9.71174 5.42426 9.82426C5.31174 9.93679 5.15913 10 5 10C4.84087 10 4.68826 9.93679 4.57574 9.82426C4.46321 9.71174 4.4 9.55913 4.4 9.4V5.6H0.6C0.44087 5.6 0.288258 5.53679 0.175736 5.42426C0.0632141 5.31174 0 5.15913 0 5C0 4.84087 0.0632141 4.68826 0.175736 4.57574C0.288258 4.46321 0.44087 4.4 0.6 4.4H4.4V0.6C4.4 0.44087 4.46321 0.288258 4.57574 0.175736C4.68826 0.0632141 4.84087 0 5 0C5.15913 0 5.31174 0.0632141 5.42426 0.175736C5.53679 0.288258 5.6 0.44087 5.6 0.6V4.4H9.4C9.55913 4.4 9.71174 4.46321 9.82426 4.57574C9.93679 4.68826 10 4.84087 10 5Z" fill="white"/></svg>
+            <p class="fi" style="font-weight:400;font-size:11px;color:white;letter-spacing:2.2px;line-height:normal;">vibe</p>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;left:0;padding-top:3px;padding-left:134px;padding-right:134px;top:186px;width:393px;">
+        <!-- Score badge — exact prototype circle ring -->
+        <div style="position:relative;width:58px;height:58px;flex-shrink:0;">
+          <svg viewBox="0 0 90 90" width="58" height="58" style="position:absolute;inset:0;">
+            <!-- Dark badge fill -->
+            <rect x="5" y="5" width="80" height="80" rx="22" ry="22" fill="rgba(0,0,0,0.25)"/>
+            <!-- Explicit path starting at top-center, going clockwise — no rotation needed -->
+            <path class="p3-score-ring-bg"
+              d="M 45,5 L 55,5 Q 85,5 85,35 L 85,55 Q 85,85 55,85 L 35,85 Q 5,85 5,55 L 5,35 Q 5,5 35,5 L 45,5"
+              stroke-dasharray="268.50" stroke-dashoffset="0"/>
+            <path class="p3-score-ring-fill" id="p3-ring-fill"
+              d="M 45,5 L 55,5 Q 85,5 85,35 L 85,55 Q 85,85 55,85 L 35,85 Q 5,85 5,55 L 5,35 Q 5,5 35,5 L 45,5"
+              stroke-dasharray="268.50" stroke-dashoffset="268.50"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+            <p id="p3-score" class="fa" style="font-weight:600;font-size:28px;color:white;line-height:normal;">96</p>
+          </div>
+        </div>
+        <!-- Thumbs up / down -->
+        <div style="display:flex;gap:14px;align-items:center;">
+          <div id="p3-thumb-up" onclick="p3Vote('up')" style="display:flex;align-items:center;gap:5px;cursor:pointer;opacity:0.7;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+            <p id="p3-vote-up-count" class="fi" style="font-size:10px;color:white;letter-spacing:0.5px;line-height:normal;">142</p>
+          </div>
+          <div id="p3-thumb-down" onclick="p3Vote('down')" style="display:flex;align-items:center;gap:5px;cursor:pointer;opacity:0.7;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 003 3l4-9V2H5.72a2 2 0 00-2 1.7l-1.38 9a2 2 0 002 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0122 4v7a2.31 2.31 0 01-2.33 2H17"/></svg>
+            <p id="p3-vote-down-count" class="fi" style="font-size:10px;color:white;letter-spacing:0.5px;line-height:normal;">18</p>
+          </div>
+        </div>
+        <!-- Cuisine stacked -->
+        <div id="p3-cuisine-wrap" style="opacity:0.8;text-align:center;width:366px;margin-top:4px;">
+          <p id="p3-cuisine" class="fi" style="font-weight:600;font-family:'Inter',sans-serif;font-size:14px;color:white;letter-spacing:5.6px;line-height:1.4;">Korean</p>
+        </div>
+      </div>
+      <div style="position:absolute;display:flex;flex-wrap:wrap;align-content:flex-start;height:140px;left:0;padding-left:16px;padding-right:16px;top:560px;width:393px;overflow:hidden;">
+        <p id="p3-price" class="fa" style="font-weight:500;font-size:18px;color:white;letter-spacing:1.44px;width:57px;line-height:normal;">$$</p>
+        <div style="display:flex;flex-direction:column;justify-content:flex-end;height:28px;flex-shrink:0;width:304px;"><p id="p3-price-label" class="fi" style="font-weight:300;font-size:12px;color:rgba(255,255,255,0.8);letter-spacing:7.2px;line-height:normal;">/moderate</p></div>
+        <div style="display:flex;flex-direction:column;justify-content:center;height:60px;flex-shrink:0;width:361px;"><p id="p3-name" class="fa" style="font-weight:600;font-size:48px;color:#fefefe;letter-spacing:4.8px;line-height:normal;">COMBINE</p></div>
+        <div style="display:flex;flex-direction:column;justify-content:flex-end;flex-shrink:0;"><p id="p3-address" class="fi" style="font-weight:300;font-size:10px;color:white;letter-spacing:0.8px;white-space:nowrap;line-height:normal;">555-1002 Seymour St.</p></div>
+      </div>
+    </div>
+
+    <!-- Header (z-index 3) -->
+    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:48px;width:393px;z-index:3;">
+      <div style="position:absolute;height:67px;left:0;overflow:hidden;top:7px;width:393px;">
+        <div onclick="backToPage2()" style="position:absolute;left:12px;top:calc(50% - 17.5px);transform:translateY(-50%);width:30px;height:30px;cursor:pointer;">
+          <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30"><rect fill="white" height="30" rx="15" width="30"/><path d="M17.8054 8.85352C17.9406 8.8559 18.0702 8.91024 18.1658 9.00586C18.2613 9.10147 18.3157 9.23105 18.3181 9.36621C18.3204 9.50115 18.2704 9.63167 18.1785 9.73047L12.9197 14.9893L18.1726 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.323 20.4769 18.3384 20.5463 18.3396 20.6162C18.3408 20.6861 18.3277 20.7555 18.3015 20.8203C18.2753 20.8853 18.2358 20.9446 18.1863 20.9941C18.1368 21.0435 18.0782 21.0832 18.0134 21.1094C17.9485 21.1356 17.8784 21.1477 17.8083 21.1465C17.7383 21.1452 17.6692 21.1301 17.6052 21.1016C17.5423 21.0735 17.4855 21.0334 17.4382 20.9834L11.8132 15.3584C11.7155 15.2605 11.6609 15.1276 11.6609 14.9893C11.6609 14.8511 11.7156 14.7189 11.8132 14.6211L17.4382 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.54 8.90119 17.6704 8.8512 17.8054 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/></svg>
+        </div>
+        <div style="position:absolute;left:353px;top:calc(50% - 17.5px);transform:translateY(-50%);background:white;display:flex;align-items:center;justify-content:center;padding:5px;border-radius:18px;width:30px;height:30px;overflow:hidden;">
+          <svg style="width:14px;height:14px;" fill="none" viewBox="0 0 14 14"><path d="M11.375 1.3125H3.9375C3.47337 1.3125 3.02825 1.49687 2.70006 1.82506C2.37187 2.15325 2.1875 2.59837 2.1875 3.0625V12.25C2.1875 12.366 2.23359 12.4773 2.31564 12.5594C2.39769 12.6414 2.50897 12.6875 2.625 12.6875H10.5C10.616 12.6875 10.7273 12.6414 10.8094 12.5594C10.8914 12.4773 10.9375 12.366 10.9375 12.25C10.9375 12.134 10.8914 12.0227 10.8094 11.9406C10.7273 11.8586 10.616 11.8125 10.5 11.8125H3.0625C3.0625 11.5804 3.15469 11.3579 3.31878 11.1938C3.48288 11.0297 3.70544 10.9375 3.9375 10.9375H11.375C11.491 10.9375 11.6023 10.8914 11.6844 10.8094C11.7664 10.7273 11.8125 10.616 11.8125 10.5V1.75C11.8125 1.63397 11.7664 1.52269 11.6844 1.44064C11.6023 1.35859 11.491 1.3125 11.375 1.3125ZM6.5625 2.1875H9.1875V6.125L8.13695 5.3375C8.06122 5.2807 7.96912 5.25 7.87445 5.25C7.77979 5.25 7.68768 5.2807 7.61195 5.3375L6.5625 6.125V2.1875ZM10.9375 10.0625H3.9375C3.63024 10.0621 3.32834 10.143 3.0625 10.2971V3.0625C3.0625 2.83044 3.15469 2.60788 3.31878 2.44378C3.48288 2.27969 3.70544 2.1875 3.9375 2.1875H5.6875V7C5.6875 7.08125 5.71013 7.16089 5.75284 7.23001C5.79556 7.29912 5.85667 7.35498 5.92934 7.39131C6.00202 7.42765 6.08337 7.44303 6.16429 7.43573C6.24521 7.42844 6.3225 7.39875 6.3875 7.35L7.875 6.23438L9.36305 7.35C9.43863 7.40668 9.53053 7.43738 9.625 7.4375C9.74103 7.4375 9.85231 7.39141 9.93436 7.30936C10.0164 7.22731 10.0625 7.11603 10.0625 7V2.1875H10.9375V10.0625Z" fill="black"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- p3-details-panel: slides up from bottom -->
+  <div class="p3-details-panel" id="p3DetailsPanel">
+
+    <!-- Card: green top -->
+    <div style="position:absolute;left:50%;top:calc(50% - 312px);transform:translate(-50%,-50%);height:228px;overflow:hidden;width:393px;">
+      <div style="position:absolute;left:12px;top:0;width:370px;height:164px;border-radius:0 0 24px 24px;overflow:hidden;"><svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;"><defs><linearGradient id="gg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#beffb5"/><stop offset="100%" stop-color="#205820"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#gg2)"/><rect width="100%" height="100%" fill="url(#gg2)" filter="url(#greenGrain)" opacity="0.9"/></svg></div>
+      <div onclick="openResoModal()" style="position:absolute;left:267px;width:28px;height:28px;top:109px;cursor:pointer;z-index:5;">
+        <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 28 28"><rect fill="#1E1E1E" height="28" rx="14" width="28"/><path d="M18.2785 19.8849L9.85806 11.4644V17.8656C9.85806 17.9793 9.81286 18.0885 9.7324 18.1689C9.65194 18.2494 9.54282 18.2946 9.42903 18.2946C9.31524 18.2946 9.20612 18.2494 9.12566 18.1689C9.0452 18.0885 9 17.9793 9 17.8656V10.429C9 10.3152 9.0452 10.2061 9.12566 10.1257C9.20612 10.0452 9.31524 10 9.42903 10H16.8656C16.9793 10 17.0885 10.0452 17.1689 10.1257C17.2494 10.2061 17.2946 10.3152 17.2946 10.429C17.2946 10.5428 17.2494 10.6519 17.1689 10.7324C17.0885 10.8129 16.9793 10.8581 16.8656 10.8581H10.4644L18.8849 19.2785C18.9606 19.3598 19.0019 19.4674 18.9999 19.5785C18.998 19.6897 18.9529 19.7957 18.8743 19.8743C18.7957 19.9529 18.6897 19.998 18.5785 19.9999C18.4674 20.0019 18.3598 19.9606 18.2785 19.8849Z" fill="white"/></svg>
+      </div>
+      <div style="position:absolute;display:flex;height:40px;align-items:center;left:12px;overflow:hidden;padding-left:32px;padding-right:23px;padding-top:10px;padding-bottom:10px;top:124px;">
+        <p class="fa" style="font-weight:400;font-size:12px;color:white;letter-spacing:1.2px;white-space:nowrap;line-height:14px;">AUSTIN C. WANG</p>
+      </div>
+      <div style="position:absolute;left:296px;top:89px;width:86px;height:75px;overflow:hidden;">
+        <div style="position:absolute;left:calc(50% - 15.5px);top:18px;transform:translate(-50%,-50%);height:12px;width:51px;display:flex;justify-content:center;align-items:center;"><p class="fi" style="font-weight:200;font-size:16px;color:white;letter-spacing:1.6px;text-transform:uppercase;text-align:center;line-height:12px;">make</p></div>
+        <div style="position:absolute;left:calc(50% - 19.5px);top:34px;transform:translate(-50%,-50%);height:12px;width:39px;display:flex;justify-content:center;align-items:center;"><p class="fi" style="font-weight:200;font-size:16px;color:white;letter-spacing:1.6px;text-transform:uppercase;text-align:center;line-height:12px;">a</p></div>
+        <div style="position:absolute;left:calc(50% - 0.5px);top:49px;transform:translate(-50%,-50%);height:12px;width:51px;display:flex;justify-content:center;align-items:center;"><p class="fi" style="font-weight:200;font-size:16px;color:white;letter-spacing:1.6px;text-transform:uppercase;text-align:center;line-height:12px;">reso</p></div>
+      </div>
+      <!-- BACK TO PHOTO → hideDetails -->
+      <div onclick="hideDetails()" style="position:absolute;height:64px;left:0;overflow:hidden;top:164px;width:393px;cursor:pointer;">
+        <div style="position:absolute;height:36px;left:0;top:0;width:393px;">
+          <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 393 36">
+            <path d="M203.724 28.0888C203.637 28.1791 203.534 28.2506 203.42 28.2995C203.306 28.3483 203.184 28.3735 203.06 28.3735C202.937 28.3735 202.815 28.3483 202.701 28.2995C202.587 28.2506 202.483 28.1791 202.396 28.0888L196.811 22.3235L191.224 28.0888C191.048 28.2706 190.809 28.3728 190.56 28.3728C190.311 28.3728 190.072 28.2706 189.896 28.0888C189.72 27.907 189.621 27.6605 189.621 27.4034C189.621 27.1462 189.72 26.8997 189.896 26.7179L196.146 20.2663C196.233 20.176 196.337 20.1045 196.451 20.0556C196.565 20.0068 196.687 19.9816 196.81 19.9816C196.934 19.9816 197.056 20.0068 197.17 20.0556C197.284 20.1045 197.387 20.176 197.474 20.2663L203.724 26.7179C203.812 26.8078 203.881 26.9146 203.928 27.0322C203.976 27.1499 204 27.276 204 27.4034C204 27.5307 203.976 27.6568 203.928 27.7745C203.881 27.8921 203.812 27.9989 203.724 28.0888Z" fill="#A6A6A6"/>
+            <path d="M203.724 19.4621C203.637 19.5523 203.534 19.6239 203.42 19.6727C203.306 19.7216 203.184 19.7467 203.06 19.7467C202.937 19.7467 202.815 19.7216 202.701 19.6727C202.587 19.6239 202.483 19.5523 202.396 19.4621L196.811 13.6967L191.224 19.4621C191.048 19.6439 190.809 19.746 190.56 19.746C190.311 19.746 190.072 19.6439 189.896 19.4621C189.72 19.2803 189.621 19.0337 189.621 18.7766C189.621 18.5195 189.72 18.2729 189.896 18.0911L196.146 11.6395C196.233 11.5493 196.337 11.4777 196.451 11.4288C196.565 11.38 196.687 11.3549 196.81 11.3549C196.934 11.3549 197.056 11.38 197.17 11.4288C197.284 11.4777 197.387 11.5493 197.474 11.6395L203.724 18.0911C203.812 18.181 203.881 18.2878 203.928 18.4055C203.976 18.5231 204 18.6492 204 18.7766C204 18.904 203.976 19.0301 203.928 19.1477C203.881 19.2653 203.812 19.3722 203.724 19.4621Z" fill="white"/>
+          </svg>
+        </div>
+        <div style="position:absolute;left:196.5px;top:44px;transform:translate(-50%,-50%);text-align:center;width:393px;">
+          <p class="fi" style="font-weight:300;font-size:12px;color:white;letter-spacing:4.8px;text-transform:uppercase;line-height:10px;">back to photo</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:48px;width:393px;">
+      <div style="position:absolute;height:67px;left:0;overflow:hidden;top:7px;width:393px;">
+        <div onclick="backToPage2()" style="position:absolute;left:12px;top:calc(50% - 17.5px);transform:translateY(-50%);width:30px;height:30px;cursor:pointer;">
+          <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30"><rect fill="white" height="30" rx="15" width="30"/><path d="M17.8054 8.85352C17.9406 8.8559 18.0702 8.91024 18.1658 9.00586C18.2613 9.10147 18.3157 9.23105 18.3181 9.36621C18.3204 9.50115 18.2704 9.63167 18.1785 9.73047L12.9197 14.9893L18.1726 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.323 20.4769 18.3384 20.5463 18.3396 20.6162C18.3408 20.6861 18.3277 20.7555 18.3015 20.8203C18.2753 20.8853 18.2358 20.9446 18.1863 20.9941C18.1368 21.0435 18.0782 21.0832 18.0134 21.1094C17.9485 21.1356 17.8784 21.1477 17.8083 21.1465C17.7383 21.1452 17.6692 21.1301 17.6052 21.1016C17.5423 21.0735 17.4855 21.0334 17.4382 20.9834L11.8132 15.3584C11.7155 15.2605 11.6609 15.1276 11.6609 14.9893C11.6609 14.8511 11.7156 14.7189 11.8132 14.6211L17.4382 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.54 8.90119 17.6704 8.8512 17.8054 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/></svg>
+        </div>
+        <div style="position:absolute;left:353px;top:calc(50% - 17.5px);transform:translateY(-50%);background:white;display:flex;align-items:center;justify-content:center;padding:5px;border-radius:18px;width:30px;height:30px;overflow:hidden;">
+          <svg style="width:14px;height:14px;" fill="none" viewBox="0 0 14 14"><path d="M11.375 1.3125H3.9375C3.47337 1.3125 3.02825 1.49687 2.70006 1.82506C2.37187 2.15325 2.1875 2.59837 2.1875 3.0625V12.25C2.1875 12.366 2.23359 12.4773 2.31564 12.5594C2.39769 12.6414 2.50897 12.6875 2.625 12.6875H10.5C10.616 12.6875 10.7273 12.6414 10.8094 12.5594C10.8914 12.4773 10.9375 12.366 10.9375 12.25C10.9375 12.134 10.8914 12.0227 10.8094 11.9406C10.7273 11.8586 10.616 11.8125 10.5 11.8125H3.0625C3.0625 11.5804 3.15469 11.3579 3.31878 11.1938C3.48288 11.0297 3.70544 10.9375 3.9375 10.9375H11.375C11.491 10.9375 11.6023 10.8914 11.6844 10.8094C11.7664 10.7273 11.8125 10.616 11.8125 10.5V1.75C11.8125 1.63397 11.7664 1.52269 11.6844 1.44064C11.6023 1.35859 11.491 1.3125 11.375 1.3125ZM6.5625 2.1875H9.1875V6.125L8.13695 5.3375C8.06122 5.2807 7.96912 5.25 7.87445 5.25C7.77979 5.25 7.68768 5.2807 7.61195 5.3375L6.5625 6.125V2.1875ZM10.9375 10.0625H3.9375C3.63024 10.0621 3.32834 10.143 3.0625 10.2971V3.0625C3.0625 2.83044 3.15469 2.60788 3.31878 2.44378C3.48288 2.27969 3.70544 2.1875 3.9375 2.1875H5.6875V7C5.6875 7.08125 5.71013 7.16089 5.75284 7.23001C5.79556 7.29912 5.85667 7.35498 5.92934 7.39131C6.00202 7.42765 6.08337 7.44303 6.16429 7.43573C6.24521 7.42844 6.3225 7.39875 6.3875 7.35L7.875 6.23438L9.36305 7.35C9.43863 7.40668 9.53053 7.43738 9.625 7.4375C9.74103 7.4375 9.85231 7.39141 9.93436 7.30936C10.0164 7.22731 10.0625 7.11603 10.0625 7V2.1875H10.9375V10.0625Z" fill="black"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- GoldenHours: happy hour card -->
+    <div style="position:absolute;display:flex;flex-direction:column;height:206px;align-items:center;justify-content:space-between;left:0;overflow:hidden;padding:12px 6px;top:228px;width:393px;">
+      <div style="background:white;height:172px;overflow:hidden;position:relative;border-radius:24px;flex-shrink:0;width:100%;">
+        <div style="position:absolute;left:-120px;width:240px;height:240px;top:-34px;"><svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 240 240"><circle cx="120" cy="120" fill="#B4B4B4" r="120"/></svg></div>
+        <p id="p3-hh-countdown" class="fa" style="position:absolute;font-weight:700;font-size:40px;color:black;letter-spacing:4px;white-space:nowrap;left:175px;top:45px;line-height:40px;">2h10m</p>
+        <p id="p3-hh-label" class="fi" style="position:absolute;font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;white-space:nowrap;left:175px;top:85px;line-height:14px;">TO HAPPY HOUR</p>
+        <p id="p3-hh-open" class="fi" style="position:absolute;font-weight:400;font-size:12px;color:black;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap;left:175px;top:16px;line-height:14px;">OPEN UNTIL 10 PM</p>
+        <p id="p3-hh-times" class="fi" style="position:absolute;font-weight:300;font-size:10px;color:black;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;left:175px;top:99px;line-height:14px;">3-5 PM · 9pm - close</p>
+        <div onclick="openReminderModal()" style="position:absolute;background:#1e1e1e;height:30px;left:171px;overflow:hidden;border-radius:80px;top:125px;width:149px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <p class="fi" style="font-weight:600;font-size:12px;color:white;letter-spacing:4.32px;text-transform:capitalize;line-height:12px;">Set reminder</p>
+        </div>
+        <div style="position:absolute;left:320px;width:30px;height:30px;top:125px;"><svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30"><rect fill="#1E1E1E" height="30" rx="15" width="30"/><path d="M19.2785 19.8849L10.8581 11.4644V17.8656C10.8581 17.9793 10.8129 18.0885 10.7324 18.1689C10.6519 18.2494 10.5428 18.2946 10.429 18.2946C10.3152 18.2946 10.2061 18.2494 10.1257 18.1689C10.0452 18.0885 10 17.9793 10 17.8656V10.429C10 10.3152 10.0452 10.2061 10.1257 10.1257C10.2061 10.0452 10.3152 10 10.429 10H17.8656C17.9793 10 18.0885 10.0452 18.1689 10.1257C18.2494 10.2061 18.2946 10.3152 18.2946 10.429C18.2946 10.5428 18.2494 10.6519 18.1689 10.7324C18.0885 10.8129 17.9793 10.8581 17.8656 10.8581H11.4644L19.8849 19.2785C19.9606 19.3598 20.0019 19.4674 19.9999 19.5785C19.998 19.6897 19.9529 19.7957 19.8743 19.8743C19.7957 19.9529 19.6897 19.998 19.5785 19.9999C19.4674 20.0019 19.3598 19.9606 19.2785 19.8849Z" fill="white"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Walk-in + Parking cards -->
+    <div style="position:absolute;display:flex;height:160px;align-items:center;justify-content:space-between;left:0;overflow:hidden;padding:0 6px;top:434px;width:393px;">
+      <!-- Walk-in -->
+      <div style="background:white;height:159px;overflow:hidden;position:relative;border-radius:24px;flex-shrink:0;width:186px;">
+        <div style="position:absolute;left:16px;top:50.5px;transform:translateY(-50%);width:136px;"><p id="p3-walkin-title" class="fi" style="font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;text-transform:capitalize;line-height:12px;">walk - in</p></div>
+        <div style="position:absolute;height:24px;left:16px;overflow:hidden;top:59.5px;width:136px;">
+          <div style="position:absolute;left:0;top:12px;transform:translateY(-50%);"><p id="p3-walkin-mins" class="fa" style="font-weight:600;font-size:32px;color:black;letter-spacing:3.2px;white-space:nowrap;line-height:12px;">14</p></div>
+          <div id="p3-walkin-unit" style="position:absolute;left:49px;top:0;display:flex;height:24px;align-items:flex-end;padding:10px 2px 0;"><p class="fi" style="font-weight:400;font-size:10px;color:black;letter-spacing:0.8px;text-transform:lowercase;width:20px;">min</p></div>
+        </div>
+        <div style="position:absolute;left:16px;top:92.5px;transform:translateY(-50%);width:139px;"><p id="p3-walkin-subtitle" class="fi" style="font-weight:300;font-size:9px;color:black;letter-spacing:0;text-transform:lowercase;line-height:12px;white-space:nowrap;">avg wait · community reported</p></div>
+        <div style="position:absolute;left:16px;top:125.5px;transform:translateY(-50%);width:139px;"><p id="p3-walkin-reports" class="fi" style="font-weight:300;font-style:italic;font-size:10px;color:black;letter-spacing:0.8px;text-transform:lowercase;line-height:14px;">52 reports</p></div>
+        <div style="position:absolute;left:14px;top:138.5px;transform:translateY(-50%);width:139px;"><p onclick="openWaitReportModal()" class="fi" style="font-weight:400;font-size:10px;color:black;letter-spacing:1px;text-transform:lowercase;text-decoration:underline;line-height:12px;cursor:pointer;">+ report wait time</p></div>
+        <div style="position:absolute;background:#1e1e1e;height:30px;left:12px;border-radius:80px;top:5px;width:162px;display:flex;align-items:center;position:absolute;">
+          <!-- Sliding white pill indicator -->
+          <div id="walkin-pill" style="position:absolute;background:white;height:26px;width:76px;border-radius:13px;top:50%;transform:translateY(-50%);left:2px;transition:left 0.25s cubic-bezier(.4,0,.2,1);"></div>
+          <!-- Labels sit on top, each exactly pill-width so text centers to pill -->
+          <div onclick="p3WalkinToggle('dinner')" style="position:absolute;left:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
+            <p id="walkin-label-dinner" class="fi" style="font-weight:600;font-size:12px;color:#020202;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">dinner</p>
+          </div>
+          <div onclick="p3WalkinToggle('lunch')" style="position:absolute;right:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
+            <p id="walkin-label-lunch" class="fi" style="font-weight:600;font-size:12px;color:white;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">lunch</p>
+          </div>
+        </div>
+      </div>
+      <!-- Parking -->
+      <div style="background:white;height:159px;overflow:hidden;position:relative;border-radius:24px;flex-shrink:0;width:186px;">
+        <div style="position:absolute;left:16px;top:50.5px;transform:translateY(-50%);width:136px;"><p id="p3-parking-title" class="fi" style="font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;text-transform:capitalize;line-height:12px;">street parking</p></div>
+        <div style="position:absolute;height:24px;left:16px;overflow:hidden;top:59.5px;width:136px;">
+          <div style="position:absolute;left:0;top:12px;transform:translateY(-50%);"><p id="p3-parking-mins" class="fa" style="font-weight:600;font-size:32px;color:black;letter-spacing:3.2px;white-space:nowrap;line-height:12px;">16</p></div>
+          <div id="p3-parking-unit" style="position:absolute;left:49px;top:0;display:flex;height:24px;align-items:flex-end;padding:10px 2px 0;"><p class="fi" style="font-weight:400;font-size:10px;color:black;letter-spacing:0.8px;text-transform:lowercase;width:20px;">min</p></div>
+        </div>
+        <div style="position:absolute;left:16px;top:92.5px;transform:translateY(-50%);width:139px;"><p id="p3-parking-subtitle" class="fi" style="font-weight:300;font-size:9px;color:black;letter-spacing:0;text-transform:lowercase;line-height:12px;white-space:nowrap;">avg to find · community reported</p></div>
+        <div style="position:absolute;left:16px;top:125.5px;transform:translateY(-50%);width:139px;"><p id="p3-parking-reports" class="fi" style="font-weight:300;font-style:italic;font-size:10px;color:black;letter-spacing:0.8px;text-transform:lowercase;line-height:14px;">52 reports</p></div>
+        <div style="position:absolute;left:14px;top:138.5px;transform:translateY(-50%);width:139px;"><p onclick="openParkingReportModal()" class="fi" style="font-weight:400;font-size:10px;color:black;letter-spacing:1px;text-transform:lowercase;text-decoration:underline;line-height:12px;cursor:pointer;">+ report parking</p></div>
+        <div style="position:absolute;background:#1e1e1e;height:30px;left:12px;border-radius:80px;top:5px;width:162px;display:flex;align-items:center;">
+          <div id="parking-pill" style="position:absolute;background:white;height:26px;width:76px;border-radius:13px;top:50%;transform:translateY(-50%);left:2px;transition:left 0.25s cubic-bezier(.4,0,.2,1);"></div>
+          <div onclick="p3ParkingToggle('dinner')" style="position:absolute;left:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
+            <p id="parking-label-dinner" class="fi" style="font-weight:600;font-size:12px;color:#020202;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">dinner</p>
+          </div>
+          <div onclick="p3ParkingToggle('lunch')" style="position:absolute;right:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
+            <p id="parking-label-lunch" class="fi" style="font-weight:600;font-size:12px;color:white;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">lunch</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transportations -->
+    <div style="position:absolute;display:flex;gap:18px;height:46px;align-items:center;left:0;overflow:hidden;top:674px;width:393px;">
+      <div style="display:flex;flex-wrap:wrap;gap:1px 6px;height:44px;align-items:center;justify-content:center;flex-shrink:0;width:106px;">
+        <div style="display:flex;flex-direction:column;justify-content:center;height:29px;flex-shrink:0;text-align:right;width:62px;"><p class="fm" style="font-weight:300;font-size:10px;color:#030303;letter-spacing:6px;line-height:normal;">/</p></div>
+        <div style="display:flex;flex-direction:column;justify-content:center;height:12px;flex-shrink:0;width:20px;"><p id="t3-walk" class="fa" style="font-weight:600;font-size:20px;color:black;letter-spacing:-1.2px;line-height:12px;">—</p></div>
+        <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;width:12px;height:12px;"><p class="fi" style="font-weight:400;font-size:8px;color:black;letter-spacing:-0.8px;text-align:center;line-height:12px;">min</p></div>
+        <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;"><p class="fi" style="font-weight:300;font-size:12px;color:#030303;letter-spacing:7.2px;text-align:center;white-space:nowrap;line-height:normal;">walk</p></div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:0px 6px;align-items:center;justify-content:center;flex-shrink:0;width:106px;">
+        <div style="display:flex;flex-direction:column;justify-content:center;height:29px;flex-shrink:0;text-align:right;width:62px;"><p class="fm" style="font-weight:300;font-size:10px;color:#030303;letter-spacing:6px;line-height:normal;">/</p></div>
+        <div style="display:flex;flex-direction:column;justify-content:center;height:12px;flex-shrink:0;width:20px;"><p id="t3-drive" class="fa" style="font-weight:600;font-size:20px;color:black;letter-spacing:-1.2px;line-height:12px;">—</p></div>
+        <div style="display:flex;flex-direction:column;justify-content:flex-end;flex-shrink:0;width:12px;height:12px;"><p class="fi" style="font-weight:400;font-size:8px;color:black;letter-spacing:-0.8px;text-align:center;line-height:12px;">min</p></div>
+        <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;"><p class="fi" style="font-weight:300;font-size:12px;color:#030303;letter-spacing:7.2px;text-align:center;white-space:nowrap;line-height:normal;">drive</p></div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:1px 6px;height:44px;align-items:center;justify-content:center;flex-shrink:0;width:106px;">
+        <div style="display:flex;flex-direction:column;justify-content:center;height:29px;flex-shrink:0;text-align:right;width:62px;"><p class="fm" style="font-weight:300;font-size:10px;color:#030303;letter-spacing:6px;line-height:normal;">/</p></div>
+        <div style="display:flex;flex-direction:column;justify-content:center;height:12px;flex-shrink:0;width:20px;"><p id="t3-transit" class="fa" style="font-weight:600;font-size:20px;color:black;letter-spacing:-1.2px;line-height:12px;">—</p></div>
+        <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;width:12px;height:12px;"><p class="fi" style="font-weight:400;font-size:8px;color:black;letter-spacing:-0.8px;text-align:center;line-height:12px;">min</p></div>
+        <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;"><p class="fi" style="font-weight:300;font-size:12px;color:#030303;letter-spacing:7.2px;text-align:center;white-space:nowrap;line-height:normal;">transit</p></div>
+      </div>
+    </div>
+
+    <!-- Community quote -->
+    <div style="position:absolute;left:50%;top:calc(50% + 208px);transform:translate(-50%,-50%);display:flex;height:80px;align-items:center;justify-content:space-between;overflow:hidden;padding:22px 10px;width:393px;">
+      <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;text-align:center;width:341px;overflow:hidden;">
+        <p id="p3-community-quote" class="fa" style="font-weight:400;font-style:italic;font-size:12px;color:black;letter-spacing:2.4px;text-align:center;line-height:14px;">'Unexpected lively after 8pm'</p>
+      </div>
+      <svg onclick="openQuoteModal()" style="flex-shrink:0;width:13px;height:13px;cursor:pointer;" fill="none" viewBox="0 0 13 13"><path d="M11.5 6.5C11.5 6.65913 11.4368 6.81174 11.3243 6.92426C11.2117 7.03679 11.0591 7.1 10.9 7.1H7.1V10.9C7.1 11.0591 7.03679 11.2117 6.92426 11.3243C6.81174 11.4368 6.65913 11.5 6.5 11.5C6.34087 11.5 6.18826 11.4368 6.07574 11.3243C5.96321 11.2117 5.9 11.0591 5.9 10.9V7.1H2.1C1.94087 7.1 1.78826 7.03679 1.67574 6.92426C1.56321 6.81174 1.5 6.65913 1.5 6.5C1.5 6.34087 1.56321 6.18826 1.67574 6.07574C1.78826 5.96321 1.94087 5.9 2.1 5.9H5.9V2.1C5.9 1.94087 5.96321 1.78826 6.07574 1.67574C6.18826 1.56321 6.34087 1.5 6.5 1.5C6.65913 1.5 6.81174 1.56321 6.92426 1.67574C7.03679 1.78826 7.1 1.94087 7.1 2.1V5.9H10.9C11.0591 5.9 11.2117 5.96321 11.3243 6.07574C11.4368 6.18826 11.5 6.34087 11.5 6.5Z" fill="black"/></svg>
+    </div>
+
+    <!-- GET DIRECTIONS foot -->
+    <div style="position:absolute;display:flex;flex-direction:column;height:132px;align-items:center;left:0;overflow:hidden;padding:30px 16px 42px;top:720px;width:393px;">
+      <div style="background:white;height:48px;overflow:hidden;position:relative;border-radius:32px;flex-shrink:0;width:100%;">
+        <div onclick="openDirectionsModal()" style="position:absolute;background:white;height:48px;left:0;overflow:hidden;border-radius:32px;top:0;width:361px;cursor:pointer;display:flex;align-items:center;justify-content:center;" onmouseenter="this.style.background='#f5f5f5'" onmouseleave="this.style.background='white'">
+          <p class="fi" style="font-weight:700;font-size:14px;letter-spacing:8.4px;text-transform:capitalize;color:black;line-height:normal;">gET DIRECTIONS</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <!-- Reservation modal -->
+  <div id="reso-modal" onclick="closeResoModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
+    <div id="reso-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 44px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Book a table</p>
+        <div onclick="closeResoModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
+      </div>
+      <!-- Community booking intel -->
+      <div id="reso-intel" style="background:rgba(0,0,0,0.06);border-radius:12px;padding:10px 14px;margin-bottom:16px;">
+        <p id="reso-intel-text" class="fi" style="font-size:11px;font-weight:300;color:black;letter-spacing:0.5px;line-height:1.5;"></p>
+        <p class="fi" style="font-size:9px;font-weight:300;color:#888;letter-spacing:0.5px;margin-top:3px;">community reported</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <!-- OpenTable -->
+        <div onclick="openResoOption('opentable')" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <!-- OpenTable logo mark: red circle O -->
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <circle cx="14" cy="14" r="14" fill="#DA3743"/>
+              <circle cx="14" cy="14" r="7" fill="none" stroke="white" stroke-width="2.5"/>
+              <circle cx="14" cy="7" r="2" fill="white"/>
+            </svg>
+            <div>
+              <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">OpenTable</p>
+              <p class="fi" style="font-size:10px;font-weight:300;color:#888;margin-top:1px;">App or website</p>
+            </div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <!-- Resy -->
+        <div onclick="openResoOption('resy')" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <!-- Resy logo mark: dark square R -->
+            <div style="width:28px;height:28px;background:#1a1a1a;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+              <p style="font-family:'Inter',sans-serif;font-weight:800;font-size:14px;color:white;line-height:1;">R</p>
+            </div>
+            <div>
+              <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Resy</p>
+              <p class="fi" style="font-size:10px;font-weight:300;color:#888;margin-top:1px;">App or website</p>
+            </div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <!-- Google -->
+        <div onclick="openResoOption('google')" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <!-- Google G logo -->
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <circle cx="14" cy="14" r="14" fill="#fff" stroke="#e0e0e0" stroke-width="1"/>
+              <path d="M21.6 14.2c0-.6-.1-1.2-.2-1.8H14v3.4h4.3c-.2 1-.8 1.8-1.6 2.4v2h2.6c1.5-1.4 2.3-3.5 2.3-6z" fill="#4285F4"/>
+              <path d="M14 22c2.2 0 4-.7 5.3-2l-2.6-2c-.7.5-1.6.8-2.7.8-2.1 0-3.8-1.4-4.4-3.3H7v2.1C8.3 20.3 11 22 14 22z" fill="#34A853"/>
+              <path d="M9.6 15.5c-.2-.5-.3-1-.3-1.5s.1-1 .3-1.5V10.4H7c-.6 1.1-.9 2.3-.9 3.6s.3 2.5.9 3.6l2.6-2.1z" fill="#FBBC05"/>
+              <path d="M14 9.2c1.2 0 2.2.4 3 1.2l2.3-2.3C17.9 6.8 16.1 6 14 6c-3 0-5.7 1.7-7 4.4l2.6 2.1C10.2 10.6 11.9 9.2 14 9.2z" fill="#EA4335"/>
+            </svg>
+            <div>
+              <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Google</p>
+              <p class="fi" style="font-size:10px;font-weight:300;color:#888;margin-top:1px;">Search reservations</p>
+            </div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reminder modal -->
+  <div id="reminder-modal" onclick="closeReminderModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
+    <div id="reminder-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 44px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Set a reminder</p>
+        <div onclick="closeReminderModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
+      </div>
+      <p id="reminder-context" class="fi" style="font-size:11px;font-weight:300;color:#555;letter-spacing:0.5px;margin-bottom:18px;line-height:1.5;"></p>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <!-- 30 min before -->
+        <div onclick="setReminder(30)" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">30 minutes before</p>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <!-- 1 hour before -->
+        <div onclick="setReminder(60)" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">1 hour before</p>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <!-- Remind me at specific time -->
+        <div style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;">
+          <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Remind me at</p>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input id="reminder-time-input" type="time" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:black;border:none;background:transparent;outline:none;cursor:pointer;"/>
+            <div onclick="setReminderAtTime()" style="background:#1e1e1e;border-radius:20px;padding:6px 14px;cursor:pointer;">
+              <p class="fi" style="font-size:11px;font-weight:600;color:white;letter-spacing:1px;">Set</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wait report modal -->
+  <div id="wait-report-modal" onclick="closeWaitReportModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
+    <div id="wait-report-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 44px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <p id="wait-report-title" class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Report wait time</p>
+        <div onclick="closeWaitReportModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
+      </div>
+      <p id="wait-report-subtitle" class="fi" style="font-size:11px;font-weight:300;color:#555;letter-spacing:0.5px;margin-bottom:18px;"></p>
+      <!-- Quick options — 2 column grid -->
+      <div id="wait-report-options" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;"></div>
+      <!-- Custom input -->
+      <div style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <p class="fi" style="font-size:13px;font-weight:400;color:#888;flex-shrink:0;">or type:</p>
+        <input id="wait-report-input" type="text" placeholder="e.g. 25 mins" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:black;border:none;outline:none;background:transparent;flex:1;"/>
+      </div>
+      <!-- Submit at bottom -->
+      <div onclick="submitWaitReport()" style="background:#1e1e1e;border-radius:32px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">SUBMIT</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Directions modal -->
+  <div id="directions-modal" onclick="closeDirectionsModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
+    <div id="directions-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 44px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+        <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Get there</p>
+        <div onclick="closeDirectionsModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <!-- Uber -->
+        <div onclick="openDirection('uber')" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:28px;height:28px;background:black;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="8" viewBox="0 0 52 18" fill="none"><text x="0" y="14" font-family="Arial Black,sans-serif" font-weight="900" font-size="17" fill="white">Uber</text></svg>
+            </div>
+            <p class="fi" style="font-size:13px;font-weight:600;color:black;">Uber</p>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- Lyft -->
+        <div onclick="openDirection('lyft')" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:28px;height:28px;background:#FF00BF;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M14.5 4C14.5 4 14 8.5 10 9.5V14.5C10 17 12 18.5 14.5 18.5C17 18.5 19 17 19 14.5H17C17 15.9 15.9 17 14.5 17C13.1 17 12 15.9 12 14.5V9.5C13.5 9 14.5 7.5 14.5 6V4Z" fill="white"/><circle cx="7.5" cy="13.5" r="2" fill="white"/></svg>
+            </div>
+            <p class="fi" style="font-size:13px;font-weight:600;color:black;">Lyft</p>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- Evo -->
+        <div onclick="openDirection('evo')" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:28px;height:28px;background:#00B140;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+              <svg width="22" height="9" viewBox="0 0 44 16" fill="none"><text x="0" y="13" font-family="Arial Black,sans-serif" font-weight="900" font-size="14" fill="white">evo</text></svg>
+            </div>
+            <div>
+              <p class="fi" style="font-size:13px;font-weight:600;color:black;">Evo</p>
+              <p class="fi" style="font-size:10px;font-weight:300;color:#888;margin-top:1px;">Car share · Vancouver</p>
+            </div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- Google Maps -->
+        <div onclick="openDirection('google')" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <circle cx="14" cy="14" r="14" fill="#fff" stroke="#e0e0e0" stroke-width="1"/>
+              <path d="M21.6 14.2c0-.6-.1-1.2-.2-1.8H14v3.4h4.3c-.2 1-.8 1.8-1.6 2.4v2h2.6c1.5-1.4 2.3-3.5 2.3-6z" fill="#4285F4"/>
+              <path d="M14 22c2.2 0 4-.7 5.3-2l-2.6-2c-.7.5-1.6.8-2.7.8-2.1 0-3.8-1.4-4.4-3.3H7v2.1C8.3 20.3 11 22 14 22z" fill="#34A853"/>
+              <path d="M9.6 15.5c-.2-.5-.3-1-.3-1.5s.1-1 .3-1.5V10.4H7c-.6 1.1-.9 2.3-.9 3.6s.3 2.5.9 3.6l2.6-2.1z" fill="#FBBC05"/>
+              <path d="M14 9.2c1.2 0 2.2.4 3 1.2l2.3-2.3C17.9 6.8 16.1 6 14 6c-3 0-5.7 1.7-7 4.4l2.6 2.1C10.2 10.6 11.9 9.2 14 9.2z" fill="#EA4335"/>
+            </svg>
+            <p class="fi" style="font-size:13px;font-weight:600;color:black;">Google Maps</p>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- Apple Maps -->
+        <div onclick="openDirection('apple')" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:28px;height:28px;border-radius:6px;overflow:hidden;">
+              <svg width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="amg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#34C759"/><stop offset="50%" stop-color="#30B0E0"/><stop offset="100%" stop-color="#007AFF"/></linearGradient></defs>
+                <rect width="28" height="28" fill="url(#amg)"/>
+                <!-- Road -->
+                <rect x="12" y="10" width="4" height="14" rx="1" fill="white" opacity="0.9"/>
+                <rect x="7" y="10" width="14" height="4" rx="1" fill="white" opacity="0.9"/>
+                <!-- Pin -->
+                <circle cx="14" cy="9" r="4" fill="white"/>
+                <circle cx="14" cy="9" r="2" fill="#007AFF"/>
+              </svg>
+            </div>
+            <p class="fi" style="font-size:13px;font-weight:600;color:black;">Apple Maps</p>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Quote modal -->
+  <div id="quote-modal" onclick="closeQuoteModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
+    <div id="quote-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 44px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Share a vibe</p>
+        <div onclick="closeQuoteModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
+      </div>
+      <p class="fi" style="font-size:11px;font-weight:300;color:#555;letter-spacing:0.5px;margin-bottom:16px;">What's your one-liner about this place?</p>
+      <div style="background:white;border-radius:16px;padding:16px 18px;margin-bottom:8px;">
+        <textarea id="quote-input" maxlength="120" placeholder="e.g. Best hidden patio in Gastown…" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:black;border:none;outline:none;background:transparent;width:100%;resize:none;height:72px;line-height:1.5;"></textarea>
+        <div style="display:flex;justify-content:flex-end;">
+          <p id="quote-char-count" class="fi" style="font-size:10px;font-weight:300;color:#aaa;">0 / 120</p>
+        </div>
+      </div>
+      <div onclick="submitQuote()" style="background:#1e1e1e;border-radius:32px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">SUBMIT</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vibe modal — phone root level, visible from any screen -->
+  <div id="vibe-modal" onclick="closeVibeModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
+    <div id="vibe-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Add a vibe</p>
+        <div onclick="closeVibeModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
+      </div>
+      <p class="fi" id="vibe-modal-hint" style="font-size:10px;color:#666;letter-spacing:1px;margin-bottom:14px;">Select up to <span id="vibe-slots-left">1</span> more</p>
+      <div id="vibe-modal-bubbles" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
+      <div id="vibe-modal-done" onclick="applyVibeModal()" style="margin-top:20px;background:black;border-radius:32px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">DONE</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+<script>
+// Restaurant data
+const ALL_TAGS = ["Girls night out","Feeling cozy","Date night","Solo & chill","single night","quick bite","spicy","something different","hangover cure","Fresh air & food"];
+const PHOTO_PALETTES = [
+  ["#2d1b69","#11998e"],["#c94b4b","#4b134f"],["#1a1a2e","#e94560"],
+  ["#134e5e","#71b280"],["#232526","#414345"],["#355c7d","#6c5b7b"],
+  ["#f7971e","#ffd200"],["#56ab2f","#a8e063"],["#1d976c","#93f9b9"],
+  ["#373b44","#4286f4"],["#c94b4b","#e86f00"],["#4568dc","#b06ab3"]
+];
+
+let restaurants = [
+  {id:"combine",name:"COMBINE",cuisine:"Korean Fusion",address:"555-1002 Seymour St.",distance:"0.2 KM",price:"$$",vibeScore:96,open:11,close:23,tags:["Girls night out","Feeling cozy","something different","single night"],walkin:35,walkinReports:140,dinnerReports:140,lunchReports:60,walkinDinner:45,walkinLunch:15,hhWeekday:[[15,17],[21,23]],hhWeekend:[[15,17],[21,23]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"street",parkingDinner:20,parkingLunch:8,parkingDinnerReports:108,parkingLunchReports:54,resoReports:0},
+  {id:"miku",name:"MIKU",cuisine:"Japanese",address:"200 Granville St.",distance:"0.5 KM",price:"$$$",vibeScore:94,open:11,close:22,tags:["Girls night out","single night","Fresh air & food"],walkin:25,walkinReports:110,dinnerReports:110,lunchReports:50,walkinDinner:40,walkinLunch:10,hhWeekday:[[15,17],[21,22]],hhWeekend:[[15,17],[21,22]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"parkade",parkingDinner:12,parkingLunch:5,parkingDinnerReports:85,parkingLunchReports:43,resoReports:0},
+  {id:"tacofino",name:"TACOFINO",cuisine:"Mexican",address:"15 W Cordova St.",distance:"0.8 KM",price:"$",vibeScore:91,open:11,close:22,tags:["quick bite","hangover cure","Feeling cozy","spicy"],walkin:12,walkinReports:80,dinnerReports:80,lunchReports:40,walkinDinner:20,walkinLunch:5,hhStart:null,hhEnd:null,hhDays:null,hhWeekday:null,hhWeekend:null,hhDays:null,resoNote:null,parkingType:"street",parkingDinner:15,parkingLunch:5,parkingDinnerReports:59,parkingLunchReports:29,resoReports:0},
+  {id:"botanist",name:"BOTANIST",cuisine:"West Coast",address:"1038 Canada Pl.",distance:"1.1 KM",price:"$$$$",vibeScore:98,open:7,close:23,tags:["Girls night out","Fresh air & food","single night"],walkin:30,walkinReports:160,dinnerReports:160,lunchReports:55,walkinDinner:50,walkinLunch:10,hhWeekday:[[15,17],[21,23]],hhWeekend:[[15,17],[21,23]],hhDays:"3–5 PM · 9 PM–close",resoNote:"book well in advance",parkingType:"parkade",parkingDinner:10,parkingLunch:4,parkingDinnerReports:108,parkingLunchReports:54,resoReports:18},
+  {id:"forage",name:"FORAGE",cuisine:"Canadian",address:"1300 Robson St.",distance:"1.4 KM",price:"$$",vibeScore:89,open:8,close:22,tags:["Feeling cozy","Fresh air & food","hangover cure","something different"],walkin:15,walkinReports:70,dinnerReports:70,lunchReports:35,walkinDinner:25,walkinLunch:8,hhWeekday:[[15,17],[21,22]],hhWeekend:[[15,17],[21,22]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"street",parkingDinner:18,parkingLunch:7,parkingDinnerReports:46,parkingLunchReports:23,resoReports:0},
+  {id:"pourhouse",name:"POURHOUSE",cuisine:"American",address:"162 Water St.",distance:"0.6 KM",price:"$$",vibeScore:87,open:16,close:24,tags:["Girls night out","single night","spicy","hangover cure"],walkin:20,walkinReports:65,dinnerReports:65,lunchReports:30,walkinDinner:30,walkinLunch:8,hhWeekday:[[15,17],[21,24]],hhWeekend:[[15,17],[21,24]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"street",parkingDinner:25,parkingLunch:8,parkingDinnerReports:46,parkingLunchReports:23,resoReports:0},
+  {id:"pidgin",name:"PIDGIN",cuisine:"Asian Fusion",address:"350 Carrall St.",distance:"0.9 KM",price:"$$$",vibeScore:93,open:17,close:24,tags:["Girls night out","something different","single night","spicy"],walkin:25,walkinReports:90,dinnerReports:90,lunchReports:45,walkinDinner:40,walkinLunch:10,hhWeekday:[[15,17],[21,24]],hhWeekend:[[15,17],[21,24]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"street",parkingDinner:20,parkingLunch:7,parkingDinnerReports:85,parkingLunchReports:43,resoReports:0},
+  {id:"still",name:"STILL",cuisine:"Contemporary",address:"1 Harbour Green Ct.",distance:"0.7 KM",price:"$$$",vibeScore:90,open:11,close:22,tags:["Fresh air & food","single night","Girls night out"],walkin:20,walkinReports:75,dinnerReports:75,lunchReports:38,walkinDinner:35,walkinLunch:8,hhWeekday:[[15,17],[21,22]],hhWeekend:[[15,17],[21,22]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"restaurant",parkingDinner:5,parkingLunch:3,parkingDinnerReports:59,parkingLunchReports:29,resoReports:0},
+  {id:"bao-bei",name:"BAO BEI",cuisine:"Chinese Brasserie",address:"163 Keefer St.",distance:"1.0 KM",price:"$$",vibeScore:92,open:17,close:24,tags:["something different","Feeling cozy","spicy","hangover cure"],walkin:25,walkinReports:85,dinnerReports:85,lunchReports:42,walkinDinner:40,walkinLunch:10,hhWeekday:[[15,17],[21,24]],hhWeekend:[[15,17],[21,24]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"street",parkingDinner:18,parkingLunch:6,parkingDinnerReports:59,parkingLunchReports:29,resoReports:0},
+  {id:"chambar",name:"CHAMBAR",cuisine:"Belgian",address:"568 Beatty St.",distance:"0.4 KM",price:"$$$",vibeScore:95,open:17,close:24,tags:["Girls night out","Feeling cozy","single night"],walkin:20,walkinReports:95,dinnerReports:95,lunchReports:48,walkinDinner:35,walkinLunch:8,hhWeekday:[[15,17],[21,24]],hhWeekend:[[15,17],[21,24]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"parkade",parkingDinner:12,parkingLunch:5,parkingDinnerReports:85,parkingLunchReports:43,resoReports:0},
+  {id:"the-birds-and-bees",name:"BIRDS & BEES",cuisine:"Cocktail Bar",address:"23 W Cordova St.",distance:"0.7 KM",price:"$$",vibeScore:85,open:14,close:25,tags:["Girls night out","hangover cure","spicy","quick bite"],walkin:10,walkinReports:50,dinnerReports:50,lunchReports:25,walkinDinner:18,walkinLunch:5,hhWeekday:[[15,17],[21,25]],hhWeekend:[[15,17],[21,25]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"street",parkingDinner:15,parkingLunch:5,parkingDinnerReports:32,parkingLunchReports:16,resoReports:0},
+  {id:"nuba",name:"NUBA",cuisine:"Lebanese",address:"207 W Hastings St.",distance:"0.5 KM",price:"$",vibeScore:83,open:11,close:22,tags:["quick bite","something different","Feeling cozy","Fresh air & food"],walkin:8,walkinReports:45,dinnerReports:45,lunchReports:22,walkinDinner:15,walkinLunch:4,hhStart:null,hhEnd:null,hhDays:null,hhWeekday:null,hhWeekend:null,hhDays:null,resoNote:null,parkingType:"street",parkingDinner:12,parkingLunch:5,parkingDinnerReports:32,parkingLunchReports:16,resoReports:0},
+  {id:"reflections",name:"REFLECTIONS",cuisine:"Rooftop Bar",address:"801 W Georgia St.",distance:"1.3 KM",price:"$$$",vibeScore:91,open:15,close:24,tags:["Girls night out","Fresh air & food","single night","something different"],walkin:20,walkinReports:80,dinnerReports:80,lunchReports:40,walkinDinner:35,walkinLunch:10,hhWeekday:[[15,17],[21,24]],hhWeekend:[[15,17],[21,24]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"parkade",parkingDinner:8,parkingLunch:4,parkingDinnerReports:59,parkingLunchReports:29,resoReports:0},
+  {id:"nightingale",name:"NIGHTINGALE",cuisine:"Italian",address:"1017 W Hastings St.",distance:"1.0 KM",price:"$$$",vibeScore:94,open:11,close:23,tags:["Girls night out","Feeling cozy","single night"],walkin:25,walkinReports:110,dinnerReports:110,lunchReports:55,walkinDinner:40,walkinLunch:10,hhWeekday:[[15,17],[21,23]],hhWeekend:[[15,17],[21,23]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"parkade",parkingDinner:10,parkingLunch:4,parkingDinnerReports:85,parkingLunchReports:43,resoReports:0},
+  {id:"kafka",name:"KAFKA",cuisine:"Coffee & Bites",address:"2525 Main St.",distance:"2.1 KM",price:"$",vibeScore:80,open:8,close:17,tags:["quick bite","hangover cure","Feeling cozy"],walkin:5,walkinReports:30,dinnerReports:30,lunchReports:15,walkinDinner:8,walkinLunch:3,hhStart:null,hhEnd:null,hhDays:null,hhWeekday:null,hhWeekend:null,hhDays:null,resoNote:null,parkingType:"street",parkingDinner:8,parkingLunch:3,parkingDinnerReports:19,parkingLunchReports:9,resoReports:0},
+  {id:"juniper",name:"JUNIPER",cuisine:"West Coast",address:"185 Keefer Pl.",distance:"0.8 KM",price:"$$",vibeScore:88,open:11,close:22,tags:["Fresh air & food","something different","Feeling cozy"],walkin:15,walkinReports:65,dinnerReports:65,lunchReports:32,walkinDinner:25,walkinLunch:7,hhWeekday:[[15,17],[21,22]],hhWeekend:[[15,17],[21,22]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"street",parkingDinner:15,parkingLunch:6,parkingDinnerReports:46,parkingLunchReports:23,resoReports:0},
+  {id:"elisa",name:"ELISA",cuisine:"Modern European",address:"1096 Hamilton St.",distance:"0.9 KM",price:"$$$$",vibeScore:97,open:17,close:23,tags:["Girls night out","single night","something different"],walkin:40,walkinReports:150,dinnerReports:150,lunchReports:60,walkinDinner:55,walkinLunch:15,hhWeekday:[[15,17],[21,23]],hhWeekend:[[15,17],[21,23]],hhDays:"3–5 PM · 9 PM–close",resoNote:"tasting menu only",parkingType:"restaurant",parkingDinner:5,parkingLunch:3,parkingDinnerReports:108,parkingLunchReports:54,resoReports:22},
+  {id:"campo",name:"CAMPO",cuisine:"Spanish",address:"2880 Cambie St.",distance:"2.4 KM",price:"$$",vibeScore:86,open:17,close:24,tags:["spicy","something different","Feeling cozy","hangover cure"],walkin:20,walkinReports:70,dinnerReports:70,lunchReports:35,walkinDinner:35,walkinLunch:8,hhWeekday:[[15,17],[21,24]],hhWeekend:[[15,17],[21,24]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"street",parkingDinner:20,parkingLunch:8,parkingDinnerReports:32,parkingLunchReports:16,resoReports:0},
+  {id:"the-mackenzie-room",name:"MACKENZIE ROOM",cuisine:"Canadian",address:"415 W Powell St.",distance:"1.2 KM",price:"$$$",vibeScore:92,open:17,close:24,tags:["single night","Girls night out","something different"],walkin:25,walkinReports:95,dinnerReports:95,lunchReports:48,walkinDinner:40,walkinLunch:10,hhWeekday:[[15,17],[21,24]],hhWeekend:[[15,17],[21,24]],hhDays:"3–5 PM · 9 PM–close",resoNote:"book well in advance",parkingType:"street",parkingDinner:18,parkingLunch:7,parkingDinnerReports:59,parkingLunchReports:29,resoReports:12},
+  {id:"ask-for-luigi",name:"ASK FOR LUIGI",cuisine:"Italian",address:"305 Alexander St.",distance:"1.1 KM",price:"$$",vibeScore:93,open:11,close:22,tags:["Feeling cozy","Girls night out","quick bite"],walkin:20,walkinReports:80,dinnerReports:80,lunchReports:40,walkinDinner:35,walkinLunch:8,hhStart:null,hhEnd:null,hhDays:null,hhWeekday:null,hhWeekend:null,hhDays:null,resoNote:null,parkingType:"street",parkingDinner:15,parkingLunch:5,parkingDinnerReports:85,parkingLunchReports:43,resoReports:0},
+  {id:"save-on-meats",name:"SAVE ON MEATS",cuisine:"Diner",address:"43 W Hastings St.",distance:"0.6 KM",price:"$",vibeScore:79,open:8,close:23,tags:["hangover cure","quick bite","spicy"],walkin:8,walkinReports:45,dinnerReports:45,lunchReports:22,walkinDinner:15,walkinLunch:4,hhWeekday:[[15,17],[21,23]],hhWeekend:[[15,17],[21,23]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"street",parkingDinner:10,parkingLunch:4,parkingDinnerReports:19,parkingLunchReports:9,resoReports:0},
+  {id:"hawksworth",name:"HAWKSWORTH",cuisine:"Contemporary Canadian",address:"801 W Georgia St.",distance:"1.3 KM",price:"$$$$",vibeScore:99,open:11,close:23,tags:["Girls night out","single night","Fresh air & food"],walkin:30,walkinReports:130,dinnerReports:130,lunchReports:52,walkinDinner:50,walkinLunch:10,hhWeekday:[[15,17],[21,23]],hhWeekend:[[15,17],[21,23]],hhDays:"3–5 PM · 9 PM–close",resoNote:"book well in advance",parkingType:"parkade",parkingDinner:8,parkingLunch:3,parkingDinnerReports:108,parkingLunchReports:54,resoReports:20},
+  {id:"the-acorn",name:"THE ACORN",cuisine:"Vegetarian",address:"3995 Main St.",distance:"3.1 KM",price:"$$",vibeScore:88,open:11,close:22,tags:["Fresh air & food","something different","Feeling cozy"],walkin:25,walkinReports:90,dinnerReports:90,lunchReports:45,walkinDinner:40,walkinLunch:10,hhStart:null,hhEnd:null,hhDays:null,hhWeekday:null,hhWeekend:null,hhDays:null,resoNote:null,parkingType:"street",parkingDinner:20,parkingLunch:8,parkingDinnerReports:46,parkingLunchReports:23,resoReports:0},
+  {id:"kissa-tanto",name:"KISSA TANTO",cuisine:"Italian-Japanese",address:"263 E Pender St.",distance:"1.4 KM",price:"$$$",vibeScore:96,open:17,close:24,tags:["something different","Girls night out","single night","spicy"],walkin:35,walkinReports:155,dinnerReports:155,lunchReports:58,walkinDinner:55,walkinLunch:12,hhWeekday:[[15,17],[21,24]],hhWeekend:[[15,17],[21,24]],hhDays:"3–5 PM · 9 PM–close",resoNote:"no-show fee applies",parkingType:"street",parkingDinner:18,parkingLunch:6,parkingDinnerReports:108,parkingLunchReports:54,resoReports:28}
+];
+
+let currentRestaurant = null;
+let matchedRestaurants = [];
+let currentCardIndex = 0;
+
+function getSelectedVibeLabels() {
+  return [...selected].map(i => bubbles[i].label.trim().toLowerCase());
+}
+
+function getOpenStatus(r) {
+  const now = new Date();
+  const h = now.getHours() + now.getMinutes() / 60;
+  const open = r.open, close = r.close;
+  if (h >= open && h < close) {
+    const minsToClose = Math.round((close - h) * 60);
+    if (minsToClose <= 60) return {bg:'rgba(232,111,0,0.15)',border:'rgba(255,140,0,0.4)',text:`Closes in ${minsToClose}m`,dot:'#ffb347',textColor:'#ffb347'};
+    return {bg:'rgba(74,222,128,0.1)',border:'rgba(74,222,128,0.28)',text:'Open Now',dot:'#4ade80',textColor:'#4ade80'};
+  } else {
+    const minsToOpen = Math.round((open - h) * 60);
+    if (minsToOpen > 0 && minsToOpen <= 60) return {bg:'rgba(232,111,0,0.15)',border:'rgba(255,140,0,0.4)',text:`Opens in ${minsToOpen}m`,dot:'#ffb347',textColor:'#ffb347'};
+    const openHour = open % 12 || 12;
+    const ampm = open >= 12 ? 'pm' : 'am';
+    return {bg:'rgba(255,255,255,0.08)',border:'rgba(255,255,255,0.2)',text:`Opens ${openHour}${ampm}`,dot:'#888',textColor:'rgba(255,255,255,0.6)'};
+  }
+}
+
+function renderOpenStatus(r) {
+  const s = getOpenStatus(r);
+  const dotAnim = s.dot === '#4ade80' ? 'animation:pulse 2s infinite;' : '';
+  return `<div style="display:inline-flex;align-items:center;gap:6px;">
+    <div style="width:5px;height:5px;border-radius:50%;background:${s.dot};flex-shrink:0;${dotAnim}"></div>
+    <span class="fi" style="font-size:.67rem;font-weight:600;color:${s.textColor};letter-spacing:0.5px;white-space:nowrap;">${s.text}</span>
+  </div>`;
+}
+
+function buildPhotoStrip(r, idx) {
+  const palettes = PHOTO_PALETTES;
+  const base = idx % palettes.length;
+  const photos = [
+    {c1:palettes[base][0],c2:palettes[base][1],angle:135},
+    {c1:palettes[(base+2)%palettes.length][0],c2:palettes[(base+2)%palettes.length][1],angle:160},
+    {c1:palettes[(base+4)%palettes.length][0],c2:palettes[(base+4)%palettes.length][1],angle:110},
+    {c1:palettes[(base+6)%palettes.length][0],c2:palettes[(base+1)%palettes.length][1],angle:45},
+    {c1:palettes[(base+8)%palettes.length][0],c2:palettes[(base+3)%palettes.length][1],angle:200},
+  ];
+  return photos.map((p,pi) =>
+    `<div data-photo="${pi}" style="width:360px;height:600px;flex-shrink:0;position:relative;border-radius:12px;overflow:hidden;background:linear-gradient(${p.angle}deg,${p.c1} 0%,${p.c2} 100%);">
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0) 50%,rgba(0,0,0,0.75) 100%);border-radius:12px;"></div>
+    </div>`
+  ).join('');
+}
+
+function buildDots(count, active) {
+  return Array.from({length:count},(_,i) =>
+    `<div style="border-radius:${i===active?'3px':'50%'};background:white;opacity:${i===active?1:0.35};transition:all 0.2s;width:${i===active?'12px':'5px'};height:5px;flex-shrink:0;"></div>`
+  ).join('');
+}
+
+function buildCard(r, idx, total) {
+  const photoCount = 5;
+  return `<div style="width:393px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:16px 16px 100px;height:100%;">
+    <div style="position:relative;width:360px;height:600px;border-radius:12px;overflow:hidden;flex-shrink:0;">
+      <div id="photos-${idx}" style="display:flex;width:100%;height:100%;transition:transform 0.3s ease;will-change:transform;">
+        ${buildPhotoStrip(r,idx)}
+      </div>
+      <div id="arr-left-${idx}" onclick="changePhoto(${idx},-1,${photoCount},event)" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:5;cursor:pointer;width:28px;height:28px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:opacity 0.2s;opacity:0.25;">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M6.5 1.5L3 5l3.5 3.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div id="arr-right-${idx}" onclick="changePhoto(${idx},1,${photoCount},event)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:5;cursor:pointer;width:28px;height:28px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:opacity 0.2s;">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3.5 1.5L7 5l-3.5 3.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="position:absolute;left:15%;top:0;width:70%;height:80%;z-index:2;cursor:pointer;" onclick="selectRestaurant(${idx})"></div>
+      <div id="dots-${idx}" style="position:absolute;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:4;align-items:center;">
+        ${buildDots(photoCount,0)}
+      </div>
+      <div style="position:absolute;background:rgba(0,0,0,0.2);left:292.5px;border-radius:22px;width:58px;height:58px;top:10px;display:flex;align-items:center;justify-content:center;z-index:4;">
+        <span class="fa" style="font-weight:600;font-size:28px;color:white;">${r.vibeScore}</span>
+      </div>
+      <div style="position:absolute;left:16px;bottom:122px;z-index:4;pointer-events:none;">${renderOpenStatus(r)}</div>
+      <div style="position:absolute;left:16px;bottom:72px;z-index:4;pointer-events:none;">
+        <p class="fa" style="font-weight:600;font-size:40px;color:white;letter-spacing:4px;line-height:normal;">${r.name}</p>
+      </div>
+      <div style="position:absolute;left:16px;bottom:44px;z-index:4;pointer-events:none;">
+        <p class="fi" style="font-weight:600;font-size:14px;color:white;letter-spacing:2.8px;text-transform:capitalize;line-height:normal;">${r.cuisine}</p>
+      </div>
+      <div style="position:absolute;left:16px;bottom:28px;z-index:4;pointer-events:none;">
+        <p class="fi" style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.8px;text-transform:lowercase;">${r.distance} AWAY</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+const photoIndices = {};
+
+function changePhoto(cardIdx, dir, total, e) {
+  e.stopPropagation();
+  if (!photoIndices[cardIdx]) photoIndices[cardIdx] = 0;
+  photoIndices[cardIdx] = Math.max(0, Math.min(total-1, photoIndices[cardIdx]+dir));
+  const strip = document.getElementById('photos-'+cardIdx);
+  if (strip) strip.style.transform = `translateX(-${photoIndices[cardIdx]*360}px)`;
+  const dots = document.getElementById('dots-'+cardIdx);
+  if (dots) dots.innerHTML = buildDots(total, photoIndices[cardIdx]);
+  const cur = photoIndices[cardIdx];
+  const left = document.getElementById('arr-left-'+cardIdx);
+  const right = document.getElementById('arr-right-'+cardIdx);
+  if (left) left.style.opacity = cur === 0 ? '0.25' : '1';
+  if (right) right.style.opacity = cur === total-1 ? '0.25' : '1';
+}
+
+function findMatchingRestaurants() {
+  const vibes = getSelectedVibeLabels();
+  return restaurants
+    .map(r => {
+      const tags = r.tags.map(t => t.toLowerCase());
+      const score = vibes.filter(v => tags.some(t => t.includes(v)||v.includes(t))).length;
+      return {...r, matchScore:score};
+    })
+    .filter(r => r.matchScore > 0)
+    .sort((a,b) => b.matchScore-a.matchScore || b.vibeScore-a.vibeScore);
+}
+
+function removeVibeTag(vibeLabel, e) {
+  e.stopPropagation();
+  const idx = bubbles.findIndex(b => b.label.trim().toLowerCase() === vibeLabel.toLowerCase());
+  if (idx >= 0 && selected.has(idx)) {
+    selected.delete(idx);
+    const wrapper = allWrappers[idx];
+    if (wrapper) { wrapper.style.animationPlayState='running'; wrapper.style.transform=''; wrapper.style.outline=''; }
+    allWrappers.forEach(w => { w.style.opacity='1'; w.style.cursor='pointer'; });
+    const foot = document.getElementById('lets-vibe-foot');
+    if (selected.size === 0) { foot.style.opacity='0'; foot.style.pointerEvents='none'; }
+  }
+  populatePage2();
+}
+
+let modalPendingSelection = new Set();
+
+function openReminderModal() {
+  // Set context text based on current HH state
+  const ctx = document.getElementById('reminder-context');
+  if (ctx && currentRestaurant) {
+    const r = currentRestaurant;
+    const now = new Date();
+    const dow = now.getDay();
+    const isWeekend = dow === 0 || dow === 6;
+    const hhRange = isWeekend ? r.hhWeekend : r.hhWeekday;
+    if (hhRange) {
+      const h = now.getHours() + now.getMinutes() / 60;
+      // Find next HH window
+      for (const [hhS, hhE] of hhRange) {
+        if (h < hhS) {
+          const startH = Math.floor(hhS) % 12 || 12;
+          const startAp = hhS >= 12 ? 'pm' : 'am';
+          ctx.textContent = `Happy hour at ${r.name} starts at ${startH}:00 ${startAp}`;
+          break;
+        } else if (h >= hhS && h < hhE) {
+          const endH = Math.floor(hhE) % 12 || 12;
+          const endAp = hhE >= 12 ? 'pm' : 'am';
+          ctx.textContent = `Happy hour at ${r.name} ends at ${endH}:00 ${endAp}`;
+          break;
+        }
+      }
+    } else {
+      ctx.textContent = `Set a reminder for ${r.name}`;
+    }
+  }
+  // Pre-fill time input with current time + 30min
+  const inp = document.getElementById('reminder-time-input');
+  if (inp) {
+    const d = new Date(Date.now() + 30*60000);
+    inp.value = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+  const m = document.getElementById('reminder-modal');
+  const s = document.getElementById('reminder-modal-sheet');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => { m.style.background = 'rgba(0,0,0,0.5)'; s.style.transform = 'translateY(0)'; });
+}
+
+function closeReminderModal() {
+  const m = document.getElementById('reminder-modal');
+  const s = document.getElementById('reminder-modal-sheet');
+  m.style.background = 'rgba(0,0,0,0)';
+  s.style.transform = 'translateY(100%)';
+  setTimeout(() => { m.style.display = 'none'; }, 400);
+}
+
+function setReminder(minsBeforeHH) {
+  if (!currentRestaurant) return;
+  const r = currentRestaurant;
+  const now = new Date();
+  const dow = now.getDay();
+  const isWeekend = dow === 0 || dow === 6;
+  const hhRange = isWeekend ? r.hhWeekend : r.hhWeekday;
+  const h = now.getHours() + now.getMinutes() / 60;
+  let targetTime = null;
+  if (hhRange) {
+    for (const [hhS] of hhRange) {
+      if (h < hhS) { targetTime = hhS; break; }
+    }
+  }
+  if (targetTime !== null) {
+    const reminderH = targetTime - minsBeforeHH / 60;
+    const rH = Math.floor(reminderH) % 12 || 12;
+    const rM = Math.round((reminderH % 1) * 60);
+    const ap = reminderH >= 12 ? 'pm' : 'am';
+    const timeStr = `${rH}:${String(rM).padStart(2,'0')} ${ap}`;
+    closeReminderModal();
+    alert(`Reminder set for ${timeStr} — ${minsBeforeHH} min before happy hour at ${r.name}`);
+  } else {
+    closeReminderModal();
+    alert(`Reminder set for ${minsBeforeHH} min from now for ${r.name}`);
+  }
+}
+
+function setReminderAtTime() {
+  const inp = document.getElementById('reminder-time-input');
+  if (!inp || !inp.value || !currentRestaurant) return;
+  const [hh, mm] = inp.value.split(':');
+  const h12 = parseInt(hh) % 12 || 12;
+  const ap = parseInt(hh) >= 12 ? 'pm' : 'am';
+  closeReminderModal();
+  alert(`Reminder set for ${h12}:${mm} ${ap} for ${currentRestaurant.name}`);
+}
+
+
+function p3WalkinToggle(mode) {
+  if (!currentRestaurant) return;
+  const r = currentRestaurant;
+  const isDinner = mode === 'dinner';
+  const mins = isDinner ? (r.walkinDinner || r.walkin) : (r.walkinLunch || r.walkin);
+  const isReso = isDinner && !!r.resoNote && (r.resoReports || 0) >= 5;
+
+  // Title: walk-in or reservation
+  const title = document.getElementById('p3-walkin-title');
+  if (title) title.textContent = isReso ? 'reservation' : 'walk - in';
+
+  // Number + unit
+  const minsEl = document.getElementById('p3-walkin-mins');
+  const unitEl = document.getElementById('p3-walkin-unit');
+  if (isReso) {
+    // Show weeks ahead instead of minutes
+    const weeks = mins >= 60 ? '2–3' : mins >= 45 ? '1–2' : '1';
+    if (minsEl) { minsEl.textContent = weeks; minsEl.style.fontSize = '32px'; minsEl.style.letterSpacing = '1.5px'; }
+    if (unitEl) { unitEl.querySelector('p').textContent = 'wks'; unitEl.style.left = '58px'; }
+  } else {
+    const display = mins >= 60 ? '60+' : String(mins);
+    if (minsEl) { minsEl.textContent = display; minsEl.style.fontSize = '32px'; minsEl.style.letterSpacing = display === '60+' ? '1px' : '3.2px'; }
+    if (unitEl) { unitEl.querySelector('p').textContent = 'min'; unitEl.style.left = display === '60+' ? '58px' : '49px'; }
+  }
+
+  // Subtitle
+  const sub = document.getElementById('p3-walkin-subtitle');
+  if (sub) {
+    if (isReso) {
+      const notes = {
+        'book well in advance': 'popular spot · book ahead',
+        'no-show fee applies': 'no-show fee applies',
+        'tasting menu only': 'tasting menu · reso required'
+      };
+      sub.textContent = notes[r.resoNote] || 'reservation recommended';
+      sub.style.whiteSpace = 'nowrap';
+      sub.style.letterSpacing = '0';
+      const subWrap = sub.parentElement;
+      if (subWrap) { subWrap.style.transform = 'translateY(-50%)'; subWrap.style.top = '92.5px'; }
+    } else {
+      sub.textContent = 'avg wait · community reported';
+      sub.style.whiteSpace = 'nowrap';
+      sub.style.letterSpacing = '0';
+      const subWrap = sub.parentElement;
+      if (subWrap) { subWrap.style.transform = 'translateY(-50%)'; subWrap.style.top = '92.5px'; }
+    }
+  }
+
+  // Update report count
+  const repEl = document.getElementById('p3-walkin-reports');
+  if (repEl) repEl.textContent = (isDinner ? (r.dinnerReports || r.walkinReports) : (r.lunchReports || r.walkinReports)) + ' reports';
+  const pill = document.getElementById('walkin-pill');
+  const dinnerLabel = document.getElementById('walkin-label-dinner');
+  const lunchLabel = document.getElementById('walkin-label-lunch');
+  if (pill) pill.style.left = isDinner ? '2px' : '84px';
+  if (dinnerLabel) dinnerLabel.style.color = isDinner ? '#020202' : 'white';
+  if (lunchLabel) lunchLabel.style.color = !isDinner ? '#020202' : 'white';
+}
+
+
+function openWaitReportModal() {
+  if (!currentRestaurant) return;
+  const r = currentRestaurant;
+  // Detect current mode from pill position
+  const pill = document.getElementById('walkin-pill');
+  const isReso = pill && pill.style.left !== '2px' ? false : 
+    (r.resoNote && (r.walkinDinner || r.walkin) >= 45 && document.getElementById('walkin-label-dinner').style.color === 'rgb(2, 2, 2)');
+
+  const title = document.getElementById('wait-report-title');
+  const subtitle = document.getElementById('wait-report-subtitle');
+  const options = document.getElementById('wait-report-options');
+  const input = document.getElementById('wait-report-input');
+
+  if (isReso) {
+    if (title) title.textContent = 'Report booking lead time';
+    if (subtitle) subtitle.textContent = `How far in advance did you book at ${r.name}?`;
+    if (input) input.placeholder = 'e.g. 10 days or 2 weeks';
+    if (options) options.innerHTML = [
+      ['Less than a week', 'less-week'],
+      ['1–2 weeks', '1-2-weeks'],
+      ['3–4 weeks', '3-4-weeks'],
+      ['4+ weeks', '4plus-weeks']
+    ].map(([label, val]) => `
+      <div onclick="selectWaitOption('${val}', this)" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background 0.15s;gap:8px;">
+        <p class="fi" style="font-size:13px;font-weight:500;color:black;line-height:1.4;">${label}</p>
+        <div style="width:18px;height:18px;border-radius:50%;border:1.5px solid #ccc;flex-shrink:0;"></div>
+      </div>`).join('');
+  } else {
+    if (title) title.textContent = 'Report wait time';
+    if (subtitle) subtitle.textContent = `How long did you wait at ${r.name}?`;
+    if (input) input.placeholder = 'e.g. 25 mins';
+    if (options) options.innerHTML = [
+      ['Less than 10 min', 'lt-10'],
+      ['10–30 min', '10-30'],
+      ['30–60 min', '30-60'],
+      ['60+ min<br>reso rec.', '60plus']
+    ].map(([label, val]) => `
+      <div onclick="selectWaitOption('${val}', this)" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background 0.15s;gap:8px;">
+        <p class="fi" style="font-size:13px;font-weight:500;color:black;line-height:1.4;">${label}</p>
+        <div style="width:18px;height:18px;border-radius:50%;border:1.5px solid #ccc;flex-shrink:0;"></div>
+      </div>`).join('');
+  }
+
+  const m = document.getElementById('wait-report-modal');
+  const s = document.getElementById('wait-report-sheet');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => { m.style.background = 'rgba(0,0,0,0.5)'; s.style.transform = 'translateY(0)'; });
+}
+
+function closeWaitReportModal() {
+  const m = document.getElementById('wait-report-modal');
+  const s = document.getElementById('wait-report-sheet');
+  m.style.background = 'rgba(0,0,0,0)';
+  s.style.transform = 'translateY(100%)';
+  setTimeout(() => { m.style.display = 'none'; }, 400);
+}
+
+let selectedWaitOption = null;
+
+function selectWaitOption(val, el) {
+  selectedWaitOption = val;
+  // Reset all circles
+  document.querySelectorAll('#wait-report-options div div').forEach(c => {
+    c.style.background = 'white'; c.style.borderColor = '#ccc';
+  });
+  // Fill selected
+  const circle = el.querySelector('div');
+  if (circle) { circle.style.background = '#1e1e1e'; circle.style.borderColor = '#1e1e1e'; }
+}
+
+function submitWaitReport() {
+  const input = document.getElementById('wait-report-input');
+  const val = selectedWaitOption || (input && input.value.trim());
+  if (!val) return;
+  closeWaitReportModal();
+  // Increment report count
+  if (currentRestaurant) {
+    const pill = document.getElementById('walkin-pill');
+    const isDinner = pill && pill.style.left === '2px';
+    if (isDinner) {
+      currentRestaurant.dinnerReports = (currentRestaurant.dinnerReports || 0) + 1;
+      // If user reported 60+ / reso rec, increment resoReports
+      if (val === '60plus') {
+        currentRestaurant.resoReports = (currentRestaurant.resoReports || 0) + 1;
+      }
+    } else {
+      currentRestaurant.lunchReports = (currentRestaurant.lunchReports || 0) + 1;
+    }
+    const repEl = document.getElementById('p3-walkin-reports');
+    if (repEl) repEl.textContent = (isDinner ? currentRestaurant.dinnerReports : currentRestaurant.lunchReports) + ' reports';
+  }
+  selectedWaitOption = null;
+}
+
+
+function p3ParkingToggle(mode) {
+  if (!currentRestaurant) return;
+  const r = currentRestaurant;
+  const isDinner = mode === 'dinner';
+  const mins = isDinner ? r.parkingDinner : r.parkingLunch;
+  const reports = isDinner ? r.parkingDinnerReports : r.parkingLunchReports;
+
+  // Title based on parkingType
+  const titles = { street: 'street parking', parkade: 'parkade', restaurant: 'valet' };
+  const titleEl = document.getElementById('p3-parking-title');
+  if (titleEl) titleEl.textContent = titles[r.parkingType] || 'street parking';
+
+  // Minutes
+  const minsEl = document.getElementById('p3-parking-mins');
+  if (minsEl) { minsEl.textContent = mins; minsEl.style.letterSpacing = mins >= 10 ? '1.5px' : '3.2px'; }
+  const unitEl = document.getElementById('p3-parking-unit');
+  if (unitEl) { unitEl.style.left = mins >= 10 ? '52px' : '42px'; }
+
+  // Reports
+  const repEl = document.getElementById('p3-parking-reports');
+  if (repEl) repEl.textContent = (reports || 0) + ' reports';
+
+  // Slide pill
+  const pill = document.getElementById('parking-pill');
+  const dinnerLabel = document.getElementById('parking-label-dinner');
+  const lunchLabel = document.getElementById('parking-label-lunch');
+  if (pill) pill.style.left = isDinner ? '2px' : '84px';
+  if (dinnerLabel) dinnerLabel.style.color = isDinner ? '#020202' : 'white';
+  if (lunchLabel) lunchLabel.style.color = !isDinner ? '#020202' : 'white';
+}
+
+function openParkingReportModal() {
+  if (!currentRestaurant) return;
+  const r = currentRestaurant;
+  const pill = document.getElementById('parking-pill');
+  const isDinner = pill && pill.style.left === '2px';
+
+  const title = document.getElementById('wait-report-title');
+  const subtitle = document.getElementById('wait-report-subtitle');
+  const options = document.getElementById('wait-report-options');
+  const input = document.getElementById('wait-report-input');
+
+  if (title) title.textContent = 'Report parking';
+  if (subtitle) subtitle.textContent = `How long to find parking near ${r.name}?`;
+  if (input) input.placeholder = 'e.g. 12 mins';
+
+  if (options) options.innerHTML = [
+    ['Under 5 min', 'lt-5'],
+    ['5–15 min', '5-15'],
+    ['15–30 min', '15-30'],
+    ['30+ min', '30plus']
+  ].map(([label, val]) => `
+    <div onclick="selectWaitOption('${val}', this)" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background 0.15s;gap:8px;">
+      <p class="fi" style="font-size:13px;font-weight:500;color:black;line-height:1.4;">${label}</p>
+      <div style="width:18px;height:18px;border-radius:50%;border:1.5px solid #ccc;flex-shrink:0;"></div>
+    </div>`).join('');
+
+  // Also add parking type options
+  options.innerHTML += `<div style="grid-column:1/-1;margin-top:4px;">
+    <p class="fi" style="font-size:10px;font-weight:300;color:#888;letter-spacing:0.5px;margin-bottom:8px;">parking type</p>
+    <div style="display:flex;justify-content:space-between;">
+      ${['Street','Parkade','Valet','Self-drive not recommended'].map(t => `<div onclick="selectParkingType('${t.toLowerCase()}',this)" style="background:#f0f0f0;border-radius:20px;padding:5px 8px;cursor:pointer;border:1.5px solid transparent;transition:all 0.15s;"><p class="fi" style="font-size:10px;font-weight:500;color:black;">${t}</p></div>`).join('')}
+    </div>
+  </div>`;
+
+  const m = document.getElementById('wait-report-modal');
+  const s = document.getElementById('wait-report-sheet');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => { m.style.background = 'rgba(0,0,0,0.5)'; s.style.transform = 'translateY(0)'; });
+}
+
+let selectedParkingType = null;
+function selectParkingType(type, el) {
+  selectedParkingType = type;
+  document.querySelectorAll('#wait-report-options [onclick*="selectParkingType"]').forEach(e => {
+    e.style.background = '#f0f0f0'; e.style.borderColor = 'transparent';
+  });
+  el.style.background = '#1e1e1e';
+  el.style.borderColor = '#1e1e1e';
+  el.querySelector('p').style.color = 'white';
+}
+
+function openDirectionsModal() {
+  const m = document.getElementById('directions-modal');
+  const s = document.getElementById('directions-modal-sheet');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => { m.style.background = 'rgba(0,0,0,0.5)'; s.style.transform = 'translateY(0)'; });
+}
+
+function closeDirectionsModal() {
+  const m = document.getElementById('directions-modal');
+  const s = document.getElementById('directions-modal-sheet');
+  m.style.background = 'rgba(0,0,0,0)';
+  s.style.transform = 'translateY(100%)';
+  setTimeout(() => { m.style.display = 'none'; }, 400);
+}
+
+function openDirection(platform) {
+  if (!currentRestaurant) return;
+  const addr = encodeURIComponent(currentRestaurant.address + ' Vancouver BC');
+  const name = encodeURIComponent(currentRestaurant.name);
+  const urls = {
+    uber:   `https://m.uber.com/ul/?action=setPickup&dropoff[nickname]=${name}&dropoff[formatted_address]=${addr}`,
+    lyft:   `https://www.lyft.com/ride?destination[address]=${addr}&destination[name]=${name}`,
+    evo:    `https://www.evocarshare.com`,
+    google: `https://www.google.com/maps/dir/?api=1&destination=${addr}`,
+    apple:  `https://maps.apple.com/?daddr=${addr}`
+  };
+  closeDirectionsModal();
+  window.open(urls[platform], '_blank');
+}
+
+// Transport times — geolocation + distance estimation
+let userLat = null, userLng = null;
+
+// Restaurant coordinates (lat/lng for Gastown/DT Vancouver area)
+const RESTAURANT_COORDS = {
+  'combine':       [49.2827, -123.1207],
+  'miku':          [49.2856, -123.1116],
+  'tacofino':      [49.2835, -123.1071],
+  'botanist':      [49.2895, -123.1116],
+  'forage':        [49.2867, -123.1293],
+  'pourhouse':     [49.2837, -123.1076],
+  'pidgin':        [49.2826, -123.1013],
+  'still':         [49.2896, -123.1178],
+  'bao-bei':       [49.2805, -123.0986],
+  'chambar':       [49.2789, -123.1136],
+  'the-birds-and-bees': [49.2835, -123.1068],
+  'nuba':          [49.2829, -123.1071],
+  'reflections':   [49.2834, -123.1206],
+  'nightingale':   [49.2864, -123.1207],
+  'kafka':         [49.2637, -123.1013],
+  'juniper':       [49.2791, -123.1048],
+  'elisa':         [49.2748, -123.1248],
+  'campo':         [49.2745, -123.1218],
+  'the-mackenzie-room': [49.2841, -123.0977],
+  'ask-for-luigi': [49.2809, -123.0972],
+  'save-on-meats': [49.2826, -123.1050],
+  'hawksworth':    [49.2834, -123.1206],
+  'the-acorn':     [49.2625, -123.1013],
+  'kissa-tanto':   [49.2808, -123.0985],
+};
+
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function updateTransportTimes(r) {
+  const walkEl = document.getElementById('t3-walk');
+  const driveEl = document.getElementById('t3-drive');
+  const transitEl = document.getElementById('t3-transit');
+  if (!walkEl || !driveEl || !transitEl) return;
+
+  const coords = RESTAURANT_COORDS[r.id];
+  if (!coords) return;
+
+  const doCalc = (lat, lng) => {
+    const km = haversineKm(lat, lng, coords[0], coords[1]);
+    // Walking: ~5 km/h
+    const walk = Math.max(1, Math.round(km / 5 * 60));
+    // Driving: ~25 km/h in downtown Vancouver traffic
+    const drive = Math.max(1, Math.round(km / 25 * 60));
+    // Transit: ~15 km/h avg with wait
+    const transit = Math.max(2, Math.round(km / 15 * 60 + 4));
+
+    walkEl.textContent = walk > 60 ? '60+' : walk;
+    driveEl.textContent = drive > 60 ? '60+' : drive;
+    transitEl.textContent = transit > 60 ? '60+' : transit;
+  };
+
+  const originLat = userLat || 49.2827;  // fallback: Gastown
+  const originLng = userLng || -123.1076;
+  doCalc(originLat, originLng);
+}
+
+// Community quotes per restaurant
+const SEED_QUOTES = {
+  'combine':       ["Energy hits different after 9pm", "Best Korean fried chicken in DT", "Go with a group, share everything"],
+  'miku':          ["Aburi salmon is non-negotiable", "Views of the water make it", "Lunch is the move — shorter wait"],
+  'tacofino':      ["Line moves fast, worth every min", "Get the tuna burger. Trust me", "Always packed but never feels rushed"],
+  'botanist':      ["Most beautiful room in Vancouver", "Cocktail bar alone is worth the trip", "Book 3 weeks out minimum"],
+  'forage':        ["Cozy and unpretentious — rare combo", "Brunch hits different here", "Staff actually know the menu cold"],
+  'pourhouse':     ["Hidden gem for date night", "Cocktails are genuinely great", "Lively without being chaotic"],
+  'pidgin':        ["Small plates, big flavours", "Sit at the bar if you can", "Every dish is a conversation starter"],
+  'still':         ["Harbour views are worth the price", "Quieter than most DT spots", "Great solo dining at the bar"],
+  'bao-bei':       ["Chinatown's best kept secret", "Cocktails are underrated here", "Go late — atmosphere picks up"],
+  'chambar':       ["Mussels and frites — a religion", "Belgian beer list is legit", "Great for groups that linger"],
+  'the-birds-and-bees': ["Tucked away but packed on weekends", "Patio is a gem in summer", "Laid back energy, solid drinks"],
+  'nuba':          ["Fattoush is the move every time", "Great for a quick solo lunch", "Freshest Lebanese in the city"],
+  'reflections':   ["Rooftop vibes are unmatched in summer", "Get there before sunset", "People watching is a bonus"],
+  'nightingale':   ["100-layer lasagna. That's all.", "High ceilings, great energy", "Buzzy but not too loud"],
+  'kafka':         ["Tiny space, big personality", "Best place to work solo", "Third wave without the attitude"],
+  'juniper':       ["Keefer St's best kept secret", "Brunch queue moves surprisingly fast", "Order the seasonal cocktail, always"],
+  'elisa':         ["Every plate is a moment", "Tasting menu feels like an event", "Book further out than you think"],
+  'campo':         ["Feels like you're in Italy", "Sunday pasta is a ritual", "Wine list is genuinely excellent"],
+  'the-mackenzie-room': ["One of the best small rooms in the city", "Menu changes keep it fresh", "Book a month out for weekends"],
+  'ask-for-luigi': ["Communal tables make it an experience", "Pasta is handmade daily", "Lineup culture is real here"],
+  'save-on-meats': ["The diner that time forgot in the best way", "Breakfast all day, enough said", "Gastown original. Still earned it."],
+  'hawksworth':    ["The room alone justifies the price", "Wine service is exceptional", "Power lunch destination"],
+  'the-acorn':     ["Best vegetarian in the city, not even close", "Menu changes with the season", "Book ahead — fills up fast"],
+  'kissa-tanto':   ["Michelin star. Still feels personal.", "Japanese-Italian? It works. Perfectly.", "30-day waitlist. Worth every one."],
+};
+
+let quoteRotationTimer = null;
+let currentQuoteIndex = 0;
+
+function initCommunityQuotes(r) {
+  if (quoteRotationTimer) clearInterval(quoteRotationTimer);
+  const quotes = [...(SEED_QUOTES[r.id] || ["Great spot — be the first to share a vibe"])];
+  currentQuoteIndex = 0;
+
+  const el = document.getElementById('p3-community-quote');
+  if (!el) return;
+
+  const showQuote = (idx) => {
+    el.style.transition = 'transform 0.4s cubic-bezier(.4,0,.2,1), opacity 0.4s ease';
+    el.style.transform = 'translateY(0%)';
+    el.style.opacity = '1';
+
+    // Roll up out
+    setTimeout(() => {
+      el.style.transition = 'transform 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s ease';
+      el.style.transform = 'translateY(-120%)';
+      el.style.opacity = '0';
+    }, 11200);
+
+    // Snap to bottom, then roll up in
+    setTimeout(() => {
+      el.style.transition = 'none';
+      el.style.transform = 'translateY(120%)';
+      el.textContent = `'${quotes[(idx + 1) % quotes.length]}'`;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.style.transition = 'transform 0.45s cubic-bezier(.32,.72,0,1), opacity 0.3s ease';
+          el.style.transform = 'translateY(0%)';
+          el.style.opacity = '1';
+        });
+      });
+    }, 11700);
+  };
+
+  showQuote(0);
+  quoteRotationTimer = setInterval(() => {
+    currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+    showQuote(currentQuoteIndex);
+  }, 12000);
+}
+
+function openQuoteModal() {
+  const input = document.getElementById('quote-input');
+  const count = document.getElementById('quote-char-count');
+  if (input) { input.value = ''; }
+  if (count) count.textContent = '0 / 120';
+  // Wire char counter
+  if (input) {
+    input.oninput = () => {
+      if (count) count.textContent = `${input.value.length} / 120`;
+    };
+  }
+  const m = document.getElementById('quote-modal');
+  const s = document.getElementById('quote-modal-sheet');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => { m.style.background = 'rgba(0,0,0,0.5)'; s.style.transform = 'translateY(0)'; });
+  setTimeout(() => { if (input) input.focus(); }, 450);
+}
+
+function closeQuoteModal() {
+  const m = document.getElementById('quote-modal');
+  const s = document.getElementById('quote-modal-sheet');
+  m.style.background = 'rgba(0,0,0,0)';
+  s.style.transform = 'translateY(100%)';
+  setTimeout(() => { m.style.display = 'none'; }, 400);
+}
+
+function submitQuote() {
+  const input = document.getElementById('quote-input');
+  const text = input && input.value.trim();
+  if (!text || !currentRestaurant) return;
+  // Add to seed quotes for this session
+  if (!SEED_QUOTES[currentRestaurant.id]) SEED_QUOTES[currentRestaurant.id] = [];
+  SEED_QUOTES[currentRestaurant.id].push(text);
+  closeQuoteModal();
+  // Show new quote with roll-up
+  const el = document.getElementById('p3-community-quote');
+  if (el) {
+    el.style.transition = 'transform 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s ease';
+    el.style.transform = 'translateY(-120%)';
+    el.style.opacity = '0';
+    setTimeout(() => {
+      el.style.transition = 'none';
+      el.style.transform = 'translateY(120%)';
+      el.textContent = `'${text}'`;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        el.style.transition = 'transform 0.45s cubic-bezier(.32,.72,0,1), opacity 0.3s ease';
+        el.style.transform = 'translateY(0%)';
+        el.style.opacity = '1';
+      }));
+    }, 400);
+  }
+}
+
+function openResoModal() {
+  // Populate community intel from restaurant data
+  const intel = document.getElementById('reso-intel-text');
+  if (intel && currentRestaurant) {
+    const r = currentRestaurant;
+    const mins = r.walkin || 14;
+    const reports = r.walkinReports || 52;
+    if (mins >= 30) {
+      const weeks = mins >= 45 ? '2–3 weeks' : mins >= 25 ? '1–2 weeks' : '3–5 days';
+      intel.textContent = `Popular spot — book ${weeks} ahead for dinner`;
+    } else {
+      intel.textContent = `Walk-ins welcome — avg ${mins}–${mins + 8} min wait`;
+    }
+  }
+  const m = document.getElementById('reso-modal');
+  const s = document.getElementById('reso-modal-sheet');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => {
+    m.style.background = 'rgba(0,0,0,0.5)';
+    s.style.transform = 'translateY(0)';
+  });
+}
+
+function closeResoModal() {
+  const m = document.getElementById('reso-modal');
+  const s = document.getElementById('reso-modal-sheet');
+  m.style.background = 'rgba(0,0,0,0)';
+  s.style.transform = 'translateY(100%)';
+  setTimeout(() => { m.style.display = 'none'; }, 400);
+}
+
+function openResoOption(platform) {
+  const name = currentRestaurant ? encodeURIComponent(currentRestaurant.name + ' Vancouver reservation') : 'restaurant+reservation+Vancouver';
+  const urls = {
+    opentable: `https://www.opentable.com/s/?term=${name}`,
+    resy: `https://resy.com/cities/van?query=${name}`,
+    google: `https://www.google.com/search?q=${name}`
+  };
+  closeResoModal();
+  window.open(urls[platform], '_blank');
+}
+
+function openVibeModal() {
+  const currentVibes = getSelectedVibeLabels();
+  const slotsLeft = 3 - currentVibes.length;
+  modalPendingSelection = new Set();
+  document.getElementById('vibe-slots-left').textContent = slotsLeft;
+  const container = document.getElementById('vibe-modal-bubbles');
+  container.innerHTML = ALL_TAGS.map(v => {
+    const isSel = currentVibes.some(c => c===v.toLowerCase());
+    return `<div id="modal-vibe-${v.replace(/[\s&]/g,'_')}" onclick="toggleModalVibe('${v}',${slotsLeft})" style="padding:6px 14px;border-radius:20px;border:1px solid ${isSel?'#999':'black'};cursor:${isSel?'default':'pointer'};background:${isSel?'#ccc':'white'};opacity:${isSel?'0.5':'1'};transition:all 0.15s;">
+      <p class="fi" style="font-size:11px;color:black;letter-spacing:1px;white-space:nowrap;">${v}</p>
+    </div>`;
+  }).join('');
+  const m = document.getElementById('vibe-modal');
+  const s = document.getElementById('vibe-modal-sheet');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => {
+    m.style.background = 'rgba(0,0,0,0.5)';
+    s.style.transform = 'translateY(0)';
+  });
+}
+
+function toggleModalVibe(vibe, slotsLeft) {
+  const currentVibes = getSelectedVibeLabels();
+  if (currentVibes.some(c => c===vibe.toLowerCase())) return;
+  const key = vibe.replace(/[\s&]/g,'_');
+  const el = document.getElementById('modal-vibe-'+key);
+  if (modalPendingSelection.has(vibe)) {
+    modalPendingSelection.delete(vibe);
+    el.style.background='white'; el.style.border='1px solid black';
+    el.querySelector('p').style.color='black';
+  } else {
+    if (modalPendingSelection.size >= slotsLeft) return;
+    modalPendingSelection.add(vibe);
+    el.style.background='black';
+    el.querySelector('p').style.color='white';
+  }
+}
+
+function closeVibeModal() {
+  const m = document.getElementById('vibe-modal');
+  const s = document.getElementById('vibe-modal-sheet');
+  m.style.background = 'rgba(0,0,0,0)';
+  s.style.transform = 'translateY(100%)';
+  setTimeout(() => { m.style.display = 'none'; }, 400);
+  modalPendingSelection = new Set();
+}
+
+function applyVibeModal() {
+  modalPendingSelection.forEach(vibe => {
+    const idx = bubbles.findIndex(b => b.label.trim().toLowerCase()===vibe.toLowerCase());
+    if (idx>=0 && !selected.has(idx)) selected.add(idx);
+  });
+  closeVibeModal();
+  populatePage2();
+}
+
+function populatePage2() {
+  matchedRestaurants = findMatchingRestaurants();
+  if (matchedRestaurants.length===0) matchedRestaurants = restaurants.slice(0,8);
+  currentCardIndex = 0;
+  currentRestaurant = matchedRestaurants[0];
+
+  const tagsEl = document.getElementById('p2-tags');
+  const vibeLabels = getSelectedVibeLabels();
+  const addVibeBtn = vibeLabels.length < 3
+    ? `<div onclick="openVibeModal()" style="padding:5px 12px;border-radius:20px;border:1px dashed black;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;white-space:nowrap;">
+        <p class="fi" style="font-weight:400;font-size:11px;color:black;letter-spacing:1px;text-transform:lowercase;white-space:nowrap;line-height:normal;">+ add vibe</p>
+      </div>` : '';
+  tagsEl.innerHTML = vibeLabels.map(v =>
+    `<div style="padding:4px 8px 4px 12px;border-radius:20px;border:1px solid black;background:black;display:flex;align-items:center;gap:5px;flex-shrink:1;min-width:0;">
+      <p class="fi" style="font-weight:400;font-size:9px;color:white;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;line-height:normal;">${v}</p>
+      <div onclick="removeVibeTag('${v}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+        <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </div>
+    </div>`
+  ).join('') + addVibeBtn;
+
+  const strip = document.getElementById('p2-strip');
+  strip.style.transform='translateX(0)';
+  strip.innerHTML = matchedRestaurants.map((r,i) => buildCard(r,i,matchedRestaurants.length)).join('');
+  document.getElementById('p2-counter').textContent = `1/${matchedRestaurants.length}`;
+  setupSwipe();
+}
+
+function setupSwipe() {
+  const wrap = document.getElementById('p2-strip-wrap');
+  const strip = document.getElementById('p2-strip');
+  let startX=0, isDragging=false;
+  wrap.ontouchstart = e => { startX=e.touches[0].clientX; isDragging=true; };
+  wrap.ontouchend = e => {
+    if (!isDragging) return;
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff)>40) {
+      if (diff>0 && currentCardIndex<matchedRestaurants.length-1) currentCardIndex++;
+      else if (diff<0 && currentCardIndex>0) currentCardIndex--;
+    }
+    strip.style.transform=`translateX(-${currentCardIndex*393}px)`;
+    currentRestaurant=matchedRestaurants[currentCardIndex];
+    document.getElementById('p2-counter').textContent=`${currentCardIndex+1}/${matchedRestaurants.length}`;
+    isDragging=false;
+  };
+  wrap.onmousedown = e => { startX=e.clientX; isDragging=true; };
+  wrap.onmouseup = e => {
+    if (!isDragging) return;
+    const diff = startX-e.clientX;
+    if (Math.abs(diff)>40) {
+      if (diff>0 && currentCardIndex<matchedRestaurants.length-1) currentCardIndex++;
+      else if (diff<0 && currentCardIndex>0) currentCardIndex--;
+    }
+    strip.style.transform=`translateX(-${currentCardIndex*393}px)`;
+    currentRestaurant=matchedRestaurants[currentCardIndex];
+    document.getElementById('p2-counter').textContent=`${currentCardIndex+1}/${matchedRestaurants.length}`;
+    isDragging=false;
+  };
+}
+
+function selectRestaurant(idx) {
+  currentRestaurant = matchedRestaurants[idx];
+  // Always reset to State 1 when entering page 3
+  document.getElementById('screen-page3s1').classList.remove('details-open');
+  populatePage3(currentRestaurant);
+  navigate('page3s1');
+}
+
+// Page 3 transitions
+function revealDetails() {
+  document.getElementById('screen-page3s1').classList.add('details-open');
+  document.getElementById('p3DetailsPanel').classList.add('revealed');
+}
+
+function hideDetails() {
+  document.getElementById('screen-page3s1').classList.remove('details-open');
+  document.getElementById('p3DetailsPanel').classList.remove('revealed');
+}
+
+// Navigation
+function backToPage2() {
+  // 1. Always reset page 3 to State 1
+  document.getElementById('screen-page3s1').classList.remove('details-open');
+  const panel = document.getElementById('p3DetailsPanel');
+  if (panel) panel.classList.remove('revealed');
+
+  // 2. Navigate to page 2
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-page2').classList.add('active');
+
+  // 3. Restore strip to last viewed card AFTER paint (no reset in between)
+  const strip = document.getElementById('p2-strip');
+  if (strip) {
+    strip.style.transition = 'none';
+    strip.style.transform = `translateX(-${currentCardIndex * 393}px)`;
+    requestAnimationFrame(() => {
+      strip.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)';
+    });
+  }
+
+  // 4. Update counter
+  const counter = document.getElementById('p2-counter');
+  if (counter) counter.textContent = `${currentCardIndex + 1}/${matchedRestaurants.length}`;
+}
+
+function navigate(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+screen).classList.add('active');
+}
+
+// Scale phone to fit mobile screens
+function scalePhone() {
+  const phone = document.querySelector('.phone');
+  if (!phone) return;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  if (vw <= 500) {
+    // Always scale to fill full width — height scrolls/clips if needed
+    const scale = vw / 393;
+    phone.style.transform = `scale(${scale})`;
+    phone.style.transformOrigin = 'top left';
+    phone.style.marginTop = '0px';
+    phone.style.marginLeft = '0px';
+    // Set body/phone wrapper to actual scaled size so no scroll
+    document.body.style.width = vw + 'px';
+    document.body.style.height = vh + 'px';
+    document.body.style.alignItems = 'flex-start';
+    document.body.style.justifyContent = 'flex-start';
+  } else {
+    phone.style.transform = '';
+    phone.style.transformOrigin = '';
+    phone.style.marginTop = '';
+    phone.style.marginLeft = '';
+    document.body.style.width = '';
+    document.body.style.height = '';
+    document.body.style.alignItems = '';
+    document.body.style.justifyContent = '';
+  }
+}
+scalePhone();
+window.addEventListener('resize', scalePhone);
+
+
+function updateCity(city) {
+  const el = document.getElementById('city-name');
+  if (el && city) el.textContent = city.toUpperCase();
+}
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(pos => {
+    // Cache coordinates for transport time calculations
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+    fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`)
+      .then(r=>r.json())
+      .then(data => {
+        const a = data.address;
+        updateCity(a.city||a.town||a.village||a.suburb||a.county||'VANCOUVER');
+      }).catch(()=>{});
+  },()=>{ /* permission denied — transport times will use fallback */ });
+}
+
+// Bubbles
+const bubbles = [
+  { label:"Girls night out", size:92, left:153, top:67, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 92 92\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.3079 6.6674 -6.6674 3.3079 22.742 7.236)\"><stop stop-color=\"rgba(82,0,255,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(169,128,255,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 92 92\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.2225 5.3753 -5.3753 -2.2225 61.506 38.247)\"><stop stop-color=\"rgba(49,181,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(145,183,235,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(240,185,214,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"Feeling cozy", size:84, left:244, top:39, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(253,150,92,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(254,203,174,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(255,44,133,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,142,165,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(252,240,196,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"Date night", size:66, left:190, top:3, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)\"><stop stop-color=\"rgba(253,150,92,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(254,203,174,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)\"><stop stop-color=\"rgba(255,44,133,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,142,165,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(252,240,196,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"Solo & chill", size:84, left:-8, top:141, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(253,150,92,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(254,203,174,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(255,44,133,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,142,165,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(252,240,196,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"single night", size:72, left:92, top:25, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(183,129,31,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(219,192,143,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(55,179,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(122,202,247,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(188,225,239,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"quick bite", size:72, left:331, top:35, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(183,129,31,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(219,192,143,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(55,179,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(122,202,247,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(188,225,239,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"spicy", size:66, left:135, top:158, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)\"><stop stop-color=\"rgba(255,0,4,1)\" offset=\"0\"/><stop stop-color=\"rgba(255,128,130,0.5)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)\"><stop stop-color=\"rgba(254,38,0,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,115,53,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,193,106,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"something different", size:66, left:306, top:106, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)\"><stop stop-color=\"rgba(255,0,4,1)\" offset=\"0\"/><stop stop-color=\"rgba(255,128,130,0.5)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)\"><stop stop-color=\"rgba(254,38,0,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,115,53,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,193,106,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"hangover cure", size:72, left:2, top:65, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(23,98,89,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(139,177,172,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(0,139,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(198,176,117,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"hangover cure", size:72, left:232, top:128, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(23,98,89,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(139,177,172,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(0,139,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(149,167,123,1)\" offset=\"0.75\"/><stop stop-color=\"rgba(198,176,117,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"Fresh air & food", size:84, left:68, top:98, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(0,255,242,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(128,255,249,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(0,204,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(146,242,136,1)\" offset=\"0.75\"/><stop stop-color=\"rgba(195,255,135,1)\" offset=\"1\"/></radialGradient></defs></svg>')" }
+];
+
+const selected = new Set();
+const container = document.getElementById('tags-container');
+const allWrappers = [];
+
+bubbles.forEach((b, i) => {
+  const wrapper = document.createElement('div');
+  const driftIdx = (i % 6) + 1;
+  const driftDur = (9 + (driftIdx * 1.3)).toFixed(1);
+  const driftDelay = ((driftIdx * 1.1 + i * 0.4) % 8).toFixed(1);
+  wrapper.style.cssText = `position:absolute;left:${b.left}px;top:${b.top}px;width:${b.size}px;height:${b.size}px;border-radius:44.5px;cursor:pointer;transition:transform 0.2s,outline 0.2s,opacity 0.2s;animation:bubbleDrift${driftIdx} ${driftDur}s ease-in-out ${driftDelay}s infinite;`;
+  const bgDiv = document.createElement('div');
+  bgDiv.style.cssText = `position:absolute;inset:0;border-radius:44.5px;filter:blur(2px);background-image:${b.bg};`;
+  wrapper.appendChild(bgDiv);
+  const isAfacad = b.font === 'afacad';
+  const label = document.createElement('p');
+  label.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:${isAfacad?"'Afacad',sans-serif":"'Inter',sans-serif"};font-weight:600;font-size:${isAfacad?'14px':'11.04px'};line-height:1.2;color:white;text-align:center;text-transform:capitalize;font-style:normal;padding:6px;word-break:break-word;`;
+  label.textContent = b.label.trim();
+  wrapper.appendChild(label);
+  wrapper.addEventListener('mouseenter', () => { if (selected.has(i)||selected.size>=3) return; wrapper.style.transform='scale(1.05)'; });
+  wrapper.addEventListener('mouseleave', () => { if (selected.has(i)) return; wrapper.style.transform='scale(1)'; });
+  wrapper.addEventListener('click', () => {
+    if (selected.has(i)) {
+      selected.delete(i);
+      wrapper.style.animationPlayState='running'; wrapper.style.transform=''; wrapper.style.outline='';
+    } else {
+      if (selected.size>=3) return;
+      selected.add(i);
+      wrapper.style.animationPlayState='paused'; wrapper.style.transform='scale(1.1)'; wrapper.style.outline='4px solid rgba(255,255,255,0.8)';
+    }
+    allWrappers.forEach((w,j) => {
+      if (selected.has(j)) { w.style.opacity='1'; w.style.cursor='pointer'; }
+      else if (selected.size>=3) { w.style.opacity='0.4'; w.style.cursor='not-allowed'; }
+      else { w.style.opacity='1'; w.style.cursor='pointer'; }
+    });
+    const foot = document.getElementById('lets-vibe-foot');
+    if (selected.size>0) { foot.style.opacity='1'; foot.style.pointerEvents='all'; }
+    else { foot.style.opacity='0'; foot.style.pointerEvents='none'; }
+  });
+  container.appendChild(wrapper);
+  allWrappers.push(wrapper);
+});
+
+document.getElementById('screen-starter').classList.add('active');
+
+// ── Page 3 logic ──────────────────────────────────────────────
+
+const PRICE_LABELS = {'$':'/budget','$$':'/moderate','$$$':'/upscale','$$$$':'/fine dining'};
+
+const RESTAURANT_VIBES = {
+  'combine':['Girls night out','Feeling cozy','Something different'],
+  'miku':['Fresh air & food','Single night','Girls night out'],
+  'tacofino':['Quick bite','Hangover cure','Feeling cozy'],
+  'botanist':['Fresh air & food','Girls night out','Single night'],
+  'forage':['Feeling cozy','Something different','Hangover cure'],
+  'pourhouse':['Single night','Hangover cure','Girls night out'],
+  'pidgin':['Something different','Girls night out','Spicy'],
+  'still':['Fresh air & food','Single night','Girls night out'],
+  'bao-bei':['Something different','Feeling cozy','Spicy'],
+  'chambar':['Girls night out','Feeling cozy','Single night'],
+  'the-birds-and-bees':['Girls night out','Hangover cure','Quick bite'],
+  'nuba':['Quick bite','Something different','Fresh air & food'],
+  'reflections':['Fresh air & food','Girls night out','Something different'],
+  'nightingale':['Feeling cozy','Girls night out','Single night'],
+  'kafka':['Quick bite','Feeling cozy','Hangover cure'],
+  'juniper':['Fresh air & food','Something different','Feeling cozy'],
+  'elisa':['Girls night out','Single night','Something different'],
+  'campo':['Spicy','Something different','Feeling cozy'],
+  'the-mackenzie-room':['Single night','Girls night out','Something different'],
+  'ask-for-luigi':['Feeling cozy','Girls night out','Quick bite'],
+  'save-on-meats':['Hangover cure','Quick bite','Spicy'],
+  'hawksworth':['Girls night out','Single night','Fresh air & food'],
+  'the-acorn':['Fresh air & food','Something different','Feeling cozy'],
+  'kissa-tanto':['Something different','Girls night out','Spicy']
+};
+
+const p3Votes = {};
+const p3UserVibes = {};
+
+function p3DrawRing(score) {
+  const ring = document.getElementById('p3-ring-fill');
+  if (!ring) return;
+  const circumference = 268.50;
+  const pct = Math.max(0, Math.min(100, score));
+  const offset = circumference * (1 - pct / 100);
+  // Reset to empty first (no transition), then animate to score
+  ring.style.transition = 'none';
+  ring.style.strokeDashoffset = circumference;
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      ring.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)';
+      ring.style.strokeDashoffset = offset;
+    });
+  });
+}
+
+function p3BuildDots(total, active) {
+  return Array.from({length: total}, (_, i) =>
+    `<div style="width:${i===active?'12px':'5px'};height:5px;border-radius:${i===active?'3px':'50%'};background:white;opacity:${i===active?'1':'0.4'};transition:all 0.2s;flex-shrink:0;"></div>`
+  ).join('');
+}
+
+const P3_PALETTES = [
+  ['#2d1b69','#11998e'],['#1a1a2e','#e94560'],['#134e5e','#71b280'],
+  ['#232526','#414345'],['#355c7d','#6c5b7b'],['#f7971e','#ffd200'],
+  ['#c94b4b','#4b134f'],['#56ab2f','#a8e063'],['#1d976c','#93f9b9'],
+  ['#373b44','#4286f4']
+];
+let p3CurrentPhoto = 0;
+const P3_PHOTO_COUNT = 10;
+
+function p3BuildPhotos(r) {
+  const base = r ? restaurants.findIndex(x => x.id === r.id) : 0;
+  return Array.from({length: P3_PHOTO_COUNT}, (_, i) => {
+    const p = P3_PALETTES[(base + i) % P3_PALETTES.length];
+    return `<div style="width:393px;height:700px;flex-shrink:0;background:linear-gradient(135deg,${p[0]} 0%,${p[1]} 100%);"></div>`;
+  }).join('');
+}
+
+function p3UpdateArrows() {
+  const left = document.getElementById('p3-arr-left');
+  const right = document.getElementById('p3-arr-right');
+  if (left) left.style.opacity = p3CurrentPhoto === 0 ? '0.25' : '1';
+  if (right) right.style.opacity = p3CurrentPhoto === P3_PHOTO_COUNT - 1 ? '0.25' : '1';
+}
+
+function p3PhotoNav(dir) {
+  p3CurrentPhoto = Math.max(0, Math.min(P3_PHOTO_COUNT - 1, p3CurrentPhoto + dir));
+  const strip = document.getElementById('p3-photo-strip');
+  if (strip) strip.style.transform = `translateX(-${p3CurrentPhoto * 393}px)`;
+  const dots = document.getElementById('p3-photo-dots');
+  if (dots) dots.innerHTML = p3BuildDots(P3_PHOTO_COUNT, p3CurrentPhoto);
+  p3UpdateArrows();
+}
+
+function populatePage3(r) {
+  if (!r) return;
+
+  // Photos
+  p3CurrentPhoto = 0;
+  const strip = document.getElementById('p3-photo-strip');
+  if (strip) { strip.innerHTML = p3BuildPhotos(r); strip.style.transform = 'translateX(0)'; }
+  const dots = document.getElementById('p3-photo-dots');
+  if (dots) dots.innerHTML = p3BuildDots(P3_PHOTO_COUNT, 0);
+  p3UpdateArrows();
+
+  // 1. Vibes: matched first, fill to 3 with restaurant fallbacks
+  const userVibes = getSelectedVibeLabels();
+  const rTags = (r.tags || []).map(t => t.toLowerCase());
+  const matched = userVibes.filter(v => rTags.some(t => t.includes(v) || v.includes(t)));
+  const fallbacks = (RESTAURANT_VIBES[r.id] || r.tags || [])
+    .map(v => v.toLowerCase())
+    .filter(v => !matched.includes(v));
+  const display = [...matched, ...fallbacks].slice(0, 3);
+  while (display.length < 3) display.push('');
+  ['p3-vibe-1','p3-vibe-2','p3-vibe-3'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = display[i] || '';
+  });
+
+  // 2. Score + ring
+  const score = r.vibeScore || 0;
+  const sc = document.getElementById('p3-score');
+  if (sc) sc.textContent = score;
+  p3DrawRing(score);
+
+  // 3. Votes — derived from score
+  const totalVotes = Math.round(r.vibeScore * 3.2); // scale to plausible community size
+  const upVotes = Math.round(totalVotes * (r.vibeScore / 100));
+  const downVotes = totalVotes - upVotes;
+  if (!p3Votes[r.id]) p3Votes[r.id] = { up: upVotes, down: downVotes, userVote: null };
+  else { p3Votes[r.id].up = upVotes; p3Votes[r.id].down = downVotes; }
+  p3RenderVotes(r.id);
+
+  // 4. Cuisine: first letter upper, rest lower, stacked
+  //    First line offset 2 chars right of second line, whole block centered
+  const cuisineEl = document.getElementById('p3-cuisine');
+  if (cuisineEl && r.cuisine) {
+    const words = r.cuisine.trim().split(' ');
+    const fmt = words.map((w, i) => i === 0 ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w.toLowerCase());
+    if (fmt.length === 1) {
+      cuisineEl.innerHTML = `<span style="display:block;text-align:center;">${fmt[0]}</span>`;
+    } else {
+      // Line 1: centered. Line 2+: left edge of first letter at container midpoint
+      cuisineEl.innerHTML = fmt.map((w, i) =>
+        i === 0
+          ? `<span style="display:block;text-align:center;">${w}</span>`
+          : `<span style="display:block;text-align:left;padding-left:50%;">${w}</span>`
+      ).join('');
+    }
+  }
+
+  // 5. Price
+  const pr = document.getElementById('p3-price'); if (pr) pr.textContent = r.price || '$$';
+  const pl = document.getElementById('p3-price-label'); if (pl) pl.textContent = PRICE_LABELS[r.price] || '/moderate';
+
+  // 6. Name + address
+  const nm = document.getElementById('p3-name'); if (nm) nm.textContent = r.name;
+
+  // State 2 walk-in data — default to dinner, call toggle to render correctly
+  const wr = document.getElementById('p3-walkin-reports');
+  if (wr) wr.textContent = (r.walkinReports || 52) + ' reports';
+  // Reset toggle to dinner state
+  const pill = document.getElementById('walkin-pill');
+  const dinnerLabel = document.getElementById('walkin-label-dinner');
+  const lunchLabel = document.getElementById('walkin-label-lunch');
+  if (pill) { pill.style.transition = 'none'; pill.style.left = '2px'; requestAnimationFrame(() => { pill.style.transition = 'left 0.25s cubic-bezier(.4,0,.2,1)'; }); }
+  if (dinnerLabel) dinnerLabel.style.color = '#020202';
+  if (lunchLabel) lunchLabel.style.color = 'white';
+  p3WalkinToggle('dinner');
+
+  // Init parking card
+  const parkingPill = document.getElementById('parking-pill');
+  const parkingDL = document.getElementById('parking-label-dinner');
+  const parkingLL = document.getElementById('parking-label-lunch');
+  if (parkingPill) { parkingPill.style.transition = 'none'; parkingPill.style.left = '2px'; requestAnimationFrame(() => { parkingPill.style.transition = 'left 0.25s cubic-bezier(.4,0,.2,1)'; }); }
+  if (parkingDL) parkingDL.style.color = '#020202';
+  if (parkingLL) parkingLL.style.color = 'white';
+  p3ParkingToggle('dinner');
+
+  // Transport times
+  updateTransportTimes(r);
+
+  // Community quotes
+  initCommunityQuotes(r);
+
+  // State 2 happy hour
+  const hhCountdown = document.getElementById('p3-hh-countdown');
+  const hhLabel = document.getElementById('p3-hh-label');
+  const hhOpen = document.getElementById('p3-hh-open');
+  const hhTimes = document.getElementById('p3-hh-times');
+  if (hhCountdown && hhLabel && hhOpen && hhTimes) {
+    // Real close time
+    const closeH = r.close > 24 ? r.close - 24 : r.close;
+    const closeDisplay = (closeH % 12 || 12) + (closeH >= 12 ? ' PM' : ' AM');
+    hhOpen.textContent = `OPEN UNTIL ${closeDisplay}`;
+
+    // Pick weekday vs weekend happy hour
+    const now = new Date();
+    const dow = now.getDay(); // 0=Sun, 6=Sat
+    const isWeekend = dow === 0 || dow === 6;
+    const hhRange = isWeekend ? r.hhWeekend : r.hhWeekday;
+    const h = now.getHours() + now.getMinutes() / 60;
+
+    if (hhRange) {
+      hhTimes.textContent = r.hhDays || '';
+      // Find which range is active or next
+      let state = null;
+      let bestCountdown = null;
+      for (const [hhS, hhE] of hhRange) {
+        if (h >= hhS && h < hhE) {
+          const total = Math.round((hhE - h) * 60);
+          const hrs = Math.floor(total / 60), mins = total % 60;
+          state = { label: 'LEFT IN HAPPY HOUR', time: hrs > 0 ? `${hrs}h${mins > 0 ? mins + 'm' : ''}` : `${mins}m` };
+          break;
+        } else if (h < hhS) {
+          const total = Math.round((hhS - h) * 60);
+          const hrs = Math.floor(total / 60), mins = total % 60;
+          const t = hrs > 0 ? `${hrs}h${mins > 0 ? mins + 'm' : ''}` : `${mins}m`;
+          if (!bestCountdown) bestCountdown = { label: 'TO HAPPY HOUR', time: t };
+        }
+      }
+      if (state) {
+        hhCountdown.textContent = state.time;
+        hhLabel.textContent = state.label;
+      } else if (bestCountdown) {
+        hhCountdown.textContent = bestCountdown.time;
+        hhLabel.textContent = bestCountdown.label;
+      } else {
+        hhCountdown.textContent = '—';
+        hhLabel.textContent = 'HAPPY HOUR ENDED';
+      }
+    } else if (r.hhWeekday || r.hhWeekend) {
+      // Has HH but not today
+      hhCountdown.textContent = '—';
+      hhLabel.textContent = isWeekend ? 'WEEKDAYS ONLY' : 'WEEKENDS ONLY';
+      hhTimes.textContent = r.hhDays || '';
+    } else {
+      // No happy hour at all
+      hhCountdown.textContent = '—';
+      hhLabel.textContent = 'NO HAPPY HOUR';
+      hhTimes.textContent = '';
+    }
+  }
+  const ad = document.getElementById('p3-address'); if (ad) ad.textContent = r.address;
+}
+
+function p3RenderVotes(id) {
+  const v = p3Votes[id];
+  if (!v) return;
+  const upCount = document.getElementById('p3-vote-up-count');
+  if (upCount) upCount.textContent = v.up;
+  const dnCount = document.getElementById('p3-vote-down-count');
+  if (dnCount) dnCount.textContent = v.down || 0;
+  const up = document.getElementById('p3-thumb-up');
+  const dn = document.getElementById('p3-thumb-down');
+  if (up) up.style.opacity = v.userVote === 'up' ? '1' : '0.7';
+  if (dn) dn.style.opacity = v.userVote === 'down' ? '1' : '0.7';
+}
+
+function p3Vote(dir) {
+  if (!currentRestaurant) return;
+  const id = currentRestaurant.id;
+  if (!p3Votes[id]) p3Votes[id] = { up: 0, down: 0, userVote: null };
+  const v = p3Votes[id];
+  if (v.userVote === dir) {
+    v[dir]--;
+    v.userVote = null;
+  } else {
+    if (v.userVote) v[v.userVote]--;
+    v[dir]++;
+    v.userVote = dir;
+  }
+  p3RenderVotes(id);
+}
+
+function p3OpenAddVibe() {
+  if (!currentRestaurant) return;
+  const id = currentRestaurant.id;
+  if (!p3UserVibes[id]) p3UserVibes[id] = [];
+  const slotsLeft = 3 - p3UserVibes[id].length;
+  if (slotsLeft <= 0) { return; }
+
+  // Reuse page 2 vibe modal — repurpose it for p3 suggestion mode
+  document.getElementById('vibe-slots-left').textContent = slotsLeft;
+  modalPendingSelection = new Set();
+  const container = document.getElementById('vibe-modal-bubbles');
+  const already = p3UserVibes[id].map(v => v.toLowerCase());
+  container.innerHTML = ALL_TAGS.map(v => {
+    const isSel = already.includes(v.toLowerCase());
+    return `<div id="p3modal-${v.replace(/[\s&]/g,'_')}" onclick="p3ToggleVibeSuggestion('${v}',${slotsLeft})" style="
+      padding:6px 14px;border-radius:20px;border:1px solid ${isSel?'#999':'black'};
+      cursor:${isSel?'default':'pointer'};background:${isSel?'#ccc':'white'};
+      opacity:${isSel?'0.5':'1'};transition:all 0.15s;">
+      <p class="fi" style="font-size:11px;color:black;letter-spacing:1px;white-space:nowrap;">${v}</p>
+    </div>`;
+  }).join('');
+
+  // Override DONE button to apply p3 suggestions
+  const doneBtn = document.getElementById('vibe-modal-done');
+  if (doneBtn) doneBtn.setAttribute('onclick','p3ApplyVibeSuggestion()');
+
+  const m = document.getElementById('vibe-modal');
+  const s = document.getElementById('vibe-modal-sheet');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => {
+    m.style.background = 'rgba(0,0,0,0.5)';
+    s.style.transform = 'translateY(0)';
+  });
+}
+
+const p3SuggestionPending = new Set();
+
+function p3ToggleVibeSuggestion(vibe, slotsLeft) {
+  const id = currentRestaurant ? currentRestaurant.id : null;
+  if (!id) return;
+  const already = (p3UserVibes[id] || []).map(v => v.toLowerCase());
+  if (already.includes(vibe.toLowerCase())) return;
+  const key = vibe.replace(/[\s&]/g,'_');
+  const el = document.getElementById('p3modal-' + key);
+  if (p3SuggestionPending.has(vibe)) {
+    p3SuggestionPending.delete(vibe);
+    if (el) { el.style.background='white'; el.querySelector('p').style.color='black'; }
+  } else {
+    if (p3SuggestionPending.size >= slotsLeft) return;
+    p3SuggestionPending.add(vibe);
+    if (el) { el.style.background='black'; el.querySelector('p').style.color='white'; }
+  }
+}
+
+function p3ApplyVibeSuggestion() {
+  if (!currentRestaurant) return;
+  const id = currentRestaurant.id;
+  if (!p3UserVibes[id]) p3UserVibes[id] = [];
+  p3SuggestionPending.forEach(v => { if (!p3UserVibes[id].includes(v)) p3UserVibes[id].push(v); });
+  p3SuggestionPending.clear();
+  closeVibeModal();
+  // Restore page 2 modal DONE to original
+  const doneBtn = document.getElementById('vibe-modal-done');
+  if (doneBtn) doneBtn.setAttribute('onclick','applyVibeModal()');
+}
+
+</script>
+</body>
+</html>

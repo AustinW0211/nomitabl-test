@@ -57,7 +57,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 @keyframes bubbleDrift5 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(2px,-3px)} 80%{transform:translate(-3px,-4px)} }
 @keyframes bubbleDrift6 { 0%,100%{transform:translate(0,0)} 40%{transform:translate(-2px,-2px)} 70%{transform:translate(2px,-5px)} }
 .p3-score-ring-bg   { fill: none; stroke: rgba(255,255,255,.1); stroke-width: 5; }
-.p3-score-ring-fill { fill: none; stroke: rgba(255,255,255,0.6); stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1); }
+.p3-score-ring-fill { fill: none; stroke: rgba(255,255,255,0.6); stroke-width: 5; stroke-linecap: round; }
 
 </style>
 </head>
@@ -1761,9 +1761,17 @@ function revealDetails() {
 }
 
 function hideDetails() {
-  document.getElementById('screen-page3s1').classList.remove('details-open');
-  document.getElementById('p3DetailsPanel').classList.remove('revealed');
-  // State 1 data is already populated — no redraw needed
+  const panel = document.getElementById('p3DetailsPanel');
+  const screen = document.getElementById('screen-page3s1');
+  // Freeze the score ring at its current value so it doesn't re-animate on slide-back
+  const ring = document.getElementById('p3-ring-fill');
+  if (ring) {
+    const currentOffset = ring.style.strokeDashoffset;
+    ring.style.transition = 'none';
+    ring.style.strokeDashoffset = currentOffset;
+  }
+  screen.classList.remove('details-open');
+  panel.classList.remove('revealed');
 }
 
 // Swipe up on State 1 → reveal State 2; swipe down on State 2 → hide
@@ -1895,6 +1903,10 @@ const bubbles = [
 const selected = new Set();
 const container = document.getElementById('tags-container');
 const allWrappers = [];
+// Create inner track div — bubbles append here, track width drives scroll
+const bubbleTrack = document.createElement('div');
+bubbleTrack.style.cssText = 'position:relative;height:233px;';
+container.appendChild(bubbleTrack);
 
 bubbles.forEach((b, i) => {
   const wrapper = document.createElement('div');
@@ -1929,22 +1941,55 @@ bubbles.forEach((b, i) => {
     if (selected.size>0) { foot.style.opacity='1'; foot.style.pointerEvents='all'; }
     else { foot.style.opacity='0'; foot.style.pointerEvents='none'; }
   });
-  container.appendChild(wrapper);
+  bubbleTrack.appendChild(wrapper);
   allWrappers.push(wrapper);
 });
 
-// Bubble scroll setup: container is the 393px viewport, inner div holds full content width
-const maxRight = Math.max(...bubbles.map(b => b.left + b.size));
-const totalW = maxRight + 20;
-// Set container as 393px wide scroll viewport
-container.style.cssText += ';width:393px;';
-// Wrap all bubble content in an inner positioned div for correct scroll width
-const bubbleTrack = document.createElement('div');
-bubbleTrack.style.cssText = `position:relative;width:${totalW}px;height:233px;flex-shrink:0;`;
-// Move existing children into track
-while (container.firstChild) bubbleTrack.appendChild(container.firstChild);
-container.appendChild(bubbleTrack);
-container.scrollLeft = 1;
+// Bubble scroll: repeat original cluster left and right as ghost copies
+const clusterLeft = -8;
+const clusterRight = 403;
+const clusterW = clusterRight - clusterLeft;
+const repeatGap = 8;
+const leftShift = -(clusterW + repeatGap);  // = -419
+const rightShift = clusterW + repeatGap;     // = +419
+
+// Ghost left and right repeats (visual only, not interactive)
+bubbles.slice(0, 10).forEach(b => {
+  [-1, 1].forEach(dir => {
+    const shift = dir === -1 ? leftShift : rightShift;
+    const ghost = document.createElement('div');
+    ghost.style.cssText = `position:absolute;left:${b.left + shift}px;top:${b.top}px;width:${b.size}px;height:${b.size}px;border-radius:44.5px;pointer-events:none;opacity:0.7;`;
+    const bgDiv = document.createElement('div');
+    bgDiv.style.cssText = `position:absolute;inset:0;border-radius:44.5px;filter:blur(2px);background-image:${b.bg};`;
+    ghost.appendChild(bgDiv);
+    const lbl = document.createElement('p');
+    lbl.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:12px;line-height:1.3;color:white;text-align:center;text-transform:capitalize;padding:8px;word-break:normal;overflow-wrap:normal;hyphens:none;`;
+    lbl.textContent = b.label.trim();
+    ghost.appendChild(lbl);
+    bubbleTrack.appendChild(ghost);
+  });
+});
+
+// Total track width: from leftmost ghost left edge to rightmost right edge
+// Left ghost leftmost: clusterLeft + leftShift = -8 + -419 = -427
+// Right ghost rightmost: clusterRight + rightShift = 403 + 419 = 822
+// We offset all positions by 427 so leftmost = 0
+const posOffset = Math.abs(clusterLeft + leftShift); // 427
+
+// Shift ALL children by posOffset
+Array.from(bubbleTrack.children).forEach(child => {
+  const curLeft = parseInt(child.style.left) || 0;
+  child.style.left = (curLeft + posOffset) + 'px';
+});
+
+const totalTrackW = 822 + posOffset + 20; // 1269px
+bubbleTrack.style.width = totalTrackW + 'px';
+
+// ScrollLeft to center the middle cluster
+// Middle cluster center in track = posOffset + clusterLeft + clusterW/2
+const middleCenter = posOffset + clusterLeft + clusterW / 2; // 427 - 8 + 205.5 = 624.5
+container.style.width = '393px';
+container.scrollLeft = middleCenter - 393 / 2; // 624.5 - 196.5 = 428
 
 // Hide scrollbar CSS
 const sbStyle = document.createElement('style');
@@ -2000,6 +2045,8 @@ function p3DrawRing(score) {
     requestAnimationFrame(() => {
       ring.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)';
       ring.style.strokeDashoffset = offset;
+      // After animation, remove transition so it never re-triggers on visibility change
+      setTimeout(() => { ring.style.transition = 'none'; }, 1500);
     });
   });
 }

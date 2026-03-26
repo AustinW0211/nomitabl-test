@@ -135,8 +135,8 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
     <!-- Tags -->
     <!-- Bubble viewport: fixed 393px centered on screen, scrollable content inside -->
-    <div style="position:absolute;left:0;top:470px;width:393px;height:233px;overflow:hidden;">
-      <div id="tags-container" style="height:233px;overflow-x:auto;overflow-y:hidden;position:relative;width:393px;scrollbar-width:none;-ms-overflow-style:none;"></div>
+    <div style="position:absolute;left:0;top:470px;width:393px;height:233px;">
+      <div id="tags-container" style="height:233px;overflow-x:auto;overflow-y:hidden;position:relative;width:393px;scrollbar-width:none;-ms-overflow-style:none;touch-action:pan-x;-webkit-overflow-scrolling:touch;"></div>
     </div>
 
     <!-- Foot: LET'S VIBE → Page 2 -->
@@ -1381,6 +1381,8 @@ function updateTransportTimes(r) {
       if (!el) return;
       const { num, unit } = fmt(mins);
       el.textContent = num;
+      // Loosen letter-spacing for hr format (e.g. "1h20") to avoid cramping
+      el.style.letterSpacing = mins >= 60 ? '0px' : '-1.2px';
       // Update the adjacent min label
       const unitEl = el.nextElementSibling;
       if (unitEl) unitEl.textContent = unit;
@@ -1761,6 +1763,7 @@ function revealDetails() {
 function hideDetails() {
   document.getElementById('screen-page3s1').classList.remove('details-open');
   document.getElementById('p3DetailsPanel').classList.remove('revealed');
+  // State 1 data is already populated — no redraw needed
 }
 
 // Swipe up on State 1 → reveal State 2; swipe down on State 2 → hide

@@ -1900,6 +1900,9 @@ const bubbles = [
 
 
 
+
+,
+  { label:"treat yourself", size:72, left:232, top:128, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(23,98,89,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(139,177,172,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(0,139,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(198,176,117,1)\" offset=\"1\"/></radialGradient></defs></svg>')" }
 ];
 
 const selected = new Set();
@@ -1955,32 +1958,49 @@ const repeatGap = 8;
 const leftShift = -(clusterW + repeatGap);  // = -419
 const rightShift = clusterW + repeatGap;     // = +419
 
-// Ghost left and right repeats — randomized tags, 3 sizes, slight position variation
+// Ghost left and right repeats — randomized tags, 3 sizes, no collisions
 const ghostTags = [
-  'late night', 'treat yourself', 'power lunch', 'vibe check',
-  'date night', 'girls night out', 'cozy vibes', 'quick bite',
-  'spicy mood', 'fresh air', 'something new', 'solo time'
+  'late night', 'power lunch', 'vibe check', 'cozy vibes',
+  'girls trip', 'date night', 'quick bite', 'something new',
+  'solo time', 'fresh air', 'spicy mood', 'treat yourself'
 ];
-const ghostSizes = [66, 78, 92]; // 3 sizes only
+const ghostBgs = bubbles.map(b => b.bg); // reuse original colour pool
+const ghostSizes = [66, 78, 92];
 
-bubbles.slice(0, 10).forEach((b, i) => {
-  [-1, 1].forEach(dir => {
-    const shift = dir === -1 ? leftShift : rightShift;
-    // Slightly randomize size and position for natural blend
-    const sizeOpts = ghostSizes;
-    const ghostSize = sizeOpts[i % sizeOpts.length];
-    const jitterX = (i % 3 - 1) * 8; // -8, 0, or +8
-    const jitterY = (i % 4 - 2) * 6; // -12, -6, 0, or +6
+[-1, 1].forEach(dir => {
+  const shift = dir === -1 ? leftShift : rightShift;
+  const placed = []; // track ghost positions for collision check
+
+  bubbles.slice(0, 11).forEach((b, i) => {
+    const ghostSize = ghostSizes[i % 3];
+    const gr = ghostSize / 2;
+
+    // Try small variations until no overlap
+    const offsets = [[0,0],[8,0],[-8,0],[0,8],[0,-8],[12,6],[-12,-6],[6,-10],[-6,10]];
+    let finalX = b.left + shift;
+    let finalY = b.top;
+
+    for (const [dx, dy] of offsets) {
+      const cx = b.left + shift + dx + gr;
+      const cy = b.top + dy + gr;
+      let ok = cy - gr >= 0 && cy + gr <= 230;
+      for (const [px, py, pr] of placed) {
+        const d = Math.sqrt((cx-px)**2+(cy-py)**2);
+        if (d < gr + pr + 4) { ok = false; break; }
+      }
+      if (ok) { finalX = b.left + shift + dx; finalY = b.top + dy; break; }
+    }
+
+    placed.push([finalX + gr, finalY + gr, gr]);
+
     const ghost = document.createElement('div');
-    ghost.style.cssText = `position:absolute;left:${b.left + shift + jitterX}px;top:${Math.max(0, b.top + jitterY)}px;width:${ghostSize}px;height:${ghostSize}px;border-radius:44.5px;pointer-events:none;opacity:0.65;`;
+    ghost.style.cssText = `position:absolute;left:${finalX}px;top:${Math.max(0,finalY)}px;width:${ghostSize}px;height:${ghostSize}px;border-radius:44.5px;pointer-events:none;opacity:1;`;
     const bgDiv = document.createElement('div');
-    bgDiv.style.cssText = `position:absolute;inset:0;border-radius:44.5px;filter:blur(2px);background-image:${b.bg};`;
+    bgDiv.style.cssText = `position:absolute;inset:0;border-radius:44.5px;filter:blur(2px);background-image:${ghostBgs[i % ghostBgs.length]};`;
     ghost.appendChild(bgDiv);
     const lbl = document.createElement('p');
     lbl.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:12px;line-height:1.3;color:white;text-align:center;text-transform:capitalize;padding:8px;word-break:normal;overflow-wrap:normal;hyphens:none;`;
-    // Use a different tag for ghost — cycle through ghost tags
-    const ghostLabel = ghostTags[(i + (dir === -1 ? 0 : 5)) % ghostTags.length];
-    lbl.textContent = ghostLabel;
+    lbl.textContent = ghostTags[(i + (dir === -1 ? 0 : 6)) % ghostTags.length];
     ghost.appendChild(lbl);
     bubbleTrack.appendChild(ghost);
   });

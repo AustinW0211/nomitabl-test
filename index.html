@@ -26,9 +26,10 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   50% { opacity: 0.5; transform: scale(0.85); }
 }
 /* Page 3 two-state transition */
+/* State 1 hero NEVER moves — it stays fixed underneath */
 #screen-page3s1.details-open .p3-hero {
-  transform: translateY(-100%);
-  transition: transform .25s cubic-bezier(.32,.72,0,1);
+  transform: none;
+  transition: none;
 }
 .p3-details-panel {
   position: absolute;
@@ -37,7 +38,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   z-index: 25;
   background: #d0cfcf;
   transform: translateY(100vh);
-  transition: transform .25s cubic-bezier(.32,.72,0,1);
+  transition: transform .4s cubic-bezier(.32,.72,0,1);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -46,13 +47,12 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   -webkit-backface-visibility: hidden;
 }
 .p3-details-panel::-webkit-scrollbar { display: none; }
-.p3-details-panel.revealed { transform: translateY(0); }
+.p3-details-panel.revealed { transform: translateY(0); transition: transform .4s cubic-bezier(.32,.72,0,1); }
 .p3-hero {
   position: absolute; inset: 0;
-  transition: transform .25s cubic-bezier(.32,.72,0,1);
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  /* No transition — State 1 is always fully rendered, never moves */
+  will-change: auto;
+}
 }
 @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(5px)} }
 
@@ -124,19 +124,22 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- SearchBar -->
-    <div style="position:absolute;height:136px;left:0;overflow:hidden;top:334px;width:393px;">
-      <div style="position:absolute;left:calc(50% - 179.5px);top:9px;transform:translateY(-50%);font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;text-transform:capitalize;color:black;">Build For The Curiosity</div>
+    <div style="position:absolute;height:136px;left:0;overflow:visible;top:334px;width:393px;z-index:20;">
+      <div style="position:absolute;left:calc(50% - 179.5px);top:3px;transform:translateY(-50%);font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;text-transform:capitalize;color:black;">Build For The Curiosity</div>
       <div style="position:absolute;right:16px;top:127px;transform:translateY(-50%);font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;color:black;text-align:right;white-space:nowrap;">Or Find Your Vibe</div>
-      <div style="position:absolute;left:calc(50% - 179.5px);top:31px;transform:translateY(-50%);white-space:nowrap;">
+      <div style="position:absolute;left:calc(50% - 179.5px);top:25px;transform:translateY(-50%);white-space:nowrap;">
         <span style="font-family:'Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:2px;color:white;">So...what we </span><span style="font-family:'Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:2px;background:linear-gradient(90deg,rgb(174,0,255) 0%,rgb(0,255,106) 29.808%,rgb(245,90,24) 66.827%,rgb(255,0,153) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Vibing &gt;:)...</span>
       </div>
-      <div style="position:absolute;left:calc(50% + 0.5px);top:calc(50% + 4px);transform:translate(-50%,-50%);background:white;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:32px;width:364px;overflow:hidden;">
+      <div style="position:absolute;left:calc(50% + 0.5px);top:calc(50% - 2px);transform:translate(-50%,-50%);background:white;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:32px;width:364px;overflow:visible;">
         <svg style="flex-shrink:0;width:28px;height:28px;" fill="none" viewBox="0 0 28 28">
           <g clip-path="url(#c1)"><path d="M27.7537 26.4569L23.1168 21.8199C25.3575 19.2431 26.5101 15.897 26.3318 12.4869C26.1535 9.07679 24.6581 5.86914 22.1609 3.54008C19.6637 1.21103 16.3597 -0.0574641 12.9455 0.00200006C9.53122 0.0614642 6.27344 1.44424 3.85884 3.85884C1.44424 6.27344 0.0614642 9.53122 0.00200006 12.9455C-0.0574641 16.3597 1.21103 19.6637 3.54008 22.1609C5.86914 24.6581 9.07679 26.1535 12.4869 26.3318C15.897 26.5101 19.2431 25.3575 21.8199 23.1168L26.4569 27.7537C26.6308 27.9158 26.8609 28.0041 27.0986 27.9999C27.3363 27.9957 27.5631 27.8994 27.7312 27.7312C27.8994 27.5631 27.9957 27.3363 27.9999 27.0986C28.0041 26.8609 27.9158 26.6308 27.7537 26.4569ZM1.88096 13.1978C1.88096 10.9595 2.54468 8.77152 3.78819 6.91048C5.03169 5.04945 6.79913 3.59894 8.86701 2.7424C10.9349 1.88586 13.2103 1.66175 15.4056 2.09841C17.6008 2.53507 19.6173 3.61289 21.1999 5.19558C22.7826 6.77826 23.8604 8.79472 24.2971 10.99C24.7338 13.1852 24.5097 15.4606 23.6531 17.5285C22.7966 19.5964 21.3461 21.3638 19.485 22.6073C17.624 23.8508 15.436 24.5146 13.1978 24.5146C10.1975 24.5109 7.32112 23.3174 5.1996 21.1959C3.07808 19.0744 1.8846 16.198 1.88096 13.1978Z" fill="url(#p1)"/></g>
           <defs><linearGradient id="p1" gradientUnits="userSpaceOnUse" x1="2.59463" x2="31.9571" y1="2.59463" y2="31.9571"><stop stop-color="#BDBDBD"/><stop offset="1" stop-color="#A1A1A1"/></linearGradient><clipPath id="c1"><rect fill="white" height="28" width="28"/></clipPath></defs>
         </svg>
-        <input type="text" placeholder="describe your craving ..." onkeydown="if(event.key==='Enter') navigate('page2')" style="font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;text-transform:capitalize;color:black;border:none;outline:none;background:transparent;width:302px;flex-shrink:0;">
+        <input id="vibe-search" type="text" placeholder="describe your craving ..." autocomplete="off" style="font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;text-transform:capitalize;color:black;border:none;outline:none;background:transparent;width:302px;flex-shrink:0;">
       </div>
+      <div id="vibe-suggestions" style="display:none;position:absolute;left:calc(50% + 0.5px);top:calc(50% + 28px);transform:translateX(-50%);background:white;border-radius:16px;width:364px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.12);z-index:10;"></div>
+      <!-- Selected vibe tags row -->
+      <div id="p1-selected-tags" style="position:absolute;left:16px;right:16px;top:94px;display:flex;flex-wrap:nowrap;gap:6px;align-items:center;justify-content:center;overflow:hidden;min-height:20px;"></div>
     </div>
 
     <!-- Tags -->
@@ -809,7 +812,7 @@ let matchedRestaurants = [];
 let currentCardIndex = 0;
 
 function getSelectedVibeLabels() {
-  return [...selected].map(i => bubbles[i].label.trim().toLowerCase());
+  return [...selected].map(i => allBubbleEntries[i]?.label.trim().toLowerCase()).filter(Boolean);
 }
 
 function getOpenStatus(r) {
@@ -926,14 +929,10 @@ function findMatchingRestaurants() {
 
 function removeVibeTag(vibeLabel, e) {
   e.stopPropagation();
-  const idx = bubbles.findIndex(b => b.label.trim().toLowerCase() === vibeLabel.toLowerCase());
-  if (idx >= 0 && selected.has(idx)) {
+  const idx = [...selected].find(i => allBubbleEntries[i]?.label.trim().toLowerCase() === vibeLabel.toLowerCase());
+  if (idx !== undefined) {
     selected.delete(idx);
-    const wrapper = allWrappers[idx];
-    if (wrapper) { wrapper.style.animationPlayState='running'; wrapper.style.transform=''; wrapper.style.outline=''; }
-    allWrappers.forEach(w => { w.style.opacity='1'; w.style.cursor='pointer'; });
-    const foot = document.getElementById('lets-vibe-foot');
-    if (selected.size === 0) { foot.style.opacity='0'; foot.style.pointerEvents='none'; }
+    syncAllWrappers();
   }
   populatePage2();
 }
@@ -1543,7 +1542,7 @@ function updateHHClock(r) {
     const arc1 = document.getElementById('hh-arc1');
     const arc2 = document.getElementById('hh-arc2');
     const arc1Visible = h >= 12 || h < 5;      // 3–5 PM: show from noon
-    const arc2Visible = h >= 20.5 || h < 5;    // 9 PM: show from 8:30 PM only
+    const arc2Visible = h >= 19 || h < 5;    // 9 PM: show from 7 PM
     if (arc1) arc1.setAttribute('opacity', arc1Visible ? '1' : '0');
     if (arc2 && arc2Visible) {
       const closeH = r.close > 24 ? r.close - 12 : r.close;
@@ -1685,9 +1684,10 @@ function closeVibeModal() {
 
 function applyVibeModal() {
   modalPendingSelection.forEach(vibe => {
-    const idx = bubbles.findIndex(b => b.label.trim().toLowerCase()===vibe.toLowerCase());
+    const idx = allBubbleEntries.findIndex(e => e.isOriginal && e.label.trim().toLowerCase()===vibe.toLowerCase());
     if (idx>=0 && !selected.has(idx)) selected.add(idx);
   });
+  syncAllWrappers();
   closeVibeModal();
   populatePage2();
 }
@@ -1762,22 +1762,39 @@ function selectRestaurant(idx) {
 
 // Page 3 transitions
 function revealDetails() {
+  // Pause heavy real-time updates during transition to free main thread
+  if (hhClockInterval) { clearInterval(hhClockInterval); hhClockInterval = null; }
+  if (quoteRotationTimer) { clearInterval(quoteRotationTimer); quoteRotationTimer = null; }
   document.getElementById('screen-page3s1').classList.add('details-open');
   document.getElementById('p3DetailsPanel').classList.add('revealed');
+  // Resume after transition completes
+  setTimeout(() => {
+    if (currentRestaurant) {
+      updateHHClock(currentRestaurant);
+      hhClockInterval = setInterval(() => updateHHClock(currentRestaurant), 1000);
+      initCommunityQuotes(currentRestaurant);
+    }
+  }, 400);
 }
 
 function hideDetails() {
-  const panel = document.getElementById('p3DetailsPanel');
-  const screen = document.getElementById('screen-page3s1');
-  // Freeze the score ring at its current value so it doesn't re-animate on slide-back
+  // Pause heavy intervals during transition
+  if (hhClockInterval) { clearInterval(hhClockInterval); hhClockInterval = null; }
+  if (quoteRotationTimer) { clearInterval(quoteRotationTimer); quoteRotationTimer = null; }
+  // Freeze ring — no re-animation
   const ring = document.getElementById('p3-ring-fill');
-  if (ring) {
-    const currentOffset = ring.style.strokeDashoffset;
-    ring.style.transition = 'none';
-    ring.style.strokeDashoffset = currentOffset;
-  }
-  screen.classList.remove('details-open');
-  panel.classList.remove('revealed');
+  if (ring) ring.style.transition = 'none';
+  // Remove State 2 — panel slides away, State 1 is already fully visible underneath
+  document.getElementById('screen-page3s1').classList.remove('details-open');
+  document.getElementById('p3DetailsPanel').classList.remove('revealed');
+  // Resume heavy intervals after transition
+  setTimeout(() => {
+    if (currentRestaurant) {
+      updateHHClock(currentRestaurant);
+      hhClockInterval = setInterval(() => updateHHClock(currentRestaurant), 1000);
+      initCommunityQuotes(currentRestaurant);
+    }
+  }, 400);
 }
 
 // Swipe up on State 1 → reveal State 2; swipe down on State 2 → hide
@@ -1890,12 +1907,12 @@ const bubbles = [
   { label:"Girls night out", size:92, left:153, top:67, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 92 92\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.3079 6.6674 -6.6674 3.3079 22.742 7.236)\"><stop stop-color=\"rgba(82,0,255,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(169,128,255,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 92 92\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.2225 5.3753 -5.3753 -2.2225 61.506 38.247)\"><stop stop-color=\"rgba(49,181,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(145,183,235,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(240,185,214,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
   { label:"Feeling cozy", size:84, left:244, top:39, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(253,150,92,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(254,203,174,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(255,44,133,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,142,165,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(252,240,196,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
   { label:"Date night", size:66, left:190, top:3, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)\"><stop stop-color=\"rgba(253,150,92,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(254,203,174,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)\"><stop stop-color=\"rgba(255,44,133,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,142,165,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(252,240,196,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"Solo & chill", size:84, left:-8, top:141, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(253,150,92,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(254,203,174,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(255,44,133,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,142,165,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(252,240,196,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"Solo & chill", size:84, left:-2, top:149, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(253,150,92,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(254,203,174,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(255,44,133,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,142,165,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(252,240,196,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
   { label:"single night", size:72, left:92, top:25, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(183,129,31,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(219,192,143,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(55,179,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(122,202,247,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(188,225,239,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"quick bite", size:72, left:331, top:35, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(183,129,31,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(219,192,143,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(55,179,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(122,202,247,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(188,225,239,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"quick bite", size:66, left:326, top:18, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(183,129,31,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(219,192,143,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(55,179,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(122,202,247,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(188,225,239,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
   { label:"spicy", size:66, left:135, top:158, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)\"><stop stop-color=\"rgba(255,0,4,1)\" offset=\"0\"/><stop stop-color=\"rgba(255,128,130,0.5)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)\"><stop stop-color=\"rgba(254,38,0,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,115,53,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,193,106,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"something different", size:66, left:306, top:106, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)\"><stop stop-color=\"rgba(255,0,4,1)\" offset=\"0\"/><stop stop-color=\"rgba(255,128,130,0.5)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)\"><stop stop-color=\"rgba(254,38,0,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,115,53,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,193,106,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"hangover cure", size:72, left:2, top:65, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(23,98,89,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(139,177,172,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(0,139,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(198,176,117,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"something different", size:72, left:302, top:108, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)\"><stop stop-color=\"rgba(255,0,4,1)\" offset=\"0\"/><stop stop-color=\"rgba(255,128,130,0.5)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)\"><stop stop-color=\"rgba(254,38,0,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,115,53,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,193,106,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
+  { label:"hangover cure", size:72, left:4, top:65, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(23,98,89,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(139,177,172,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(0,139,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(198,176,117,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
   { label:"Fresh air & food", size:84, left:68, top:98, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(0,255,242,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(128,255,249,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(0,204,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(146,242,136,1)\" offset=\"0.75\"/><stop stop-color=\"rgba(195,255,135,1)\" offset=\"1\"/></radialGradient></defs></svg>')" }
 
 
@@ -1905,133 +1922,229 @@ const bubbles = [
   { label:"treat yourself", size:72, left:232, top:128, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(23,98,89,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(139,177,172,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(0,139,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(198,176,117,1)\" offset=\"1\"/></radialGradient></defs></svg>')" }
 ];
 
-const selected = new Set();
-const container = document.getElementById('tags-container');
-const allWrappers = [];
-// Create inner track div — bubbles append here, track width drives scroll
-const bubbleTrack = document.createElement('div');
-bubbleTrack.style.cssText = 'position:relative;height:233px;';
-container.appendChild(bubbleTrack);
+const BG_PALETTE = bubbles.map(b => b.bg);
 
-bubbles.forEach((b, i) => {
-  const wrapper = document.createElement('div');
-  const driftIdx = (i % 6) + 1;
-  const driftDur = (9 + (driftIdx * 1.3)).toFixed(1);
-  const driftDelay = ((driftIdx * 1.1 + i * 0.4) % 8).toFixed(1);
-  wrapper.style.cssText = `position:absolute;left:${b.left}px;top:${b.top}px;width:${b.size}px;height:${b.size}px;border-radius:44.5px;cursor:pointer;transition:transform 0.2s,outline 0.2s,opacity 0.2s;animation:bubbleDrift${driftIdx} ${driftDur}s ease-in-out ${driftDelay}s infinite;`;
-  const bgDiv = document.createElement('div');
-  bgDiv.style.cssText = `position:absolute;inset:0;border-radius:44.5px;filter:blur(2px);background-image:${b.bg};`;
-  wrapper.appendChild(bgDiv);
-  const label = document.createElement('p');
-  label.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:12px;line-height:1.3;color:white;text-align:center;text-transform:capitalize;font-style:normal;padding:8px;word-break:normal;overflow-wrap:normal;hyphens:none;`;
-  label.textContent = b.label.trim();
-  wrapper.appendChild(label);
-  wrapper.addEventListener('mouseenter', () => { if (selected.has(i)||selected.size>=3) return; wrapper.style.transform='scale(1.05)'; });
-  wrapper.addEventListener('mouseleave', () => { if (selected.has(i)) return; wrapper.style.transform='scale(1)'; });
-  wrapper.addEventListener('click', () => {
-    if (selected.has(i)) {
-      selected.delete(i);
-      wrapper.style.animationPlayState='running'; wrapper.style.transform=''; wrapper.style.outline='';
-    } else {
-      if (selected.size>=3) return;
-      selected.add(i);
-      wrapper.style.animationPlayState='paused'; wrapper.style.transform='scale(1.1)'; wrapper.style.outline='4px solid rgba(255,255,255,0.8)';
-    }
-    allWrappers.forEach((w,j) => {
-      if (selected.has(j)) { w.style.opacity='1'; w.style.cursor='pointer'; }
-      else if (selected.size>=3) { w.style.opacity='0.4'; w.style.cursor='not-allowed'; }
-      else { w.style.opacity='1'; w.style.cursor='pointer'; }
+function cloneBg(i, copy) {
+  const offset = Math.abs(copy) * 2 + (copy < 0 ? 3 : 0);
+  return BG_PALETTE[(i + offset) % BG_PALETTE.length];
+}
+
+const clusterLeft  = Math.min(...bubbles.map(b => b.left));
+const clusterRight = Math.max(...bubbles.map(b => b.left + b.size));
+const clusterW     = clusterRight - clusterLeft;
+const GAP          = -30;
+const COPIES       = 2;
+const TRACK_W      = (COPIES * 2 + 1) * (clusterW + GAP);
+const originOffset = COPIES * (clusterW + GAP) - clusterLeft;
+
+const selected    = new Set();
+const container   = document.getElementById('tags-container');
+const allWrappers = {}; // { bubbleIdx → [wrapper, ...] } across all copies
+
+function syncAllWrappers() {
+  bubbles.forEach((_, i) => {
+    const ws = allWrappers[i] || [];
+    const isSel   = selected.has(i);
+    const isMaxed = !isSel && selected.size >= 3;
+    ws.forEach(w => {
+      w.style.opacity            = isMaxed ? '0.4' : '1';
+      w.style.cursor             = isMaxed ? 'not-allowed' : 'pointer';
+      w.style.animationPlayState = isSel ? 'paused' : 'running';
+      w.style.transform          = isSel ? 'scale(1.1)' : '';
+      w.style.outline            = isSel ? '4px solid rgba(255,255,255,0.8)' : '';
     });
-    const foot = document.getElementById('lets-vibe-foot');
-    if (selected.size>0) { foot.style.opacity='1'; foot.style.pointerEvents='all'; }
-    else { foot.style.opacity='0'; foot.style.pointerEvents='none'; }
   });
-  bubbleTrack.appendChild(wrapper);
-  allWrappers.push(wrapper);
-});
+  const foot = document.getElementById('lets-vibe-foot');
+  if (selected.size > 0) { foot.style.opacity='1'; foot.style.pointerEvents='all'; }
+  else                   { foot.style.opacity='0'; foot.style.pointerEvents='none'; }
+}
 
-// Bubble scroll: repeat original cluster left and right as ghost copies
-const clusterLeft = -8;
-const clusterRight = 403;
-const clusterW = clusterRight - clusterLeft;
-const repeatGap = 8;
-const leftShift = -(clusterW + repeatGap);  // = -419
-const rightShift = clusterW + repeatGap;     // = +419
+// Alternative vibe labels for clone copies — same positions, different text
+const CLONE_LABELS = {
+  '-2': ["wine & dine","rainy day in","celebrate","power lunch","late night","light & fresh","cocktail hour","impress someone","big breakfast","patio vibes","just the two of us"],
+  '-1': ["date night","treat yourself","group dinner","eat local","cocktail hour","big breakfast","impress someone","late night","patio vibes","wine & dine","celebrate"],
+   '1': ["solo dinner","big breakfast","wine & dine","rainy day in","late night","eat local","power lunch","patio vibes","just the two of us","cocktail hour","impress someone"],
+   '2': ["celebrate","light & fresh","just the two of us","group dinner","wine & dine","late night","big breakfast","cocktail hour","eat local","impress someone","power lunch"],
+};
 
-// Ghost left and right repeats — randomized tags, 3 sizes, no collisions
-const ghostTags = [
-  'late night', 'power lunch', 'vibe check', 'cozy vibes',
-  'girls trip', 'date night', 'quick bite', 'something new',
-  'solo time', 'fresh air', 'spicy mood', 'treat yourself'
-];
-const ghostBgs = bubbles.map(b => b.bg); // reuse original colour pool
-const ghostSizes = [66, 78, 92];
-
-[-1, 1].forEach(dir => {
-  const shift = dir === -1 ? leftShift : rightShift;
-  const placed = []; // track ghost positions for collision check
-
-  bubbles.slice(0, 11).forEach((b, i) => {
-    const ghostSize = ghostSizes[i % 3];
-    const gr = ghostSize / 2;
-
-    // Try small variations until no overlap
-    const offsets = [[0,0],[8,0],[-8,0],[0,8],[0,-8],[12,6],[-12,-6],[6,-10],[-6,10]];
-    let finalX = b.left + shift;
-    let finalY = b.top;
-
-    for (const [dx, dy] of offsets) {
-      const cx = b.left + shift + dx + gr;
-      const cy = b.top + dy + gr;
-      let ok = cy - gr >= 0 && cy + gr <= 230;
-      for (const [px, py, pr] of placed) {
-        const d = Math.sqrt((cx-px)**2+(cy-py)**2);
-        if (d < gr + pr + 4) { ok = false; break; }
-      }
-      if (ok) { finalX = b.left + shift + dx; finalY = b.top + dy; break; }
-    }
-
-    placed.push([finalX + gr, finalY + gr, gr]);
-
-    const ghost = document.createElement('div');
-    ghost.style.cssText = `position:absolute;left:${finalX}px;top:${Math.max(0,finalY)}px;width:${ghostSize}px;height:${ghostSize}px;border-radius:44.5px;pointer-events:none;opacity:1;`;
-    const bgDiv = document.createElement('div');
-    bgDiv.style.cssText = `position:absolute;inset:0;border-radius:44.5px;filter:blur(2px);background-image:${ghostBgs[i % ghostBgs.length]};`;
-    ghost.appendChild(bgDiv);
-    const lbl = document.createElement('p');
-    lbl.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:12px;line-height:1.3;color:white;text-align:center;text-transform:capitalize;padding:8px;word-break:normal;overflow-wrap:normal;hyphens:none;`;
-    lbl.textContent = ghostTags[(i + (dir === -1 ? 0 : 6)) % ghostTags.length];
-    ghost.appendChild(lbl);
-    bubbleTrack.appendChild(ghost);
+// Build a flat list of all bubbles across all copies — each is independent
+const allBubbleEntries = []; // { label, bg, size, left, top, isOriginal }
+for (let copy = -COPIES; copy <= COPIES; copy++) {
+  const labelSet = CLONE_LABELS[String(copy)];
+  bubbles.forEach((b, i) => {
+    allBubbleEntries.push({
+      label:      copy === 0 ? b.label.trim() : (labelSet ? labelSet[i] : b.label.trim()),
+      bg:         copy === 0 ? b.bg : cloneBg(i, copy),
+      size:       b.size,
+      left:       originOffset + copy * (clusterW + GAP) + b.left,
+      top:        b.top,
+      isOriginal: copy === 0,
+      copy, bubbleIdx: i,
+    });
   });
-});
+}
 
-// Total track width: from leftmost ghost left edge to rightmost right edge
-// Left ghost leftmost: clusterLeft + leftShift = -8 + -419 = -427
-// Right ghost rightmost: clusterRight + rightShift = 403 + 419 = 822
-// We offset all positions by 427 so leftmost = 0
-const posOffset = Math.abs(clusterLeft + leftShift); // 427
-
-// Shift ALL children by posOffset
-Array.from(bubbleTrack.children).forEach(child => {
-  const curLeft = parseInt(child.style.left) || 0;
-  child.style.left = (curLeft + posOffset) + 'px';
-});
-
-const totalTrackW = 822 + posOffset + 20; // 1269px
-bubbleTrack.style.width = totalTrackW + 'px';
-
-// ScrollLeft to center the middle cluster
-// Middle cluster center in track = posOffset + clusterLeft + clusterW/2
-const middleCenter = posOffset + clusterLeft + clusterW / 2; // 427 - 8 + 205.5 = 624.5
+const bubbleTrack = document.createElement('div');
+bubbleTrack.style.cssText = `position:relative;height:233px;width:${TRACK_W}px;`;
+container.appendChild(bubbleTrack);
 container.style.width = '393px';
-container.scrollLeft = middleCenter - 393 / 2; // 624.5 - 196.5 = 428
 
-// Hide scrollbar CSS
+function syncAllWrappers() {
+  document.querySelectorAll('.vibe-bubble-wrapper').forEach(w => {
+    const idx    = parseInt(w.dataset.entryIdx);
+    const isSel  = selected.has(idx);
+    const isMax  = !isSel && selected.size >= 3;
+    w.style.opacity            = isMax ? '0.4' : '1';
+    w.style.cursor             = isMax ? 'not-allowed' : 'pointer';
+    w.style.animationPlayState = isSel ? 'paused' : 'running';
+    w.style.transform          = isSel ? 'scale(1.1)' : '';
+    w.style.outline            = isSel ? '4px solid rgba(255,255,255,0.8)' : '';
+  });
+  const foot = document.getElementById('lets-vibe-foot');
+  if (selected.size > 0) { foot.style.opacity='1'; foot.style.pointerEvents='all'; }
+  else                   { foot.style.opacity='0'; foot.style.pointerEvents='none'; }
+
+  // Update selected tags row on page 1
+  const tagsRow = document.getElementById('p1-selected-tags');
+  if (tagsRow) {
+    tagsRow.innerHTML = [...selected].map(idx => {
+      const label = allBubbleEntries[idx]?.label.trim() || '';
+      return `<div style="flex:1;padding:4px 8px 4px 12px;border-radius:20px;border:1px solid black;background:black;display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:0;">
+        <p class="fi" style="font-weight:400;font-size:9px;color:white;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:normal;">${label}</p>
+        <div onclick="removeVibeTag('${label.replace(/'/g,"\\'")}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+allBubbleEntries.forEach((entry, idx) => {
+  const driftIdx   = (entry.bubbleIdx % 6) + 1;
+  const driftDur   = (9 + driftIdx * 1.3).toFixed(1);
+  const driftDelay = ((driftIdx * 1.1 + idx * 0.4) % 8).toFixed(1);
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'vibe-bubble-wrapper';
+  wrapper.dataset.entryIdx = idx;
+  wrapper.style.cssText = `position:absolute;left:${entry.left}px;top:${entry.top}px;width:${entry.size}px;height:${entry.size}px;border-radius:44.5px;cursor:pointer;transition:transform 0.2s,outline 0.2s,opacity 0.2s;animation:bubbleDrift${driftIdx} ${driftDur}s ease-in-out ${driftDelay}s infinite;`;
+
+  const bgDiv = document.createElement('div');
+  bgDiv.style.cssText = `position:absolute;inset:0;border-radius:44.5px;filter:blur(2px);background-image:${entry.bg};`;
+  wrapper.appendChild(bgDiv);
+
+  const lbl = document.createElement('p');
+  lbl.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:12px;line-height:1.3;color:white;text-align:center;text-transform:capitalize;font-style:normal;padding:8px;word-break:normal;overflow-wrap:normal;hyphens:none;`;
+  lbl.textContent = entry.label;
+  wrapper.appendChild(lbl);
+
+  wrapper.addEventListener('mouseenter', () => { if (selected.has(idx)||selected.size>=3) return; wrapper.style.transform='scale(1.05)'; });
+  wrapper.addEventListener('mouseleave', () => { if (selected.has(idx)) return; wrapper.style.transform=''; });
+  wrapper.addEventListener('click', () => {
+    if (selected.has(idx)) { selected.delete(idx); }
+    else { if (selected.size>=3) return; selected.add(idx); }
+    syncAllWrappers();
+  });
+
+  bubbleTrack.appendChild(wrapper);
+});
+
+requestAnimationFrame(() => {
+  const mid = originOffset + clusterLeft + clusterW / 2;
+  container.scrollLeft = Math.max(0, mid - 393 / 2);
+});
+
+let _down=false,_sx,_sl;
+container.addEventListener('mousedown', e=>{_down=true;_sx=e.pageX;_sl=container.scrollLeft;e.preventDefault();});
+document.addEventListener('mouseup',   ()=>_down=false);
+document.addEventListener('mousemove', e=>{if(!_down)return;container.scrollLeft=_sl-(e.pageX-_sx);});
+
 const sbStyle = document.createElement('style');
-sbStyle.textContent = '#tags-container::-webkit-scrollbar { display: none; }';
+sbStyle.textContent='#tags-container::-webkit-scrollbar{display:none}';
 document.head.appendChild(sbStyle);
 
+// ── Search suggestions ─────────────────────────────────────────
+const VIBE_KEYWORDS = {
+  "Girls night out":     ["girls","ladies","friends","gno","squad","girlfriends","night out","besties","women"],
+  "Feeling cozy":        ["cozy","cosy","warm","comfort","comfortable","snug","fireplace","homey","blanket","intimate"],
+  "Date night":          ["date","romantic","romance","couple","anniversary","love","partner","two","intimate"],
+  "Solo & chill":        ["solo","alone","myself","quiet","chill","me time","relax","low key","independent"],
+  "single night":        ["single","solo night","by myself","lone","just me","one person"],
+  "quick bite":          ["quick","fast","rush","grab","bite","takeout","to go","busy","speedy","on the go"],
+  "spicy":               ["spicy","heat","hot","bold","kick","fire","chilli","jalapeño","fiery","spice"],
+  "something different": ["different","unique","unusual","adventurous","new","explore","exotic","weird","unexpected","surprise"],
+  "hangover cure":       ["hangover","recovery","morning after","greasy","cure","rough night","headache","brunch","comfort food"],
+  "Fresh air & food":    ["outdoor","patio","fresh air","outside","terrace","garden","view","waterfront","nature","alfresco"],
+  "treat yourself":      ["treat","splurge","fancy","luxury","indulge","deserve","reward","upscale","spoil","special"],
+  "wine & dine":         ["wine","dine","wining","dining","sommelier","elegant","fine dining","classy","upscale"],
+  "late night":          ["late","midnight","night","after hours","last call","2am","evening","nocturnal","night owl"],
+  "celebrate":           ["celebrate","celebration","birthday","party","occasion","special","milestone","anniversary","festive","event"],
+  "patio vibes":         ["patio","terrace","rooftop","outside","sun","summer","garden","alfresco","deck"],
+  "group dinner":        ["group","large party","family","team","colleagues","crew","big table","gathering","everyone"],
+  "big breakfast":       ["breakfast","brunch","eggs","morning","pancakes","waffles","bacon","brunch spot","early"],
+  "light & fresh":       ["light","fresh","healthy","salad","clean","plant","vegan","vegetarian","wholesome","greens"],
+  "cocktail hour":       ["cocktail","drinks","bar","happy hour","aperitif","craft","mixology","sipping","tipple"],
+  "impress someone":     ["impress","boss","client","date","in-laws","special guest","wow","show off","first impression"],
+  "rainy day in":        ["rainy","rain","cozy","inside","grey","cloudy","weather","stormy","gloomy","indoor"],
+  "just the two of us":  ["two","couple","partner","intimate","romantic","just us","twosome","duo","together"],
+  "eat local":           ["local","neighbourhood","nearby","community","vancouver","bc","farm","homegrown","independent"],
+  "solo dinner":         ["solo","alone","myself","one","single","just me","quiet dinner"],
+  "power lunch":         ["lunch","business","work","meeting","professional","midday","power","client lunch"],
+};
+
+const searchInput = document.getElementById('vibe-search');
+const suggestBox  = document.getElementById('vibe-suggestions');
+
+function getSuggestions(val) {
+  const q = val.toLowerCase().trim();
+  if (!q) return [];
+  const seen = new Set();
+  const hits = [];
+  // Get all unique labels from allBubbleEntries
+  allBubbleEntries.forEach(e => {
+    const label = e.label.trim();
+    if (seen.has(label.toLowerCase())) return;
+    const kws = VIBE_KEYWORDS[label] || [];
+    if (label.toLowerCase().includes(q) || kws.some(k => k.includes(q))) {
+      seen.add(label.toLowerCase());
+      hits.push(label);
+    }
+  });
+  return hits.slice(0, 5);
+}
+
+function renderSuggestions(val) {
+  const list = getSuggestions(val);
+  if (!list.length) { suggestBox.style.display = 'none'; return; }
+  suggestBox.innerHTML = list.map((label, idx) =>
+    `<div onclick="pickSuggestion('${label.replace(/'/g,"\\'")}');event.stopPropagation()"
+      onmouseenter="this.style.background='#f5f5f5'" onmouseleave="this.style.background='white'"
+      style="padding:10px 16px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:1px;color:black;cursor:pointer;text-transform:capitalize;background:white;${idx < list.length-1 ? 'border-bottom:1px solid #f0f0f0;' : ''}">${label}</div>`
+  ).join('');
+  suggestBox.style.display = 'block';
+}
+
+function pickSuggestion(label) {
+  suggestBox.style.display = 'none';
+  searchInput.value = '';
+  // Find the first unselected entry with this label
+  const idx = allBubbleEntries.findIndex(e => e.label.trim().toLowerCase() === label.toLowerCase() && !selected.has(allBubbleEntries.indexOf(e)));
+  const actualIdx = allBubbleEntries.findIndex(e => e.label.trim().toLowerCase() === label.toLowerCase());
+  if (actualIdx >= 0 && !selected.has(actualIdx) && selected.size < 3) {
+    selected.add(actualIdx);
+    syncAllWrappers();
+  }
+}
+
+searchInput.addEventListener('input', () => renderSuggestions(searchInput.value));
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const list = getSuggestions(searchInput.value);
+    if (list.length) pickSuggestion(list[0]);
+    else navigate('page2');
+  }
+  if (e.key === 'Escape') suggestBox.style.display = 'none';
+});
 document.getElementById('screen-starter').classList.add('active');
 
 // ── Page 3 logic ──────────────────────────────────────────────

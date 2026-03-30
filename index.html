@@ -18,6 +18,12 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 }
 .screen { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
 .screen.active { opacity: 1; pointer-events: all; }
+.screen.slide-out-left { transform: translateX(-30%); opacity: 0; transition: transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s ease; }
+.screen.slide-in-right { transform: translateX(100%); opacity: 0; }
+.screen.slide-in-right.active { transform: translateX(0); opacity: 1; transition: transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s ease; }
+.screen.slide-out-right { transform: translateX(100%); opacity: 0; transition: transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s ease; }
+.screen.slide-in-left { transform: translateX(-30%); opacity: 0; }
+.screen.slide-in-left.active { transform: translateX(0); opacity: 1; transition: transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s ease; }
 .fa { font-family: 'Afacad', sans-serif !important; }
 .fi { font-family: 'Inter', sans-serif !important; }
 .fm { font-family: 'DM Mono', monospace !important; }
@@ -798,7 +804,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Scrollable body -->
-    <div style="position:absolute;top:104px;left:0;right:0;bottom:80px;overflow-y:auto;padding:0 16px 24px;box-sizing:border-box;">
+    <div style="position:absolute;top:104px;left:0;right:0;bottom:80px;overflow-y:auto;overflow-x:hidden;padding:0 16px 24px;box-sizing:border-box;">
 
       <!-- Photos -->
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:10px;margin-top:4px;">PHOTOS</p>
@@ -834,12 +840,12 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
       <!-- Happy Hours -->
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:4px;">HAPPY HOURS <span style="font-weight:400;color:#999;font-size:10px;letter-spacing:1px;">OPTIONAL</span></p>
-      <div style="display:flex;gap:10px;margin-bottom:12px;margin-top:10px;">
-        <div style="flex:1;">
+      <div style="display:flex;gap:10px;margin-bottom:12px;margin-top:10px;width:100%;box-sizing:border-box;">
+        <div style="flex:1;min-width:0;">
           <p class="fi" style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:6px;">FROM</p>
           <input id="hh-from" type="time" style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"/>
         </div>
-        <div style="flex:1;">
+        <div style="flex:1;min-width:0;">
           <p class="fi" style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:6px;">TO</p>
           <input id="hh-to" type="time" style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"/>
         </div>
@@ -857,7 +863,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
   <!-- Cuisine modal -->
-  <div id="cuisine-modal" onclick="closeCuisineModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
+  <div id="cuisine-modal" onclick="closeCuisineModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:300;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
     <div id="cuisine-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Add a cuisine</p>
@@ -973,7 +979,7 @@ function buildDots(count, active) {
 function buildCard(r, idx, total) {
   const photoCount = 5;
   return `<div style="width:393px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:16px 16px 100px;height:100%;">
-    <div style="position:relative;width:360px;height:600px;border-radius:12px;overflow:hidden;flex-shrink:0;">
+    <div style="position:relative;width:360px;height:590px;border-radius:12px;overflow:hidden;flex-shrink:0;">
       <div id="photos-${idx}" style="display:flex;width:100%;height:100%;transition:transform 0.3s ease;will-change:transform;">
         ${buildPhotoStrip(r,idx)}
       </div>
@@ -990,14 +996,14 @@ function buildCard(r, idx, total) {
       <div style="position:absolute;background:rgba(0,0,0,0.2);left:292.5px;border-radius:22px;width:58px;height:58px;top:10px;display:flex;align-items:center;justify-content:center;z-index:4;">
         <span class="fa" style="font-weight:600;font-size:28px;color:white;">${r.vibeScore}</span>
       </div>
-      <div style="position:absolute;left:16px;bottom:122px;z-index:4;pointer-events:none;">${renderOpenStatus(r)}</div>
-      <div style="position:absolute;left:16px;bottom:72px;z-index:4;pointer-events:none;">
+      <div style="position:absolute;left:16px;bottom:132px;z-index:4;pointer-events:none;">${renderOpenStatus(r)}</div>
+      <div style="position:absolute;left:16px;bottom:82px;z-index:4;pointer-events:none;">
         <p class="fa" style="font-weight:600;font-size:40px;color:white;letter-spacing:4px;line-height:normal;">${r.name}</p>
       </div>
-      <div style="position:absolute;left:16px;bottom:44px;z-index:4;pointer-events:none;">
+      <div style="position:absolute;left:16px;bottom:54px;z-index:4;pointer-events:none;">
         <p class="fi" style="font-weight:600;font-size:14px;color:white;letter-spacing:2.8px;text-transform:capitalize;line-height:normal;">${r.cuisine}</p>
       </div>
-      <div style="position:absolute;left:16px;bottom:28px;z-index:4;pointer-events:none;">
+      <div style="position:absolute;left:16px;bottom:38px;z-index:4;pointer-events:none;">
         <p class="fi" style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.8px;text-transform:lowercase;">${r.distance} AWAY</p>
       </div>
     </div>
@@ -1902,7 +1908,7 @@ function setupSwipe() {
       document.getElementById('p2-counter').textContent = `${currentCardIndex + 1}/${matchedRestaurants.length}`;
     } else {
       // Outside card area: right swipe → back to Page 1
-      if (diff < 0) navigate('starter');
+      if (diff < 0) navigateSwipe('starter');
     }
   }
 
@@ -1980,16 +1986,20 @@ function hideDetails() {
       const dx = startX - e.changedTouches[0].clientX;
       const isRevealed = document.getElementById('p3DetailsPanel').classList.contains('revealed');
 
-      // Horizontal swipe (left) — back to Page 2
+      // Horizontal swipe
       if (Math.abs(dx) > 50 && Math.abs(dy) < 60) {
-        if (dx > 0) {
-          // Left swipe
-          if (isRevealed) {
-            // State 2: anywhere → back to Page 2
-            backToPage2();
-          } else if (startY > HERO_BOTTOM) {
-            // State 1: only outside hero area → back to Page 2
-            backToPage2();
+        if (dx < 0) {
+          // Right swipe → back to Page 2 with slide transition
+          if (hhClockInterval) { clearInterval(hhClockInterval); hhClockInterval = null; }
+          document.getElementById('screen-page3s1').classList.remove('details-open');
+          const panel = document.getElementById('p3DetailsPanel');
+          if (panel) panel.classList.remove('revealed');
+          navigateSwipe('page2');
+          const strip = document.getElementById('p2-strip');
+          if (strip) {
+            strip.style.transition = 'none';
+            strip.style.transform = `translateX(-${currentCardIndex * 393}px)`;
+            requestAnimationFrame(() => { strip.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)'; });
           }
         }
         return;
@@ -2006,18 +2016,16 @@ function hideDetails() {
 
 // Navigation
 function backToPage2() {
-  // Clear realtime clock interval
   if (hhClockInterval) { clearInterval(hhClockInterval); hhClockInterval = null; }
-  // 1. Always reset page 3 to State 1
+  // Reset page 3 to State 1
   document.getElementById('screen-page3s1').classList.remove('details-open');
   const panel = document.getElementById('p3DetailsPanel');
   if (panel) panel.classList.remove('revealed');
 
-  // 2. Navigate to page 2
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-page2').classList.add('active');
+  // Navigate back (going backward)
+  navigate('page2');
 
-  // 3. Restore strip to last viewed card AFTER paint (no reset in between)
+  // Restore strip to last viewed card
   const strip = document.getElementById('p2-strip');
   if (strip) {
     strip.style.transition = 'none';
@@ -2032,10 +2040,66 @@ function backToPage2() {
   if (counter) counter.textContent = `${currentCardIndex + 1}/${matchedRestaurants.length}`;
 }
 
+// Page order for directional transitions
+const PAGE_ORDER = ['starter', 'page2', 'page3s1'];
+
+// Standard tap/button navigation — fade
 function navigate(screen) {
   if (screen === 'starter') activeSearchTerm = '';
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-'+screen).classList.add('active');
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-right', 'slide-in-left');
+    s.style.transform = '';
+    s.style.transition = '';
+    s.style.opacity = '';
+  });
+  document.getElementById('screen-' + screen).classList.add('active');
+}
+
+// Swipe gesture navigation — horizontal slide
+function navigateSwipe(screen) {
+  if (screen === 'starter') activeSearchTerm = '';
+
+  const currentActive = document.querySelector('.screen.active');
+  const currentId = currentActive ? currentActive.id.replace('screen-', '') : null;
+  const nextEl = document.getElementById('screen-' + screen);
+  if (!nextEl || !currentActive) { navigate(screen); return; }
+
+  const currentIdx = PAGE_ORDER.indexOf(currentId);
+  const nextIdx = PAGE_ORDER.indexOf(screen);
+  const goingForward = nextIdx > currentIdx;
+
+  // Position next screen off-screen
+  nextEl.style.transition = 'none';
+  nextEl.style.opacity = '1';
+  nextEl.style.transform = goingForward ? 'translateX(100%)' : 'translateX(-30%)';
+  nextEl.classList.remove('active');
+  nextEl.offsetHeight; // force reflow
+
+  // Animate current out
+  currentActive.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s ease';
+  currentActive.style.transform = goingForward ? 'translateX(-30%)' : 'translateX(100%)';
+  currentActive.style.opacity = '0';
+
+  // Animate next in
+  nextEl.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s ease';
+  nextEl.style.transform = 'translateX(0)';
+  nextEl.style.opacity = '1';
+  nextEl.classList.add('active');
+
+  setTimeout(() => {
+    document.querySelectorAll('.screen').forEach(s => {
+      if (!s.classList.contains('active')) {
+        s.classList.remove('slide-out-left', 'slide-out-right', 'slide-in-right', 'slide-in-left');
+        s.style.transform = '';
+        s.style.transition = '';
+        s.style.opacity = '';
+      }
+    });
+    // Clean active screen too
+    nextEl.style.transform = '';
+    nextEl.style.transition = '';
+    nextEl.style.opacity = '';
+  }, 380);
 }
 
 // Scale phone to fit mobile screens — fill full screen

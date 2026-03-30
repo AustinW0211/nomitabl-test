@@ -795,22 +795,22 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   <div id="add-spot-modal" style="position:absolute;inset:0;z-index:200;display:none;flex-direction:column;background:#d0cfcf;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
 
     <!-- Header -->
-    <div style="position:absolute;top:0;left:0;width:393px;height:104px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px 14px;box-sizing:border-box;z-index:2;">
-      <div onclick="closeAddSpotModal()" style="cursor:pointer;width:36px;height:36px;background:rgba(0,0,0,0.1);border-radius:18px;display:flex;align-items:center;justify-content:center;">
+    <div style="position:absolute;top:0;left:0;right:0;height:104px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px 14px;box-sizing:border-box;z-index:2;">
+      <div onclick="closeAddSpotModal()" style="cursor:pointer;width:36px;height:36px;flex-shrink:0;background:rgba(0,0,0,0.1);border-radius:18px;display:flex;align-items:center;justify-content:center;">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="black" stroke-width="1.8" stroke-linecap="round"/></svg>
       </div>
       <p class="fa" style="font-weight:700;font-size:16px;letter-spacing:3px;color:black;">ADD A SPOT</p>
-      <div style="width:36px;"></div>
+      <div style="width:36px;flex-shrink:0;"></div>
     </div>
 
     <!-- Scrollable body -->
-    <div style="position:absolute;top:104px;left:0;right:0;bottom:80px;overflow-y:auto;overflow-x:hidden;padding:0 16px 24px;box-sizing:border-box;">
+    <div style="position:absolute;top:104px;left:0;right:0;bottom:80px;overflow-y:auto;overflow-x:hidden;padding:0 16px 24px;box-sizing:border-box;width:100%;">
 
       <!-- Photos -->
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:10px;margin-top:4px;">PHOTOS</p>
       <div style="display:flex;gap:8px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px;">
         <div id="add-spot-photos" style="display:flex;gap:8px;"></div>
-        <label for="add-spot-file-input" style="width:72px;height:72px;border-radius:12px;border:1.5px dashed rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+        <label for="add-spot-file-input" style="width:72px;height:72px;min-width:72px;border-radius:12px;border:1.5px dashed rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="black" stroke-width="1.8" stroke-linecap="round"/></svg>
         </label>
         <input id="add-spot-file-input" type="file" accept="image/*" multiple style="display:none;" onchange="handleSpotPhotos(event)"/>
@@ -840,14 +840,14 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
       <!-- Happy Hours -->
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:4px;">HAPPY HOURS <span style="font-weight:400;color:#999;font-size:10px;letter-spacing:1px;">OPTIONAL</span></p>
-      <div style="display:flex;gap:10px;margin-bottom:12px;margin-top:10px;width:100%;box-sizing:border-box;">
-        <div style="flex:1;min-width:0;">
+      <div style="display:flex;gap:10px;margin-bottom:12px;margin-top:10px;box-sizing:border-box;">
+        <div style="flex:1;min-width:0;overflow:hidden;">
           <p class="fi" style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:6px;">FROM</p>
-          <input id="hh-from" type="time" style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"/>
+          <input id="hh-from" type="time" style="width:100%;min-width:0;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;display:block;"/>
         </div>
-        <div style="flex:1;min-width:0;">
+        <div style="flex:1;min-width:0;overflow:hidden;">
           <p class="fi" style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:6px;">TO</p>
-          <input id="hh-to" type="time" style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"/>
+          <input id="hh-to" type="time" style="width:100%;min-width:0;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;display:block;"/>
         </div>
       </div>
       <input id="hh-details" type="text" placeholder="e.g. $5 house wine, half-off apps…"
@@ -856,11 +856,14 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Submit — fixed at bottom center -->
-    <div style="position:absolute;bottom:0;left:0;width:393px;height:80px;display:flex;align-items:center;justify-content:center;background:#d0cfcf;border-top:1px solid rgba(0,0,0,0.06);">
+    <div style="position:absolute;bottom:0;left:0;right:0;height:80px;display:flex;align-items:center;justify-content:center;background:#d0cfcf;border-top:1px solid rgba(0,0,0,0.06);">
       <div onclick="submitAddSpot()" style="cursor:pointer;padding:14px 48px;background:black;border-radius:32px;">
         <p class="fi" style="font-size:12px;font-weight:700;letter-spacing:6px;color:white;">SUBMIT</p>
       </div>
     </div>
+
+  </div>
+  <!-- end add-spot modal -->
 
   <!-- Cuisine modal -->
   <div id="cuisine-modal" onclick="closeCuisineModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:300;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
@@ -2109,23 +2112,25 @@ function scalePhone() {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   if (vw <= 500) {
-    // Scale so the 393x852 frame fills the available screen
     const scaleByW = vw / 393;
     const scaleByH = vh / 852;
-    // Use whichever is larger to ensure no gaps
     const scale = Math.max(scaleByW, scaleByH);
     phone.style.transform = `scale(${scale})`;
     phone.style.transformOrigin = 'top left';
-    // Center horizontally if scaled by height
     const scaledW = 393 * scale;
     const leftOffset = Math.max(0, (vw - scaledW) / 2);
     phone.style.marginLeft = leftOffset + 'px';
     phone.style.marginTop = '0px';
+    // Remove decorative border-radius on real devices — it clips content
+    phone.style.borderRadius = '0';
+    phone.style.boxShadow = 'none';
   } else {
     phone.style.transform = '';
     phone.style.transformOrigin = '';
     phone.style.marginLeft = '';
     phone.style.marginTop = '';
+    phone.style.borderRadius = '';
+    phone.style.boxShadow = '';
   }
 }
 scalePhone();

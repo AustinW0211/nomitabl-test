@@ -38,7 +38,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   z-index: 25;
   background: #d0cfcf;
   transform: translateY(100vh);
-  transition: transform .4s cubic-bezier(.32,.72,0,1);
+  transition: transform .4s cubic-bezier(.4,0,.2,1);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -47,7 +47,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   -webkit-backface-visibility: hidden;
 }
 .p3-details-panel::-webkit-scrollbar { display: none; }
-.p3-details-panel.revealed { transform: translateY(0); transition: transform .4s cubic-bezier(.32,.72,0,1); }
+.p3-details-panel.revealed { transform: translateY(0); transition: transform .4s cubic-bezier(.4,0,.2,1); }
 .p3-hero {
   position: absolute; inset: 0;
   /* No transition — State 1 is always fully rendered, never moves */
@@ -64,6 +64,8 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 @keyframes bubbleDrift6 { 0%,100%{transform:translate(0,0)} 40%{transform:translate(-2px,-2px)} 70%{transform:translate(2px,-5px)} }
 .p3-score-ring-bg   { fill: none; stroke: rgba(255,255,255,.1); stroke-width: 5; }
 .p3-score-ring-fill { fill: none; stroke: rgba(255,255,255,0.6); stroke-width: 5; stroke-linecap: round; }
+.vibe-card-item:focus { outline: none; }
+.vibe-card-item { -webkit-tap-highlight-color: transparent; }
 
 </style>
 </head>
@@ -86,15 +88,15 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   <div class="screen active" id="screen-starter" style="background:#d0cfcf;">
 
     <!-- Header -->
-    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:58px;width:393px;">
-      <div style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:30px;height:30px;">
-        <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30">
-          <rect fill="white" height="30" rx="15" width="30"/>
+    <div style="position:absolute;height:46px;left:0;top:58px;width:393px;">
+      <div onclick="openAddSpotModal()" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:36px;height:36px;cursor:pointer;">
+        <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="-3 -3 36 36">
+          <rect fill="rgba(255,255,255,0.2)" x="-3" y="-3" height="36" rx="18" width="36"/>
           <path d="M20 15C20 15.1105 19.9561 15.2165 19.878 15.2946C19.7998 15.3728 19.6938 15.4167 19.5833 15.4167H15.4167V19.5833C15.4167 19.6938 15.3728 19.7998 15.2946 19.878C15.2165 19.9561 15.1105 20 15 20C14.8895 20 14.7835 19.9561 14.7054 19.878C14.6272 19.7998 14.5833 19.6938 14.5833 19.5833V15.4167H10.4167C10.3062 15.4167 10.2002 15.3728 10.122 15.2946C10.0439 15.2165 10 15.1105 10 15C10 14.8895 10.0439 14.7835 10.122 14.7054C10.2002 14.6272 10.3062 14.5833 10.4167 14.5833H14.5833V10.4167C14.5833 10.3062 14.6272 10.2002 14.7054 10.122C14.7835 10.0439 14.8895 10 15 10C15.1105 10 15.2165 10.0439 15.2946 10.122C15.3728 10.2002 15.4167 10.3062 15.4167 10.4167V14.5833H19.5833C19.6938 14.5833 19.7998 14.6272 19.878 14.7054C19.9561 14.7835 20 14.8895 20 15Z" fill="black"/>
         </svg>
       </div>
-      <div style="position:absolute;left:353px;top:50%;transform:translateY(-50%);background:white;display:flex;align-items:center;justify-content:center;padding:5px;border-radius:18px;width:30px;height:30px;overflow:hidden;">
-        <svg style="width:14px;height:14px;" fill="none" viewBox="0 0 14 14">
+      <div style="position:absolute;left:349px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;padding:5px;border-radius:20px;width:36px;height:36px;overflow:hidden;">
+        <svg style="width:18px;height:18px;" fill="none" viewBox="0 0 14 14">
           <path d="M11.375 1.3125H3.9375C3.47337 1.3125 3.02825 1.49687 2.70006 1.82506C2.37187 2.15325 2.1875 2.59837 2.1875 3.0625V12.25C2.1875 12.366 2.23359 12.4773 2.31564 12.5594C2.39769 12.6414 2.50897 12.6875 2.625 12.6875H10.5C10.616 12.6875 10.7273 12.6414 10.8094 12.5594C10.8914 12.4773 10.9375 12.366 10.9375 12.25C10.9375 12.134 10.8914 12.0227 10.8094 11.9406C10.7273 11.8586 10.616 11.8125 10.5 11.8125H3.0625C3.0625 11.5804 3.15469 11.3579 3.31878 11.1938C3.48288 11.0297 3.70544 10.9375 3.9375 10.9375H11.375C11.491 10.9375 11.6023 10.8914 11.6844 10.8094C11.7664 10.7273 11.8125 10.616 11.8125 10.5V1.75C11.8125 1.63397 11.7664 1.52269 11.6844 1.44064C11.6023 1.35859 11.491 1.3125 11.375 1.3125ZM6.5625 2.1875H9.1875V6.125L8.13695 5.3375C8.06122 5.2807 7.96912 5.25 7.87445 5.25C7.77979 5.25 7.68768 5.2807 7.61195 5.3375L6.5625 6.125V2.1875ZM10.9375 10.0625H3.9375C3.63024 10.0621 3.32834 10.143 3.0625 10.2971V3.0625C3.0625 2.83044 3.15469 2.60788 3.31878 2.44378C3.48288 2.27969 3.70544 2.1875 3.9375 2.1875H5.6875V7C5.6875 7.08125 5.71013 7.16089 5.75284 7.23001C5.79556 7.29912 5.85667 7.35498 5.92934 7.39131C6.00202 7.42765 6.08337 7.44303 6.16429 7.43573C6.24521 7.42844 6.3225 7.39875 6.3875 7.35L7.875 6.23438L9.36305 7.35C9.43863 7.40668 9.53053 7.43738 9.625 7.4375C9.74103 7.4375 9.85231 7.39141 9.93436 7.30936C10.0164 7.22731 10.0625 7.11603 10.0625 7V2.1875H10.9375V10.0625Z" fill="black"/>
         </svg>
       </div>
@@ -109,8 +111,8 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">M</span>
         <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">I</span>
       </div>
-      <!-- your mood your table -->
-      <div style="font-family:'Inter',sans-serif;font-weight:300;font-size:10px;letter-spacing:5px;text-transform:lowercase;color:black;text-align:center;line-height:18px;">your mood your table</div>
+      <!-- your mood your next table -->
+      <div style="font-family:'Inter',sans-serif;font-weight:300;font-size:10px;letter-spacing:5px;text-transform:lowercase;color:black;text-align:center;line-height:18px;margin-top:-2px;">your mood your next table</div>
       <!-- TABL row: flush left/right, moved up 20px -->
       <div style="display:flex;justify-content:space-between;width:100%;line-height:88px;margin-top:-20px;">
         <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">T</span>
@@ -118,15 +120,25 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">B</span>
         <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">L</span>
       </div>
-      <!-- location + dynamic city -->
-      <div style="font-family:'Inter',sans-serif;font-weight:300;font-size:10px;letter-spacing:5px;text-transform:lowercase;color:black;text-align:center;line-height:18px;margin-top:8px;">location:</div>
-      <div id="city-name" style="font-family:'Afacad',sans-serif;font-weight:500;font-size:16px;letter-spacing:12.96px;text-transform:uppercase;color:black;text-align:center;margin-top:-2px;">VANCOUVER</div>
+      <!-- location row: pin icon + city name -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:8px;">
+        <svg style="width:14px;height:14px;flex-shrink:0;position:relative;top:1px;" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+          <circle cx="12" cy="9" r="2.5"/>
+        </svg>
+        <div id="city-name" onclick="toggleCityDropdown()" style="font-family:'Afacad',sans-serif;font-weight:500;font-size:16px;letter-spacing:4px;text-transform:uppercase;color:black;cursor:pointer;">VANCOUVER</div>
+      </div>
     </div>
 
+    <!-- City dropdown — outside logo container to avoid overflow:hidden clip -->
+    <div id="city-dropdown" style="display:none;position:absolute;left:50%;transform:translateX(-50%);top:318px;width:220px;background:white;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.12);z-index:50;overflow:hidden;max-height:0;transition:max-height 0.35s cubic-bezier(.4,0,.2,1),opacity 0.25s ease;opacity:0;">
+      <div style="display:flex;flex-direction:column;padding:8px 0;overflow-y:auto;max-height:220px;scrollbar-width:none;" id="city-list"></div>
+    </div>
+
+
     <!-- SearchBar -->
-    <div style="position:absolute;height:136px;left:0;overflow:visible;top:334px;width:393px;z-index:20;">
-      <div style="position:absolute;left:calc(50% - 179.5px);top:3px;transform:translateY(-50%);font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;text-transform:capitalize;color:black;">Build For The Curiosity</div>
-      <div style="position:absolute;right:16px;top:127px;transform:translateY(-50%);font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;color:black;text-align:right;white-space:nowrap;">Or Find Your Vibe</div>
+    <div style="position:absolute;height:136px;left:0;overflow:visible;top:316px;width:393px;z-index:20;">
+      <div style="position:absolute;left:50%;transform:translate(-50%,-50%);top:137px;font-family:'Afacad',sans-serif;font-weight:500;font-size:12px;letter-spacing:4px;text-transform:uppercase;color:black;text-align:center;white-space:nowrap;">Discover Your Vibe</div>
       <div style="position:absolute;left:calc(50% - 179.5px);top:25px;transform:translateY(-50%);white-space:nowrap;">
         <span style="font-family:'Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:2px;color:white;">So...what we </span><span style="font-family:'Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:2px;background:linear-gradient(90deg,rgb(174,0,255) 0%,rgb(0,255,106) 29.808%,rgb(245,90,24) 66.827%,rgb(255,0,153) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Vibing &gt;:)...</span>
       </div>
@@ -135,23 +147,19 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           <g clip-path="url(#c1)"><path d="M27.7537 26.4569L23.1168 21.8199C25.3575 19.2431 26.5101 15.897 26.3318 12.4869C26.1535 9.07679 24.6581 5.86914 22.1609 3.54008C19.6637 1.21103 16.3597 -0.0574641 12.9455 0.00200006C9.53122 0.0614642 6.27344 1.44424 3.85884 3.85884C1.44424 6.27344 0.0614642 9.53122 0.00200006 12.9455C-0.0574641 16.3597 1.21103 19.6637 3.54008 22.1609C5.86914 24.6581 9.07679 26.1535 12.4869 26.3318C15.897 26.5101 19.2431 25.3575 21.8199 23.1168L26.4569 27.7537C26.6308 27.9158 26.8609 28.0041 27.0986 27.9999C27.3363 27.9957 27.5631 27.8994 27.7312 27.7312C27.8994 27.5631 27.9957 27.3363 27.9999 27.0986C28.0041 26.8609 27.9158 26.6308 27.7537 26.4569ZM1.88096 13.1978C1.88096 10.9595 2.54468 8.77152 3.78819 6.91048C5.03169 5.04945 6.79913 3.59894 8.86701 2.7424C10.9349 1.88586 13.2103 1.66175 15.4056 2.09841C17.6008 2.53507 19.6173 3.61289 21.1999 5.19558C22.7826 6.77826 23.8604 8.79472 24.2971 10.99C24.7338 13.1852 24.5097 15.4606 23.6531 17.5285C22.7966 19.5964 21.3461 21.3638 19.485 22.6073C17.624 23.8508 15.436 24.5146 13.1978 24.5146C10.1975 24.5109 7.32112 23.3174 5.1996 21.1959C3.07808 19.0744 1.8846 16.198 1.88096 13.1978Z" fill="url(#p1)"/></g>
           <defs><linearGradient id="p1" gradientUnits="userSpaceOnUse" x1="2.59463" x2="31.9571" y1="2.59463" y2="31.9571"><stop stop-color="#BDBDBD"/><stop offset="1" stop-color="#A1A1A1"/></linearGradient><clipPath id="c1"><rect fill="white" height="28" width="28"/></clipPath></defs>
         </svg>
-        <input id="vibe-search" type="text" placeholder="describe your craving ..." autocomplete="off" style="font-family:'Inter',sans-serif;font-style:italic;font-size:10px;letter-spacing:2px;text-transform:capitalize;color:black;border:none;outline:none;background:transparent;width:302px;flex-shrink:0;">
+        <input id="vibe-search" type="text" placeholder="describe your craving ..." autocomplete="off" style="font-family:'Inter',sans-serif;font-style:italic;font-size:12px;letter-spacing:2px;text-transform:capitalize;color:black;border:none;outline:none;background:transparent;width:302px;flex-shrink:0;">
       </div>
-      <div id="vibe-suggestions" style="display:none;position:absolute;left:calc(50% + 0.5px);top:calc(50% + 28px);transform:translateX(-50%);background:white;border-radius:16px;width:364px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.12);z-index:10;"></div>
       <!-- Selected vibe tags row — centred between search bar and "Or Find Your Vibe" -->
-      <div id="p1-selected-tags" style="position:absolute;left:16px;right:16px;top:108px;transform:translateY(-50%);display:flex;flex-wrap:nowrap;gap:6px;align-items:center;justify-content:center;overflow:hidden;min-height:20px;"></div>
+      <div id="p1-selected-tags" style="position:absolute;left:16px;right:16px;top:113px;transform:translateY(-50%);display:flex;flex-wrap:nowrap;gap:6px;align-items:center;justify-content:center;overflow:hidden;min-height:20px;"></div>
     </div>
 
-    <!-- Tags -->
-    <!-- Bubble viewport: fixed 393px, horizontally scrollable -->
-    <div style="position:absolute;left:50%;transform:translateX(-50%);top:472px;width:430px;height:241px;overflow:hidden;">
-      <div id="tags-container" style="position:absolute;top:0;left:0;height:241px;overflow-x:scroll;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x;scrollbar-width:none;-ms-overflow-style:none;padding-top:8px;box-sizing:border-box;"></div>
-    </div>
+    <!-- Vibe Cards — overlapping stack, scrollable -->
+    <div style="position:absolute;left:28px;right:28px;top:466px;bottom:54px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-top:6px;box-sizing:border-box;" id="vibe-card-list"></div>
 
-    <!-- Foot: LET'S VIBE → Page 2 -->
-    <div style="position:absolute;display:flex;flex-direction:column;height:132px;align-items:center;left:0;overflow:hidden;padding:30px 16px 42px;top:720px;width:393px;opacity:0;pointer-events:none;transition:opacity 0.4s ease 0.1s;" id="lets-vibe-foot">
-      <div style="background:black;height:48px;overflow:hidden;position:relative;border-radius:32px;flex-shrink:0;width:100%;">
-        <div onclick="populatePage2();navigate('page2');" id="lets-vibe-btn" style="position:absolute;background:black;height:48px;left:0;overflow:hidden;border-radius:32px;top:0;width:361px;cursor:pointer;display:flex;align-items:center;justify-content:center;" onmouseenter="this.style.background='#222'" onmouseleave="this.style.background='black'">
+    <!-- Foot: LET'S VIBE → Page 2 — always visible -->
+    <div style="position:absolute;display:flex;flex-direction:column;height:90px;align-items:center;left:0;padding:12px 16px 36px;bottom:0;width:393px;z-index:50;pointer-events:none;" id="lets-vibe-foot">
+      <div style="background:#b0b0b0;height:48px;position:relative;border-radius:32px;flex-shrink:0;width:100%;pointer-events:all;">
+        <div onclick="if(selected.size>0){populatePage2();navigate('page2');}" id="lets-vibe-btn" style="position:absolute;background:#b0b0b0;height:48px;left:0;border-radius:32px;top:0;width:100%;cursor:default;display:flex;align-items:center;justify-content:center;">
           <span style="font-family:'Inter',sans-serif;font-weight:700;font-size:14px;letter-spacing:8.4px;text-transform:capitalize;color:white;">LET'S VIBE</span>
         </div>
       </div>
@@ -164,10 +172,10 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   <div class="screen" id="screen-page2" style="background:#d0cfcf;">
 
     <!-- Header -->
-    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:58px;width:393px;">
-      <div onclick="navigate('starter')" style="position:absolute;left:calc(50% - 169.5px);top:50%;transform:translate(-50%,-50%);width:30px;height:30px;cursor:pointer;">
-        <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30">
-          <rect fill="white" height="30" rx="15" width="30"/>
+    <div style="position:absolute;height:46px;left:0;top:58px;width:393px;">
+      <div onclick="navigate('starter')" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:36px;height:36px;cursor:pointer;">
+        <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="-2 -3 36 36">
+          <rect fill="rgba(255,255,255,0.2)" x="-2" y="-3" height="36" rx="18" width="36"/>
           <path d="M17.8055 8.85352C17.9407 8.8559 18.0702 8.91024 18.1658 9.00586C18.2614 9.10147 18.3158 9.23105 18.3182 9.36621C18.3204 9.50115 18.2705 9.63167 18.1785 9.73047L12.9197 14.9893L18.1727 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.3231 20.4769 18.3384 20.5463 18.3397 20.6162C18.3408 20.6861 18.3277 20.7555 18.3016 20.8203C18.2753 20.8853 18.2359 20.9446 18.1863 20.9941C18.1369 21.0435 18.0783 21.0832 18.0135 21.1094C17.9485 21.1356 17.8785 21.1477 17.8084 21.1465C17.7384 21.1452 17.6693 21.1301 17.6053 21.1016C17.5424 21.0735 17.4856 21.0334 17.4383 20.9834L11.8133 15.3584C11.7156 15.2605 11.6609 15.1276 11.6609 14.9893C11.661 14.8511 11.7157 14.7189 11.8133 14.6211L17.4383 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.5401 8.90119 17.6705 8.8512 17.8055 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/>
         </svg>
       </div>
@@ -180,15 +188,14 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       </div>
     </div>
 
-    <!-- SelectedTags — dynamic -->
-    <div id="p2-tags" style="position:absolute;left:0;top:116px;width:393px;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;justify-content:center;padding:0 16px;box-sizing:border-box;"></div>
+    <!-- Cuisine row -->
+    <div id="p2-cuisine-tags" style="position:absolute;left:0;top:114px;width:393px;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;justify-content:center;padding:0 16px;box-sizing:border-box;"></div>
 
-
-    <!-- Vibe add modal -->
-
+    <!-- Vibe row -->
+    <div id="p2-tags" style="position:absolute;left:0;top:145px;width:393px;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;justify-content:center;padding:0 16px;box-sizing:border-box;"></div>
 
     <!-- Swipeable card strip -->
-    <div id="p2-strip-wrap" style="position:absolute;top:148px;left:0;width:393px;height:704px;overflow:hidden;">
+    <div id="p2-strip-wrap" style="position:absolute;top:174px;left:0;width:393px;height:678px;overflow:hidden;">
       <div id="p2-strip" style="display:flex;height:100%;transition:transform 0.35s cubic-bezier(.4,0,.2,1);will-change:transform;"></div>
     </div>
   </div>
@@ -299,13 +306,13 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Header (z-index 3) -->
-    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:58px;width:393px;z-index:3;">
-      <div style="position:absolute;height:67px;left:0;overflow:hidden;top:7px;width:393px;">
-        <div onclick="backToPage2()" style="position:absolute;left:12px;top:calc(50% - 17.5px);transform:translateY(-50%);width:30px;height:30px;cursor:pointer;">
-          <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30"><rect fill="white" height="30" rx="15" width="30"/><path d="M17.8054 8.85352C17.9406 8.8559 18.0702 8.91024 18.1658 9.00586C18.2613 9.10147 18.3157 9.23105 18.3181 9.36621C18.3204 9.50115 18.2704 9.63167 18.1785 9.73047L12.9197 14.9893L18.1726 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.323 20.4769 18.3384 20.5463 18.3396 20.6162C18.3408 20.6861 18.3277 20.7555 18.3015 20.8203C18.2753 20.8853 18.2358 20.9446 18.1863 20.9941C18.1368 21.0435 18.0782 21.0832 18.0134 21.1094C17.9485 21.1356 17.8784 21.1477 17.8083 21.1465C17.7383 21.1452 17.6692 21.1301 17.6052 21.1016C17.5423 21.0735 17.4855 21.0334 17.4382 20.9834L11.8132 15.3584C11.7155 15.2605 11.6609 15.1276 11.6609 14.9893C11.6609 14.8511 11.7156 14.7189 11.8132 14.6211L17.4382 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.54 8.90119 17.6704 8.8512 17.8054 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/></svg>
+    <div style="position:absolute;height:46px;left:0;top:58px;width:393px;z-index:10;">
+      <div style="position:absolute;height:46px;left:0;top:0;width:393px;">
+        <div onclick="backToPage2()" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:36px;height:36px;cursor:pointer;">
+          <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="-2 -3 36 36"><rect fill="rgba(255,255,255,0.2)" x="-2" y="-3" height="36" rx="18" width="36"/><path d="M17.8054 8.85352C17.9406 8.8559 18.0702 8.91024 18.1658 9.00586C18.2613 9.10147 18.3157 9.23105 18.3181 9.36621C18.3204 9.50115 18.2704 9.63167 18.1785 9.73047L12.9197 14.9893L18.1726 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.323 20.4769 18.3384 20.5463 18.3396 20.6162C18.3408 20.6861 18.3277 20.7555 18.3015 20.8203C18.2753 20.8853 18.2358 20.9446 18.1863 20.9941C18.1368 21.0435 18.0782 21.0832 18.0134 21.1094C17.9485 21.1356 17.8784 21.1477 17.8083 21.1465C17.7383 21.1452 17.6692 21.1301 17.6052 21.1016C17.5423 21.0735 17.4855 21.0334 17.4382 20.9834L11.8132 15.3584C11.7155 15.2605 11.6609 15.1276 11.6609 14.9893C11.6609 14.8511 11.7156 14.7189 11.8132 14.6211L17.4382 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.54 8.90119 17.6704 8.8512 17.8054 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/></svg>
         </div>
-        <div style="position:absolute;left:353px;top:calc(50% - 17.5px);transform:translateY(-50%);background:white;display:flex;align-items:center;justify-content:center;padding:5px;border-radius:18px;width:30px;height:30px;overflow:hidden;">
-          <svg style="width:14px;height:14px;" fill="none" viewBox="0 0 14 14"><path d="M11.375 1.3125H3.9375C3.47337 1.3125 3.02825 1.49687 2.70006 1.82506C2.37187 2.15325 2.1875 2.59837 2.1875 3.0625V12.25C2.1875 12.366 2.23359 12.4773 2.31564 12.5594C2.39769 12.6414 2.50897 12.6875 2.625 12.6875H10.5C10.616 12.6875 10.7273 12.6414 10.8094 12.5594C10.8914 12.4773 10.9375 12.366 10.9375 12.25C10.9375 12.134 10.8914 12.0227 10.8094 11.9406C10.7273 11.8586 10.616 11.8125 10.5 11.8125H3.0625C3.0625 11.5804 3.15469 11.3579 3.31878 11.1938C3.48288 11.0297 3.70544 10.9375 3.9375 10.9375H11.375C11.491 10.9375 11.6023 10.8914 11.6844 10.8094C11.7664 10.7273 11.8125 10.616 11.8125 10.5V1.75C11.8125 1.63397 11.7664 1.52269 11.6844 1.44064C11.6023 1.35859 11.491 1.3125 11.375 1.3125ZM6.5625 2.1875H9.1875V6.125L8.13695 5.3375C8.06122 5.2807 7.96912 5.25 7.87445 5.25C7.77979 5.25 7.68768 5.2807 7.61195 5.3375L6.5625 6.125V2.1875ZM10.9375 10.0625H3.9375C3.63024 10.0621 3.32834 10.143 3.0625 10.2971V3.0625C3.0625 2.83044 3.15469 2.60788 3.31878 2.44378C3.48288 2.27969 3.70544 2.1875 3.9375 2.1875H5.6875V7C5.6875 7.08125 5.71013 7.16089 5.75284 7.23001C5.79556 7.29912 5.85667 7.35498 5.92934 7.39131C6.00202 7.42765 6.08337 7.44303 6.16429 7.43573C6.24521 7.42844 6.3225 7.39875 6.3875 7.35L7.875 6.23438L9.36305 7.35C9.43863 7.40668 9.53053 7.43738 9.625 7.4375C9.74103 7.4375 9.85231 7.39141 9.93436 7.30936C10.0164 7.22731 10.0625 7.11603 10.0625 7V2.1875H10.9375V10.0625Z" fill="black"/></svg>
+        <div style="position:absolute;left:349px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;padding:5px;border-radius:20px;width:36px;height:36px;overflow:hidden;">
+          <svg style="width:18px;height:18px;" fill="none" viewBox="0 0 14 14"><path d="M11.375 1.3125H3.9375C3.47337 1.3125 3.02825 1.49687 2.70006 1.82506C2.37187 2.15325 2.1875 2.59837 2.1875 3.0625V12.25C2.1875 12.366 2.23359 12.4773 2.31564 12.5594C2.39769 12.6414 2.50897 12.6875 2.625 12.6875H10.5C10.616 12.6875 10.7273 12.6414 10.8094 12.5594C10.8914 12.4773 10.9375 12.366 10.9375 12.25C10.9375 12.134 10.8914 12.0227 10.8094 11.9406C10.7273 11.8586 10.616 11.8125 10.5 11.8125H3.0625C3.0625 11.5804 3.15469 11.3579 3.31878 11.1938C3.48288 11.0297 3.70544 10.9375 3.9375 10.9375H11.375C11.491 10.9375 11.6023 10.8914 11.6844 10.8094C11.7664 10.7273 11.8125 10.616 11.8125 10.5V1.75C11.8125 1.63397 11.7664 1.52269 11.6844 1.44064C11.6023 1.35859 11.491 1.3125 11.375 1.3125ZM6.5625 2.1875H9.1875V6.125L8.13695 5.3375C8.06122 5.2807 7.96912 5.25 7.87445 5.25C7.77979 5.25 7.68768 5.2807 7.61195 5.3375L6.5625 6.125V2.1875ZM10.9375 10.0625H3.9375C3.63024 10.0621 3.32834 10.143 3.0625 10.2971V3.0625C3.0625 2.83044 3.15469 2.60788 3.31878 2.44378C3.48288 2.27969 3.70544 2.1875 3.9375 2.1875H5.6875V7C5.6875 7.08125 5.71013 7.16089 5.75284 7.23001C5.79556 7.29912 5.85667 7.35498 5.92934 7.39131C6.00202 7.42765 6.08337 7.44303 6.16429 7.43573C6.24521 7.42844 6.3225 7.39875 6.3875 7.35L7.875 6.23438L9.36305 7.35C9.43863 7.40668 9.53053 7.43738 9.625 7.4375C9.74103 7.4375 9.85231 7.39141 9.93436 7.30936C10.0164 7.22731 10.0625 7.11603 10.0625 7V2.1875H10.9375V10.0625Z" fill="black"/></svg>
         </div>
       </div>
     </div>
@@ -343,13 +350,13 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Header -->
-    <div style="position:absolute;height:46px;left:0;overflow:hidden;top:58px;width:393px;">
-      <div style="position:absolute;height:67px;left:0;overflow:hidden;top:7px;width:393px;">
-        <div onclick="backToPage2()" style="position:absolute;left:12px;top:calc(50% - 17.5px);transform:translateY(-50%);width:30px;height:30px;cursor:pointer;">
-          <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30"><rect fill="white" height="30" rx="15" width="30"/><path d="M17.8054 8.85352C17.9406 8.8559 18.0702 8.91024 18.1658 9.00586C18.2613 9.10147 18.3157 9.23105 18.3181 9.36621C18.3204 9.50115 18.2704 9.63167 18.1785 9.73047L12.9197 14.9893L18.1726 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.323 20.4769 18.3384 20.5463 18.3396 20.6162C18.3408 20.6861 18.3277 20.7555 18.3015 20.8203C18.2753 20.8853 18.2358 20.9446 18.1863 20.9941C18.1368 21.0435 18.0782 21.0832 18.0134 21.1094C17.9485 21.1356 17.8784 21.1477 17.8083 21.1465C17.7383 21.1452 17.6692 21.1301 17.6052 21.1016C17.5423 21.0735 17.4855 21.0334 17.4382 20.9834L11.8132 15.3584C11.7155 15.2605 11.6609 15.1276 11.6609 14.9893C11.6609 14.8511 11.7156 14.7189 11.8132 14.6211L17.4382 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.54 8.90119 17.6704 8.8512 17.8054 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/></svg>
+    <div style="position:absolute;height:46px;left:0;top:58px;width:393px;">
+      <div style="position:absolute;height:46px;left:0;top:0;width:393px;">
+        <div onclick="backToPage2()" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:36px;height:36px;cursor:pointer;">
+          <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="-2 -3 36 36"><rect fill="rgba(255,255,255,0.2)" x="-2" y="-3" height="36" rx="18" width="36"/><path d="M17.8054 8.85352C17.9406 8.8559 18.0702 8.91024 18.1658 9.00586C18.2613 9.10147 18.3157 9.23105 18.3181 9.36621C18.3204 9.50115 18.2704 9.63167 18.1785 9.73047L12.9197 14.9893L18.1726 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.323 20.4769 18.3384 20.5463 18.3396 20.6162C18.3408 20.6861 18.3277 20.7555 18.3015 20.8203C18.2753 20.8853 18.2358 20.9446 18.1863 20.9941C18.1368 21.0435 18.0782 21.0832 18.0134 21.1094C17.9485 21.1356 17.8784 21.1477 17.8083 21.1465C17.7383 21.1452 17.6692 21.1301 17.6052 21.1016C17.5423 21.0735 17.4855 21.0334 17.4382 20.9834L11.8132 15.3584C11.7155 15.2605 11.6609 15.1276 11.6609 14.9893C11.6609 14.8511 11.7156 14.7189 11.8132 14.6211L17.4382 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.54 8.90119 17.6704 8.8512 17.8054 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/></svg>
         </div>
-        <div style="position:absolute;left:353px;top:calc(50% - 17.5px);transform:translateY(-50%);background:white;display:flex;align-items:center;justify-content:center;padding:5px;border-radius:18px;width:30px;height:30px;overflow:hidden;">
-          <svg style="width:14px;height:14px;" fill="none" viewBox="0 0 14 14"><path d="M11.375 1.3125H3.9375C3.47337 1.3125 3.02825 1.49687 2.70006 1.82506C2.37187 2.15325 2.1875 2.59837 2.1875 3.0625V12.25C2.1875 12.366 2.23359 12.4773 2.31564 12.5594C2.39769 12.6414 2.50897 12.6875 2.625 12.6875H10.5C10.616 12.6875 10.7273 12.6414 10.8094 12.5594C10.8914 12.4773 10.9375 12.366 10.9375 12.25C10.9375 12.134 10.8914 12.0227 10.8094 11.9406C10.7273 11.8586 10.616 11.8125 10.5 11.8125H3.0625C3.0625 11.5804 3.15469 11.3579 3.31878 11.1938C3.48288 11.0297 3.70544 10.9375 3.9375 10.9375H11.375C11.491 10.9375 11.6023 10.8914 11.6844 10.8094C11.7664 10.7273 11.8125 10.616 11.8125 10.5V1.75C11.8125 1.63397 11.7664 1.52269 11.6844 1.44064C11.6023 1.35859 11.491 1.3125 11.375 1.3125ZM6.5625 2.1875H9.1875V6.125L8.13695 5.3375C8.06122 5.2807 7.96912 5.25 7.87445 5.25C7.77979 5.25 7.68768 5.2807 7.61195 5.3375L6.5625 6.125V2.1875ZM10.9375 10.0625H3.9375C3.63024 10.0621 3.32834 10.143 3.0625 10.2971V3.0625C3.0625 2.83044 3.15469 2.60788 3.31878 2.44378C3.48288 2.27969 3.70544 2.1875 3.9375 2.1875H5.6875V7C5.6875 7.08125 5.71013 7.16089 5.75284 7.23001C5.79556 7.29912 5.85667 7.35498 5.92934 7.39131C6.00202 7.42765 6.08337 7.44303 6.16429 7.43573C6.24521 7.42844 6.3225 7.39875 6.3875 7.35L7.875 6.23438L9.36305 7.35C9.43863 7.40668 9.53053 7.43738 9.625 7.4375C9.74103 7.4375 9.85231 7.39141 9.93436 7.30936C10.0164 7.22731 10.0625 7.11603 10.0625 7V2.1875H10.9375V10.0625Z" fill="black"/></svg>
+        <div style="position:absolute;left:349px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;padding:5px;border-radius:20px;width:36px;height:36px;overflow:hidden;">
+          <svg style="width:18px;height:18px;" fill="none" viewBox="0 0 14 14"><path d="M11.375 1.3125H3.9375C3.47337 1.3125 3.02825 1.49687 2.70006 1.82506C2.37187 2.15325 2.1875 2.59837 2.1875 3.0625V12.25C2.1875 12.366 2.23359 12.4773 2.31564 12.5594C2.39769 12.6414 2.50897 12.6875 2.625 12.6875H10.5C10.616 12.6875 10.7273 12.6414 10.8094 12.5594C10.8914 12.4773 10.9375 12.366 10.9375 12.25C10.9375 12.134 10.8914 12.0227 10.8094 11.9406C10.7273 11.8586 10.616 11.8125 10.5 11.8125H3.0625C3.0625 11.5804 3.15469 11.3579 3.31878 11.1938C3.48288 11.0297 3.70544 10.9375 3.9375 10.9375H11.375C11.491 10.9375 11.6023 10.8914 11.6844 10.8094C11.7664 10.7273 11.8125 10.616 11.8125 10.5V1.75C11.8125 1.63397 11.7664 1.52269 11.6844 1.44064C11.6023 1.35859 11.491 1.3125 11.375 1.3125ZM6.5625 2.1875H9.1875V6.125L8.13695 5.3375C8.06122 5.2807 7.96912 5.25 7.87445 5.25C7.77979 5.25 7.68768 5.2807 7.61195 5.3375L6.5625 6.125V2.1875ZM10.9375 10.0625H3.9375C3.63024 10.0621 3.32834 10.143 3.0625 10.2971V3.0625C3.0625 2.83044 3.15469 2.60788 3.31878 2.44378C3.48288 2.27969 3.70544 2.1875 3.9375 2.1875H5.6875V7C5.6875 7.08125 5.71013 7.16089 5.75284 7.23001C5.79556 7.29912 5.85667 7.35498 5.92934 7.39131C6.00202 7.42765 6.08337 7.44303 6.16429 7.43573C6.24521 7.42844 6.3225 7.39875 6.3875 7.35L7.875 6.23438L9.36305 7.35C9.43863 7.40668 9.53053 7.43738 9.625 7.4375C9.74103 7.4375 9.85231 7.39141 9.93436 7.30936C10.0164 7.22731 10.0625 7.11603 10.0625 7V2.1875H10.9375V10.0625Z" fill="black"/></svg>
         </div>
       </div>
     </div>
@@ -425,9 +432,24 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
             <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(342 120 120)"/>
             <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(348 120 120)"/>
             <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(354 120 120)"/>
-          <!-- Happy hour arcs: part of rotating face -->
-          <path id="hh-arc1" d="M 120,120 L 232.0,120.0 A 112,112 0 0,1 176.0,216.99 Z" fill="rgba(255,140,40,0.5)" opacity="0"/>
-          <path id="hh-arc2" d="M 120,120 L 8.0,120.0 A 112,112 0 0,1 64.0,23.01 Z" fill="rgba(255,140,40,0.5)" opacity="0"/>
+          <!-- Happy hour arcs: ring inside pie slice -->
+          <!-- Each arc = a pie slice clip + orange ring inside it -->
+          <defs>
+            <clipPath id="hh-clip1">
+              <path id="hh-clip1-path" d="M 120,120 L 232.0,120.0 A 112,112 0 0,1 176.0,216.99 Z"/>
+            </clipPath>
+            <clipPath id="hh-clip2">
+              <path id="hh-clip2-path" d="M 120,120 L 8.0,120.0 A 112,112 0 0,1 64.0,23.01 Z"/>
+            </clipPath>
+          </defs>
+          <!-- Arc 1 ring (3–5pm) -->
+          <g id="hh-arc1" opacity="0">
+            <circle cx="120" cy="120" r="95" fill="none" stroke="rgba(255,140,40,0.9)" stroke-width="28" stroke-linecap="round" clip-path="url(#hh-clip1)"/>
+          </g>
+          <!-- Arc 2 ring (9pm–close) -->
+          <g id="hh-arc2" opacity="0">
+            <circle cx="120" cy="120" r="95" fill="none" stroke="rgba(255,140,40,0.9)" stroke-width="28" stroke-linecap="round" clip-path="url(#hh-clip2)"/>
+          </g>
           </g>
           <!-- Arc 1: 3-5pm = 90°-150°, Arc 2: 9-11pm = 270°-330° -->
           <!-- Hour hand -->
@@ -440,7 +462,6 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <div onclick="openReminderModal()" style="position:absolute;background:#1e1e1e;height:30px;left:171px;overflow:hidden;border-radius:80px;top:125px;width:149px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
           <p class="fi" style="font-weight:600;font-size:12px;color:white;letter-spacing:4.32px;text-transform:capitalize;line-height:12px;">Set reminder</p>
         </div>
-        <div onclick="openReminderModal()" style="position:absolute;left:320px;width:30px;height:30px;top:125px;cursor:pointer;z-index:5;"><svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 30 30"><rect fill="#1E1E1E" height="30" rx="15" width="30"/><path d="M19.2785 19.8849L10.8581 11.4644V17.8656C10.8581 17.9793 10.8129 18.0885 10.7324 18.1689C10.6519 18.2494 10.5428 18.2946 10.429 18.2946C10.3152 18.2946 10.2061 18.2494 10.1257 18.1689C10.0452 18.0885 10 17.9793 10 17.8656V10.429C10 10.3152 10.0452 10.2061 10.1257 10.1257C10.2061 10.0452 10.3152 10 10.429 10H17.8656C17.9793 10 18.0885 10.0452 18.1689 10.1257C18.2494 10.2061 18.2946 10.3152 18.2946 10.429C18.2946 10.5428 18.2494 10.6519 18.1689 10.7324C18.0885 10.8129 17.9793 10.8581 17.8656 10.8581H11.4644L19.8849 19.2785C19.9606 19.3598 20.0019 19.4674 19.9999 19.5785C19.998 19.6897 19.9529 19.7957 19.8743 19.8743C19.7957 19.9529 19.6897 19.998 19.5785 19.9999C19.4674 20.0019 19.3598 19.9606 19.2785 19.8849Z" fill="white"/></svg></div>
       </div>
     </div>
 
@@ -764,6 +785,90 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       </div>
     </div>
   </div>
+  <!-- ── Add Spot Modal ─────────────────────────────────────── -->
+  <div id="add-spot-modal" style="position:absolute;inset:0;z-index:200;display:none;flex-direction:column;background:#d0cfcf;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+
+    <!-- Header -->
+    <div style="position:absolute;top:0;left:0;width:393px;height:104px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px 14px;box-sizing:border-box;z-index:2;">
+      <div onclick="closeAddSpotModal()" style="cursor:pointer;width:36px;height:36px;background:rgba(0,0,0,0.1);border-radius:18px;display:flex;align-items:center;justify-content:center;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="black" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <p class="fa" style="font-weight:700;font-size:16px;letter-spacing:3px;color:black;">ADD A SPOT</p>
+      <div style="width:36px;"></div>
+    </div>
+
+    <!-- Scrollable body -->
+    <div style="position:absolute;top:104px;left:0;right:0;bottom:80px;overflow-y:auto;padding:0 16px 24px;box-sizing:border-box;">
+
+      <!-- Photos -->
+      <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:10px;margin-top:4px;">PHOTOS</p>
+      <div style="display:flex;gap:8px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px;">
+        <div id="add-spot-photos" style="display:flex;gap:8px;"></div>
+        <label for="add-spot-file-input" style="width:72px;height:72px;border-radius:12px;border:1.5px dashed rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="black" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </label>
+        <input id="add-spot-file-input" type="file" accept="image/*" multiple style="display:none;" onchange="handleSpotPhotos(event)"/>
+      </div>
+
+      <!-- Restaurant name -->
+      <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:8px;">RESTAURANT NAME</p>
+      <div style="position:relative;margin-bottom:6px;">
+        <input id="add-spot-name" type="text" placeholder="Start typing a name…" autocomplete="off"
+          oninput="onSpotNameInput(this.value)"
+          style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:none;background:white;font-family:'Inter',sans-serif;font-size:14px;color:black;outline:none;"/>
+        <div id="add-spot-suggestions" style="position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:10;display:none;"></div>
+      </div>
+
+      <!-- Address -->
+      <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:8px;margin-top:16px;">ADDRESS</p>
+      <input id="add-spot-address" type="text" placeholder="Auto-filled or type manually…"
+        style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:none;background:white;font-family:'Inter',sans-serif;font-size:14px;color:black;outline:none;margin-bottom:24px;"/>
+
+      <!-- Cuisine -->
+      <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:10px;">CUISINE</p>
+      <div id="add-spot-cuisine-tags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;"></div>
+
+      <!-- Vibes -->
+      <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:10px;">VIBES</p>
+      <div id="add-spot-vibe-tags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;"></div>
+
+      <!-- Happy Hours -->
+      <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:4px;">HAPPY HOURS <span style="font-weight:400;color:#999;font-size:10px;letter-spacing:1px;">OPTIONAL</span></p>
+      <div style="display:flex;gap:10px;margin-bottom:12px;margin-top:10px;">
+        <div style="flex:1;">
+          <p class="fi" style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:6px;">FROM</p>
+          <input id="hh-from" type="time" style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"/>
+        </div>
+        <div style="flex:1;">
+          <p class="fi" style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:6px;">TO</p>
+          <input id="hh-to" type="time" style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"/>
+        </div>
+      </div>
+      <input id="hh-details" type="text" placeholder="e.g. $5 house wine, half-off apps…"
+        style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;margin-bottom:8px;"/>
+
+    </div>
+
+    <!-- Submit — fixed at bottom center -->
+    <div style="position:absolute;bottom:0;left:0;width:393px;height:80px;display:flex;align-items:center;justify-content:center;background:#d0cfcf;border-top:1px solid rgba(0,0,0,0.06);">
+      <div onclick="submitAddSpot()" style="cursor:pointer;padding:14px 48px;background:black;border-radius:32px;">
+        <p class="fi" style="font-size:12px;font-weight:700;letter-spacing:6px;color:white;">SUBMIT</p>
+      </div>
+    </div>
+
+  <!-- Cuisine modal -->
+  <div id="cuisine-modal" onclick="closeCuisineModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
+    <div id="cuisine-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Add a cuisine</p>
+        <div onclick="closeCuisineModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
+      </div>
+      <div id="cuisine-modal-list" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
+      <div onclick="applyCuisineModal()" style="margin-top:20px;background:black;border-radius:32px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+        <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">DONE</p>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -813,7 +918,7 @@ let matchedRestaurants = [];
 let currentCardIndex = 0;
 
 function getSelectedVibeLabels() {
-  return [...selected].map(i => allBubbleEntries[i]?.label.trim().toLowerCase()).filter(Boolean);
+  return [...selected].map(i => VIBE_CARDS[i]?.label.trim().toLowerCase()).filter(Boolean);
 }
 
 function getOpenStatus(r) {
@@ -916,21 +1021,45 @@ function changePhoto(cardIdx, dir, total, e) {
   if (right) right.style.opacity = cur === total-1 ? '0.25' : '1';
 }
 
+let activeSearchTerm = '';
+
 function findMatchingRestaurants() {
   const vibes = getSelectedVibeLabels();
-  return restaurants
-    .map(r => {
+  const term  = activeSearchTerm.toLowerCase().trim();
+
+  let pool = restaurants;
+
+  // Filter by search term(s) first if present
+  if (term) {
+    const terms = term.split(',').map(s => s.trim()).filter(Boolean);
+    pool = pool.filter(r =>
+      terms.some(t =>
+        (r.name        && r.name.toLowerCase().includes(t)) ||
+        (r.cuisine     && r.cuisine.toLowerCase().includes(t)) ||
+        (r.vibes       && r.vibes.some(v => v.toLowerCase().includes(t))) ||
+        (r.tags        && r.tags.some(g => g.toLowerCase().includes(t))) ||
+        (r.neighborhood && r.neighborhood.toLowerCase().includes(t))
+      )
+    );
+  }
+
+  // Then score + filter by vibes
+  if (vibes.length > 0) {
+    const scored = pool.map(r => {
       const tags = r.tags.map(t => t.toLowerCase());
       const score = vibes.filter(v => tags.some(t => t.includes(v)||v.includes(t))).length;
-      return {...r, matchScore:score};
-    })
-    .filter(r => r.matchScore > 0)
-    .sort((a,b) => b.matchScore-a.matchScore || b.vibeScore-a.vibeScore);
+      return {...r, matchScore: score};
+    }).filter(r => r.matchScore > 0)
+      .sort((a,b) => b.matchScore-a.matchScore || b.vibeScore-a.vibeScore);
+    return scored;
+  }
+
+  return pool;
 }
 
 function removeVibeTag(vibeLabel, e) {
   e.stopPropagation();
-  const idx = [...selected].find(i => allBubbleEntries[i]?.label.trim().toLowerCase() === vibeLabel.toLowerCase());
+  const idx = [...selected].find(i => VIBE_CARDS[i]?.label.trim().toLowerCase() === vibeLabel.toLowerCase());
   if (idx !== undefined) {
     selected.delete(idx);
     syncAllWrappers();
@@ -1551,7 +1680,9 @@ function updateHHClock(r) {
       const endDeg = closeHour12 * 30;
       const ex = 120 + 112 * Math.sin(endDeg * Math.PI / 180);
       const ey = 120 - 112 * Math.cos(endDeg * Math.PI / 180);
-      arc2.setAttribute('d', `M 120,120 L 8.0,120.0 A 112,112 0 0,1 ${ex.toFixed(1)},${ey.toFixed(1)} Z`);
+      const arcPath = `M 120,120 L 8.0,120.0 A 112,112 0 0,1 ${ex.toFixed(1)},${ey.toFixed(1)} Z`;
+      const clip2  = document.getElementById('hh-clip2-path');
+      if (clip2)  clip2.setAttribute('d', arcPath);
       arc2.setAttribute('opacity', '1');
     } else if (arc2) {
       arc2.setAttribute('opacity', '0');
@@ -1685,7 +1816,7 @@ function closeVibeModal() {
 
 function applyVibeModal() {
   modalPendingSelection.forEach(vibe => {
-    const idx = allBubbleEntries.findIndex(e => e.isOriginal && e.label.trim().toLowerCase()===vibe.toLowerCase());
+    const idx = VIBE_CARDS.findIndex(c => c.label.replace(/\s+/g,' ').trim().toLowerCase() === vibe.replace(/\s+/g,' ').trim().toLowerCase());
     if (idx>=0 && !selected.has(idx)) selected.add(idx);
   });
   syncAllWrappers();
@@ -1699,20 +1830,46 @@ function populatePage2() {
   currentCardIndex = 0;
   currentRestaurant = matchedRestaurants[0];
 
-  const tagsEl = document.getElementById('p2-tags');
+  const cuisineEl = document.getElementById('p2-cuisine-tags');
+  const tagsEl    = document.getElementById('p2-tags');
   const vibeLabels = getSelectedVibeLabels();
+
+  // ── Cuisine row ──────────────────────────────────────────────
+  // Search term acts as cuisine filter — show it here
+  const addCuisineBtn = `<div onclick="openCuisineModal()" style="padding:5px 12px;border-radius:20px;border:1px dashed black;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;white-space:nowrap;">
+      <p class="fi" style="font-weight:400;font-size:9px;color:black;letter-spacing:0.8px;text-transform:lowercase;line-height:normal;">+ add cuisine</p>
+    </div>`;
+
+  if (activeSearchTerm) {
+    const terms = activeSearchTerm.split(',').map(s => s.trim()).filter(Boolean);
+    cuisineEl.innerHTML = terms.map(t =>
+      `<div style="padding:4px 8px 4px 12px;border-radius:20px;border:1px solid black;background:white;display:flex;align-items:center;gap:5px;flex-shrink:0;">
+        <p class="fi" style="font-weight:400;font-size:9px;color:black;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;line-height:normal;">${t}</p>
+        <div onclick="removeCuisineTerm('${t}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+          <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="black" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+      </div>`
+    ).join('') + (terms.length < 3 ? addCuisineBtn : '');
+  } else {
+    cuisineEl.innerHTML = addCuisineBtn;
+  }
+
+  // ── Vibe row ─────────────────────────────────────────────────
   const addVibeBtn = vibeLabels.length < 3
     ? `<div onclick="openVibeModal()" style="padding:5px 12px;border-radius:20px;border:1px dashed black;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;white-space:nowrap;">
-        <p class="fi" style="font-weight:400;font-size:11px;color:black;letter-spacing:1px;text-transform:lowercase;white-space:nowrap;line-height:normal;">+ add vibe</p>
+        <p class="fi" style="font-weight:400;font-size:9px;color:black;letter-spacing:0.8px;text-transform:lowercase;line-height:normal;">+ add vibe</p>
       </div>` : '';
-  tagsEl.innerHTML = vibeLabels.map(v =>
+
+  const vibePills = vibeLabels.map(v =>
     `<div style="padding:4px 8px 4px 12px;border-radius:20px;border:1px solid black;background:black;display:flex;align-items:center;gap:5px;flex-shrink:1;min-width:0;">
       <p class="fi" style="font-weight:400;font-size:9px;color:white;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;line-height:normal;">${v}</p>
       <div onclick="removeVibeTag('${v}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
         <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
       </div>
     </div>`
-  ).join('') + addVibeBtn;
+  ).join('');
+
+  tagsEl.innerHTML = vibePills + addVibeBtn;
 
   const strip = document.getElementById('p2-strip');
   strip.style.transform='translateX(0)';
@@ -1724,32 +1881,42 @@ function populatePage2() {
 function setupSwipe() {
   const wrap = document.getElementById('p2-strip-wrap');
   const strip = document.getElementById('p2-strip');
-  let startX=0, isDragging=false;
-  wrap.ontouchstart = e => { startX=e.touches[0].clientX; isDragging=true; };
+  let startX=0, startY=0, isDragging=false;
+
+  // Card image occupies top:190px to top:790px (174 strip top + 16 padding + 600 card height)
+  const CARD_TOP = 190;
+  const CARD_BOTTOM = 790;
+
+  function inCardArea(y) { return y >= CARD_TOP && y <= CARD_BOTTOM; }
+
+  function handleSwipeEnd(startX, endX, startY) {
+    const diff = startX - endX;
+    if (Math.abs(diff) < 40) return;
+
+    if (inCardArea(startY)) {
+      // Within card: swipe left/right to navigate restaurants
+      if (diff > 0 && currentCardIndex < matchedRestaurants.length - 1) currentCardIndex++;
+      else if (diff < 0 && currentCardIndex > 0) currentCardIndex--;
+      strip.style.transform = `translateX(-${currentCardIndex * 393}px)`;
+      currentRestaurant = matchedRestaurants[currentCardIndex];
+      document.getElementById('p2-counter').textContent = `${currentCardIndex + 1}/${matchedRestaurants.length}`;
+    } else {
+      // Outside card area: right swipe → back to Page 1
+      if (diff < 0) navigate('starter');
+    }
+  }
+
+  wrap.ontouchstart = e => { startX = e.touches[0].clientX; startY = e.touches[0].clientY; isDragging = true; };
   wrap.ontouchend = e => {
     if (!isDragging) return;
-    const diff = startX - e.changedTouches[0].clientX;
-    if (Math.abs(diff)>40) {
-      if (diff>0 && currentCardIndex<matchedRestaurants.length-1) currentCardIndex++;
-      else if (diff<0 && currentCardIndex>0) currentCardIndex--;
-    }
-    strip.style.transform=`translateX(-${currentCardIndex*393}px)`;
-    currentRestaurant=matchedRestaurants[currentCardIndex];
-    document.getElementById('p2-counter').textContent=`${currentCardIndex+1}/${matchedRestaurants.length}`;
-    isDragging=false;
+    handleSwipeEnd(startX, e.changedTouches[0].clientX, startY);
+    isDragging = false;
   };
-  wrap.onmousedown = e => { startX=e.clientX; isDragging=true; };
+  wrap.onmousedown = e => { startX = e.clientX; startY = e.clientY; isDragging = true; };
   wrap.onmouseup = e => {
     if (!isDragging) return;
-    const diff = startX-e.clientX;
-    if (Math.abs(diff)>40) {
-      if (diff>0 && currentCardIndex<matchedRestaurants.length-1) currentCardIndex++;
-      else if (diff<0 && currentCardIndex>0) currentCardIndex--;
-    }
-    strip.style.transform=`translateX(-${currentCardIndex*393}px)`;
-    currentRestaurant=matchedRestaurants[currentCardIndex];
-    document.getElementById('p2-counter').textContent=`${currentCardIndex+1}/${matchedRestaurants.length}`;
-    isDragging=false;
+    handleSwipeEnd(startX, e.clientX, startY);
+    isDragging = false;
   };
 }
 
@@ -1763,12 +1930,12 @@ function selectRestaurant(idx) {
 
 // Page 3 transitions
 function revealDetails() {
-  // Pause heavy real-time updates during transition to free main thread
   if (hhClockInterval) { clearInterval(hhClockInterval); hhClockInterval = null; }
   if (quoteRotationTimer) { clearInterval(quoteRotationTimer); quoteRotationTimer = null; }
+  const panel = document.getElementById('p3DetailsPanel');
+  panel.style.transition = 'transform .4s cubic-bezier(.4,0,.2,1)';
   document.getElementById('screen-page3s1').classList.add('details-open');
-  document.getElementById('p3DetailsPanel').classList.add('revealed');
-  // Resume after transition completes
+  panel.classList.add('revealed');
   setTimeout(() => {
     if (currentRestaurant) {
       updateHHClock(currentRestaurant);
@@ -1779,16 +1946,14 @@ function revealDetails() {
 }
 
 function hideDetails() {
-  // Pause heavy intervals during transition
   if (hhClockInterval) { clearInterval(hhClockInterval); hhClockInterval = null; }
   if (quoteRotationTimer) { clearInterval(quoteRotationTimer); quoteRotationTimer = null; }
-  // Freeze ring — no re-animation
   const ring = document.getElementById('p3-ring-fill');
   if (ring) ring.style.transition = 'none';
-  // Remove State 2 — panel slides away, State 1 is already fully visible underneath
+  const panel = document.getElementById('p3DetailsPanel');
+  panel.style.transition = 'transform .4s cubic-bezier(.4,0,.2,1)';
   document.getElementById('screen-page3s1').classList.remove('details-open');
-  document.getElementById('p3DetailsPanel').classList.remove('revealed');
-  // Resume heavy intervals after transition
+  panel.classList.remove('revealed');
   setTimeout(() => {
     if (currentRestaurant) {
       updateHHClock(currentRestaurant);
@@ -1798,9 +1963,10 @@ function hideDetails() {
   }, 400);
 }
 
-// Swipe up on State 1 → reveal State 2; swipe down on State 2 → hide
+// Swipe up on State 1 → reveal State 2; swipe down on State 2 → hide; swipe left → back to Page 2
 (function initP3Swipe() {
   let startY = 0, startX = 0;
+  const HERO_BOTTOM = 700; // hero image area ends ~700px from top
 
   const p3Screen = document.getElementById('screen-page3s1');
   if (p3Screen) {
@@ -1811,10 +1977,26 @@ function hideDetails() {
 
     p3Screen.addEventListener('touchend', e => {
       const dy = startY - e.changedTouches[0].clientY;
-      const dx = Math.abs(startX - e.changedTouches[0].clientX);
-      // Only trigger on mostly vertical swipe (dy > 50, dx < 60)
-      if (Math.abs(dy) > 50 && dx < 60) {
-        const isRevealed = document.getElementById('p3DetailsPanel').classList.contains('revealed');
+      const dx = startX - e.changedTouches[0].clientX;
+      const isRevealed = document.getElementById('p3DetailsPanel').classList.contains('revealed');
+
+      // Horizontal swipe (left) — back to Page 2
+      if (Math.abs(dx) > 50 && Math.abs(dy) < 60) {
+        if (dx > 0) {
+          // Left swipe
+          if (isRevealed) {
+            // State 2: anywhere → back to Page 2
+            backToPage2();
+          } else if (startY > HERO_BOTTOM) {
+            // State 1: only outside hero area → back to Page 2
+            backToPage2();
+          }
+        }
+        return;
+      }
+
+      // Vertical swipe — reveal/hide details
+      if (Math.abs(dy) > 50 && Math.abs(dx) < 60) {
         if (dy > 0 && !isRevealed) revealDetails();   // swipe up → State 2
         if (dy < 0 && isRevealed) hideDetails();       // swipe down → State 1
       }
@@ -1851,6 +2033,7 @@ function backToPage2() {
 }
 
 function navigate(screen) {
+  if (screen === 'starter') activeSearchTerm = '';
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-'+screen).classList.add('active');
 }
@@ -1885,9 +2068,28 @@ scalePhone();
 window.addEventListener('resize', scalePhone);
 
 
+const CITY_SHORT = {
+  'township of langley': 'Langley',
+  'city of langley':     'Langley',
+  'district of north vancouver': 'North Van',
+  'city of north vancouver': 'North Van',
+  'north vancouver':     'North Van',
+  'west vancouver':      'West Van',
+  'port coquitlam':      'Port Coq',
+  'new westminster':     'New West',
+  'maple ridge':         'Maple Ridge',
+  'pitt meadows':        'Pitt Meadows',
+  'white rock':          'White Rock',
+};
+
+function shortenCity(raw) {
+  const key = raw.toLowerCase().trim();
+  return CITY_SHORT[key] || raw;
+}
+
 function updateCity(city) {
   const el = document.getElementById('city-name');
-  if (el && city) el.textContent = city.toUpperCase();
+  if (el && city) el.textContent = shortenCity(city).toUpperCase();
 }
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(pos => {
@@ -1903,114 +2105,143 @@ if (navigator.geolocation) {
   },()=>{ /* permission denied — transport times will use fallback */ });
 }
 
-// Bubbles
-const bubbles = [
-  { label:"Girls night out", size:92, left:153, top:67, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 92 92\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.3079 6.6674 -6.6674 3.3079 22.742 7.236)\"><stop stop-color=\"rgba(82,0,255,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(169,128,255,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 92 92\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.2225 5.3753 -5.3753 -2.2225 61.506 38.247)\"><stop stop-color=\"rgba(49,181,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(145,183,235,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(240,185,214,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"Feeling cozy", size:84, left:244, top:39, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(253,150,92,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(254,203,174,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(255,44,133,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,142,165,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(252,240,196,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"Date night", size:66, left:190, top:3, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)\"><stop stop-color=\"rgba(253,150,92,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(254,203,174,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)\"><stop stop-color=\"rgba(255,44,133,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,142,165,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(252,240,196,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"Solo & chill", size:84, left:-2, top:149, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(253,150,92,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(254,203,174,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(255,44,133,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,142,165,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(252,240,196,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"single night", size:72, left:92, top:25, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(183,129,31,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(219,192,143,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(55,179,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(122,202,247,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(188,225,239,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"quick bite", size:66, left:326, top:18, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(183,129,31,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(219,192,143,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(55,179,255,1)\" offset=\"0\"/><stop stop-color=\"rgba(122,202,247,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(188,225,239,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"spicy", size:66, left:135, top:158, font:"afacad", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)\"><stop stop-color=\"rgba(255,0,4,1)\" offset=\"0\"/><stop stop-color=\"rgba(255,128,130,0.5)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)\"><stop stop-color=\"rgba(254,38,0,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,115,53,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,193,106,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"something different", size:72, left:302, top:108, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)\"><stop stop-color=\"rgba(255,0,4,1)\" offset=\"0\"/><stop stop-color=\"rgba(255,128,130,0.5)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 66 66\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)\"><stop stop-color=\"rgba(254,38,0,1)\" offset=\"0\"/><stop stop-color=\"rgba(254,115,53,1)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,193,106,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"hangover cure", size:72, left:4, top:65, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(23,98,89,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(139,177,172,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(0,139,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(198,176,117,1)\" offset=\"1\"/></radialGradient></defs></svg>')" },
-  { label:"Fresh air & food", size:84, left:68, top:98, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)\"><stop stop-color=\"rgba(0,255,242,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(128,255,249,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 84 84\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)\"><stop stop-color=\"rgba(0,204,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(146,242,136,1)\" offset=\"0.75\"/><stop stop-color=\"rgba(195,255,135,1)\" offset=\"1\"/></radialGradient></defs></svg>')" }
-
-
-
-
-,
-  { label:"treat yourself", size:72, left:232, top:128, font:"inter", bg:"url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)\"><stop stop-color=\"rgba(23,98,89,0.6)\" offset=\"0\"/><stop stop-color=\"rgba(139,177,172,0.3)\" offset=\"0.5\"/><stop stop-color=\"rgba(255,255,255,0)\" offset=\"1\"/></radialGradient></defs></svg>'), url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 72 72\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"none\"><rect x=\"0\" y=\"0\" height=\"100%\" width=\"100%\" fill=\"url(%23grad)\" opacity=\"1\"/><defs><radialGradient id=\"grad\" gradientUnits=\"userSpaceOnUse\" cx=\"0\" cy=\"0\" r=\"10\" gradientTransform=\"matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)\"><stop stop-color=\"rgba(0,139,139,1)\" offset=\"0\"/><stop stop-color=\"rgba(198,176,117,1)\" offset=\"1\"/></radialGradient></defs></svg>')" }
+// ── Vibe Cards ─────────────────────────────────────────────────
+const VIBE_CARDS = [
+  { label: 'Date  Night',          grad: 'linear-gradient(135deg,#b06ab3,#8a3fa0,#4568dc)' },
+  { label: 'Fresh Air & Food',     grad: 'linear-gradient(135deg,#11998e,#38ef7d,#a8ff78)' },
+  { label: 'Girls Night Out',      grad: 'linear-gradient(135deg,#ff5b92,#dd8dff,#ff97aa)' },
+  { label: 'Feeling  Cozy',        grad: 'linear-gradient(135deg,#f9ca7a,#f7b733,#fc4a1a)' },
+  { label: 'Single  Night',        grad: 'linear-gradient(135deg,#2c3e6b,#3a4f85,#1a2a4a)' },
+  { label: 'Quick  Bite',          grad: 'linear-gradient(135deg,#008b8b,#4aaa96,#c6b075)' },
+  { label: 'Solo &  Chill',        grad: 'linear-gradient(135deg,#008b8b,#4aaa96,#c6b075)' },
+  { label: 'Treat  Yourself',      grad: 'linear-gradient(135deg,#b06ab3,#8a3fa0,#4568dc)' },
+  { label: 'Spicy',                grad: 'linear-gradient(135deg,#ff416c,#ff4b2b,#ff9a44)' },
+  { label: 'Wine &  Dine',         grad: 'linear-gradient(135deg,#b06ab3,#8a3fa0,#4568dc)' },
+  { label: 'Late  Night',          grad: 'linear-gradient(135deg,#2c3e6b,#3a4f85,#1a2a4a)' },
+  { label: 'Something  Different', grad: 'linear-gradient(135deg,#ff416c,#ff4b2b,#ff9a44)' },
+  { label: 'Hangover  Cure',       grad: 'linear-gradient(135deg,#008b8b,#4aaa96,#c6b075)' },
 ];
 
-const BG_PALETTE = bubbles.map(b => b.bg);
+// ── Vibe ranking engine ────────────────────────────────────────
+// Simulated analytics per card — swap with real API data when available.
+// weeklySearches: total searches in last 7 days
+// dailySearches:  searches in last 24–48h
+// baselineAvg:    average daily searches over prior 3–7 days (for spike detection)
+// longTermAvg:    average daily searches over last 3–6 months
+// longTermVolatility: std deviation of monthly volume (lower = more stable)
+// engagementScore: saves + repeat taps + completed views (0–100)
+// impressions:    total card impressions (for hidden gem: high engagement / low impressions)
+const VIBE_ANALYTICS = [
+  { weeklySearches:4800, dailySearches:820, baselineAvg:620, longTermAvg:3200, longTermVolatility:180, engagementScore:88, impressions:12000 }, // Date Night
+  { weeklySearches:2100, dailySearches:390, baselineAvg:280, longTermAvg:1400, longTermVolatility:210, engagementScore:74, impressions:8000  }, // Fresh Air & Food
+  { weeklySearches:3600, dailySearches:510, baselineAvg:500, longTermAvg:3100, longTermVolatility:80,  engagementScore:82, impressions:11000 }, // Girls Night Out — high long-term avg, very low volatility = always popular
+  { weeklySearches:2900, dailySearches:680, baselineAvg:360, longTermAvg:1800, longTermVolatility:300, engagementScore:79, impressions:9500  }, // Feeling Cozy
+  { weeklySearches:1200, dailySearches:580, baselineAvg:170, longTermAvg:900,  longTermVolatility:120, engagementScore:61, impressions:5000  }, // Single Night — huge spike vs baseline = blowing up
+  { weeklySearches:2400, dailySearches:340, baselineAvg:330, longTermAvg:2100, longTermVolatility:160, engagementScore:70, impressions:7500  }, // Quick Bite
+  { weeklySearches:1600, dailySearches:210, baselineAvg:220, longTermAvg:1300, longTermVolatility:100, engagementScore:91, impressions:3200  }, // Solo & Chill
+  { weeklySearches:1900, dailySearches:250, baselineAvg:260, longTermAvg:1500, longTermVolatility:130, engagementScore:85, impressions:7000  }, // Treat Yourself
+  { weeklySearches:2200, dailySearches:310, baselineAvg:300, longTermAvg:1700, longTermVolatility:200, engagementScore:76, impressions:8500  }, // Spicy
+  { weeklySearches:3100, dailySearches:420, baselineAvg:430, longTermAvg:2800, longTermVolatility:110, engagementScore:80, impressions:10000 }, // Wine & Dine
+  { weeklySearches:1400, dailySearches:190, baselineAvg:195, longTermAvg:1100, longTermVolatility:90,  engagementScore:68, impressions:5500  }, // Late Night
+  { weeklySearches:980,  dailySearches:140, baselineAvg:130, longTermAvg:700,  longTermVolatility:250, engagementScore:72, impressions:4000  }, // Something Different
+  { weeklySearches:1750, dailySearches:260, baselineAvg:230, longTermAvg:1350, longTermVolatility:170, engagementScore:77, impressions:6000  }, // Hangover Cure
+];
 
-function cloneBg(i, copy) {
-  const offset = Math.abs(copy) * 2 + (copy < 0 ? 3 : 0);
-  return BG_PALETTE[(i + offset) % BG_PALETTE.length];
+function computeVibeBadges() {
+  const badges = new Array(VIBE_CARDS.length).fill(null);
+  const used = new Set();
+
+  // 1. #1 This Week — highest weekly searches
+  const byWeekly = [...VIBE_CARDS.keys()].sort((a,b) => VIBE_ANALYTICS[b].weeklySearches - VIBE_ANALYTICS[a].weeklySearches);
+  const top1 = byWeekly[0];
+  badges[top1] = '#1 this week';
+  used.add(top1);
+
+  // 2. Blowing Up — highest spike velocity (daily vs baseline %)
+  const bySpike = [...VIBE_CARDS.keys()]
+    .filter(i => !used.has(i))
+    .sort((a,b) => {
+      const spikeA = (VIBE_ANALYTICS[a].dailySearches - VIBE_ANALYTICS[a].baselineAvg) / VIBE_ANALYTICS[a].baselineAvg;
+      const spikeB = (VIBE_ANALYTICS[b].dailySearches - VIBE_ANALYTICS[b].baselineAvg) / VIBE_ANALYTICS[b].baselineAvg;
+      return spikeB - spikeA;
+    });
+  const top2 = bySpike[0];
+  badges[top2] = 'blowing up';
+  used.add(top2);
+
+  // 3. Always Popular — highest long-term avg with lowest volatility (stability score)
+  const byStability = [...VIBE_CARDS.keys()]
+    .filter(i => !used.has(i))
+    .sort((a,b) => {
+      const scoreA = VIBE_ANALYTICS[a].longTermAvg / (VIBE_ANALYTICS[a].longTermVolatility + 1);
+      const scoreB = VIBE_ANALYTICS[b].longTermAvg / (VIBE_ANALYTICS[b].longTermVolatility + 1);
+      return scoreB - scoreA;
+    });
+  const top3 = byStability[0];
+  badges[top3] = 'always popular';
+  used.add(top3);
+
+  // 4. Most Loved — highest engagement score
+  const byEngagement = [...VIBE_CARDS.keys()]
+    .filter(i => !used.has(i))
+    .sort((a,b) => VIBE_ANALYTICS[b].engagementScore - VIBE_ANALYTICS[a].engagementScore);
+  const top4 = byEngagement[0];
+  badges[top4] = 'most loved';
+  used.add(top4);
+
+  // 5. Hidden Gem — high engagement rate relative to impressions, not already top searched
+  const byGem = [...VIBE_CARDS.keys()]
+    .filter(i => !used.has(i))
+    .sort((a,b) => {
+      const gemA = VIBE_ANALYTICS[a].engagementScore / Math.log(VIBE_ANALYTICS[a].impressions + 1);
+      const gemB = VIBE_ANALYTICS[b].engagementScore / Math.log(VIBE_ANALYTICS[b].impressions + 1);
+      return gemB - gemA;
+    });
+  const top5 = byGem[0];
+  badges[top5] = 'hidden gem';
+
+  return badges;
 }
 
-const clusterLeft  = Math.min(...bubbles.map(b => b.left));
-const clusterRight = Math.max(...bubbles.map(b => b.left + b.size));
-const clusterW     = clusterRight - clusterLeft;
-const GAP          = -30;
-const COPIES       = 2;
-const TRACK_W      = (COPIES * 2 + 1) * (clusterW + GAP);
-const originOffset = COPIES * (clusterW + GAP) - clusterLeft;
+const VIBE_BADGES = computeVibeBadges();
 
-const selected    = new Set();
-const container   = document.getElementById('tags-container');
-const allWrappers = {}; // { bubbleIdx → [wrapper, ...] } across all copies
+const selected = new Set();
+// Map card label (lowercase) → index for downstream matching
+const allBubbleEntries = VIBE_CARDS.map((c, i) => ({ label: c.label, isOriginal: true, idx: i }));
+
+function getVibeCardLabel(idx) { return VIBE_CARDS[idx]?.label || ''; }
 
 function syncAllWrappers() {
-  bubbles.forEach((_, i) => {
-    const ws = allWrappers[i] || [];
-    const isSel   = selected.has(i);
-    const isMaxed = !isSel && selected.size >= 3;
-    ws.forEach(w => {
-      w.style.opacity            = isMaxed ? '0.4' : '1';
-      w.style.cursor             = isMaxed ? 'not-allowed' : 'pointer';
-      w.style.animationPlayState = isSel ? 'paused' : 'running';
-      w.style.transform          = isSel ? 'scale(1.1)' : '';
-      w.style.outline            = isSel ? '4px solid rgba(255,255,255,0.8)' : '';
-    });
-  });
-  const foot = document.getElementById('lets-vibe-foot');
-  if (selected.size > 0) { foot.style.opacity='1'; foot.style.pointerEvents='all'; }
-  else                   { foot.style.opacity='0'; foot.style.pointerEvents='none'; }
-}
-
-// Alternative vibe labels for clone copies — same positions, different text
-const CLONE_LABELS = {
-  '-2': ["wine & dine","rainy day in","celebrate","power lunch","late night","light & fresh","cocktail hour","impress someone","big breakfast","patio vibes","just the two of us"],
-  '-1': ["date night","treat yourself","group dinner","eat local","cocktail hour","big breakfast","impress someone","late night","patio vibes","wine & dine","celebrate"],
-   '1': ["solo dinner","big breakfast","wine & dine","rainy day in","late night","eat local","power lunch","patio vibes","just the two of us","cocktail hour","impress someone"],
-   '2': ["celebrate","light & fresh","just the two of us","group dinner","wine & dine","late night","big breakfast","cocktail hour","eat local","impress someone","power lunch"],
-};
-
-// Build a flat list of all bubbles across all copies — each is independent
-const allBubbleEntries = []; // { label, bg, size, left, top, isOriginal }
-for (let copy = -COPIES; copy <= COPIES; copy++) {
-  const labelSet = CLONE_LABELS[String(copy)];
-  bubbles.forEach((b, i) => {
-    allBubbleEntries.push({
-      label:      copy === 0 ? b.label.trim() : (labelSet ? labelSet[i] : b.label.trim()),
-      bg:         copy === 0 ? b.bg : cloneBg(i, copy),
-      size:       b.size,
-      left:       originOffset + copy * (clusterW + GAP) + b.left,
-      top:        b.top,
-      isOriginal: copy === 0,
-      copy, bubbleIdx: i,
-    });
-  });
-}
-
-const bubbleTrack = document.createElement('div');
-bubbleTrack.style.cssText = `position:relative;height:241px;width:${TRACK_W}px;`;
-container.appendChild(bubbleTrack);
-container.style.width = '430px';
-
-function syncAllWrappers() {
-  document.querySelectorAll('.vibe-bubble-wrapper').forEach(w => {
-    const idx    = parseInt(w.dataset.entryIdx);
+  document.querySelectorAll('.vibe-card-item').forEach(el => {
+    const idx = parseInt(el.dataset.cardIdx);
     const isSel  = selected.has(idx);
     const isMax  = !isSel && selected.size >= 3;
-    w.style.opacity            = isMax ? '0.4' : '1';
-    w.style.cursor             = isMax ? 'not-allowed' : 'pointer';
-    w.style.animationPlayState = isSel ? 'paused' : 'running';
-    w.style.transform          = isSel ? 'scale(1.1)' : '';
-    w.style.outline            = isSel ? '4px solid rgba(255,255,255,0.8)' : '';
+    el.style.opacity = '1';
+    el.style.filter = isMax ? 'grayscale(1)' : 'none';
+    el.style.outline = isSel ? '4px solid rgba(255,255,255,0.8)' : 'none';
+    el.style.transform = isSel ? 'scale(0.97)' : 'scale(1)';
+    el.style.boxShadow = 'none';
+    el.style.cursor = isMax ? 'default' : 'pointer';
+    const check = el.querySelector('.card-check');
+    if (check) check.style.opacity = isSel ? '1' : '0';
   });
-  const foot = document.getElementById('lets-vibe-foot');
-  if (selected.size > 0) { foot.style.opacity='1'; foot.style.pointerEvents='all'; }
-  else                   { foot.style.opacity='0'; foot.style.pointerEvents='none'; }
 
-  // Update selected tags row on page 1
+  // CTA state
+  const btn = document.getElementById('lets-vibe-btn');
+  if (btn) {
+    const active = selected.size > 0;
+    btn.style.background = active ? 'black' : '#b0b0b0';
+    btn.style.cursor = active ? 'pointer' : 'default';
+    btn.parentElement.style.background = active ? 'black' : '#b0b0b0';
+    btn.onmouseenter = active ? function(){ this.style.background='#222'; } : null;
+    btn.onmouseleave = active ? function(){ this.style.background='black'; } : null;
+  }
+
+  // Update p1-selected-tags row
   const tagsRow = document.getElementById('p1-selected-tags');
   if (tagsRow) {
-    const selArr = [...selected];
-    tagsRow.innerHTML = selArr.map(idx => {
-      const label = allBubbleEntries[idx]?.label.trim() || '';
+    tagsRow.innerHTML = [...selected].map(idx => {
+      const label = getVibeCardLabel(idx);
       return `<div style="flex-shrink:0;padding:4px 8px 4px 12px;border-radius:20px;border:1px solid black;background:black;display:flex;align-items:center;gap:5px;">
         <p class="fi" style="font-weight:400;font-size:9px;color:white;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;line-height:normal;">${label}</p>
         <div onclick="removeVibeTag('${label.replace(/'/g,"\\'")}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
@@ -2021,131 +2252,348 @@ function syncAllWrappers() {
   }
 }
 
-allBubbleEntries.forEach((entry, idx) => {
-  const driftIdx   = (entry.bubbleIdx % 6) + 1;
-  const driftDur   = (9 + driftIdx * 1.3).toFixed(1);
-  const driftDelay = ((driftIdx * 1.1 + idx * 0.4) % 8).toFixed(1);
+// Render cards — overlapping stack matching reference layout
+(function renderVibeCards() {
+  const list = document.getElementById('vibe-card-list');
+  if (!list) return;
+  list.innerHTML = '';
 
-  const wrapper = document.createElement('div');
-  wrapper.className = 'vibe-bubble-wrapper';
-  wrapper.dataset.entryIdx = idx;
-  wrapper.style.cssText = `position:absolute;left:${entry.left}px;top:${entry.top}px;width:${entry.size}px;height:${entry.size}px;border-radius:44.5px;cursor:pointer;transition:transform 0.2s,outline 0.2s,opacity 0.2s;animation:bubbleDrift${driftIdx} ${driftDur}s ease-in-out ${driftDelay}s infinite;`;
+  const CARD_H   = 90;   // visible height per card
+  const OVERLAP  = 28;   // how much each card slides under the next
+  const STEP     = CARD_H - OVERLAP; // vertical step between card tops
 
-  const bgDiv = document.createElement('div');
-  bgDiv.style.cssText = `position:absolute;inset:0;border-radius:44.5px;filter:blur(2px);background-image:${entry.bg};`;
-  wrapper.appendChild(bgDiv);
+  // Total scroll height = first card top + all steps + last card remainder
+  const totalH = CARD_H + (VIBE_CARDS.length - 1) * STEP + OVERLAP;
 
-  const lbl = document.createElement('p');
-  lbl.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:12px;line-height:1.3;color:white;text-align:center;text-transform:capitalize;font-style:normal;padding:8px;word-break:normal;overflow-wrap:normal;hyphens:none;`;
-  lbl.textContent = entry.label;
-  wrapper.appendChild(lbl);
+  // Outer container needs explicit height for scroll to work
+  list.style.position = 'absolute';
 
-  wrapper.addEventListener('mouseenter', () => { if (selected.has(idx)||selected.size>=3) return; wrapper.style.transform='scale(1.05)'; });
-  wrapper.addEventListener('mouseleave', () => { if (selected.has(idx)) return; wrapper.style.transform=''; });
-  wrapper.addEventListener('click', () => {
-    if (selected.has(idx)) { selected.delete(idx); }
-    else { if (selected.size>=3) return; selected.add(idx); }
-    syncAllWrappers();
+  // Inner track — tall enough to scroll through all cards
+  const track = document.createElement('div');
+  track.style.cssText = `position:relative;width:100%;height:${totalH}px;`;
+  list.appendChild(track);
+
+  // Build render order: badged cards first (in badge rank), then the rest
+  const BADGE_RANK = ['#1 this week', 'blowing up', 'always popular', 'most loved', 'hidden gem'];
+  const badgedIdxs = BADGE_RANK.map(b => VIBE_BADGES.indexOf(b)).filter(i => i >= 0);
+  const unbadgedIdxs = VIBE_CARDS.map((_,i) => i).filter(i => !badgedIdxs.includes(i));
+  const renderOrder = [...badgedIdxs, ...unbadgedIdxs];
+
+  renderOrder.forEach((idx, position) => {
+    const card = VIBE_CARDS[idx];
+    const el = document.createElement('div');
+    el.className = 'vibe-card-item';
+    el.dataset.cardIdx = idx;
+
+    const top = position * STEP;
+    el.style.cssText = `
+      position:absolute;
+      left:0;right:0;top:${top}px;
+      height:${CARD_H + OVERLAP}px;
+      border-radius:22px;
+      background:${card.grad};
+      cursor:pointer;
+      overflow:hidden;
+      outline:none;
+      transition:opacity 0.15s,outline 0.15s,transform 0.15s ease,filter 0.3s ease;
+      display:flex;align-items:flex-start;
+      padding:8px 8px 0 8px;
+      z-index:${position};
+      -webkit-tap-highlight-color:transparent;
+    `;
+    el.addEventListener('mousedown', e => e.preventDefault());
+
+    el.innerHTML = `
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;width:100%;">
+        <span style="background:black;border-radius:20px;padding:3px 0;width:110px;text-align:center;font-family:'Inter',sans-serif;font-style:italic;font-size:12px;color:white;letter-spacing:0.3px;white-space:nowrap;flex-shrink:0;display:${VIBE_BADGES[idx] ? 'inline-block' : 'none'};">${VIBE_BADGES[idx] || ''}</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:600;font-size:20px;color:white;letter-spacing:10px;text-align:right;line-height:1;margin-left:auto;padding-right:0;width:190px;flex-shrink:0;word-break:break-word;">${card.label}</span>
+      </div>
+      <div class="card-check" style="position:absolute;top:18px;right:20px;opacity:0;transition:opacity 0.15s;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+    `;
+
+    el.addEventListener('click', () => {
+      if (selected.has(idx)) { selected.delete(idx); }
+      else { if (selected.size >= 3) return; selected.add(idx); }
+      syncAllWrappers();
+    });
+
+    track.appendChild(el);
   });
+})();
 
-  bubbleTrack.appendChild(wrapper);
-});
-
-requestAnimationFrame(() => {
-  const mid = originOffset + clusterLeft + clusterW / 2;
-  container.scrollLeft = Math.max(0, mid - 430 / 2);
-});
-
-let _down=false,_sx,_sl;
-container.addEventListener('mousedown', e=>{_down=true;_sx=e.pageX;_sl=container.scrollLeft;e.preventDefault();});
-document.addEventListener('mouseup',   ()=>_down=false);
-document.addEventListener('mousemove', e=>{if(!_down)return;container.scrollLeft=_sl-(e.pageX-_sx);});
-
-const sbStyle = document.createElement('style');
-sbStyle.textContent='#tags-container::-webkit-scrollbar{display:none}';
-document.head.appendChild(sbStyle);
-
-// ── Search suggestions ─────────────────────────────────────────
-const VIBE_KEYWORDS = {
-  "Girls night out":     ["girls","ladies","friends","gno","squad","girlfriends","night out","besties","women"],
-  "Feeling cozy":        ["cozy","cosy","warm","comfort","comfortable","snug","fireplace","homey","blanket","intimate"],
-  "Date night":          ["date","romantic","romance","couple","anniversary","love","partner","two","intimate"],
-  "Solo & chill":        ["solo","alone","myself","quiet","chill","me time","relax","low key","independent"],
-  "single night":        ["single","solo night","by myself","lone","just me","one person"],
-  "quick bite":          ["quick","fast","rush","grab","bite","takeout","to go","busy","speedy","on the go"],
-  "spicy":               ["spicy","heat","hot","bold","kick","fire","chilli","jalapeño","fiery","spice"],
-  "something different": ["different","unique","unusual","adventurous","new","explore","exotic","weird","unexpected","surprise"],
-  "hangover cure":       ["hangover","recovery","morning after","greasy","cure","rough night","headache","brunch","comfort food"],
-  "Fresh air & food":    ["outdoor","patio","fresh air","outside","terrace","garden","view","waterfront","nature","alfresco"],
-  "treat yourself":      ["treat","splurge","fancy","luxury","indulge","deserve","reward","upscale","spoil","special"],
-  "wine & dine":         ["wine","dine","wining","dining","sommelier","elegant","fine dining","classy","upscale"],
-  "late night":          ["late","midnight","night","after hours","last call","2am","evening","nocturnal","night owl"],
-  "celebrate":           ["celebrate","celebration","birthday","party","occasion","special","milestone","anniversary","festive","event"],
-  "patio vibes":         ["patio","terrace","rooftop","outside","sun","summer","garden","alfresco","deck"],
-  "group dinner":        ["group","large party","family","team","colleagues","crew","big table","gathering","everyone"],
-  "big breakfast":       ["breakfast","brunch","eggs","morning","pancakes","waffles","bacon","brunch spot","early"],
-  "light & fresh":       ["light","fresh","healthy","salad","clean","plant","vegan","vegetarian","wholesome","greens"],
-  "cocktail hour":       ["cocktail","drinks","bar","happy hour","aperitif","craft","mixology","sipping","tipple"],
-  "impress someone":     ["impress","boss","client","date","in-laws","special guest","wow","show off","first impression"],
-  "rainy day in":        ["rainy","rain","cozy","inside","grey","cloudy","weather","stormy","gloomy","indoor"],
-  "just the two of us":  ["two","couple","partner","intimate","romantic","just us","twosome","duo","together"],
-  "eat local":           ["local","neighbourhood","nearby","community","vancouver","bc","farm","homegrown","independent"],
-  "solo dinner":         ["solo","alone","myself","one","single","just me","quiet dinner"],
-  "power lunch":         ["lunch","business","work","meeting","professional","midday","power","client lunch"],
-};
-
+// ── Search bar — intent mode, direct to Page 2 ─────────────────
 const searchInput = document.getElementById('vibe-search');
-const suggestBox  = document.getElementById('vibe-suggestions');
 
-function getSuggestions(val) {
-  const q = val.toLowerCase().trim();
-  if (!q) return [];
-  const seen = new Set();
-  const hits = [];
-  // Get all unique labels from allBubbleEntries
-  allBubbleEntries.forEach(e => {
-    const label = e.label.trim();
-    if (seen.has(label.toLowerCase())) return;
-    const kws = VIBE_KEYWORDS[label] || [];
-    if (label.toLowerCase().includes(q) || kws.some(k => k.includes(q))) {
-      seen.add(label.toLowerCase());
-      hits.push(label);
-    }
-  });
-  return hits.slice(0, 5);
-}
-
-function renderSuggestions(val) {
-  const list = getSuggestions(val);
-  if (!list.length) { suggestBox.style.display = 'none'; return; }
-  suggestBox.innerHTML = list.map((label, idx) =>
-    `<div onclick="pickSuggestion('${label.replace(/'/g,"\\'")}');event.stopPropagation()"
-      onmouseenter="this.style.background='#f5f5f5'" onmouseleave="this.style.background='white'"
-      style="padding:10px 16px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:1px;color:black;cursor:pointer;text-transform:capitalize;background:white;${idx < list.length-1 ? 'border-bottom:1px solid #f0f0f0;' : ''}">${label}</div>`
-  ).join('');
-  suggestBox.style.display = 'block';
-}
-
-function pickSuggestion(label) {
-  suggestBox.style.display = 'none';
+function executeSearch(q) {
+  const term = q.trim();
+  if (!term) return;
   searchInput.value = '';
-  // Find the first unselected entry with this label
-  const idx = allBubbleEntries.findIndex(e => e.label.trim().toLowerCase() === label.toLowerCase() && !selected.has(allBubbleEntries.indexOf(e)));
-  const actualIdx = allBubbleEntries.findIndex(e => e.label.trim().toLowerCase() === label.toLowerCase());
-  if (actualIdx >= 0 && !selected.has(actualIdx) && selected.size < 3) {
-    selected.add(actualIdx);
-    syncAllWrappers();
+  searchInput.blur();
+  activeSearchTerm = term;
+  populatePage2();
+  navigate('page2');
+}
+
+// ── Add Spot ─────────────────────────────────────────────────
+const FSQ_API_KEY = 'YOUR_FOURSQUARE_API_KEY'; // swap in real key
+
+// Mock fallback suggestions when API key not set
+const MOCK_RESTAURANTS = [
+  { name: 'Miku Restaurant', address: '200 Granville St, Vancouver, BC', categories: ['Sushi', 'Japanese'] },
+  { name: 'Botanist', address: '1038 Canada Pl, Vancouver, BC', categories: ['Fine Dining', 'Canadian'] },
+  { name: 'Tacofino', address: '15 W Cordova St, Vancouver, BC', categories: ['Mexican', 'Tacos'] },
+  { name: 'Lunch Lady', address: '2247 E Hastings St, Vancouver, BC', categories: ['Vietnamese'] },
+  { name: 'Ask for Luigi', address: '305 Alexander St, Vancouver, BC', categories: ['Italian', 'Pasta'] },
+  { name: 'Bao Bei', address: '163 Keefer St, Vancouver, BC', categories: ['Chinese', 'Brasserie'] },
+  { name: 'The Acorn', address: '3995 Main St, Vancouver, BC', categories: ['Vegetarian'] },
+  { name: 'Hawksworth', address: '801 W Georgia St, Vancouver, BC', categories: ['Fine Dining', 'Canadian'] },
+];
+
+let addSpotPhotos = [];
+let addSpotSelectedCuisines = [];
+let addSpotSelectedVibes = [];
+let addSpotHHEnabled = false;
+let nameDebounceTimer = null;
+
+function openAddSpotModal() {
+  addSpotPhotos = [];
+  addSpotSelectedCuisines = [];
+  addSpotSelectedVibes = [];
+  document.getElementById('add-spot-name').value = '';
+  document.getElementById('add-spot-address').value = '';
+  document.getElementById('add-spot-suggestions').style.display = 'none';
+  document.getElementById('add-spot-photos').innerHTML = '';
+  document.getElementById('hh-from').value = '';
+  document.getElementById('hh-to').value = '';
+  document.getElementById('hh-details').value = '';
+  renderAddSpotCuisineTags();
+  renderAddSpotVibeTags();
+  const m = document.getElementById('add-spot-modal');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => { m.style.transform = 'translateY(0)'; });
+}
+
+function closeAddSpotModal() {
+  const m = document.getElementById('add-spot-modal');
+  m.style.transform = 'translateY(100%)';
+  setTimeout(() => { m.style.display = 'none'; }, 400);
+}
+
+function renderAddSpotCuisineTags() {
+  const el = document.getElementById('add-spot-cuisine-tags');
+  el.innerHTML = CUISINES.map(c => {
+    const active = addSpotSelectedCuisines.includes(c);
+    return `<div onclick="toggleAddSpotCuisine('${c}')" id="as-cuisine-${c.replace(/\s/g,'_')}"
+      style="padding:6px 14px;border-radius:20px;border:1px solid black;cursor:pointer;background:${active?'black':'white'};transition:all 0.15s;">
+      <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.8px;white-space:nowrap;">${c}</p>
+    </div>`;
+  }).join('');
+}
+
+function toggleAddSpotCuisine(c) {
+  const idx = addSpotSelectedCuisines.indexOf(c);
+  if (idx >= 0) addSpotSelectedCuisines.splice(idx, 1);
+  else addSpotSelectedCuisines.push(c);
+  renderAddSpotCuisineTags();
+}
+
+function renderAddSpotVibeTags() {
+  const el = document.getElementById('add-spot-vibe-tags');
+  el.innerHTML = VIBE_CARDS.map(card => {
+    const label = card.label.replace(/\s+/g, ' ').trim();
+    const active = addSpotSelectedVibes.includes(label);
+    return `<div onclick="toggleAddSpotVibe('${label.replace(/'/g,"\\'")}')"
+      style="padding:6px 14px;border-radius:20px;cursor:pointer;background:${active ? card.grad : 'white'};border:1px solid ${active ? 'transparent' : 'black'};transition:all 0.15s;">
+      <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.8px;white-space:nowrap;">${label}</p>
+    </div>`;
+  }).join('');
+}
+
+function toggleAddSpotVibe(label) {
+  const idx = addSpotSelectedVibes.indexOf(label);
+  if (idx >= 0) addSpotSelectedVibes.splice(idx, 1);
+  else addSpotSelectedVibes.push(label);
+  renderAddSpotVibeTags();
+}
+
+function handleSpotPhotos(e) {
+  const files = Array.from(e.target.files);
+  const container = document.getElementById('add-spot-photos');
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      addSpotPhotos.push(ev.target.result);
+      const thumb = document.createElement('div');
+      thumb.style.cssText = 'width:72px;height:72px;border-radius:12px;overflow:hidden;flex-shrink:0;position:relative;';
+      thumb.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;"/>
+        <div onclick="removeSpotPhoto(this.parentNode, '${ev.target.result}')" style="position:absolute;top:4px;right:4px;width:18px;height:18px;background:rgba(0,0,0,0.5);border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1 1l6 6M7 1L1 7" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>`;
+      container.appendChild(thumb);
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+}
+
+function removeSpotPhoto(thumb, src) {
+  addSpotPhotos = addSpotPhotos.filter(p => p !== src);
+  thumb.remove();
+}
+
+let suggestDebounce = null;
+function onSpotNameInput(val) {
+  clearTimeout(suggestDebounce);
+  const box = document.getElementById('add-spot-suggestions');
+  if (val.length < 2) { box.style.display = 'none'; return; }
+  suggestDebounce = setTimeout(() => fetchSpotSuggestions(val), 350);
+}
+
+async function fetchSpotSuggestions(query) {
+  const box = document.getElementById('add-spot-suggestions');
+  let results = [];
+
+  if (FSQ_API_KEY !== 'YOUR_FOURSQUARE_API_KEY') {
+    try {
+      const res = await fetch(
+        `https://api.foursquare.com/v3/places/search?query=${encodeURIComponent(query)}&near=Vancouver%2C+BC&categories=13065&limit=5`,
+        { headers: { Authorization: FSQ_API_KEY, Accept: 'application/json' } }
+      );
+      const data = await res.json();
+      results = (data.results || []).map(p => ({
+        name: p.name,
+        address: p.location?.formatted_address || '',
+        categories: p.categories?.map(c => c.name) || []
+      }));
+    } catch(e) { results = mockSuggestions(query); }
+  } else {
+    results = mockSuggestions(query);
+  }
+
+  if (!results.length) { box.style.display = 'none'; return; }
+
+  box.innerHTML = results.map((r,i) =>
+    `<div onclick="selectSpotSuggestion(${i})" data-idx="${i}"
+      style="padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(0,0,0,0.06);transition:background 0.1s;"
+      onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='white'">
+      <p class="fa" style="font-size:13px;font-weight:600;color:black;margin-bottom:2px;">${r.name}</p>
+      <p class="fi" style="font-size:10px;color:#888;letter-spacing:0.5px;">${r.address}</p>
+    </div>`
+  ).join('');
+
+  // Store results for selection
+  box._results = results;
+  box.style.display = 'block';
+}
+
+function mockSuggestions(query) {
+  return MOCK_RESTAURANTS.filter(r => r.name.toLowerCase().includes(query.toLowerCase())).slice(0, 5);
+}
+
+function selectSpotSuggestion(idx) {
+  const box = document.getElementById('add-spot-suggestions');
+  const r = box._results[idx];
+  if (!r) return;
+  document.getElementById('add-spot-name').value = r.name;
+  document.getElementById('add-spot-address').value = r.address;
+  // Auto-select matching cuisines
+  if (r.categories?.length) {
+    r.categories.forEach(cat => {
+      const match = CUISINES.find(c => cat.toLowerCase().includes(c.toLowerCase()) || c.toLowerCase().includes(cat.toLowerCase()));
+      if (match && !addSpotSelectedCuisines.includes(match)) addSpotSelectedCuisines.push(match);
+    });
+    renderAddSpotCuisineTags();
+  }
+  box.style.display = 'none';
+}
+
+function submitAddSpot() {
+  const name = document.getElementById('add-spot-name').value.trim();
+  if (!name) {
+    document.getElementById('add-spot-name').style.outline = '2px solid red';
+    document.getElementById('add-spot-name').style.borderRadius = '12px';
+    setTimeout(() => { document.getElementById('add-spot-name').style.outline = 'none'; }, 1500);
+    return;
+  }
+  // In production: POST to backend. For now just close with confirmation.
+  closeAddSpotModal();
+  setTimeout(() => {
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;';
+    toast.textContent = 'SPOT SUBMITTED — THANKS!';
+    document.querySelector('.phone').appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+  }, 450);
+}
+
+
+const CUISINES = [
+  'Japanese','Korean','Chinese','Thai','Vietnamese','Indian','Mexican',
+  'Italian','French','Mediterranean','Greek','Middle Eastern','Spanish',
+  'American','Canadian','Seafood','Steakhouse','Vegetarian','Brunch','Sushi'
+];
+
+let selectedCuisines = [];
+
+function openCuisineModal() {
+  const list = document.getElementById('cuisine-modal-list');
+  selectedCuisines = activeSearchTerm ? activeSearchTerm.split(',').map(s => s.trim()) : [];
+  list.innerHTML = CUISINES.map(c => {
+    const active = selectedCuisines.some(s => s.toLowerCase() === c.toLowerCase());
+    return `<div id="cuisine-pill-${c.replace(/\s/g,'_')}" onclick="toggleCuisinePill('${c}')" style="padding:6px 14px;border-radius:20px;border:1px solid black;cursor:pointer;background:${active?'black':'white'};transition:all 0.15s;">
+      <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.8px;white-space:nowrap;">${c}</p>
+    </div>`;
+  }).join('');
+  const m = document.getElementById('cuisine-modal');
+  const s = document.getElementById('cuisine-modal-sheet');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => { m.style.background = 'rgba(0,0,0,0.5)'; s.style.transform = 'translateY(0)'; });
+}
+
+function toggleCuisinePill(c) {
+  const idx = selectedCuisines.findIndex(s => s.toLowerCase() === c.toLowerCase());
+  const el = document.getElementById('cuisine-pill-' + c.replace(/\s/g,'_'));
+  if (idx >= 0) {
+    selectedCuisines.splice(idx, 1);
+    if (el) { el.style.background='white'; el.querySelector('p').style.color='black'; }
+  } else {
+    if (selectedCuisines.length >= 3) return;
+    selectedCuisines.push(c);
+    if (el) { el.style.background='black'; el.querySelector('p').style.color='white'; }
   }
 }
 
-searchInput.addEventListener('input', () => renderSuggestions(searchInput.value));
+function applyCuisineModal() {
+  closeCuisineModal();
+  activeSearchTerm = selectedCuisines.join(', ');
+  populatePage2();
+}
+
+function closeCuisineModal() {
+  const m = document.getElementById('cuisine-modal');
+  const s = document.getElementById('cuisine-modal-sheet');
+  m.style.background = 'rgba(0,0,0,0)';
+  s.style.transform = 'translateY(100%)';
+  setTimeout(() => { m.style.display = 'none'; }, 400);
+}
+
+function clearSearchTerm(e) {
+  e.stopPropagation();
+  activeSearchTerm = '';
+  populatePage2();
+}
+
+function removeCuisineTerm(term, e) {
+  e.stopPropagation();
+  const terms = activeSearchTerm.split(',').map(s => s.trim()).filter(s => s.toLowerCase() !== term.toLowerCase());
+  activeSearchTerm = terms.join(', ');
+  populatePage2();
+}
+
 searchInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    const list = getSuggestions(searchInput.value);
-    if (list.length) pickSuggestion(list[0]);
-    else navigate('page2');
-  }
-  if (e.key === 'Escape') suggestBox.style.display = 'none';
+  if (e.key === 'Enter') executeSearch(searchInput.value);
 });
 document.getElementById('screen-starter').classList.add('active');
 
@@ -2497,6 +2945,66 @@ function p3ToggleVibeSuggestion(vibe, slotsLeft) {
     if (el) { el.style.background='black'; el.querySelector('p').style.color='white'; }
   }
 }
+
+// City dropdown
+const GVR_CITIES = [
+  'Vancouver','Burnaby','Richmond','Surrey','Coquitlam','New Westminster',
+  'North Vancouver','West Vancouver','Langley','Abbotsford','Port Moody',
+  'Port Coquitlam','Delta','White Rock','Maple Ridge','Pitt Meadows','Squamish'
+];
+
+let cityDropdownOpen = false;
+
+function toggleCityDropdown() {
+  const dd = document.getElementById('city-dropdown');
+  const list = document.getElementById('city-list');
+  const current = document.getElementById('city-name').textContent.trim();
+
+  if (cityDropdownOpen) {
+    dd.style.maxHeight = '0';
+    dd.style.opacity = '0';
+    setTimeout(() => { dd.style.display = 'none'; }, 350);
+    cityDropdownOpen = false;
+    return;
+  }
+
+  list.innerHTML = GVR_CITIES.map(c => {
+    const active = c.toUpperCase() === current;
+    return `<div onclick="selectCity('${c}')" style="padding:10px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;background:${active ? '#f5f5f5' : 'white'};">
+      <span style="font-family:'Afacad',sans-serif;font-size:14px;color:black;letter-spacing:1px;font-weight:${active ? '600' : '400'};">${c}</span>
+      ${active ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
+    </div>`;
+  }).join('');
+
+  dd.style.display = 'block';
+  requestAnimationFrame(() => {
+    dd.style.maxHeight = '220px';
+    dd.style.opacity = '1';
+  });
+  cityDropdownOpen = true;
+}
+
+function selectCity(city) {
+  document.getElementById('city-name').textContent = shortenCity(city).toUpperCase();
+  const dd = document.getElementById('city-dropdown');
+  dd.style.maxHeight = '0';
+  dd.style.opacity = '0';
+  setTimeout(() => { dd.style.display = 'none'; }, 350);
+  cityDropdownOpen = false;
+}
+
+// Close dropdown on outside tap
+document.addEventListener('click', e => {
+  if (!cityDropdownOpen) return;
+  const dd = document.getElementById('city-dropdown');
+  const cn = document.getElementById('city-name');
+  if (!dd.contains(e.target) && !cn.contains(e.target)) {
+    dd.style.maxHeight = '0';
+    dd.style.opacity = '0';
+    setTimeout(() => { dd.style.display = 'none'; }, 350);
+    cityDropdownOpen = false;
+  }
+});
 
 function p3ApplyVibeSuggestion() {
   if (!currentRestaurant) return;

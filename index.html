@@ -819,7 +819,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <div onclick="closeVibeModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
       </div>
       <p class="fi" id="vibe-modal-hint" style="font-size:10px;color:#666;letter-spacing:1px;margin-bottom:14px;">Select up to <span id="vibe-slots-left">1</span> more</p>
-      <div id="vibe-modal-bubbles" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;"></div>
+      <div id="vibe-modal-bubbles" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
       <div id="vibe-modal-done" onclick="applyVibeModal()" style="margin-top:20px;background:black;border-radius:32px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
         <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">DONE</p>
       </div>
@@ -910,7 +910,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Add a cuisine</p>
         <div onclick="closeCuisineModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
       </div>
-      <div id="cuisine-modal-list" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;"></div>
+      <div id="cuisine-modal-list" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
       <div onclick="applyCuisineModal()" style="margin-top:20px;background:black;border-radius:32px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
         <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">DONE</p>
       </div>
@@ -1994,8 +1994,8 @@ function openVibeModal() {
   const container = document.getElementById('vibe-modal-bubbles');
   container.innerHTML = ALL_TAGS.map(v => {
     const isSel = currentVibes.some(c => c===v.toLowerCase());
-    return `<div id="modal-vibe-${v.replace(/[\s&]/g,'_')}" onclick="toggleModalVibe('${v}',${slotsLeft})" style="padding:10px 2px;width:calc(100% + 2px);margin-left:-1px;box-sizing:border-box;border-radius:20px;border:1px solid ${isSel?'#999':'black'};cursor:${isSel?'default':'pointer'};background:${isSel?'#ccc':'white'};opacity:${isSel?'0.5':'1'};transition:all 0.15s;text-align:center;">
-      <p class="fi" style="font-size:11px;color:black;letter-spacing:-0.3px;line-height:1.2;">${v}</p>
+    return `<div id="modal-vibe-${v.replace(/[\s&]/g,'_')}" onclick="toggleModalVibe('${v}',${slotsLeft})" style="padding:8px 12px;border-radius:20px;border:1px solid ${isSel?'#999':'black'};cursor:${isSel?'default':'pointer'};background:${isSel?'#ccc':'white'};opacity:${isSel?'0.5':'1'};transition:all 0.15s;text-align:center;">
+      <p class="fi" style="font-size:11px;color:black;letter-spacing:0.8px;white-space:nowrap;">${v}</p>
     </div>`;
   }).join('');
   const m = document.getElementById('vibe-modal');
@@ -2978,8 +2978,8 @@ function openCuisineModal() {
   selectedCuisines = [...activeCuisines];
   list.innerHTML = CUISINES.map(c => {
     const active = selectedCuisines.some(s => s.toLowerCase() === c.toLowerCase());
-    return `<div id="cuisine-pill-${c.replace(/\s/g,'_')}" onclick="toggleCuisinePill('${c}')" style="padding:8px 6px;border-radius:20px;border:1px solid black;cursor:pointer;background:${active?'black':'white'};transition:all 0.15s;text-align:center;">
-      <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.5px;line-height:1.2;">${c}</p>
+    return `<div id="cuisine-pill-${c.replace(/\s/g,'_')}" onclick="toggleCuisinePill('${c}')" style="padding:8px 12px;border-radius:20px;border:1px solid black;cursor:pointer;background:${active?'black':'white'};transition:all 0.15s;text-align:center;">
+      <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.8px;white-space:nowrap;">${c}</p>
     </div>`;
   }).join('');
   const m = document.getElementById('cuisine-modal');

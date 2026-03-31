@@ -101,9 +101,9 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           <path d="M20 15C20 15.1105 19.9561 15.2165 19.878 15.2946C19.7998 15.3728 19.6938 15.4167 19.5833 15.4167H15.4167V19.5833C15.4167 19.6938 15.3728 19.7998 15.2946 19.878C15.2165 19.9561 15.1105 20 15 20C14.8895 20 14.7835 19.9561 14.7054 19.878C14.6272 19.7998 14.5833 19.6938 14.5833 19.5833V15.4167H10.4167C10.3062 15.4167 10.2002 15.3728 10.122 15.2946C10.0439 15.2165 10 15.1105 10 15C10 14.8895 10.0439 14.7835 10.122 14.7054C10.2002 14.6272 10.3062 14.5833 10.4167 14.5833H14.5833V10.4167C14.5833 10.3062 14.6272 10.2002 14.7054 10.122C14.7835 10.0439 14.8895 10 15 10C15.1105 10 15.2165 10.0439 15.2946 10.122C15.3728 10.2002 15.4167 10.3062 15.4167 10.4167V14.5833H19.5833C19.6938 14.5833 19.7998 14.6272 19.878 14.7054C19.9561 14.7835 20 14.8895 20 15Z" fill="black"/>
         </svg>
       </div>
-      <div style="position:absolute;left:349px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;padding:5px;border-radius:20px;width:36px;height:36px;overflow:hidden;">
-        <svg style="width:18px;height:18px;" fill="none" viewBox="0 0 14 14">
-          <path d="M11.375 1.3125H3.9375C3.47337 1.3125 3.02825 1.49687 2.70006 1.82506C2.37187 2.15325 2.1875 2.59837 2.1875 3.0625V12.25C2.1875 12.366 2.23359 12.4773 2.31564 12.5594C2.39769 12.6414 2.50897 12.6875 2.625 12.6875H10.5C10.616 12.6875 10.7273 12.6414 10.8094 12.5594C10.8914 12.4773 10.9375 12.366 10.9375 12.25C10.9375 12.134 10.8914 12.0227 10.8094 11.9406C10.7273 11.8586 10.616 11.8125 10.5 11.8125H3.0625C3.0625 11.5804 3.15469 11.3579 3.31878 11.1938C3.48288 11.0297 3.70544 10.9375 3.9375 10.9375H11.375C11.491 10.9375 11.6023 10.8914 11.6844 10.8094C11.7664 10.7273 11.8125 10.616 11.8125 10.5V1.75C11.8125 1.63397 11.7664 1.52269 11.6844 1.44064C11.6023 1.35859 11.491 1.3125 11.375 1.3125ZM6.5625 2.1875H9.1875V6.125L8.13695 5.3375C8.06122 5.2807 7.96912 5.25 7.87445 5.25C7.77979 5.25 7.68768 5.2807 7.61195 5.3375L6.5625 6.125V2.1875ZM10.9375 10.0625H3.9375C3.63024 10.0621 3.32834 10.143 3.0625 10.2971V3.0625C3.0625 2.83044 3.15469 2.60788 3.31878 2.44378C3.48288 2.27969 3.70544 2.1875 3.9375 2.1875H5.6875V7C5.6875 7.08125 5.71013 7.16089 5.75284 7.23001C5.79556 7.29912 5.85667 7.35498 5.92934 7.39131C6.00202 7.42765 6.08337 7.44303 6.16429 7.43573C6.24521 7.42844 6.3225 7.39875 6.3875 7.35L7.875 6.23438L9.36305 7.35C9.43863 7.40668 9.53053 7.43738 9.625 7.4375C9.74103 7.4375 9.85231 7.39141 9.93436 7.30936C10.0164 7.22731 10.0625 7.11603 10.0625 7V2.1875H10.9375V10.0625Z" fill="black"/>
+      <div onclick="openSavedModal()" style="position:absolute;left:349px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;padding:5px;border-radius:20px;width:36px;height:36px;overflow:hidden;cursor:pointer;">
+        <svg id="p1-star-icon" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
     </div>
@@ -245,7 +245,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     <!-- Hero image (z-index 2, in front) -->
     <div style="position:absolute;height:700px;left:0;top:0;width:393px;z-index:2;">
       <!-- Swipeable photo strip -->
-      <div style="position:absolute;left:0;height:700px;border-radius:0 0 24px 24px;top:0;width:393px;overflow:hidden;" id="p3-photo-wrap">
+      <div style="position:absolute;left:0;height:700px;border-radius:0 0 24px 24px;top:0;width:393px;overflow:hidden;" id="p3-photo-wrap" ondblclick="doubleTapSave()">
         <div id="p3-photo-strip" style="display:flex;height:100%;transition:transform 0.3s ease;will-change:transform;touch-action:pan-y;"></div>
         <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,0.85) 100%);pointer-events:none;"></div>
         <!-- Arrow nav buttons -->
@@ -318,7 +318,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="-2 -3 36 36"><rect fill="rgba(255,255,255,0.2)" x="-2" y="-3" height="36" rx="18" width="36"/><path d="M17.8054 8.85352C17.9406 8.8559 18.0702 8.91024 18.1658 9.00586C18.2613 9.10147 18.3157 9.23105 18.3181 9.36621C18.3204 9.50115 18.2704 9.63167 18.1785 9.73047L12.9197 14.9893L18.1726 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.323 20.4769 18.3384 20.5463 18.3396 20.6162C18.3408 20.6861 18.3277 20.7555 18.3015 20.8203C18.2753 20.8853 18.2358 20.9446 18.1863 20.9941C18.1368 21.0435 18.0782 21.0832 18.0134 21.1094C17.9485 21.1356 17.8784 21.1477 17.8083 21.1465C17.7383 21.1452 17.6692 21.1301 17.6052 21.1016C17.5423 21.0735 17.4855 21.0334 17.4382 20.9834L11.8132 15.3584C11.7155 15.2605 11.6609 15.1276 11.6609 14.9893C11.6609 14.8511 11.7156 14.7189 11.8132 14.6211L17.4382 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.54 8.90119 17.6704 8.8512 17.8054 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/></svg>
         </div>
         <div style="position:absolute;left:349px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;padding:5px;border-radius:20px;width:36px;height:36px;overflow:hidden;">
-          <svg style="width:18px;height:18px;" fill="none" viewBox="0 0 14 14"><path d="M11.375 1.3125H3.9375C3.47337 1.3125 3.02825 1.49687 2.70006 1.82506C2.37187 2.15325 2.1875 2.59837 2.1875 3.0625V12.25C2.1875 12.366 2.23359 12.4773 2.31564 12.5594C2.39769 12.6414 2.50897 12.6875 2.625 12.6875H10.5C10.616 12.6875 10.7273 12.6414 10.8094 12.5594C10.8914 12.4773 10.9375 12.366 10.9375 12.25C10.9375 12.134 10.8914 12.0227 10.8094 11.9406C10.7273 11.8586 10.616 11.8125 10.5 11.8125H3.0625C3.0625 11.5804 3.15469 11.3579 3.31878 11.1938C3.48288 11.0297 3.70544 10.9375 3.9375 10.9375H11.375C11.491 10.9375 11.6023 10.8914 11.6844 10.8094C11.7664 10.7273 11.8125 10.616 11.8125 10.5V1.75C11.8125 1.63397 11.7664 1.52269 11.6844 1.44064C11.6023 1.35859 11.491 1.3125 11.375 1.3125ZM6.5625 2.1875H9.1875V6.125L8.13695 5.3375C8.06122 5.2807 7.96912 5.25 7.87445 5.25C7.77979 5.25 7.68768 5.2807 7.61195 5.3375L6.5625 6.125V2.1875ZM10.9375 10.0625H3.9375C3.63024 10.0621 3.32834 10.143 3.0625 10.2971V3.0625C3.0625 2.83044 3.15469 2.60788 3.31878 2.44378C3.48288 2.27969 3.70544 2.1875 3.9375 2.1875H5.6875V7C5.6875 7.08125 5.71013 7.16089 5.75284 7.23001C5.79556 7.29912 5.85667 7.35498 5.92934 7.39131C6.00202 7.42765 6.08337 7.44303 6.16429 7.43573C6.24521 7.42844 6.3225 7.39875 6.3875 7.35L7.875 6.23438L9.36305 7.35C9.43863 7.40668 9.53053 7.43738 9.625 7.4375C9.74103 7.4375 9.85231 7.39141 9.93436 7.30936C10.0164 7.22731 10.0625 7.11603 10.0625 7V2.1875H10.9375V10.0625Z" fill="black"/></svg>
+          <svg id="p3s1-star-icon" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" onclick="toggleSaveRestaurant(event)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
     </div>
@@ -362,7 +362,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="-2 -3 36 36"><rect fill="rgba(255,255,255,0.2)" x="-2" y="-3" height="36" rx="18" width="36"/><path d="M17.8054 8.85352C17.9406 8.8559 18.0702 8.91024 18.1658 9.00586C18.2613 9.10147 18.3157 9.23105 18.3181 9.36621C18.3204 9.50115 18.2704 9.63167 18.1785 9.73047L12.9197 14.9893L18.1726 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.323 20.4769 18.3384 20.5463 18.3396 20.6162C18.3408 20.6861 18.3277 20.7555 18.3015 20.8203C18.2753 20.8853 18.2358 20.9446 18.1863 20.9941C18.1368 21.0435 18.0782 21.0832 18.0134 21.1094C17.9485 21.1356 17.8784 21.1477 17.8083 21.1465C17.7383 21.1452 17.6692 21.1301 17.6052 21.1016C17.5423 21.0735 17.4855 21.0334 17.4382 20.9834L11.8132 15.3584C11.7155 15.2605 11.6609 15.1276 11.6609 14.9893C11.6609 14.8511 11.7156 14.7189 11.8132 14.6211L17.4382 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.54 8.90119 17.6704 8.8512 17.8054 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/></svg>
         </div>
         <div style="position:absolute;left:349px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;padding:5px;border-radius:20px;width:36px;height:36px;overflow:hidden;">
-          <svg style="width:18px;height:18px;" fill="none" viewBox="0 0 14 14"><path d="M11.375 1.3125H3.9375C3.47337 1.3125 3.02825 1.49687 2.70006 1.82506C2.37187 2.15325 2.1875 2.59837 2.1875 3.0625V12.25C2.1875 12.366 2.23359 12.4773 2.31564 12.5594C2.39769 12.6414 2.50897 12.6875 2.625 12.6875H10.5C10.616 12.6875 10.7273 12.6414 10.8094 12.5594C10.8914 12.4773 10.9375 12.366 10.9375 12.25C10.9375 12.134 10.8914 12.0227 10.8094 11.9406C10.7273 11.8586 10.616 11.8125 10.5 11.8125H3.0625C3.0625 11.5804 3.15469 11.3579 3.31878 11.1938C3.48288 11.0297 3.70544 10.9375 3.9375 10.9375H11.375C11.491 10.9375 11.6023 10.8914 11.6844 10.8094C11.7664 10.7273 11.8125 10.616 11.8125 10.5V1.75C11.8125 1.63397 11.7664 1.52269 11.6844 1.44064C11.6023 1.35859 11.491 1.3125 11.375 1.3125ZM6.5625 2.1875H9.1875V6.125L8.13695 5.3375C8.06122 5.2807 7.96912 5.25 7.87445 5.25C7.77979 5.25 7.68768 5.2807 7.61195 5.3375L6.5625 6.125V2.1875ZM10.9375 10.0625H3.9375C3.63024 10.0621 3.32834 10.143 3.0625 10.2971V3.0625C3.0625 2.83044 3.15469 2.60788 3.31878 2.44378C3.48288 2.27969 3.70544 2.1875 3.9375 2.1875H5.6875V7C5.6875 7.08125 5.71013 7.16089 5.75284 7.23001C5.79556 7.29912 5.85667 7.35498 5.92934 7.39131C6.00202 7.42765 6.08337 7.44303 6.16429 7.43573C6.24521 7.42844 6.3225 7.39875 6.3875 7.35L7.875 6.23438L9.36305 7.35C9.43863 7.40668 9.53053 7.43738 9.625 7.4375C9.74103 7.4375 9.85231 7.39141 9.93436 7.30936C10.0164 7.22731 10.0625 7.11603 10.0625 7V2.1875H10.9375V10.0625Z" fill="black"/></svg>
+          <svg id="p3s2-star-icon" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" onclick="toggleSaveRestaurant(event)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
     </div>
@@ -372,7 +372,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       <div style="background:white;height:172px;overflow:hidden;position:relative;border-radius:24px;flex-shrink:0;width:100%;">
         <div style="position:absolute;left:-120px;width:240px;height:240px;top:-34px;"><svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 240 240">
           <g id="hh-clock-face">
-          <circle cx="120" cy="120" fill="#B4B4B4" r="120"/>
+          <circle cx="120" cy="120" fill="rgba(180,180,180,0.2)" r="120"/>
           <!-- Clock tick marks -->
             <!-- Generate ticks via JS-like approach: 72 positions -->
             <!-- 0° = 12 o'clock (top), clockwise -->
@@ -438,8 +438,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
             <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(342 120 120)"/>
             <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(348 120 120)"/>
             <line x1="120" y1="4" x2="120" y2="9" stroke="#999" stroke-width="2" stroke-linecap="round" transform="rotate(354 120 120)"/>
-          <!-- Happy hour arcs: ring inside pie slice -->
-          <!-- Each arc = a pie slice clip + orange ring inside it -->
+          <!-- Happy hour arcs: narrow band at tick radius, rounded ends, white ticks on top -->
           <defs>
             <clipPath id="hh-clip1">
               <path id="hh-clip1-path" d="M 120,120 L 232.0,120.0 A 112,112 0 0,1 176.0,216.99 Z"/>
@@ -448,13 +447,48 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
               <path id="hh-clip2-path" d="M 120,120 L 8.0,120.0 A 112,112 0 0,1 64.0,23.01 Z"/>
             </clipPath>
           </defs>
-          <!-- Arc 1 ring (3–5pm) -->
+          <!-- Arc 1 ring (3–5pm): orange band at tick zone, r=108, stroke=14 covers ticks+2px offset -->
+          <!-- 3pm=90°, 5pm=150° in clock coords -->
           <g id="hh-arc1" opacity="0">
-            <circle cx="120" cy="120" r="95" fill="none" stroke="rgba(255,140,40,0.9)" stroke-width="28" stroke-linecap="round" clip-path="url(#hh-clip1)"/>
+            <path id="hh-arc1-path" d="M 231,120 A 111,111 0 0,1 175.5,216.1" fill="none" stroke="rgba(255,140,40,0.95)" stroke-width="18" stroke-linecap="butt"/>
+            <!-- 4px radius caps: small rects at each endpoint, rotated tangentially -->
+            <!-- Start cap at 3pm (90° = right): tangent is vertical, rotate 90° -->
+            <rect x="222" y="111" width="9" height="8" rx="4" fill="rgba(255,140,40,0.95)" transform="rotate(0 231 120)"/>
+            <!-- End cap at 5pm (150°): tangent angle = 150+90 = 240° -->
+            <rect x="171" y="207" width="9" height="8" rx="4" fill="rgba(255,140,40,0.95)" transform="rotate(60 175.5 216.1)"/>
+            <!-- White ticks within arc 1 zone (90°–150°, every 6°) -->
+            <line x1="120" y1="4" x2="120" y2="12" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(90 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(96 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(102 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(108 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(114 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(120 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(126 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(132 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(138 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(144 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(150 120 120)"/>
           </g>
-          <!-- Arc 2 ring (9pm–close) -->
+          <!-- Arc 2 ring (9pm–close): 270°–dynamic -->
           <g id="hh-arc2" opacity="0">
-            <circle cx="120" cy="120" r="95" fill="none" stroke="rgba(255,140,40,0.9)" stroke-width="28" stroke-linecap="round" clip-path="url(#hh-clip2)"/>
+            <path id="hh-arc2-path" d="M 9,120 A 111,111 0 0,1 64.5,23.9" fill="none" stroke="rgba(255,140,40,0.95)" stroke-width="18" stroke-linecap="butt"/>
+            <!-- 4px caps for arc2 -->
+            <!-- Start cap at 9pm (270° = left): -->
+            <rect x="0" y="111" width="9" height="18" rx="4" fill="rgba(255,140,40,0.95)"/>
+            <!-- End cap at 11pm (330°): -->
+            <rect id="hh-arc2-cap" x="60" y="15" width="9" height="18" rx="4" fill="rgba(255,140,40,0.95)" transform="rotate(-60 64.5 23.9)"/>
+            <!-- White ticks within arc 2 zone (270°–330°, every 6°) -->
+            <line x1="120" y1="4" x2="120" y2="12" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(270 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(276 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(282 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(288 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(294 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(300 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(306 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(312 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(318 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(324 120 120)"/>
+            <line x1="120" y1="4" x2="120" y2="12" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(330 120 120)"/>
           </g>
           </g>
           <!-- Arc 1: 3-5pm = 90°-150°, Arc 2: 9-11pm = 270°-330° -->
@@ -785,7 +819,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <div onclick="closeVibeModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
       </div>
       <p class="fi" id="vibe-modal-hint" style="font-size:10px;color:#666;letter-spacing:1px;margin-bottom:14px;">Select up to <span id="vibe-slots-left">1</span> more</p>
-      <div id="vibe-modal-bubbles" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
+      <div id="vibe-modal-bubbles" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;"></div>
       <div id="vibe-modal-done" onclick="applyVibeModal()" style="margin-top:20px;background:black;border-radius:32px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
         <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">DONE</p>
       </div>
@@ -804,9 +838,8 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Scrollable body -->
-    <div style="position:absolute;top:104px;left:0;right:0;bottom:80px;overflow-y:auto;overflow-x:hidden;padding:0 16px 24px;box-sizing:border-box;width:100%;">
+    <div style="position:absolute;top:104px;left:0;right:0;bottom:80px;overflow-y:auto;overflow-x:hidden;padding:0 16px 24px;box-sizing:border-box;">
 
-      <!-- Photos -->
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:10px;margin-top:4px;">PHOTOS</p>
       <div style="display:flex;gap:8px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px;">
         <div id="add-spot-photos" style="display:flex;gap:8px;"></div>
@@ -816,7 +849,6 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <input id="add-spot-file-input" type="file" accept="image/*" multiple style="display:none;" onchange="handleSpotPhotos(event)"/>
       </div>
 
-      <!-- Restaurant name -->
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:8px;">RESTAURANT NAME</p>
       <div style="position:relative;margin-bottom:6px;">
         <input id="add-spot-name" type="text" placeholder="Start typing a name…" autocomplete="off"
@@ -825,45 +857,51 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <div id="add-spot-suggestions" style="position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:10;display:none;"></div>
       </div>
 
-      <!-- Address -->
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:8px;margin-top:16px;">ADDRESS</p>
       <input id="add-spot-address" type="text" placeholder="Auto-filled or type manually…"
         style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:none;background:white;font-family:'Inter',sans-serif;font-size:14px;color:black;outline:none;margin-bottom:24px;"/>
 
-      <!-- Cuisine -->
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:10px;">CUISINE</p>
       <div id="add-spot-cuisine-tags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;"></div>
 
-      <!-- Vibes -->
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:10px;">VIBES</p>
       <div id="add-spot-vibe-tags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;"></div>
 
-      <!-- Happy Hours -->
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:4px;">HAPPY HOURS <span style="font-weight:400;color:#999;font-size:10px;letter-spacing:1px;">OPTIONAL</span></p>
-      <div style="display:flex;gap:10px;margin-bottom:12px;margin-top:10px;box-sizing:border-box;">
-        <div style="flex:1;min-width:0;overflow:hidden;">
+      <div style="display:flex;flex-direction:column;gap:10px;margin:10px 0 12px;">
+        <div>
           <p class="fi" style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:6px;">FROM</p>
-          <input id="hh-from" type="time" style="width:100%;min-width:0;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;display:block;"/>
+          <input id="hh-from" type="time" style="width:100%;box-sizing:border-box;padding:10px 12px;min-height:44px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;display:block;-webkit-appearance:none;appearance:none;"/>
         </div>
-        <div style="flex:1;min-width:0;overflow:hidden;">
+        <div>
           <p class="fi" style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:6px;">TO</p>
-          <input id="hh-to" type="time" style="width:100%;min-width:0;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;display:block;"/>
+          <input id="hh-to" type="time" style="width:100%;box-sizing:border-box;padding:10px 12px;min-height:44px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;display:block;-webkit-appearance:none;appearance:none;"/>
         </div>
       </div>
+      <p class="fi" style="font-size:10px;color:#888;letter-spacing:1px;margin-bottom:6px;">HAPPY HOUR SPECIAL</p>
       <input id="hh-details" type="text" placeholder="e.g. $5 house wine, half-off apps…"
-        style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;margin-bottom:8px;"/>
-
+        style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;margin-bottom:8px;display:block;"/>
     </div>
 
-    <!-- Submit — fixed at bottom center -->
+    <!-- Submit -->
     <div style="position:absolute;bottom:0;left:0;right:0;height:80px;display:flex;align-items:center;justify-content:center;background:#d0cfcf;border-top:1px solid rgba(0,0,0,0.06);">
       <div onclick="submitAddSpot()" style="cursor:pointer;padding:14px 48px;background:black;border-radius:32px;">
         <p class="fi" style="font-size:12px;font-weight:700;letter-spacing:6px;color:white;">SUBMIT</p>
       </div>
     </div>
-
   </div>
-  <!-- end add-spot modal -->
+
+
+  <!-- Saved restaurants modal -->
+  <div id="saved-modal" onclick="closeSavedModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:300;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
+    <div id="saved-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;max-height:70%;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:24px 20px 16px;">
+        <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Saved Spots</p>
+        <div onclick="closeSavedModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
+      </div>
+      <div id="saved-modal-list" style="overflow-y:auto;padding:0 20px 40px;flex:1;"></div>
+    </div>
+  </div>
 
   <!-- Cuisine modal -->
   <div id="cuisine-modal" onclick="closeCuisineModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:300;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
@@ -872,7 +910,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Add a cuisine</p>
         <div onclick="closeCuisineModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
       </div>
-      <div id="cuisine-modal-list" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
+      <div id="cuisine-modal-list" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;"></div>
       <div onclick="applyCuisineModal()" style="margin-top:20px;background:black;border-radius:32px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
         <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">DONE</p>
       </div>
@@ -1030,36 +1068,207 @@ function changePhoto(cardIdx, dir, total, e) {
   if (right) right.style.opacity = cur === total-1 ? '0.25' : '1';
 }
 
-let activeSearchTerm = '';
+let activeSearchTerm = '';   // raw input, kept for cuisine modal compatibility
+let activeCuisines   = [];  // parsed broad cuisines from phrase
+let activeSpecialties = []; // parsed dish/specialty terms
+let activeSearchVibes = []; // parsed vibe terms from phrase
+
+// ── Phrase parser ─────────────────────────────────────────────
+const FILLER_WORDS = new Set([
+  'food','spot','place','restaurant','places','spots','restaurants',
+  'near','me','nearby','good','great','best','nice','some','a','an',
+  'the','for','with','and','or','in','at','to','of','i','want','need',
+  'looking','find','show','get','something','anything'
+]);
+
+const SPECIALTY_MAP = {
+  ramen:['ramen'], sushi:['sushi','nigiri','sashimi','maki','omakase'], pasta:['pasta','linguine','fettuccine','tagliatelle'],
+  pizza:['pizza'], tacos:['taco','tacos'], burger:['burger','burgers'],
+  pho:['pho'], dumpling:['dumpling','dumplings','dim sum','dimsum'],
+  curry:['curry'], noodle:['noodle','noodles'], steak:['steak','steaks'],
+  seafood:['seafood','fish','oyster','oysters','clam','clams','lobster'],
+  salad:['salad','salads'], soup:['soup'], brunch:['brunch','eggs benedict','pancake'],
+  tapas:['tapas','small plates'], bbq:['bbq','barbecue','barbeque'],
+  hotpot:['hotpot','hot pot'], sandwich:['sandwich','sandwiches','sub'],
+  shawarma:['shawarma','kebab'], crepe:['crepe','crepes'],
+  tempura:['tempura'], yakitori:['yakitori'], izakaya:['izakaya'],
+};
+
+// Map vibe words → VIBE_CARDS label fragments
+const VIBE_WORD_MAP = {
+  romantic:['date night','romantic','wine & dine'],
+  date:['date night'],
+  cozy:['feeling cozy'],
+  comfort:['feeling cozy'],
+  warm:['feeling cozy'],
+  late:['late night'],
+  night:['late night'],
+  girls:['girls night out'],
+  solo:['solo & chill'],
+  chill:['solo & chill'],
+  quick:['quick bite'],
+  fast:['quick bite'],
+  spicy:['spicy'],
+  hangover:['hangover cure'],
+  recovery:['hangover cure'],
+  treat:['treat yourself'],
+  fancy:['treat yourself','wine & dine'],
+  wine:['wine & dine'],
+  fresh:['fresh air & food'],
+  outdoor:['fresh air & food'],
+  healthy:['fresh air & food'],
+  different:['something different'],
+  unique:['something different'],
+  adventure:['something different'],
+  single:['single night'],
+  fun:['girls night out','something different'],
+};
+
+function parseSearchPhrase(raw) {
+  // 1. Normalize
+  const normalized = raw
+    .toLowerCase()
+    .replace(/[''`]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const words = normalized.split(' ').filter(w => w.length > 1 && !FILLER_WORDS.has(w));
+  const bigram = (i) => words[i] + ' ' + words[i+1];
+
+  const found = { cuisines: [], specialties: [], vibes: [], raw: normalized };
+
+  // 2. Check bigrams first, then single words
+  const usedIdx = new Set();
+
+  for (let i = 0; i < words.length; i++) {
+    // Bigram checks
+    if (i < words.length - 1) {
+      const bg = bigram(i);
+
+      // Bigram cuisine
+      const cuisineMatch = CUISINES.find(c => c.toLowerCase() === bg || bg.includes(c.toLowerCase()));
+      if (cuisineMatch && !found.cuisines.includes(cuisineMatch)) {
+        found.cuisines.push(cuisineMatch);
+        usedIdx.add(i); usedIdx.add(i+1);
+        continue;
+      }
+
+      // Bigram specialty
+      for (const [canonical, variants] of Object.entries(SPECIALTY_MAP)) {
+        if (variants.some(v => bg.includes(v)) && !found.specialties.includes(canonical)) {
+          found.specialties.push(canonical);
+          usedIdx.add(i); usedIdx.add(i+1);
+        }
+      }
+
+      // Bigram vibe
+      for (const [word, vibeLabels] of Object.entries(VIBE_WORD_MAP)) {
+        if (bg.includes(word)) {
+          vibeLabels.forEach(v => { if (!found.vibes.includes(v)) found.vibes.push(v); });
+        }
+      }
+    }
+
+    if (usedIdx.has(i)) continue;
+    const w = words[i];
+
+    // Single word cuisine
+    const cuisineMatch = CUISINES.find(c => {
+      const cl = c.toLowerCase();
+      return cl === w || cl.startsWith(w) || w.startsWith(cl.slice(0, Math.max(4, cl.length - 2)));
+    });
+    if (cuisineMatch && !found.cuisines.includes(cuisineMatch)) {
+      found.cuisines.push(cuisineMatch);
+      usedIdx.add(i);
+      continue;
+    }
+
+    // Single word specialty
+    for (const [canonical, variants] of Object.entries(SPECIALTY_MAP)) {
+      if (variants.some(v => w === v || v.startsWith(w) || w.startsWith(v.slice(0, Math.max(4, v.length-1)))) && !found.specialties.includes(canonical)) {
+        found.specialties.push(canonical);
+        usedIdx.add(i);
+      }
+    }
+
+    // Single word vibe
+    for (const [word, vibeLabels] of Object.entries(VIBE_WORD_MAP)) {
+      if (w === word || w.startsWith(word.slice(0, Math.max(4, word.length-1)))) {
+        vibeLabels.forEach(v => { if (!found.vibes.includes(v)) found.vibes.push(v); });
+      }
+    }
+  }
+
+  return found;
+}
+
+function applyParsedSearch(parsed) {
+  activeCuisines   = parsed.cuisines;
+  activeSpecialties = parsed.specialties;
+  activeSearchVibes = parsed.vibes;
+
+  // Apply vibe matches to the card selector if high-confidence
+  parsed.vibes.forEach(vibeFragment => {
+    const cardIdx = VIBE_CARDS.findIndex(c =>
+      c.label.replace(/\s+/g,' ').trim().toLowerCase().includes(vibeFragment)
+    );
+    if (cardIdx >= 0 && selected.size < 3) {
+      selected.add(cardIdx);
+    }
+  });
+  syncAllWrappers();
+}
 
 function findMatchingRestaurants() {
   const vibes = getSelectedVibeLabels();
-  const term  = activeSearchTerm.toLowerCase().trim();
-
   let pool = restaurants;
 
-  // Filter by search term(s) first if present
-  if (term) {
-    const terms = term.split(',').map(s => s.trim()).filter(Boolean);
+  // Filter by cuisines
+  if (activeCuisines.length > 0) {
     pool = pool.filter(r =>
-      terms.some(t =>
-        (r.name        && r.name.toLowerCase().includes(t)) ||
-        (r.cuisine     && r.cuisine.toLowerCase().includes(t)) ||
-        (r.vibes       && r.vibes.some(v => v.toLowerCase().includes(t))) ||
-        (r.tags        && r.tags.some(g => g.toLowerCase().includes(t))) ||
-        (r.neighborhood && r.neighborhood.toLowerCase().includes(t))
+      activeCuisines.some(c =>
+        r.cuisine && r.cuisine.toLowerCase().includes(c.toLowerCase())
       )
     );
   }
 
-  // Then score + filter by vibes
+  // Filter by specialties
+  if (activeSpecialties.length > 0) {
+    const specPool = pool.filter(r =>
+      activeSpecialties.some(s => {
+        const variants = SPECIALTY_MAP[s] || [s];
+        return variants.some(v =>
+          (r.cuisine && r.cuisine.toLowerCase().includes(v)) ||
+          (r.name && r.name.toLowerCase().includes(v)) ||
+          (r.tags && r.tags.some(t => t.toLowerCase().includes(v)))
+        );
+      })
+    );
+    // Fall back to full pool if specialty filter returns nothing
+    if (specPool.length > 0) pool = specPool;
+  }
+
+  // Fall back to raw keyword search if parser produced nothing useful
+  if (activeCuisines.length === 0 && activeSpecialties.length === 0 && activeSearchTerm) {
+    const term = activeSearchTerm.toLowerCase().trim();
+    pool = pool.filter(r =>
+      r.name?.toLowerCase().includes(term) ||
+      r.cuisine?.toLowerCase().includes(term) ||
+      r.vibes?.some(v => v.toLowerCase().includes(term)) ||
+      r.tags?.some(t => t.toLowerCase().includes(term)) ||
+      r.neighborhood?.toLowerCase().includes(term)
+    );
+  }
+
+  // Score + filter by vibes
   if (vibes.length > 0) {
     const scored = pool.map(r => {
       const tags = r.tags.map(t => t.toLowerCase());
-      const score = vibes.filter(v => tags.some(t => t.includes(v)||v.includes(t))).length;
-      return {...r, matchScore: score};
+      const score = vibes.filter(v => tags.some(t => t.includes(v) || v.includes(t))).length;
+      return { ...r, matchScore: score };
     }).filter(r => r.matchScore > 0)
-      .sort((a,b) => b.matchScore-a.matchScore || b.vibeScore-a.vibeScore);
+      .sort((a, b) => b.matchScore - a.matchScore || b.vibeScore - a.vibeScore);
     return scored;
   }
 
@@ -1687,11 +1896,12 @@ function updateHHClock(r) {
       const closeH = r.close > 24 ? r.close - 12 : r.close;
       const closeHour12 = ((closeH % 24) % 12) || 12;
       const endDeg = closeHour12 * 30;
-      const ex = 120 + 112 * Math.sin(endDeg * Math.PI / 180);
-      const ey = 120 - 112 * Math.cos(endDeg * Math.PI / 180);
-      const arcPath = `M 120,120 L 8.0,120.0 A 112,112 0 0,1 ${ex.toFixed(1)},${ey.toFixed(1)} Z`;
-      const clip2  = document.getElementById('hh-clip2-path');
-      if (clip2)  clip2.setAttribute('d', arcPath);
+      const endRad = (endDeg - 90) * Math.PI / 180;
+      const ex = 120 + 111 * Math.cos(endRad);
+      const ey = 120 + 111 * Math.sin(endRad);
+      const largeArc = endDeg > 30 ? 1 : 0;
+      const arcPath2 = document.getElementById('hh-arc2-path');
+      if (arcPath2) arcPath2.setAttribute('d', `M 9,120 A 111,111 0 ${largeArc},1 ${ex.toFixed(1)},${ey.toFixed(1)}`);
       arc2.setAttribute('opacity', '1');
     } else if (arc2) {
       arc2.setAttribute('opacity', '0');
@@ -1784,8 +1994,8 @@ function openVibeModal() {
   const container = document.getElementById('vibe-modal-bubbles');
   container.innerHTML = ALL_TAGS.map(v => {
     const isSel = currentVibes.some(c => c===v.toLowerCase());
-    return `<div id="modal-vibe-${v.replace(/[\s&]/g,'_')}" onclick="toggleModalVibe('${v}',${slotsLeft})" style="padding:6px 14px;border-radius:20px;border:1px solid ${isSel?'#999':'black'};cursor:${isSel?'default':'pointer'};background:${isSel?'#ccc':'white'};opacity:${isSel?'0.5':'1'};transition:all 0.15s;">
-      <p class="fi" style="font-size:11px;color:black;letter-spacing:1px;white-space:nowrap;">${v}</p>
+    return `<div id="modal-vibe-${v.replace(/[\s&]/g,'_')}" onclick="toggleModalVibe('${v}',${slotsLeft})" style="padding:10px 2px;width:calc(100% + 2px);margin-left:-1px;box-sizing:border-box;border-radius:20px;border:1px solid ${isSel?'#999':'black'};cursor:${isSel?'default':'pointer'};background:${isSel?'#ccc':'white'};opacity:${isSel?'0.5':'1'};transition:all 0.15s;text-align:center;">
+      <p class="fi" style="font-size:11px;color:black;letter-spacing:-0.3px;line-height:1.2;">${v}</p>
     </div>`;
   }).join('');
   const m = document.getElementById('vibe-modal');
@@ -1844,24 +2054,39 @@ function populatePage2() {
   const vibeLabels = getSelectedVibeLabels();
 
   // ── Cuisine row ──────────────────────────────────────────────
-  // Search term acts as cuisine filter — show it here
   const addCuisineBtn = `<div onclick="openCuisineModal()" style="padding:5px 12px;border-radius:20px;border:1px dashed black;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;white-space:nowrap;">
       <p class="fi" style="font-weight:400;font-size:9px;color:black;letter-spacing:0.8px;text-transform:lowercase;line-height:normal;">+ add cuisine</p>
     </div>`;
 
-  if (activeSearchTerm) {
-    const terms = activeSearchTerm.split(',').map(s => s.trim()).filter(Boolean);
-    cuisineEl.innerHTML = terms.map(t =>
-      `<div style="padding:4px 8px 4px 12px;border-radius:20px;border:1px solid black;background:white;display:flex;align-items:center;gap:5px;flex-shrink:0;">
-        <p class="fi" style="font-weight:400;font-size:9px;color:black;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;line-height:normal;">${t}</p>
-        <div onclick="removeCuisineTerm('${t}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
-          <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="black" stroke-width="1.2" stroke-linecap="round"/></svg>
-        </div>
-      </div>`
-    ).join('') + (terms.length < 3 ? addCuisineBtn : '');
-  } else {
-    cuisineEl.innerHTML = addCuisineBtn;
-  }
+  // Merge manual cuisine selections with parsed cuisines
+  const manualCuisines = activeSearchTerm
+    ? activeSearchTerm.split(',').map(s => s.trim()).filter(s =>
+        CUISINES.some(c => c.toLowerCase() === s.toLowerCase())
+      )
+    : [];
+  const allCuisines = [...new Set([...activeCuisines, ...manualCuisines])];
+
+  let cuisineHTML = allCuisines.map(t =>
+    `<div style="padding:4px 8px 4px 12px;border-radius:20px;border:1px solid black;background:white;display:flex;align-items:center;gap:5px;flex-shrink:0;">
+      <p class="fi" style="font-weight:400;font-size:9px;color:black;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;line-height:normal;">${t}</p>
+      <div onclick="removeCuisinePill('${t}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+        <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="black" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </div>
+    </div>`
+  ).join('');
+
+  // Specialty pills — distinct style (dashed border, grey bg)
+  const specialtyHTML = activeSpecialties.map(s =>
+    `<div style="padding:4px 8px 4px 12px;border-radius:20px;border:1px dashed #555;background:rgba(0,0,0,0.06);display:flex;align-items:center;gap:5px;flex-shrink:0;">
+      <p class="fi" style="font-weight:400;font-size:9px;color:#333;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;line-height:normal;">${s}</p>
+      <div onclick="removeSpecialty('${s}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+        <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="#333" stroke-width="1.2" stroke-linecap="round"/></svg>
+      </div>
+    </div>`
+  ).join('');
+
+  const showAddBtn = allCuisines.length < 3 ? addCuisineBtn : '';
+  cuisineEl.innerHTML = cuisineHTML + specialtyHTML + showAddBtn;
 
   // ── Vibe row ─────────────────────────────────────────────────
   const addVibeBtn = vibeLabels.length < 3
@@ -1931,10 +2156,10 @@ function setupSwipe() {
 
 function selectRestaurant(idx) {
   currentRestaurant = matchedRestaurants[idx];
-  // Always reset to State 1 when entering page 3
   document.getElementById('screen-page3s1').classList.remove('details-open');
   populatePage3(currentRestaurant);
   navigate('page3s1');
+  updateP3StarIcons();
 }
 
 // Page 3 transitions
@@ -2048,7 +2273,12 @@ const PAGE_ORDER = ['starter', 'page2', 'page3s1'];
 
 // Standard tap/button navigation — fade
 function navigate(screen) {
-  if (screen === 'starter') activeSearchTerm = '';
+  if (screen === 'starter') {
+    activeSearchTerm = '';
+    activeCuisines = [];
+    activeSpecialties = [];
+    activeSearchVibes = [];
+  }
   document.querySelectorAll('.screen').forEach(s => {
     s.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-right', 'slide-in-left');
     s.style.transform = '';
@@ -2060,7 +2290,12 @@ function navigate(screen) {
 
 // Swipe gesture navigation — horizontal slide
 function navigateSwipe(screen) {
-  if (screen === 'starter') activeSearchTerm = '';
+  if (screen === 'starter') {
+    activeSearchTerm = '';
+    activeCuisines = [];
+    activeSpecialties = [];
+    activeSearchVibes = [];
+  }
 
   const currentActive = document.querySelector('.screen.active');
   const currentId = currentActive ? currentActive.id.replace('screen-', '') : null;
@@ -2401,11 +2636,143 @@ function executeSearch(q) {
   searchInput.value = '';
   searchInput.blur();
   activeSearchTerm = term;
+
+  const parsed = parseSearchPhrase(term);
+  applyParsedSearch(parsed);
+
   populatePage2();
   navigate('page2');
 }
 
-// ── Add Spot ─────────────────────────────────────────────────
+function doubleTapSave() {
+  if (!currentRestaurant) return;
+  const name = currentRestaurant.name;
+  if (!savedRestaurants.has(name)) {
+    savedRestaurants.add(name);
+    updateP3StarIcons();
+    updateP1Star();
+    showSaveBurst();
+  }
+}
+
+function showSaveBurst() {
+  const wrap = document.getElementById('p3-photo-wrap');
+  if (!wrap) return;
+  const burst = document.createElement('div');
+  burst.innerHTML = '★';
+  burst.style.cssText = `
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.5);
+    font-size:80px;color:white;opacity:1;pointer-events:none;z-index:20;
+    text-shadow:0 0 20px rgba(255,200,0,0.8);
+    transition:transform 0.4s cubic-bezier(.17,.67,.35,1.2),opacity 0.4s ease;
+  `;
+  wrap.appendChild(burst);
+  requestAnimationFrame(() => {
+    burst.style.transform = 'translate(-50%,-50%) scale(1.3)';
+    setTimeout(() => {
+      burst.style.opacity = '0';
+      burst.style.transform = 'translate(-50%,-50%) scale(1.6)';
+      setTimeout(() => burst.remove(), 400);
+    }, 300);
+  });
+}
+
+// Touch double-tap detection for mobile
+(function initP3DoubleTap() {
+  let lastTap = 0;
+  const el = document.getElementById('p3-photo-wrap');
+  if (!el) return;
+  el.addEventListener('touchend', e => {
+    const now = Date.now();
+    if (now - lastTap < 300) {
+      e.preventDefault();
+      doubleTapSave();
+    }
+    lastTap = now;
+  }, { passive: false });
+})();
+
+
+function openSavedModal() {
+  const list = document.getElementById('saved-modal-list');
+  if (savedRestaurants.size === 0) {
+    list.innerHTML = `<p class="fi" style="font-size:13px;color:#888;letter-spacing:1px;text-align:center;padding:20px 0;">No saved spots yet.<br>Double-tap a restaurant photo to save.</p>`;
+  } else {
+    list.innerHTML = [...savedRestaurants].map(name => {
+      const r = restaurants.find(r => r.name === name);
+      if (!r) return '';
+      return `<div onclick="navigateToSaved('${name.replace(/'/g,"\\'")}');closeSavedModal();" style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(0,0,0,0.08);cursor:pointer;">
+        <div>
+          <p class="fa" style="font-weight:600;font-size:14px;color:black;letter-spacing:1px;">${r.name}</p>
+          <p class="fi" style="font-size:11px;color:#666;letter-spacing:0.5px;margin-top:2px;">${r.cuisine} · ${r.distance}</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <p class="fa" style="font-weight:600;font-size:18px;color:black;">${r.vibeScore}</p>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  const m = document.getElementById('saved-modal');
+  const s = document.getElementById('saved-modal-sheet');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => { m.style.background = 'rgba(0,0,0,0.5)'; s.style.transform = 'translateY(0)'; });
+}
+
+function closeSavedModal() {
+  const m = document.getElementById('saved-modal');
+  const s = document.getElementById('saved-modal-sheet');
+  m.style.background = 'rgba(0,0,0,0)';
+  s.style.transform = 'translateY(100%)';
+  setTimeout(() => { m.style.display = 'none'; }, 400);
+}
+
+function navigateToSaved(name) {
+  const r = restaurants.find(r => r.name === name);
+  if (!r) return;
+  currentRestaurant = r;
+  document.getElementById('screen-page3s1').classList.remove('details-open');
+  populatePage3(r);
+  navigate('page3s1');
+  updateP3StarIcons();
+}
+
+const savedRestaurants = new Set();
+
+function toggleSaveRestaurant(e) {
+  e.stopPropagation();
+  if (!currentRestaurant) return;
+  const name = currentRestaurant.name;
+  if (savedRestaurants.has(name)) {
+    savedRestaurants.delete(name);
+  } else {
+    savedRestaurants.add(name);
+  }
+  updateP3StarIcons();
+  updateP1Star();
+}
+
+function updateP3StarIcons() {
+  if (!currentRestaurant) return;
+  const isSaved = savedRestaurants.has(currentRestaurant.name);
+  ['p3s1-star-icon','p3s2-star-icon'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.setAttribute('fill', isSaved ? 'black' : 'none');
+    el.querySelector('path').setAttribute('fill', isSaved ? 'black' : 'none');
+  });
+}
+
+function updateP1Star() {
+  const el = document.getElementById('p1-star-icon');
+  if (!el) return;
+  const hasSaved = savedRestaurants.size > 0;
+  el.setAttribute('fill', hasSaved ? 'black' : 'none');
+  el.querySelector('path').setAttribute('fill', hasSaved ? 'black' : 'none');
+  el.querySelector('path').setAttribute('stroke', hasSaved ? 'black' : 'black');
+}
+
+
 const FSQ_API_KEY = 'YOUR_FOURSQUARE_API_KEY'; // swap in real key
 
 // Mock fallback suggestions when API key not set
@@ -2601,18 +2968,18 @@ function submitAddSpot() {
 const CUISINES = [
   'Japanese','Korean','Chinese','Thai','Vietnamese','Indian','Mexican',
   'Italian','French','Mediterranean','Greek','Middle Eastern','Spanish',
-  'American','Canadian','Seafood','Steakhouse','Vegetarian','Brunch','Sushi'
+  'American','Canadian','Seafood','Steakhouse','Vegetarian','Brunch','Peruvian'
 ];
 
 let selectedCuisines = [];
 
 function openCuisineModal() {
   const list = document.getElementById('cuisine-modal-list');
-  selectedCuisines = activeSearchTerm ? activeSearchTerm.split(',').map(s => s.trim()) : [];
+  selectedCuisines = [...activeCuisines];
   list.innerHTML = CUISINES.map(c => {
     const active = selectedCuisines.some(s => s.toLowerCase() === c.toLowerCase());
-    return `<div id="cuisine-pill-${c.replace(/\s/g,'_')}" onclick="toggleCuisinePill('${c}')" style="padding:6px 14px;border-radius:20px;border:1px solid black;cursor:pointer;background:${active?'black':'white'};transition:all 0.15s;">
-      <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.8px;white-space:nowrap;">${c}</p>
+    return `<div id="cuisine-pill-${c.replace(/\s/g,'_')}" onclick="toggleCuisinePill('${c}')" style="padding:8px 6px;border-radius:20px;border:1px solid black;cursor:pointer;background:${active?'black':'white'};transition:all 0.15s;text-align:center;">
+      <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.5px;line-height:1.2;">${c}</p>
     </div>`;
   }).join('');
   const m = document.getElementById('cuisine-modal');
@@ -2636,7 +3003,7 @@ function toggleCuisinePill(c) {
 
 function applyCuisineModal() {
   closeCuisineModal();
-  activeSearchTerm = selectedCuisines.join(', ');
+  activeCuisines = [...selectedCuisines];
   populatePage2();
 }
 
@@ -2648,16 +3015,31 @@ function closeCuisineModal() {
   setTimeout(() => { m.style.display = 'none'; }, 400);
 }
 
-function clearSearchTerm(e) {
+function removeCuisinePill(term, e) {
   e.stopPropagation();
-  activeSearchTerm = '';
+  activeCuisines = activeCuisines.filter(c => c.toLowerCase() !== term.toLowerCase());
+  // Also remove from raw activeSearchTerm if present
+  const terms = activeSearchTerm.split(',').map(s => s.trim()).filter(s => s.toLowerCase() !== term.toLowerCase());
+  activeSearchTerm = terms.join(', ');
+  populatePage2();
+}
+
+function removeSpecialty(term, e) {
+  e.stopPropagation();
+  activeSpecialties = activeSpecialties.filter(s => s !== term);
   populatePage2();
 }
 
 function removeCuisineTerm(term, e) {
+  removeCuisinePill(term, e);
+}
+
+function clearSearchTerm(e) {
   e.stopPropagation();
-  const terms = activeSearchTerm.split(',').map(s => s.trim()).filter(s => s.toLowerCase() !== term.toLowerCase());
-  activeSearchTerm = terms.join(', ');
+  activeSearchTerm = '';
+  activeCuisines = [];
+  activeSpecialties = [];
+  activeSearchVibes = [];
   populatePage2();
 }
 

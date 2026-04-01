@@ -144,7 +144,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
     <!-- SearchBar -->
     <div style="position:absolute;height:136px;left:0;overflow:visible;top:316px;width:393px;z-index:20;">
-      <div style="position:absolute;left:50%;transform:translate(-50%,-50%);top:137px;font-family:'Afacad',sans-serif;font-weight:500;font-size:12px;letter-spacing:4px;text-transform:uppercase;color:black;text-align:center;white-space:nowrap;">Discover Your Vibe</div>
+      <div style="position:absolute;left:50%;transform:translate(-50%,-50%);top:143px;font-family:'Afacad',sans-serif;font-weight:500;font-size:12px;letter-spacing:4px;text-transform:uppercase;color:black;text-align:center;white-space:nowrap;">Discover Your Vibe</div>
       <div style="position:absolute;left:calc(50% - 179.5px);top:25px;transform:translateY(-50%);white-space:nowrap;">
         <span style="font-family:'Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:2px;color:white;">So...what we </span><span style="font-family:'Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:2px;background:linear-gradient(90deg,rgb(174,0,255) 0%,rgb(0,255,106) 29.808%,rgb(245,90,24) 66.827%,rgb(255,0,153) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Vibing &gt;:)...</span>
       </div>
@@ -159,11 +159,11 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       <div id="p1-selected-tags" style="position:absolute;left:16px;right:16px;top:113px;transform:translateY(-50%);display:flex;flex-wrap:nowrap;gap:6px;align-items:center;justify-content:center;overflow:hidden;min-height:20px;"></div>
     </div>
 
-    <!-- Vibe Cards — overlapping stack, scrollable -->
-    <div style="position:absolute;left:28px;right:28px;top:466px;bottom:54px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-top:6px;box-sizing:border-box;" id="vibe-card-list"></div>
+    <!-- Vibe Bubbles — horizontally scrollable -->
+    <div id="tags-container" style="position:absolute;left:0;right:0;top:482px;height:302px;overflow-x:scroll;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;cursor:grab;"></div>
 
     <!-- Foot: LET'S VIBE → Page 2 — always visible -->
-    <div style="position:absolute;display:flex;flex-direction:column;height:90px;align-items:center;left:0;padding:12px 16px 36px;bottom:0;width:393px;z-index:50;pointer-events:none;" id="lets-vibe-foot">
+    <div style="position:absolute;display:flex;flex-direction:column;height:90px;align-items:center;left:0;padding:12px 16px 16px;bottom:20px;width:393px;z-index:50;pointer-events:none;opacity:0;transition:opacity 0.3s ease;" id="lets-vibe-foot">
       <div style="background:#b0b0b0;height:48px;position:relative;border-radius:32px;flex-shrink:0;width:100%;pointer-events:all;">
         <div onclick="if(selected.size>0){populatePage2();navigate('page2');}" id="lets-vibe-btn" style="position:absolute;background:#b0b0b0;height:48px;left:0;border-radius:32px;top:0;width:100%;cursor:default;display:flex;align-items:center;justify-content:center;">
           <span style="font-family:'Inter',sans-serif;font-weight:700;font-size:14px;letter-spacing:8.4px;text-transform:capitalize;color:white;">LET'S VIBE</span>
@@ -451,11 +451,6 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           <!-- 3pm=90°, 5pm=150° in clock coords -->
           <g id="hh-arc1" opacity="0">
             <path id="hh-arc1-path" d="M 231,120 A 111,111 0 0,1 175.5,216.1" fill="none" stroke="rgba(255,140,40,0.95)" stroke-width="18" stroke-linecap="butt"/>
-            <!-- 4px radius caps: small rects at each endpoint, rotated tangentially -->
-            <!-- Start cap at 3pm (90° = right): tangent is vertical, rotate 90° -->
-            <rect x="222" y="111" width="9" height="8" rx="4" fill="rgba(255,140,40,0.95)" transform="rotate(0 231 120)"/>
-            <!-- End cap at 5pm (150°): tangent angle = 150+90 = 240° -->
-            <rect x="171" y="207" width="9" height="8" rx="4" fill="rgba(255,140,40,0.95)" transform="rotate(60 175.5 216.1)"/>
             <!-- White ticks within arc 1 zone (90°–150°, every 6°) -->
             <line x1="120" y1="4" x2="120" y2="12" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(90 120 120)"/>
             <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(96 120 120)"/>
@@ -472,11 +467,6 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           <!-- Arc 2 ring (9pm–close): 270°–dynamic -->
           <g id="hh-arc2" opacity="0">
             <path id="hh-arc2-path" d="M 9,120 A 111,111 0 0,1 64.5,23.9" fill="none" stroke="rgba(255,140,40,0.95)" stroke-width="18" stroke-linecap="butt"/>
-            <!-- 4px caps for arc2 -->
-            <!-- Start cap at 9pm (270° = left): -->
-            <rect x="0" y="111" width="9" height="18" rx="4" fill="rgba(255,140,40,0.95)"/>
-            <!-- End cap at 11pm (330°): -->
-            <rect id="hh-arc2-cap" x="60" y="15" width="9" height="18" rx="4" fill="rgba(255,140,40,0.95)" transform="rotate(-60 64.5 23.9)"/>
             <!-- White ticks within arc 2 zone (270°–330°, every 6°) -->
             <line x1="120" y1="4" x2="120" y2="12" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(270 120 120)"/>
             <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(276 120 120)"/>
@@ -813,7 +803,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
   <!-- Vibe modal — phone root level, visible from any screen -->
   <div id="vibe-modal" onclick="closeVibeModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="vibe-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+    <div id="vibe-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:340px;overflow-y:auto;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Add a vibe</p>
         <div onclick="closeVibeModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
@@ -905,7 +895,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
   <!-- Cuisine modal -->
   <div id="cuisine-modal" onclick="closeCuisineModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:300;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="cuisine-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+    <div id="cuisine-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:340px;overflow-y:auto;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Add a cuisine</p>
         <div onclick="closeCuisineModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
@@ -1895,12 +1885,18 @@ function updateHHClock(r) {
     if (arc2 && arc2Visible) {
       const closeH = r.close > 24 ? r.close - 12 : r.close;
       const closeHour12 = ((closeH % 24) % 12) || 12;
-      const endDeg = closeHour12 * 30;
-      const endRad = (endDeg - 90) * Math.PI / 180;
-      const ex = 120 + 111 * Math.cos(endRad);
-      const ey = 120 + 111 * Math.sin(endRad);
-      const largeArc = endDeg > 30 ? 1 : 0;
+      // Convert closing hour to clock degrees (0°=12, clockwise)
+      const endClockDeg = closeHour12 * 30; // e.g. midnight=0°, 2am=60°, 11pm=330°
+      // SVG coords: x = cx + r*sin(deg), y = cy - r*cos(deg)
+      const endRad = endClockDeg * Math.PI / 180;
+      const ex = 120 + 111 * Math.sin(endRad);
+      const ey = 120 - 111 * Math.cos(endRad);
+      // Arc goes from 270° (9pm) clockwise to endClockDeg
+      // Angular span clockwise from 270° to endClockDeg
+      const span = ((endClockDeg - 270) + 360) % 360;
+      const largeArc = span > 180 ? 1 : 0;
       const arcPath2 = document.getElementById('hh-arc2-path');
+      // Start point at 9pm (270°): x=120+111*sin(270)=9, y=120-111*cos(270)=120
       if (arcPath2) arcPath2.setAttribute('d', `M 9,120 A 111,111 0 ${largeArc},1 ${ex.toFixed(1)},${ey.toFixed(1)}`);
       arc2.setAttribute('opacity', '1');
     } else if (arc2) {
@@ -2516,30 +2512,31 @@ const allBubbleEntries = VIBE_CARDS.map((c, i) => ({ label: c.label, isOriginal:
 function getVibeCardLabel(idx) { return VIBE_CARDS[idx]?.label || ''; }
 
 function syncAllWrappers() {
-  document.querySelectorAll('.vibe-card-item').forEach(el => {
-    const idx = parseInt(el.dataset.cardIdx);
-    const isSel  = selected.has(idx);
-    const isMax  = !isSel && selected.size >= 3;
-    el.style.opacity = '1';
-    el.style.filter = isMax ? 'grayscale(1)' : 'none';
-    el.style.outline = isSel ? '4px solid rgba(255,255,255,0.8)' : 'none';
-    el.style.transform = isSel ? 'scale(0.97)' : 'scale(1)';
-    el.style.boxShadow = 'none';
-    el.style.cursor = isMax ? 'default' : 'pointer';
-    const check = el.querySelector('.card-check');
-    if (check) check.style.opacity = isSel ? '1' : '0';
+  VIBE_CARDS.forEach((_, i) => {
+    const ws = allWrappers[i] || [];
+    const isSel   = selected.has(i);
+    const isMaxed = !isSel && selected.size >= 3;
+    ws.forEach(w => {
+      w.style.opacity            = isMaxed ? '0.4' : '1';
+      w.style.cursor             = isMaxed ? 'not-allowed' : 'pointer';
+      w.style.animationPlayState = isSel ? 'paused' : 'running';
+      w.style.transform          = isSel ? 'scale(1.1)' : '';
+      w.style.outline            = isSel ? '4px solid rgba(255,255,255,0.8)' : '';
+    });
   });
 
   // CTA state
   const btn = document.getElementById('lets-vibe-btn');
+  const foot = document.getElementById('lets-vibe-foot');
+  const active = selected.size > 0;
   if (btn) {
-    const active = selected.size > 0;
     btn.style.background = active ? 'black' : '#b0b0b0';
     btn.style.cursor = active ? 'pointer' : 'default';
     btn.parentElement.style.background = active ? 'black' : '#b0b0b0';
     btn.onmouseenter = active ? function(){ this.style.background='#222'; } : null;
     btn.onmouseleave = active ? function(){ this.style.background='black'; } : null;
   }
+  if (foot) updateCtaVisibility();
 
   // Update p1-selected-tags row
   const tagsRow = document.getElementById('p1-selected-tags');
@@ -2556,85 +2553,193 @@ function syncAllWrappers() {
   }
 }
 
-// Render cards — overlapping stack matching reference layout
-(function renderVibeCards() {
-  const list = document.getElementById('vibe-card-list');
-  if (!list) return;
-  list.innerHTML = '';
+// ── Figma-designed bubble clusters ───────────────────────────
+const G = {
+  gno: `url('data:image/svg+xml,<svg viewBox="0 0 92 92" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(3.3079 6.6674 -6.6674 3.3079 22.742 7.236)"><stop stop-color="rgba(82,0,255,0.6)" offset="0"/><stop stop-color="rgba(104,32,255,0.525)" offset="0.125"/><stop stop-color="rgba(125,64,255,0.45)" offset="0.25"/><stop stop-color="rgba(169,128,255,0.3)" offset="0.5"/><stop stop-color="rgba(255,255,255,0)" offset="1"/></radialGradient></defs></svg>'), url('data:image/svg+xml,<svg viewBox="0 0 92 92" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(-2.2225 5.3753 -5.3753 -2.2225 61.506 38.247)"><stop stop-color="rgba(49,181,255,1)" offset="0"/><stop stop-color="rgba(73,182,250,1)" offset="0.125"/><stop stop-color="rgba(97,182,245,1)" offset="0.25"/><stop stop-color="rgba(145,183,235,1)" offset="0.5"/><stop stop-color="rgba(192,184,224,1)" offset="0.75"/><stop stop-color="rgba(240,185,214,1)" offset="1"/></radialGradient></defs></svg>')`,
+  cozy84: `url('data:image/svg+xml,<svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)"><stop stop-color="rgba(253,150,92,0.6)" offset="0"/><stop stop-color="rgba(254,203,174,0.3)" offset="0.5"/><stop stop-color="rgba(255,255,255,0)" offset="1"/></radialGradient></defs></svg>'), url('data:image/svg+xml,<svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)"><stop stop-color="rgba(255,44,133,1)" offset="0"/><stop stop-color="rgba(255,69,141,1)" offset="0.125"/><stop stop-color="rgba(254,93,149,1)" offset="0.25"/><stop stop-color="rgba(254,142,165,1)" offset="0.5"/><stop stop-color="rgba(253,191,180,1)" offset="0.75"/><stop stop-color="rgba(252,240,196,1)" offset="1"/></radialGradient></defs></svg>')`,
+  cozy66: `url('data:image/svg+xml,<svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)"><stop stop-color="rgba(253,150,92,0.6)" offset="0"/><stop stop-color="rgba(254,203,174,0.3)" offset="0.5"/><stop stop-color="rgba(255,255,255,0)" offset="1"/></radialGradient></defs></svg>'), url('data:image/svg+xml,<svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)"><stop stop-color="rgba(255,44,133,1)" offset="0"/><stop stop-color="rgba(255,69,141,1)" offset="0.125"/><stop stop-color="rgba(254,93,149,1)" offset="0.25"/><stop stop-color="rgba(254,142,165,1)" offset="0.5"/><stop stop-color="rgba(253,191,180,1)" offset="0.75"/><stop stop-color="rgba(252,240,196,1)" offset="1"/></radialGradient></defs></svg>')`,
+  quick: `url('data:image/svg+xml,<svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)"><stop stop-color="rgba(183,129,31,0.6)" offset="0"/><stop stop-color="rgba(201,161,87,0.45)" offset="0.25"/><stop stop-color="rgba(219,192,143,0.3)" offset="0.5"/><stop stop-color="rgba(255,255,255,0)" offset="1"/></radialGradient></defs></svg>'), url('data:image/svg+xml,<svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)"><stop stop-color="rgba(55,179,255,1)" offset="0"/><stop stop-color="rgba(88,191,251,1)" offset="0.25"/><stop stop-color="rgba(122,202,247,1)" offset="0.5"/><stop stop-color="rgba(188,225,239,1)" offset="1"/></radialGradient></defs></svg>')`,
+  spicy: `url('data:image/svg+xml,<svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)"><stop stop-color="rgba(255,0,4,1)" offset="0"/><stop stop-color="rgba(255,64,67,0.75)" offset="0.25"/><stop stop-color="rgba(255,128,130,0.5)" offset="0.5"/><stop stop-color="rgba(255,255,255,0)" offset="1"/></radialGradient></defs></svg>'), url('data:image/svg+xml,<svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)"><stop stop-color="rgba(254,38,0,1)" offset="0"/><stop stop-color="rgba(254,115,53,1)" offset="0.5"/><stop stop-color="rgba(255,193,106,1)" offset="1"/></radialGradient></defs></svg>')`,
+  diff: `url('data:image/svg+xml,<svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(2.373 4.7831 -4.7831 2.373 16.315 5.191)"><stop stop-color="rgba(255,0,4,1)" offset="0"/><stop stop-color="rgba(255,64,67,0.75)" offset="0.25"/><stop stop-color="rgba(255,128,130,0.5)" offset="0.5"/><stop stop-color="rgba(255,255,255,0)" offset="1"/></radialGradient></defs></svg>'), url('data:image/svg+xml,<svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(-1.5944 3.8562 -3.8562 -1.5944 44.124 27.438)"><stop stop-color="rgba(254,38,0,1)" offset="0"/><stop stop-color="rgba(254,115,53,1)" offset="0.5"/><stop stop-color="rgba(255,193,106,1)" offset="1"/></radialGradient></defs></svg>')`,
+  hang: `url('data:image/svg+xml,<svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)"><stop stop-color="rgba(23,98,89,0.6)" offset="0"/><stop stop-color="rgba(52,118,110,0.525)" offset="0.125"/><stop stop-color="rgba(81,137,131,0.45)" offset="0.25"/><stop stop-color="rgba(139,177,172,0.3)" offset="0.5"/><stop stop-color="rgba(255,255,255,0)" offset="1"/></radialGradient></defs></svg>'), url('data:image/svg+xml,<svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)"><stop stop-color="rgba(0,139,139,1)" offset="0"/><stop stop-color="rgba(99,158,128,1)" offset="0.5"/><stop stop-color="rgba(198,176,117,1)" offset="1"/></radialGradient></defs></svg>')`,
+  fresh: `url('data:image/svg+xml,<svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(3.0202 6.0876 -6.0876 3.0202 20.764 6.6067)"><stop stop-color="rgba(0,255,242,0.6)" offset="0"/><stop stop-color="rgba(64,255,245,0.45)" offset="0.25"/><stop stop-color="rgba(128,255,249,0.3)" offset="0.5"/><stop stop-color="rgba(255,255,255,0)" offset="1"/></radialGradient></defs></svg>'), url('data:image/svg+xml,<svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(-2.0292 4.9079 -4.9079 -2.0292 56.157 34.921)"><stop stop-color="rgba(0,204,139,1)" offset="0"/><stop stop-color="rgba(98,229,137,1)" offset="0.5"/><stop stop-color="rgba(195,255,135,1)" offset="1"/></radialGradient></defs></svg>')`,
+  single: `url('data:image/svg+xml,<svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(2.5888 5.218 -5.218 2.5888 17.798 5.6629)"><stop stop-color="rgba(183,129,31,0.6)" offset="0"/><stop stop-color="rgba(201,161,87,0.45)" offset="0.25"/><stop stop-color="rgba(219,192,143,0.3)" offset="0.5"/><stop stop-color="rgba(255,255,255,0)" offset="1"/></radialGradient></defs></svg>'), url('data:image/svg+xml,<svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><rect x="0" y="0" height="100%" width="100%" fill="url(%23grad)" opacity="1"/><defs><radialGradient id="grad" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="10" gradientTransform="matrix(-1.7393 4.2067 -4.2067 -1.7393 48.135 29.933)"><stop stop-color="rgba(55,179,255,1)" offset="0"/><stop stop-color="rgba(88,191,251,1)" offset="0.25"/><stop stop-color="rgba(122,202,247,1)" offset="0.5"/><stop stop-color="rgba(188,225,239,1)" offset="1"/></radialGradient></defs></svg>')`,
+  dateNight: `linear-gradient(135deg,#b06ab3,#8a3fa0,#4568dc)`,
+  solosChill: `linear-gradient(135deg,#008b8b,#4aaa96,#c6b075)`,
+  treatYou: `linear-gradient(135deg,#b06ab3,#8a3fa0,#4568dc)`,
+  wineDine: `linear-gradient(135deg,#b06ab3,#8a3fa0,#4568dc)`,
+  lateNight: `linear-gradient(135deg,#2c3e6b,#3a4f85,#1a2a4a)`,
 
-  const CARD_H   = 90;   // visible height per card
-  const OVERLAP  = 28;   // how much each card slides under the next
-  const STEP     = CARD_H - OVERLAP; // vertical step between card tops
+};
 
-  // Total scroll height = first card top + all steps + last card remainder
-  const totalH = CARD_H + (VIBE_CARDS.length - 1) * STEP + OVERLAP;
+const CLUSTERS = [
+  // Cluster4
+  [
+    { label:'Girls Night Out',     size:92,left:253, top:11,  idx:2, bg:G.gno },
+    { label:'Feeling Cozy',     size:84,left:0, top:128,  idx:3, bg:G.cozy84 },
+    { label:'Quick Bite',     size:72,left:354, top:31,  idx:5, bg:G.quick },
+    { label:'Something Different',     size:66,left:95, top:110,  idx:11, bg:G.diff },
+    { label:'Hangover Cure',     size:72,left:78, top:190,  idx:12, bg:G.hang },
+    { label:'Fresh Air & Food',     size:84,left:30, top:38,  idx:1, bg:G.fresh },
+    { label:'Date Night',     size:84,left:308, top:101,  idx:0, bg:G.dateNight },
+    { label:'Spicy',     size:66,left:271, top:180,  idx:8, bg:G.spicy },
+    { label:'Wine & Dine',     size:72,left:229, top:104,  idx:9, bg:G.wineDine },
+    { label:'Night Cap',     size:84,left:150, top:48,  idx:10, bg:G.lateNight },
+    { label:'Solo Mission',     size:84,left:152, top:148,  idx:6, bg:G.solosChill },
+  ],
+  // Cluster1
+  [
+    { label:'Ladies Night',     size:92,left:252, top:155,  idx:2, bg:G.gno },
+    { label:'Treat Yourself',     size:66,left:246, top:78,  idx:7, bg:G.treatYou },
+    { label:'Comfort Food',     size:84,left:-29, top:170,  idx:3, bg:G.cozy84 },
+    { label:'Grab & Go',     size:72,left:340, top:19,  idx:5, bg:G.quick },
+    { label:'Recovery Mode',     size:66,left:187, top:124,  idx:12, bg:G.hang },
+    { label:'Garden Fresh',     size:72,left:173, top:42,  idx:1, bg:G.fresh },
+    { label:'Late Night Eats',     size:84,left:100, top:89,  idx:10, bg:G.lateNight },
+    { label:'Extra Spicy',     size:66,left:59, top:159,  idx:8, bg:G.spicy },
+    { label:'After Work',     size:72,left:316, top:95,  idx:0, bg:G.dateNight },
+    { label:'Brunch Vibes',     size:72,left:9, top:92,  idx:6, bg:G.solosChill },
+    { label:'First Date',     size:84,left:45, top:11,  idx:0, bg:G.dateNight },
+  ],
+  // Cluster (reference — original positions)
+  [
+    { label:'Squad Goals',     size:92,left:153, top:83,  idx:2, bg:G.gno },
+    { label:'Rainy Day',     size:84,left:244, top:50,  idx:3, bg:G.cozy84 },
+    { label:'Wine OClock',     size:66,left:182, top:10,  idx:9, bg:G.wineDine },
+    { label:'Me Time',     size:84,left:-29, top:155,  idx:6, bg:G.solosChill },
+    { label:'Single Night',     size:72,left:92, top:41,  idx:4, bg:G.single },
+    { label:'Fast & Full',     size:72,left:331, top:51,  idx:5, bg:G.quick },
+    { label:'Heat Seeker',     size:66,left:135, top:174,  idx:8, bg:G.spicy },
+    { label:'Off The Menu',     size:66,left:306, top:122,  idx:11, bg:G.diff },
+    { label:'Sunday Reset',     size:72,left:232, top:144,  idx:12, bg:G.hang },
+    { label:'Spoil Yourself',     size:72,left:-1, top:79,  idx:7, bg:G.treatYou },
+    { label:'Eat Local',     size:84,left:68, top:114,  idx:1, bg:G.fresh },
+  ],
+  // Cluster2
+  [
+    { label:'Night Out',     size:92,left:159, top:64,  idx:2, bg:G.gno },
+    { label:'Midnight Snack',     size:84,left:-22, top:127,  idx:10, bg:G.lateNight },
+    { label:'On The Run',     size:72,left:351, top:26,  idx:5, bg:G.quick },
+    { label:'Hidden Gem',     size:66,left:233, top:143,  idx:11, bg:G.diff },
+    { label:'Next Day Fix',     size:72,left:252, top:32,  idx:12, bg:G.hang },
+    { label:'Green & Clean',     size:84,left:67, top:100,  idx:1, bg:G.fresh },
+    { label:'Dinner Date',     size:84,left:8, top:36,  idx:0, bg:G.dateNight },
+    { label:'Feeling Bold',     size:84,left:296, top:99,  idx:8, bg:G.spicy },
+    { label:'Happy Hour',     size:84,left:138, top:161,  idx:9, bg:G.wineDine },
+    { label:'Slow Burn',     size:66,left:340, top:185,  idx:3, bg:G.cozy66 },
+    { label:'Good Energy',     size:72,left:98, top:14,  idx:6, bg:G.solosChill },
+  ],
+  // Cluster3
+  [
+    { label:'Dressed Up',     size:92,left:180, top:105,  idx:2, bg:G.gno },
+    { label:'Stay In Spirit',     size:66,left:274, top:82,  idx:3, bg:G.cozy66 },
+    { label:'Earned It',     size:84,left:26, top:164,  idx:7, bg:G.treatYou },
+    { label:'Bite Sized',     size:72,left:338, top:34,  idx:5, bg:G.quick },
+    { label:'Plot Twist',     size:66,left:333, top:126,  idx:11, bg:G.diff },
+    { label:'Head & Stomach',     size:72,left:123, top:174,  idx:12, bg:G.hang },
+    { label:'Farm To Table',     size:84,left:84, top:89,  idx:1, bg:G.fresh },
+    { label:'Late Shift',     size:66,left:267, top:164,  idx:10, bg:G.lateNight },
+    { label:'Quiet Night',     size:66,left:152, top:39,  idx:4, bg:G.single },
+    { label:'Payday Treat',     size:72,left:223, top:19,  idx:7, bg:G.treatYou },
+    { label:'Chill Mode',     size:72,left:-14, top:97,  idx:6, bg:G.solosChill },
+    { label:'Power Lunch',     size:84,left:30, top:13,  idx:0, bg:G.dateNight },
+  ],
+];
 
-  // Outer container needs explicit height for scroll to work
-  list.style.position = 'absolute';
+const CLUSTER_W   = 401;
+const CLUSTER_GAP = 4;
+const PADDING     = 20;
 
-  // Inner track — tall enough to scroll through all cards
-  const track = document.createElement('div');
-  track.style.cssText = `position:relative;width:100%;height:${totalH}px;`;
-  list.appendChild(track);
+const bubbles = [];
+CLUSTERS.forEach((cluster, ci) => {
+  const offset = PADDING + ci * (CLUSTER_W + CLUSTER_GAP);
+  cluster.forEach(b => bubbles.push({ ...b, left: offset + b.left }));
+});
 
-  // Build render order: badged cards first (in badge rank), then the rest
-  const BADGE_RANK = ['#1 this week', 'blowing up', 'always popular', 'most loved', 'hidden gem'];
-  const badgedIdxs = BADGE_RANK.map(b => VIBE_BADGES.indexOf(b)).filter(i => i >= 0);
-  const unbadgedIdxs = VIBE_CARDS.map((_,i) => i).filter(i => !badgedIdxs.includes(i));
-  const renderOrder = [...badgedIdxs, ...unbadgedIdxs];
+const allWrappers = {};
+const TRACK_W     = PADDING * 2 + CLUSTERS.length * CLUSTER_W + (CLUSTERS.length - 1) * CLUSTER_GAP;
+const container   = document.getElementById('tags-container');
 
-  renderOrder.forEach((idx, position) => {
-    const card = VIBE_CARDS[idx];
-    const el = document.createElement('div');
-    el.className = 'vibe-card-item';
-    el.dataset.cardIdx = idx;
+(function buildBubbles() {
+  if (!container) return;
 
-    const top = position * STEP;
-    el.style.cssText = `
-      position:absolute;
-      left:0;right:0;top:${top}px;
-      height:${CARD_H + OVERLAP}px;
-      border-radius:22px;
-      background:${card.grad};
-      cursor:pointer;
-      overflow:hidden;
-      outline:none;
-      transition:opacity 0.15s,outline 0.15s,transform 0.15s ease,filter 0.3s ease;
-      display:flex;align-items:flex-start;
-      padding:8px 8px 0 8px;
-      z-index:${position};
-      -webkit-tap-highlight-color:transparent;
-    `;
-    el.addEventListener('mousedown', e => e.preventDefault());
+  const bubbleTrack = document.createElement('div');
+  bubbleTrack.style.cssText = `position:relative;height:302px;width:${TRACK_W}px;overflow:visible;`;
+  container.appendChild(bubbleTrack);
+  container.style.width = '430px';
 
-    el.innerHTML = `
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;width:100%;">
-        <span style="background:black;border-radius:20px;padding:3px 0;width:110px;text-align:center;font-family:'Inter',sans-serif;font-style:italic;font-size:12px;color:white;letter-spacing:0.3px;white-space:nowrap;flex-shrink:0;display:${VIBE_BADGES[idx] ? 'inline-block' : 'none'};">${VIBE_BADGES[idx] || ''}</span>
-        <span style="font-family:'Afacad',sans-serif;font-weight:600;font-size:20px;color:white;letter-spacing:10px;text-align:right;line-height:1;margin-left:auto;padding-right:0;width:190px;flex-shrink:0;word-break:break-word;">${card.label}</span>
-      </div>
-      <div class="card-check" style="position:absolute;top:18px;right:20px;opacity:0;transition:opacity 0.15s;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-    `;
+  bubbles.forEach((b, i) => {
+    const cardIdx    = b.idx;
+    const grad       = b.bg;
+    const driftIdx   = (i % 6) + 1;
+    const driftDur   = (5 + driftIdx * 0.6).toFixed(1);
+    const driftDelay = ((driftIdx * 1.1 + i * 0.4) % 8).toFixed(1);
 
-    el.addEventListener('click', () => {
-      if (selected.has(idx)) { selected.delete(idx); }
-      else { if (selected.size >= 3) return; selected.add(idx); }
+    const wrapper = document.createElement('div');
+    wrapper.className = 'vibe-bubble-wrapper';
+    wrapper.dataset.entryIdx = cardIdx;
+    wrapper.style.cssText = `position:absolute;left:${b.left}px;top:${b.top}px;width:${b.size}px;height:${b.size}px;border-radius:50%;cursor:pointer;transition:transform 0.2s,outline 0.2s,opacity 0.2s;animation:bubbleDrift${driftIdx} ${driftDur}s ease-in-out ${driftDelay}s infinite;`;
+
+    const bgDiv = document.createElement('div');
+    bgDiv.style.cssText = `position:absolute;inset:0;border-radius:50%;filter:blur(2px);background:${grad};`;
+    wrapper.appendChild(bgDiv);
+
+    const lbl = document.createElement('p');
+    lbl.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:11px;line-height:1.3;color:white;text-align:center;text-transform:capitalize;font-style:normal;padding:8px;word-break:normal;overflow-wrap:normal;hyphens:none;`;
+    lbl.textContent = b.label;
+    wrapper.appendChild(lbl);
+
+    wrapper.addEventListener('mouseenter', () => { if (selected.has(cardIdx) || selected.size >= 3) return; wrapper.style.transform = 'scale(1.05)'; });
+    wrapper.addEventListener('mouseleave', () => { if (selected.has(cardIdx)) return; wrapper.style.transform = ''; });
+    wrapper.addEventListener('click', () => {
+      if (selected.has(cardIdx)) { selected.delete(cardIdx); }
+      else { if (selected.size >= 3) return; selected.add(cardIdx); }
       syncAllWrappers();
     });
 
-    track.appendChild(el);
+    if (!allWrappers[cardIdx]) allWrappers[cardIdx] = [];
+    allWrappers[cardIdx].push(wrapper);
+    bubbleTrack.appendChild(wrapper);
   });
+
+  requestAnimationFrame(() => {
+    const midCluster = PADDING + 2 * (CLUSTER_W + CLUSTER_GAP) + CLUSTER_W / 2;
+    container.scrollLeft = Math.max(0, midCluster - 430 / 2);
+  });
+
+  let _down = false, _sx, _sl;
+  container.addEventListener('mousedown', e => { _down = true; _sx = e.pageX; _sl = container.scrollLeft; e.preventDefault(); });
+  document.addEventListener('mousemove', e => { if (!_down) return; container.scrollLeft = _sl - (e.pageX - _sx); });
+  document.addEventListener('mouseup', () => { _down = false; });
+
+  const sbStyle = document.createElement('style');
+  sbStyle.textContent = '#tags-container::-webkit-scrollbar{display:none}';
+  document.head.appendChild(sbStyle);
 })();
+
+
+function updateCtaVisibility() {
+  const foot = document.getElementById('lets-vibe-foot');
+  if (!foot) return;
+  const searchFilled = document.getElementById('vibe-search')?.value.trim().length > 0;
+  const show = selected.size > 0 || searchFilled;
+  foot.style.opacity = show ? '1' : '0';
+  foot.style.pointerEvents = show ? 'all' : 'none';
+}
+
+// ── Search bar — intent mode, direct to Page 2 ─────────────────
+
 
 // ── Search bar — intent mode, direct to Page 2 ─────────────────
 const searchInput = document.getElementById('vibe-search');
+searchInput.addEventListener('input', updateCtaVisibility);
 
 function executeSearch(q) {
   const term = q.trim();
   if (!term) return;
   searchInput.value = '';
   searchInput.blur();
+  updateCtaVisibility();
   activeSearchTerm = term;
 
   const parsed = parseSearchPhrase(term);
@@ -2965,23 +3070,36 @@ function submitAddSpot() {
 }
 
 
-const CUISINES = [
-  'Japanese','Korean','Chinese','Thai','Vietnamese','Indian','Mexican',
-  'Italian','French','Mediterranean','Greek','Middle Eastern','Spanish',
-  'American','Canadian','Seafood','Steakhouse','Vegetarian','Brunch','Peruvian'
-];
+const CUISINES_BY_CONTINENT = {
+  'East Asia':        ['Japanese','Korean','Chinese','Taiwanese','Dim Sum','Ramen','Sushi'],
+  'Southeast Asia':   ['Thai','Vietnamese','Filipino','Indonesian','Malaysian','Singaporean'],
+  'South Asia':       ['Indian','Pakistani','Sri Lankan','Nepalese','Bangladeshi'],
+  'Middle East':      ['Middle Eastern','Lebanese','Turkish','Persian','Israeli','Moroccan'],
+  'Europe':           ['Italian','French','Spanish','Greek','Mediterranean','Portuguese','German'],
+  'Americas':         ['Mexican','Peruvian','Brazilian','Colombian','American','Canadian','Cajun'],
+  'Specialty':        ['Seafood','Steakhouse','Vegetarian','Vegan','Brunch','Fusion','BBQ','Pizza'],
+};
+
+const CUISINES = Object.values(CUISINES_BY_CONTINENT).flat();
 
 let selectedCuisines = [];
 
 function openCuisineModal() {
   const list = document.getElementById('cuisine-modal-list');
   selectedCuisines = [...activeCuisines];
-  list.innerHTML = CUISINES.map(c => {
-    const active = selectedCuisines.some(s => s.toLowerCase() === c.toLowerCase());
-    return `<div id="cuisine-pill-${c.replace(/\s/g,'_')}" onclick="toggleCuisinePill('${c}')" style="padding:8px 12px;border-radius:20px;border:1px solid black;cursor:pointer;background:${active?'black':'white'};transition:all 0.15s;text-align:center;">
-      <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.8px;white-space:nowrap;">${c}</p>
-    </div>`;
-  }).join('');
+  list.innerHTML = Object.entries(CUISINES_BY_CONTINENT).map(([continent, cuisines]) => `
+    <div style="width:100%;margin-bottom:4px;">
+      <p class="fi" style="font-size:9px;color:#999;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">${continent}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        ${cuisines.map(c => {
+          const active = selectedCuisines.some(s => s.toLowerCase() === c.toLowerCase());
+          return `<div id="cuisine-pill-${c.replace(/\s/g,'_')}" onclick="toggleCuisinePill('${c}')" style="padding:6px 12px;border-radius:20px;border:1px solid ${active?'black':'#ccc'};cursor:pointer;background:${active?'black':'white'};transition:all 0.15s;">
+            <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${c}</p>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  `).join('<div style="width:100%;height:1px;background:rgba(0,0,0,0.06);margin:8px 0;"></div>');
   const m = document.getElementById('cuisine-modal');
   const s = document.getElementById('cuisine-modal-sheet');
   m.style.display = 'flex';

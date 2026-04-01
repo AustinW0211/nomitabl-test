@@ -915,7 +915,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
 <script>
 // Restaurant data
-const ALL_TAGS = ["Girls night out","Feeling cozy","Date night","Solo & chill","single night","quick bite","spicy","something different","hangover cure","Fresh air & food"];
+const ALL_TAGS = ["Date Night","Date Plans","Dinner Date","Night In","Power Lunch","Romance Night","Eat Local","Farm To Table","Fresh Air & Food","Garden Fresh","Green & Clean","Dressed Up","Girls Night Out","Ladies Night","Night Out","Squad Goals","Comfort Food","Feeling Cozy","Rainy Day","Slow Burn","Stay In Spirit","Quiet Night","Bite Sized","Grab & Go","On The Run","Quick Bite","Speedy Eats","Chill Mode","Good Energy","Solo & Chill","Solo Mission","Earned It","Pamper Night","Payday Treat","Treat Yourself","Worth It","Feeling Bold","Heat Seeker","Spicy","Turn Up Heat","Cheers To That","Happy Hour","Pour It Up","Sip & Savour","Wine & Dine","Late Night","Late Shift","Midnight Snack","Night Cap","Night Owl","Plot Twist","Something Different","Day After","Hangover Cure","Head & Stomach","Next Day Fix"];
 const PHOTO_PALETTES = [
   ["#2d1b69","#11998e"],["#c94b4b","#4b134f"],["#1a1a2e","#e94560"],
   ["#134e5e","#71b280"],["#232526","#414345"],["#355c7d","#6c5b7b"],
@@ -2575,59 +2575,59 @@ const G = {
 const CLUSTERS = [
   // Cluster4
   [
-    { label:'Girls Night Out',     size:92,left:253, top:11,  idx:2, bg:G.gno },
-    { label:'Feeling Cozy',     size:84,left:0, top:128,  idx:3, bg:G.cozy84 },
-    { label:'Quick Bite',     size:72,left:354, top:31,  idx:5, bg:G.quick },
+    { label:'Squad Goals',     size:92,left:253, top:11,  idx:2, bg:G.gno },
+    { label:'Rainy Day',     size:84,left:0, top:128,  idx:3, bg:G.cozy84 },
+    { label:'Speedy Eats',     size:72,left:354, top:31,  idx:5, bg:G.quick },
     { label:'Something Different',     size:66,left:95, top:110,  idx:11, bg:G.diff },
-    { label:'Hangover Cure',     size:72,left:78, top:190,  idx:12, bg:G.hang },
-    { label:'Fresh Air & Food',     size:84,left:30, top:38,  idx:1, bg:G.fresh },
-    { label:'Date Night',     size:84,left:308, top:101,  idx:0, bg:G.dateNight },
-    { label:'Spicy',     size:66,left:271, top:180,  idx:8, bg:G.spicy },
-    { label:'Wine & Dine',     size:72,left:229, top:104,  idx:9, bg:G.wineDine },
+    { label:'Head & Stomach',     size:72,left:78, top:190,  idx:12, bg:G.hang },
+    { label:'Eat Local',     size:84,left:30, top:38,  idx:1, bg:G.fresh },
+    { label:'Night In',     size:84,left:308, top:101,  idx:0, bg:G.dateNight },
+    { label:'Heat Seeker',     size:66,left:271, top:180,  idx:8, bg:G.spicy },
+    { label:'Pour It Up',     size:72,left:229, top:104,  idx:9, bg:G.wineDine },
     { label:'Night Cap',     size:84,left:150, top:48,  idx:10, bg:G.lateNight },
     { label:'Solo Mission',     size:84,left:152, top:148,  idx:6, bg:G.solosChill },
   ],
   // Cluster1
   [
     { label:'Ladies Night',     size:92,left:252, top:155,  idx:2, bg:G.gno },
-    { label:'Treat Yourself',     size:66,left:246, top:78,  idx:7, bg:G.treatYou },
+    { label:'Pamper Night',     size:66,left:246, top:78,  idx:7, bg:G.treatYou },
     { label:'Comfort Food',     size:84,left:-29, top:170,  idx:3, bg:G.cozy84 },
     { label:'Grab & Go',     size:72,left:340, top:19,  idx:5, bg:G.quick },
-    { label:'Recovery Mode',     size:66,left:187, top:124,  idx:12, bg:G.hang },
+    { label:'Day After',     size:66,left:187, top:124,  idx:12, bg:G.hang },
     { label:'Garden Fresh',     size:72,left:173, top:42,  idx:1, bg:G.fresh },
-    { label:'Late Night Eats',     size:84,left:100, top:89,  idx:10, bg:G.lateNight },
-    { label:'Extra Spicy',     size:66,left:59, top:159,  idx:8, bg:G.spicy },
-    { label:'After Work',     size:72,left:316, top:95,  idx:0, bg:G.dateNight },
-    { label:'Brunch Vibes',     size:72,left:9, top:92,  idx:6, bg:G.solosChill },
-    { label:'First Date',     size:84,left:45, top:11,  idx:0, bg:G.dateNight },
+    { label:'Date Plans',     size:84,left:100, top:89,  idx:0, bg:G.dateNight },
+    { label:'Turn Up Heat',     size:66,left:59, top:159,  idx:8, bg:G.spicy },
+    { label:'Sip & Savour',     size:72,left:316, top:95,  idx:9, bg:G.wineDine },
+    { label:'Night Owl',     size:72,left:9, top:92,  idx:10, bg:G.lateNight },
+    { label:'Romance Night',     size:84,left:45, top:11,  idx:0, bg:G.dateNight },
   ],
   // Cluster (reference — original positions)
   [
-    { label:'Squad Goals',     size:92,left:153, top:83,  idx:2, bg:G.gno },
-    { label:'Rainy Day',     size:84,left:244, top:50,  idx:3, bg:G.cozy84 },
-    { label:'Wine OClock',     size:66,left:182, top:10,  idx:9, bg:G.wineDine },
-    { label:'Me Time',     size:84,left:-29, top:155,  idx:6, bg:G.solosChill },
-    { label:'Single Night',     size:72,left:92, top:41,  idx:4, bg:G.single },
-    { label:'Fast & Full',     size:72,left:331, top:51,  idx:5, bg:G.quick },
-    { label:'Heat Seeker',     size:66,left:135, top:174,  idx:8, bg:G.spicy },
-    { label:'Off The Menu',     size:66,left:306, top:122,  idx:11, bg:G.diff },
-    { label:'Sunday Reset',     size:72,left:232, top:144,  idx:12, bg:G.hang },
-    { label:'Spoil Yourself',     size:72,left:-1, top:79,  idx:7, bg:G.treatYou },
-    { label:'Eat Local',     size:84,left:68, top:114,  idx:1, bg:G.fresh },
+    { label:'Date Night',     size:92,left:153, top:83,  idx:0, bg:G.dateNight },
+    { label:'Feeling Cozy',     size:84,left:244, top:50,  idx:3, bg:G.cozy84 },
+    { label:'Wine & Dine',     size:66,left:182, top:10,  idx:9, bg:G.wineDine },
+    { label:'Girls Night Out',     size:84,left:-29, top:155,  idx:2, bg:G.gno },
+    { label:'Quick Bite',     size:72,left:92, top:41,  idx:5, bg:G.quick },
+    { label:'Spicy',     size:72,left:331, top:51,  idx:8, bg:G.spicy },
+    { label:'Fresh Air & Food',     size:66,left:135, top:174,  idx:1, bg:G.fresh },
+    { label:'Treat Yourself',     size:66,left:306, top:122,  idx:7, bg:G.treatYou },
+    { label:'Hangover Cure',     size:72,left:232, top:144,  idx:12, bg:G.hang },
+    { label:'Solo & Chill',     size:72,left:-1, top:79,  idx:6, bg:G.solosChill },
+    { label:'Late Night',     size:84,left:68, top:114,  idx:10, bg:G.lateNight },
   ],
   // Cluster2
   [
     { label:'Night Out',     size:92,left:159, top:64,  idx:2, bg:G.gno },
-    { label:'Midnight Snack',     size:84,left:-22, top:127,  idx:10, bg:G.lateNight },
+    { label:'Slow Burn',     size:84,left:-22, top:127,  idx:3, bg:G.cozy84 },
     { label:'On The Run',     size:72,left:351, top:26,  idx:5, bg:G.quick },
-    { label:'Hidden Gem',     size:66,left:233, top:143,  idx:11, bg:G.diff },
+    { label:'Dinner Date',     size:66,left:233, top:143,  idx:0, bg:G.dateNight },
     { label:'Next Day Fix',     size:72,left:252, top:32,  idx:12, bg:G.hang },
     { label:'Green & Clean',     size:84,left:67, top:100,  idx:1, bg:G.fresh },
-    { label:'Dinner Date',     size:84,left:8, top:36,  idx:0, bg:G.dateNight },
-    { label:'Feeling Bold',     size:84,left:296, top:99,  idx:8, bg:G.spicy },
-    { label:'Happy Hour',     size:84,left:138, top:161,  idx:9, bg:G.wineDine },
-    { label:'Slow Burn',     size:66,left:340, top:185,  idx:3, bg:G.cozy66 },
-    { label:'Good Energy',     size:72,left:98, top:14,  idx:6, bg:G.solosChill },
+    { label:'Feeling Bold',     size:84,left:8, top:36,  idx:8, bg:G.spicy },
+    { label:'Cheers To That',     size:84,left:296, top:99,  idx:9, bg:G.wineDine },
+    { label:'Worth It',     size:84,left:138, top:161,  idx:7, bg:G.treatYou },
+    { label:'Good Energy',     size:66,left:340, top:185,  idx:6, bg:G.solosChill },
+    { label:'Midnight Snack',     size:72,left:98, top:14,  idx:10, bg:G.lateNight },
   ],
   // Cluster3
   [
@@ -2636,13 +2636,13 @@ const CLUSTERS = [
     { label:'Earned It',     size:84,left:26, top:164,  idx:7, bg:G.treatYou },
     { label:'Bite Sized',     size:72,left:338, top:34,  idx:5, bg:G.quick },
     { label:'Plot Twist',     size:66,left:333, top:126,  idx:11, bg:G.diff },
-    { label:'Head & Stomach',     size:72,left:123, top:174,  idx:12, bg:G.hang },
-    { label:'Farm To Table',     size:84,left:84, top:89,  idx:1, bg:G.fresh },
-    { label:'Late Shift',     size:66,left:267, top:164,  idx:10, bg:G.lateNight },
-    { label:'Quiet Night',     size:66,left:152, top:39,  idx:4, bg:G.single },
-    { label:'Payday Treat',     size:72,left:223, top:19,  idx:7, bg:G.treatYou },
-    { label:'Chill Mode',     size:72,left:-14, top:97,  idx:6, bg:G.solosChill },
-    { label:'Power Lunch',     size:84,left:30, top:13,  idx:0, bg:G.dateNight },
+    { label:'Farm To Table',     size:72,left:123, top:174,  idx:1, bg:G.fresh },
+    { label:'Late Shift',     size:84,left:84, top:89,  idx:10, bg:G.lateNight },
+    { label:'Quiet Night',     size:66,left:267, top:164,  idx:4, bg:G.single },
+    { label:'Payday Treat',     size:66,left:152, top:39,  idx:7, bg:G.treatYou },
+    { label:'Chill Mode',     size:72,left:223, top:19,  idx:6, bg:G.solosChill },
+    { label:'Power Lunch',     size:72,left:-14, top:97,  idx:0, bg:G.dateNight },
+    { label:'Happy Hour',     size:84,left:30, top:13,  idx:9, bg:G.wineDine },
   ],
 ];
 
@@ -2685,7 +2685,7 @@ const container   = document.getElementById('tags-container');
     wrapper.appendChild(bgDiv);
 
     const lbl = document.createElement('p');
-    lbl.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:600;font-size:11px;line-height:1.3;color:white;text-align:center;text-transform:capitalize;font-style:normal;padding:8px;word-break:normal;overflow-wrap:normal;hyphens:none;`;
+    lbl.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Afacad',sans-serif;font-weight:600;font-size:14px;line-height:1.3;color:white;text-align:center;text-transform:capitalize;font-style:normal;padding:8px;word-break:normal;overflow-wrap:normal;hyphens:none;`;
     lbl.textContent = b.label;
     wrapper.appendChild(lbl);
 
@@ -2704,7 +2704,7 @@ const container   = document.getElementById('tags-container');
 
   requestAnimationFrame(() => {
     const midCluster = PADDING + 2 * (CLUSTER_W + CLUSTER_GAP) + CLUSTER_W / 2;
-    container.scrollLeft = Math.max(0, midCluster - 430 / 2);
+    container.scrollLeft = Math.max(0, midCluster - 393 / 2);
   });
 
   let _down = false, _sx, _sl;

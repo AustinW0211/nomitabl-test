@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>NomiTabl</title>
-<link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300&family=Just+Another+Hand&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: #000; display: flex; justify-content: flex-start; align-items: flex-start; width: 100vw; height: 100vh; height: 100dvh; font-family: 'Afacad', sans-serif; overflow: hidden; }
@@ -42,7 +42,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   top: 0;
   left: 0; right: 0; bottom: 0;
   z-index: 25;
-  background: #d0cfcf;
+  background: #111;
   transform: translateY(100vh);
   transition: transform .4s cubic-bezier(.4,0,.2,1);
   overflow-y: auto;
@@ -54,11 +54,10 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 }
 .p3-details-panel::-webkit-scrollbar { display: none; }
 .p3-details-panel.revealed { transform: translateY(0); transition: transform .4s cubic-bezier(.4,0,.2,1); }
+.p3-details-panel > *:not(.p3-panel-bg) { position: relative; z-index: 1; }
 .p3-hero {
   position: absolute; inset: 0;
-  /* No transition — State 1 is always fully rendered, never moves */
   will-change: auto;
-}
 }
 @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(5px)} }
 
@@ -155,14 +154,17 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           <g clip-path="url(#c1)"><path d="M27.7537 26.4569L23.1168 21.8199C25.3575 19.2431 26.5101 15.897 26.3318 12.4869C26.1535 9.07679 24.6581 5.86914 22.1609 3.54008C19.6637 1.21103 16.3597 -0.0574641 12.9455 0.00200006C9.53122 0.0614642 6.27344 1.44424 3.85884 3.85884C1.44424 6.27344 0.0614642 9.53122 0.00200006 12.9455C-0.0574641 16.3597 1.21103 19.6637 3.54008 22.1609C5.86914 24.6581 9.07679 26.1535 12.4869 26.3318C15.897 26.5101 19.2431 25.3575 21.8199 23.1168L26.4569 27.7537C26.6308 27.9158 26.8609 28.0041 27.0986 27.9999C27.3363 27.9957 27.5631 27.8994 27.7312 27.7312C27.8994 27.5631 27.9957 27.3363 27.9999 27.0986C28.0041 26.8609 27.9158 26.6308 27.7537 26.4569ZM1.88096 13.1978C1.88096 10.9595 2.54468 8.77152 3.78819 6.91048C5.03169 5.04945 6.79913 3.59894 8.86701 2.7424C10.9349 1.88586 13.2103 1.66175 15.4056 2.09841C17.6008 2.53507 19.6173 3.61289 21.1999 5.19558C22.7826 6.77826 23.8604 8.79472 24.2971 10.99C24.7338 13.1852 24.5097 15.4606 23.6531 17.5285C22.7966 19.5964 21.3461 21.3638 19.485 22.6073C17.624 23.8508 15.436 24.5146 13.1978 24.5146C10.1975 24.5109 7.32112 23.3174 5.1996 21.1959C3.07808 19.0744 1.8846 16.198 1.88096 13.1978Z" fill="url(#p1)"/></g>
           <defs><linearGradient id="p1" gradientUnits="userSpaceOnUse" x1="2.59463" x2="31.9571" y1="2.59463" y2="31.9571"><stop stop-color="#BDBDBD"/><stop offset="1" stop-color="#A1A1A1"/></linearGradient><clipPath id="c1"><rect fill="white" height="28" width="28"/></clipPath></defs>
         </svg>
-        <input id="vibe-search" type="text" placeholder="describe your craving ..." autocomplete="off" style="font-family:'Inter',sans-serif;font-style:italic;font-size:12px;letter-spacing:2px;text-transform:capitalize;color:black;border:none;outline:none;background:transparent;width:302px;flex-shrink:0;">
+        <input id="vibe-search" type="text" placeholder="describe your craving ..." autocomplete="off" style="font-family:'Inter',sans-serif;font-style:italic;font-size:12px;letter-spacing:2px;text-transform:capitalize;color:black;border:none;outline:none;background:transparent;width:264px;flex-shrink:0;">
+        <div id="vibe-search-clear" onclick="clearVibeSearch()" style="display:none;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,0.15);flex-shrink:0;cursor:pointer;align-items:center;justify-content:center;margin-left:4px;margin-right:10px;">
+          <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="black" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
       </div>
       <!-- Selected vibe tags row — centred between search bar and "Or Find Your Vibe" -->
       <div id="p1-selected-tags" style="position:absolute;left:16px;right:16px;top:113px;transform:translateY(-50%);display:flex;flex-wrap:nowrap;gap:6px;align-items:center;justify-content:center;overflow:hidden;min-height:20px;"></div>
     </div>
 
     <!-- Vibe Bubbles — horizontally scrollable -->
-    <div id="tags-container" style="position:absolute;left:0;right:0;top:482px;height:302px;overflow-x:scroll;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;cursor:grab;"></div>
+    <div id="tags-container" style="position:absolute;left:0;right:0;top:482px;height:302px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x;scrollbar-width:none;"></div>
 
     <!-- Foot: LET'S VIBE → Page 2 — always visible -->
     <div style="position:absolute;display:flex;flex-direction:column;height:90px;align-items:center;left:0;padding:12px 16px 16px;bottom:20px;width:393px;z-index:50;pointer-events:none;opacity:0;transition:opacity 0.3s ease;" id="lets-vibe-foot">
@@ -456,7 +458,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           <!-- Arc 1 ring (3–5pm): orange band at tick zone, r=108, stroke=14 covers ticks+2px offset -->
           <!-- 3pm=90°, 5pm=150° in clock coords -->
           <g id="hh-arc1" opacity="0">
-            <path id="hh-arc1-path" d="M 231,120 A 111,111 0 0,1 175.5,216.1" fill="none" stroke="rgba(255,140,40,0.95)" stroke-width="18" stroke-linecap="butt"/>
+            <path id="hh-arc1-path" d="M 231,120 A 111,111 0 0,1 175.5,216.1" fill="none" stroke="#ff6b1a" stroke-width="18" stroke-linecap="butt"/>
             <!-- White ticks within arc 1 zone (90°–150°, every 6°) -->
             <line x1="120" y1="4" x2="120" y2="12" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(90 120 120)"/>
             <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(96 120 120)"/>
@@ -472,7 +474,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           </g>
           <!-- Arc 2 ring (9pm–close): 270°–dynamic -->
           <g id="hh-arc2" opacity="0">
-            <path id="hh-arc2-path" d="M 9,120 A 111,111 0 0,1 64.5,23.9" fill="none" stroke="rgba(255,140,40,0.95)" stroke-width="18" stroke-linecap="butt"/>
+            <path id="hh-arc2-path" d="M 9,120 A 111,111 0 0,1 64.5,23.9" fill="none" stroke="#ff6b1a" stroke-width="18" stroke-linecap="butt"/>
             <!-- White ticks within arc 2 zone (270°–330°, every 6°) -->
             <line x1="120" y1="4" x2="120" y2="12" stroke="white" stroke-width="3" stroke-linecap="round" transform="rotate(270 120 120)"/>
             <line x1="120" y1="4" x2="120" y2="9" stroke="white" stroke-width="2" stroke-linecap="round" transform="rotate(276 120 120)"/>
@@ -490,6 +492,10 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           <!-- Arc 1: 3-5pm = 90°-150°, Arc 2: 9-11pm = 270°-330° -->
           <!-- Hour hand -->
           <line id="hh-hour-hand" x1="120" y1="120" x2="120" y2="40" stroke="#1e1e1e" stroke-width="12" stroke-linecap="round" transform="rotate(90 120 120)"/>
+          <!-- HH active text — shown only during happy hour -->
+          <text id="hh-face-happy" x="168" y="90" text-anchor="middle" font-family="'Just Another Hand', cursive" font-size="44" fill="#007F57" opacity="0" transform="rotate(-12 168 90)" style="transition:opacity 0.4s ease;">Happy</text>
+          <text id="hh-face-hour" x="148" y="169" text-anchor="middle" font-family="'Just Another Hand', cursive" font-size="44" fill="#007F57" opacity="0" transform="rotate(-10 148 169)" style="transition:opacity 0.4s ease;">Hour</text>
+          <text id="hh-face-bang" x="195" y="162" text-anchor="middle" font-family="'Just Another Hand', cursive" font-size="32" fill="#007F57" opacity="0" transform="rotate(-8 195 162)" style="transition:opacity 0.4s ease;">!!!</text>
         </svg></div>
         <p id="p3-hh-countdown" class="fa" style="position:absolute;font-weight:700;font-size:40px;color:black;letter-spacing:4px;white-space:nowrap;left:175px;top:45px;line-height:40px;">2h10m</p>
         <p id="p3-hh-label" class="fi" style="position:absolute;font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;white-space:nowrap;left:175px;top:85px;line-height:14px;">TO HAPPY HOUR</p>
@@ -852,7 +858,6 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:none;background:white;font-family:'Inter',sans-serif;font-size:14px;color:black;outline:none;"/>
         <div id="add-spot-suggestions" style="position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:10;display:none;"></div>
       </div>
-      <p class="fi" style="font-size:10px;color:#aaa;letter-spacing:0.5px;margin-bottom:16px;">Powered by Google Places — autofill address, hours & more</p>
 
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:8px;margin-top:16px;">ADDRESS</p>
       <input id="add-spot-address" type="text" placeholder="Auto-filled or type manually…"
@@ -942,7 +947,7 @@ const PHOTO_PALETTES = [
 let restaurants = [
   {id:"combine",name:"COMBINE",cuisine:"Korean Fusion",address:"555-1002 Seymour St.",distance:"0.2 KM",price:"$$",vibeScore:96,open:11,close:23,tags:["Girls night out","Feeling cozy","something different","single night"],walkin:35,walkinReports:140,dinnerReports:140,lunchReports:60,walkinDinner:45,walkinLunch:15,hhWeekday:[[15,17],[21,23]],hhWeekend:[[15,17],[21,23]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"street",parkingDinner:20,parkingLunch:8,parkingDinnerReports:108,parkingLunchReports:54,resoReports:0},
   {id:"miku",name:"MIKU",cuisine:"Japanese",address:"200 Granville St.",distance:"0.5 KM",price:"$$$",vibeScore:94,open:11,close:22,tags:["Girls night out","single night","Fresh air & food"],walkin:25,walkinReports:110,dinnerReports:110,lunchReports:50,walkinDinner:40,walkinLunch:10,hhWeekday:[[15,17],[21,22]],hhWeekend:[[15,17],[21,22]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"parkade",parkingDinner:12,parkingLunch:5,parkingDinnerReports:85,parkingLunchReports:43,resoReports:0},
-  {id:"tacofino",name:"TACOFINO",cuisine:"Mexican",address:"15 W Cordova St.",distance:"0.8 KM",price:"$",vibeScore:91,open:11,close:22,tags:["quick bite","hangover cure","Feeling cozy","spicy"],walkin:12,walkinReports:80,dinnerReports:80,lunchReports:40,walkinDinner:20,walkinLunch:5,hhStart:null,hhEnd:null,hhDays:null,hhWeekday:null,hhWeekend:null,hhDays:null,resoNote:null,parkingType:"street",parkingDinner:15,parkingLunch:5,parkingDinnerReports:59,parkingLunchReports:29,resoReports:0},
+  {id:"tacofino",name:"TACOFINO",cuisine:"Mexican",address:"15 W Cordova St.",distance:"0.8 KM",price:"$",vibeScore:91,open:11,close:24,tags:["quick bite","hangover cure","Feeling cozy","spicy"],walkin:12,walkinReports:80,dinnerReports:80,lunchReports:40,walkinDinner:20,walkinLunch:5,hhStart:14,hhEnd:17,hhDays:null,hhWeekday:null,hhWeekend:null,hhDays:null,resoNote:null,parkingType:"street",parkingDinner:15,parkingLunch:5,parkingDinnerReports:59,parkingLunchReports:29,resoReports:0},
   {id:"botanist",name:"BOTANIST",cuisine:"West Coast",address:"1038 Canada Pl.",distance:"1.1 KM",price:"$$$$",vibeScore:98,open:7,close:23,tags:["Girls night out","Fresh air & food","single night"],walkin:30,walkinReports:160,dinnerReports:160,lunchReports:55,walkinDinner:50,walkinLunch:10,hhWeekday:[[15,17],[21,23]],hhWeekend:[[15,17],[21,23]],hhDays:"3–5 PM · 9 PM–close",resoNote:"book well in advance",parkingType:"parkade",parkingDinner:10,parkingLunch:4,parkingDinnerReports:108,parkingLunchReports:54,resoReports:18},
   {id:"forage",name:"FORAGE",cuisine:"Canadian",address:"1300 Robson St.",distance:"1.4 KM",price:"$$",vibeScore:89,open:8,close:22,tags:["Feeling cozy","Fresh air & food","hangover cure","something different"],walkin:15,walkinReports:70,dinnerReports:70,lunchReports:35,walkinDinner:25,walkinLunch:8,hhWeekday:[[15,17],[21,22]],hhWeekend:[[15,17],[21,22]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"street",parkingDinner:18,parkingLunch:7,parkingDinnerReports:46,parkingLunchReports:23,resoReports:0},
   {id:"pourhouse",name:"POURHOUSE",cuisine:"American",address:"162 Water St.",distance:"0.6 KM",price:"$$",vibeScore:87,open:16,close:24,tags:["Girls night out","single night","spicy","hangover cure"],walkin:20,walkinReports:65,dinnerReports:65,lunchReports:30,walkinDinner:30,walkinLunch:8,hhWeekday:[[15,17],[21,24]],hhWeekend:[[15,17],[21,24]],hhDays:"3–5 PM · 9 PM–close",resoNote:null,parkingType:"street",parkingDinner:25,parkingLunch:8,parkingDinnerReports:46,parkingLunchReports:23,resoReports:0},
@@ -994,9 +999,47 @@ function getOpenStatus(r) {
 function renderOpenStatus(r) {
   const s = getOpenStatus(r);
   const dotAnim = s.dot === '#4ade80' ? 'animation:pulse 2s infinite;' : '';
-  return `<div style="display:inline-flex;align-items:center;gap:6px;">
-    <div style="width:5px;height:5px;border-radius:50%;background:${s.dot};flex-shrink:0;${dotAnim}"></div>
-    <span class="fi" style="font-size:.67rem;font-weight:600;color:${s.textColor};letter-spacing:0.5px;white-space:nowrap;">${s.text}</span>
+
+  // Check if currently in happy hour — supports both formats:
+  // Format A: hhStart/hhEnd (flat numbers)
+  // Format B: hhWeekday/hhWeekend (array of [start,end] pairs)
+  let hhPill = '';
+  const now = new Date();
+  const h = now.getHours() + now.getMinutes() / 60;
+  const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+
+  let hhEnd = null;
+  // Format A
+  if (r.hhStart != null && r.hhEnd != null && h >= r.hhStart && h < r.hhEnd) {
+    hhEnd = r.hhEnd;
+  }
+  // Format B
+  if (hhEnd === null) {
+    const slots = isWeekend ? r.hhWeekend : r.hhWeekday;
+    if (Array.isArray(slots)) {
+      for (const [start, end] of slots) {
+        if (h >= start && h < end) { hhEnd = end; break; }
+      }
+    }
+  }
+
+  if (hhEnd !== null) {
+    const endHr = Math.floor(hhEnd);
+    const endMin = Math.round((hhEnd - endHr) * 60);
+    const endStr = endMin > 0
+      ? `${endHr % 12 || 12}:${String(endMin).padStart(2,'0')}${hhEnd >= 12 ? 'pm' : 'am'}`
+      : `${endHr % 12 || 12}${hhEnd >= 12 ? 'pm' : 'am'}`;
+    hhPill = `<div style="display:inline-flex;align-items:center;gap:6px;margin-right:8px;">
+      <div style="width:5px;height:5px;border-radius:50%;background:#ff6b1a;flex-shrink:0;animation:pulse 2s infinite;"></div>
+      <span class="fi" style="font-size:.67rem;font-weight:600;color:#ff6b1a;letter-spacing:0.5px;white-space:nowrap;">Happy Hour till ${endStr}</span>
+    </div>`;
+  }
+
+  return `<div style="display:inline-flex;align-items:center;flex-wrap:wrap;gap:4px;">
+    ${hhPill}<div style="display:inline-flex;align-items:center;gap:6px;">
+      <div style="width:5px;height:5px;border-radius:50%;background:${s.dot};flex-shrink:0;${dotAnim}"></div>
+      <span class="fi" style="font-size:.67rem;font-weight:600;color:${s.textColor};letter-spacing:0.5px;white-space:nowrap;">${s.text}</span>
+    </div>
   </div>`;
 }
 
@@ -2066,7 +2109,8 @@ function openResoOption(platform) {
 
 function openVibeModal() {
   const slotsLeft = 3 - selected.size;
-  modalPendingSelection = new Set();
+  // Seed pending with already-selected vibes so toggle state is consistent
+  modalPendingSelection = new Set([...selectedWrappers].map(w => w.dataset.label).filter(Boolean));
   document.getElementById('vibe-slots-left').textContent = slotsLeft;
   const container = document.getElementById('vibe-modal-bubbles');
 
@@ -2081,8 +2125,8 @@ function openVibeModal() {
       <div style="display:flex;flex-wrap:wrap;gap:6px;">
         ${vibes.map(v => {
           const isSel = isDisplayLabelSelected(v);
-          return `<div id="modal-vibe-${v.replace(/[\s&]/g,'_')}" onclick="toggleModalVibe('${v}',${slotsLeft})" style="padding:6px 12px;border-radius:20px;border:1px solid ${isSel?'#999':'black'};cursor:${isSel?'default':'pointer'};background:${isSel?'#ccc':'white'};opacity:${isSel?'0.5':'1'};transition:all 0.15s;">
-            <p class="fi" style="font-size:11px;color:black;letter-spacing:0.5px;white-space:nowrap;">${v}</p>
+          return `<div id="modal-vibe-${v.replace(/[\s&]/g,'_')}" onclick="toggleModalVibe('${v}',${slotsLeft})" style="padding:6px 12px;border-radius:20px;border:1px solid ${isSel?'black':'black'};cursor:pointer;background:${isSel?'black':'white'};opacity:1;transition:all 0.15s;">
+            <p class="fi" style="font-size:11px;color:${isSel?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${v}</p>
           </div>`;
         }).join('')}
       </div>
@@ -2098,6 +2142,49 @@ function openVibeModal() {
 }
 
 // Map display label → VIBE_CARDS idx by scanning cluster data
+// ── Bubble activation helper ───────────────────────────────────
+// Call this from your CMS/admin when a new vibe tag goes live.
+// label: the display label of the bubble to activate (e.g. 'Recovery Mode')
+// Returns true if found and activated, false if label not found.
+function activateBubble(label) {
+  const target = label.trim().toLowerCase();
+  let found = false;
+  document.querySelectorAll('.vibe-bubble-wrapper').forEach(w => {
+    if (w.dataset.inactive !== '1') return;
+    if (w.dataset.label.trim().toLowerCase() !== target) return;
+    w.dataset.inactive = '';
+    w.style.display = '';
+    w.style.opacity = '1';
+    w.style.pointerEvents = 'auto';
+    w.style.cursor = 'pointer';
+    // Wire up interactions
+    const cardIdx = parseInt(w.dataset.entryIdx);
+    w.addEventListener('mouseenter', () => {
+      if (selectedWrappers.has(w) || selected.size >= 3) return;
+      w.style.transform = 'scale(1.05)';
+    });
+    w.addEventListener('mouseleave', () => {
+      if (selectedWrappers.has(w)) return;
+      w.style.transform = '';
+    });
+    w.addEventListener('click', () => {
+      if (selectedWrappers.has(w)) {
+        selectedWrappers.delete(w);
+        const stillSelected = [...selectedWrappers].some(x => parseInt(x.dataset.entryIdx) === cardIdx);
+        if (!stillSelected) selected.delete(cardIdx);
+      } else {
+        if (selected.size >= 3 && !selected.has(cardIdx)) return;
+        selectedWrappers.add(w);
+        selected.add(cardIdx);
+      }
+      syncAllWrappers();
+    });
+    found = true;
+  });
+  if (found) setActiveBounds(); // expand scroll area to include new bubble
+  return found;
+}
+
 function getLabelIdx(displayLabel) {
   const dl = displayLabel.trim().toLowerCase();
   for (const cluster of CLUSTERS) {
@@ -2111,20 +2198,44 @@ function getLabelIdx(displayLabel) {
 }
 
 function toggleModalVibe(vibe, slotsLeft) {
-  // Block if already selected on P1 (check by exact display label)
-  const alreadySelected = [...selectedWrappers].some(w => w.dataset.label === vibe);
-  if (alreadySelected) return;
-
   const key = vibe.replace(/[\s&]/g,'_');
   const el = document.getElementById('modal-vibe-'+key);
-  if (modalPendingSelection.has(vibe)) {
+  const inPending = modalPendingSelection.has(vibe);
+  const inSelected = [...selectedWrappers].some(w => w.dataset.label === vibe);
+
+  if (inPending || inSelected) {
+    // Deselect
     modalPendingSelection.delete(vibe);
-    if (el) { el.style.background='white'; el.style.borderColor='black'; el.style.opacity='1'; el.style.cursor='pointer'; }
+    const wrapper = [...selectedWrappers].find(w => w.dataset.label === vibe);
+    if (wrapper) {
+      selectedWrappers.delete(wrapper);
+      const cardIdx = parseInt(wrapper.dataset.entryIdx);
+      if (![...selectedWrappers].some(w => parseInt(w.dataset.entryIdx) === cardIdx)) selected.delete(cardIdx);
+    }
+    if (el) { el.style.background='white'; el.style.borderColor='black'; el.style.opacity='1'; el.querySelector('p').style.color='black'; }
   } else {
-    if (modalPendingSelection.size >= slotsLeft) return;
+    if (selectedWrappers.size >= 3) return;
     modalPendingSelection.add(vibe);
-    if (el) { el.style.background='#ccc'; el.style.borderColor='#999'; el.style.opacity='0.5'; el.style.cursor='default'; }
+    const wrapper = [...document.querySelectorAll('.vibe-bubble-wrapper')]
+      .find(w => w.dataset.label === vibe && w.dataset.inactive !== '1');
+    if (wrapper) {
+      selectedWrappers.add(wrapper);
+      selected.add(parseInt(wrapper.dataset.entryIdx));
+    }
+    if (el) { el.style.background='black'; el.style.borderColor='black'; el.style.opacity='1'; el.querySelector('p').style.color='white'; }
   }
+  // Grey out unselected pills when maxed, restore when not
+  const maxed = selectedWrappers.size >= 3;
+  document.querySelectorAll('[id^="modal-vibe-"]').forEach(pill => {
+    const isChosen = pill.style.background === 'black';
+    if (!isChosen) {
+      pill.style.opacity = maxed ? '0.3' : '1';
+      pill.style.cursor = maxed ? 'default' : 'pointer';
+      pill.style.borderColor = maxed ? '#ddd' : 'black';
+    }
+  });
+  syncAllWrappers();
+  populatePage2();
 }
 
 function closeVibeModal() {
@@ -2138,8 +2249,17 @@ function closeVibeModal() {
 
 function applyVibeModal() {
   modalPendingSelection.forEach(vibe => {
-    const idx = VIBE_CARDS.findIndex(c => c.label.replace(/\s+/g,' ').trim().toLowerCase() === vibe.replace(/\s+/g,' ').trim().toLowerCase());
-    if (idx>=0 && !selected.has(idx)) selected.add(idx);
+    // Find the bubble wrapper with this display label and add to selectedWrappers
+    const wrapper = [...document.querySelectorAll('.vibe-bubble-wrapper')]
+      .find(w => w.dataset.label === vibe && w.dataset.inactive !== '1');
+    if (wrapper) {
+      selectedWrappers.add(wrapper);
+      selected.add(parseInt(wrapper.dataset.entryIdx));
+    } else {
+      // Fallback: match via VIBE_CARDS for modal-only tags
+      const idx = VIBE_CARDS.findIndex(c => c.label.replace(/\s+/g,' ').trim().toLowerCase() === vibe.replace(/\s+/g,' ').trim().toLowerCase());
+      if (idx >= 0) selected.add(idx);
+    }
   });
   syncAllWrappers();
   closeVibeModal();
@@ -2224,33 +2344,41 @@ function setupSwipe() {
 
   function inCardArea(y) { return y >= CARD_TOP && y <= CARD_BOTTOM; }
 
-  function handleSwipeEnd(startX, endX, startY) {
-    const diff = startX - endX;
-    if (Math.abs(diff) < 40) return;
+  function handleSwipeEnd(startX, endX, startY, endY) {
+    const diffX = startX - endX;
+    const diffY = startY - endY; // positive = swipe up
+
+    // Swipe up on card → go to restaurant page
+    if (inCardArea(startY) && diffY > 60 && Math.abs(diffY) > Math.abs(diffX)) {
+      selectRestaurant(currentCardIndex);
+      return;
+    }
+
+    if (Math.abs(diffX) < 40) return;
 
     if (inCardArea(startY)) {
       // Within card: swipe left/right to navigate restaurants
-      if (diff > 0 && currentCardIndex < matchedRestaurants.length - 1) currentCardIndex++;
-      else if (diff < 0 && currentCardIndex > 0) currentCardIndex--;
+      if (diffX > 0 && currentCardIndex < matchedRestaurants.length - 1) currentCardIndex++;
+      else if (diffX < 0 && currentCardIndex > 0) currentCardIndex--;
       strip.style.transform = `translateX(-${currentCardIndex * 393}px)`;
       currentRestaurant = matchedRestaurants[currentCardIndex];
       document.getElementById('p2-counter').textContent = `${currentCardIndex + 1}/${matchedRestaurants.length}`;
     } else {
       // Outside card area: right swipe → back to Page 1
-      if (diff < 0) navigateSwipe('starter');
+      if (diffX < 0) navigateSwipe('starter');
     }
   }
 
   wrap.ontouchstart = e => { startX = e.touches[0].clientX; startY = e.touches[0].clientY; isDragging = true; };
   wrap.ontouchend = e => {
     if (!isDragging) return;
-    handleSwipeEnd(startX, e.changedTouches[0].clientX, startY);
+    handleSwipeEnd(startX, e.changedTouches[0].clientX, startY, e.changedTouches[0].clientY);
     isDragging = false;
   };
   wrap.onmousedown = e => { startX = e.clientX; startY = e.clientY; isDragging = true; };
   wrap.onmouseup = e => {
     if (!isDragging) return;
-    handleSwipeEnd(startX, e.clientX, startY);
+    handleSwipeEnd(startX, e.clientX, startY, e.clientY);
     isDragging = false;
   };
 }
@@ -2655,7 +2783,7 @@ function syncAllWrappers() {
       const removeKey = VIBE_CARDS[cardIdx]?.label.replace(/\s+/g,' ').trim() || label;
       return `<div style="flex-shrink:0;padding:4px 8px 4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.3);background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);display:flex;align-items:center;gap:5px;">
         <p class="fi" style="font-weight:400;font-size:9px;color:white;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;line-height:normal;">${label}</p>
-        <div onclick="removeVibeTag('${removeKey.replace(/'/g,"\\'")}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+        <div onclick="removeVibeTag('${label.replace(/'/g,"\\'")}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
           <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
         </div>
       </div>`;
@@ -2774,7 +2902,7 @@ const container   = document.getElementById('tags-container');
   if (!container) return;
 
   const bubbleTrack = document.createElement('div');
-  bubbleTrack.style.cssText = `position:relative;height:302px;width:${TRACK_W}px;overflow:visible;`;
+  bubbleTrack.style.cssText = `position:relative;height:302px;width:${TRACK_W}px;overflow:visible;touch-action:pan-x;`;
   container.appendChild(bubbleTrack);
   container.style.width = '430px';
 
@@ -2792,7 +2920,7 @@ const container   = document.getElementById('tags-container');
     wrapper.dataset.entryIdx = cardIdx;
     wrapper.dataset.label = b.label;
     if (isInactive) wrapper.dataset.inactive = '1';
-    wrapper.style.cssText = `position:absolute;left:${b.left}px;top:${b.top}px;width:${b.size}px;height:${b.size}px;border-radius:50%;cursor:${isInactive?'default':'pointer'};transition:transform 0.2s,outline 0.2s,opacity 0.2s;animation:bubbleDrift${driftIdx} ${driftDur}s ease-in-out ${driftDelay}s infinite;opacity:${isInactive?'0':'1'};pointer-events:${isInactive?'none':'auto'};`;
+    wrapper.style.cssText = `position:absolute;left:${b.left}px;top:${b.top}px;width:${b.size}px;height:${b.size}px;border-radius:50%;cursor:${isInactive?'default':'pointer'};transition:transform 0.2s,outline 0.2s,opacity 0.2s;animation:bubbleDrift${driftIdx} ${driftDur}s ease-in-out ${driftDelay}s infinite;opacity:${isInactive?'0':'1'};pointer-events:${isInactive?'none':'auto'};${isInactive?'display:none;':''}`;
 
     const bgDiv = document.createElement('div');
     bgDiv.style.cssText = `position:absolute;inset:0;border-radius:50%;filter:blur(2px);background:${grad};`;
@@ -2833,41 +2961,42 @@ const container   = document.getElementById('tags-container');
     bubbleTrack.appendChild(wrapper);
   });
 
-  requestAnimationFrame(() => {
-    const midCluster = PADDING + 2 * (CLUSTER_W + CLUSTER_GAP) + CLUSTER_W / 2;
-    container.scrollLeft = Math.max(0, midCluster - 393 / 2);
-  });
-
-  // Dynamic scroll bounds — computed from actual visible (non-inactive) bubble positions
-  function getScrollBounds() {
+  // Trim track to active content — shift left margin to kill left dead space,
+  // use inline sentinel to anchor right scroll boundary
+  let _rightAnchor = null;
+  window.setActiveBounds = function() {
     let minLeft = Infinity, maxRight = -Infinity;
-    document.querySelectorAll('.vibe-bubble-wrapper').forEach(w => {
-      if (parseFloat(w.style.opacity) === 0) return;
+    bubbleTrack.querySelectorAll('.vibe-bubble-wrapper').forEach(w => {
+      if (w.dataset.inactive === '1') return;
       const l = parseInt(w.style.left);
       const sz = parseInt(w.style.width);
       if (l < minLeft) minLeft = l;
       if (l + sz > maxRight) maxRight = l + sz;
     });
-    return {
-      min: Math.max(0, minLeft - 20),
-      max: Math.max(0, maxRight + 20 - 393)
-    };
-  }
+    if (minLeft === Infinity) return;
+    const PAD = 24;
+    const shift = minLeft - PAD;
+    bubbleTrack.style.marginLeft = -shift + 'px';
+    // Set width explicitly — this IS what controls native scroll boundary
+    // since all bubble children are position:absolute, only the declared width matters
+    bubbleTrack.style.width = (maxRight - shift + PAD) + 'px';
+  };
+  setActiveBounds();
 
-  function clampScroll() {
-    const { min, max } = getScrollBounds();
-    if (container.scrollLeft < min) container.scrollLeft = min;
-    if (container.scrollLeft > max) container.scrollLeft = max;
-  }
-
-  let _down = false, _sx, _sl;
-  container.addEventListener('mousedown', e => { _down = true; _sx = e.pageX; _sl = container.scrollLeft; e.preventDefault(); });
-  document.addEventListener('mousemove', e => { if (!_down) return; container.scrollLeft = _sl - (e.pageX - _sx); clampScroll(); });
-  document.addEventListener('mouseup', () => { _down = false; clampScroll(); });
-  container.addEventListener('scroll', clampScroll);
-  container.addEventListener('touchstart', e => { _sx = e.touches[0].pageX; _sl = container.scrollLeft; }, { passive: true });
-  container.addEventListener('touchmove', e => { container.scrollLeft = _sl - (e.touches[0].pageX - _sx); clampScroll(); }, { passive: true });
-  container.addEventListener('touchend', clampScroll);
+  requestAnimationFrame(() => {
+    // Centre on cluster 2, accounting for the track shift applied by setActiveBounds
+    // shift = minLeft - PAD = ~525 - 24 = 501
+    // cluster 2 centre in original coords = ~1030, so adjusted = 1030 - 501 - 393/2 = 332
+    const midCluster = PADDING + 2 * (CLUSTER_W + CLUSTER_GAP) + CLUSTER_W / 2;
+    let minLeft = Infinity;
+    bubbleTrack.querySelectorAll('.vibe-bubble-wrapper').forEach(w => {
+      if (w.dataset.inactive === '1') return;
+      const l = parseInt(w.style.left);
+      if (l < minLeft) minLeft = l;
+    });
+    const shift = minLeft === Infinity ? 0 : minLeft - 24;
+    container.scrollLeft = Math.max(0, midCluster - shift - 393 / 2);
+  });
 
   const sbStyle = document.createElement('style');
   sbStyle.textContent = '#tags-container::-webkit-scrollbar{display:none}';
@@ -2884,12 +3013,24 @@ function updateCtaVisibility() {
   foot.style.pointerEvents = show ? 'all' : 'none';
 }
 
+function clearVibeSearch() {
+  const input = document.getElementById('vibe-search');
+  const clear = document.getElementById('vibe-search-clear');
+  if (input) { input.value = ''; input.focus(); }
+  if (clear) clear.style.display = 'none';
+  updateCtaVisibility();
+}
+
 // ── Search bar — intent mode, direct to Page 2 ─────────────────
 
 
 // ── Search bar — intent mode, direct to Page 2 ─────────────────
 const searchInput = document.getElementById('vibe-search');
-searchInput.addEventListener('input', updateCtaVisibility);
+searchInput.addEventListener('input', () => {
+  updateCtaVisibility();
+  const clear = document.getElementById('vibe-search-clear');
+  if (clear) clear.style.display = searchInput.value.length > 0 ? 'flex' : 'none';
+});
 
 function executeSearch(q) {
   const term = q.trim();
@@ -2897,6 +3038,8 @@ function executeSearch(q) {
   searchInput.value = '';
   searchInput.blur();
   updateCtaVisibility();
+  const clear = document.getElementById('vibe-search-clear');
+  if (clear) clear.style.display = 'none';
   activeSearchTerm = term;
 
   const parsed = parseSearchPhrase(term);
@@ -3253,8 +3396,8 @@ function openCuisineModal() {
       <div style="display:flex;flex-wrap:wrap;gap:6px;">
         ${cuisines.map(c => {
           const active = selectedCuisines.some(s => s.toLowerCase() === c.toLowerCase());
-          return `<div id="cuisine-pill-${c.replace(/\s/g,'_')}" onclick="toggleCuisinePill('${c}')" style="padding:6px 12px;border-radius:20px;border:1px solid ${active?'#999':'#ccc'};cursor:${active?'default':'pointer'};background:${active?'#ccc':'white'};opacity:${active?'0.5':'1'};transition:all 0.15s;">
-            <p class="fi" style="font-size:11px;color:black;letter-spacing:0.5px;white-space:nowrap;">${c}</p>
+          return `<div id="cuisine-pill-${c.replace(/\s/g,'_')}" onclick="toggleCuisinePill('${c}')" style="padding:6px 12px;border-radius:20px;border:1px solid ${active?'black':'#ccc'};cursor:pointer;background:${active?'black':'white'};opacity:1;transition:all 0.15s;">
+            <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${c}</p>
           </div>`;
         }).join('')}
       </div>
@@ -3271,11 +3414,24 @@ function toggleCuisinePill(c) {
   const el = document.getElementById('cuisine-pill-' + c.replace(/\s/g,'_'));
   if (idx >= 0) {
     selectedCuisines.splice(idx, 1);
-    if (el) { el.style.background='white'; el.style.opacity='1'; el.style.borderColor='#ccc'; el.style.cursor='pointer'; }
+    if (el) { el.style.background='white'; el.style.borderColor='#ccc'; el.querySelector('p').style.color='black'; }
   } else {
+    if (selectedCuisines.length >= 3) return;
     selectedCuisines.push(c);
-    if (el) { el.style.background='#ccc'; el.style.opacity='0.5'; el.style.borderColor='#999'; el.style.cursor='default'; }
+    if (el) { el.style.background='black'; el.style.borderColor='black'; el.querySelector('p').style.color='white'; }
   }
+  // Grey out unselected pills when maxed, restore when not
+  const maxed = selectedCuisines.length >= 3;
+  document.querySelectorAll('[id^="cuisine-pill-"]').forEach(pill => {
+    const isChosen = pill.style.background === 'black';
+    if (!isChosen) {
+      pill.style.opacity = maxed ? '0.3' : '1';
+      pill.style.cursor = maxed ? 'default' : 'pointer';
+      pill.style.borderColor = maxed ? '#eee' : '#ccc';
+    }
+  });
+  activeCuisines = [...selectedCuisines];
+  populatePage2();
 }
 
 function applyCuisineModal() {
@@ -3439,8 +3595,21 @@ function populatePage3(r) {
   if (bgBlur) {
     const base = restaurants.findIndex(x => x.id === r.id);
     const p = P3_PALETTES[base % P3_PALETTES.length];
-    bgBlur.style.background = `linear-gradient(135deg,${p[0]} 0%,${p[1]} 100%)`;
+    const blurredBg = `linear-gradient(135deg,${p[0]} 0%,${p[1]} 100%)`;
+    bgBlur.style.background = blurredBg;
     bgBlur.style.backgroundSize = 'cover';
+    // Apply same bg to details panel with matching blur so it matches state 1
+    const panel = document.getElementById('p3DetailsPanel');
+    if (panel) {
+      let panelBg = panel.querySelector('.p3-panel-bg');
+      if (!panelBg) {
+        panelBg = document.createElement('div');
+        panelBg.className = 'p3-panel-bg';
+        panelBg.style.cssText = 'position:fixed;inset:0;filter:blur(24px);transform:scale(1.12);opacity:0.5;z-index:0;pointer-events:none;background-size:cover;';
+        panel.insertBefore(panelBg, panel.firstChild);
+      }
+      panelBg.style.background = blurredBg;
+    }
   }
 
   // Photos
@@ -3578,9 +3747,22 @@ function populatePage3(r) {
       if (state) {
         hhCountdown.textContent = state.time;
         hhLabel.textContent = state.label;
+        // Show happy hour text on clock face
+        const fh = document.getElementById('hh-face-happy');
+        const fo = document.getElementById('hh-face-hour');
+        const fb = document.getElementById('hh-face-bang');
+        if (fh) fh.setAttribute('opacity', '1');
+        if (fo) fo.setAttribute('opacity', '1');
+        if (fb) fb.setAttribute('opacity', '1');
       } else if (bestCountdown) {
         hhCountdown.textContent = bestCountdown.time;
         hhLabel.textContent = bestCountdown.label;
+        const fh = document.getElementById('hh-face-happy');
+        const fo = document.getElementById('hh-face-hour');
+        const fb = document.getElementById('hh-face-bang');
+        if (fh) fh.setAttribute('opacity', '0');
+        if (fo) fo.setAttribute('opacity', '0');
+        if (fb) fb.setAttribute('opacity', '0');
       } else {
         hhCountdown.textContent = '—';
         hhLabel.textContent = 'HAPPY HOUR ENDED';

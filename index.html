@@ -91,7 +91,9 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   <!-- ============================================================ -->
   <!-- SCREEN 1: StarterPage -->
   <!-- ============================================================ -->
-  <div class="screen active" id="screen-starter" style="background:#d0cfcf;">
+  <div class="screen active" id="screen-starter" style="background:#1a1a2e;">
+    <div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1559511260-66a654ae982a?w=800&q=80');background-size:cover;background-position:center;filter:blur(18px);transform:scale(1.1);opacity:0.55;"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.35) 0%,rgba(0,0,0,0.15) 50%,rgba(0,0,0,0.5) 100%);"></div>
 
     <!-- Header -->
     <div style="position:absolute;height:46px;left:0;top:58px;width:393px;">
@@ -103,36 +105,36 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       </div>
       <div onclick="openSavedModal()" style="position:absolute;left:349px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;padding:5px;border-radius:20px;width:36px;height:36px;overflow:hidden;cursor:pointer;">
         <svg id="p1-star-icon" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
     </div>
 
     <!-- Logo -->
-    <div style="position:absolute;height:230px;left:0;overflow:hidden;color:black;top:84px;width:393px;display:flex;flex-direction:column;justify-content:center;padding:0 14px;">
+    <div style="position:absolute;height:230px;left:0;overflow:hidden;color:white;top:84px;width:393px;display:flex;flex-direction:column;justify-content:center;padding:0 14px;">
       <!-- NOMI row: flush left/right -->
       <div style="display:flex;justify-content:space-between;width:100%;line-height:88px;margin-top:8px;">
-        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">N</span>
-        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">O</span>
-        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">M</span>
-        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">I</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:white;">N</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:white;">O</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:white;">M</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:white;">I</span>
       </div>
       <!-- your mood your next table -->
-      <div style="font-family:'Inter',sans-serif;font-weight:300;font-size:10px;letter-spacing:5px;text-transform:lowercase;color:black;text-align:center;line-height:18px;margin-top:-2px;">your mood your next table</div>
+      <div style="font-family:'Inter',sans-serif;font-weight:300;font-size:10px;letter-spacing:5px;text-transform:lowercase;color:white;text-align:center;line-height:18px;margin-top:-2px;">your mood your next table</div>
       <!-- TABL row: flush left/right, moved up 20px -->
       <div style="display:flex;justify-content:space-between;width:100%;line-height:88px;margin-top:-20px;">
-        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">T</span>
-        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">A</span>
-        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">B</span>
-        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:black;">L</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:white;">T</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:white;">A</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:white;">B</span>
+        <span style="font-family:'Afacad',sans-serif;font-weight:700;font-size:80px;line-height:88px;color:white;">L</span>
       </div>
       <!-- location row: pin icon + city name -->
       <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:8px;">
-        <svg style="width:14px;height:14px;flex-shrink:0;position:relative;top:1px;" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg style="width:14px;height:14px;flex-shrink:0;position:relative;top:1px;" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
           <circle cx="12" cy="9" r="2.5"/>
         </svg>
-        <div id="city-name" onclick="toggleCityDropdown()" style="font-family:'Afacad',sans-serif;font-weight:500;font-size:16px;letter-spacing:4px;text-transform:uppercase;color:black;cursor:pointer;">VANCOUVER</div>
+        <div id="city-name" onclick="toggleCityDropdown()" style="font-family:'Afacad',sans-serif;font-weight:500;font-size:16px;letter-spacing:4px;text-transform:uppercase;color:white;cursor:pointer;">VANCOUVER</div>
       </div>
     </div>
 
@@ -144,7 +146,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
     <!-- SearchBar -->
     <div style="position:absolute;height:136px;left:0;overflow:visible;top:316px;width:393px;z-index:20;">
-      <div style="position:absolute;left:50%;transform:translate(-50%,-50%);top:143px;font-family:'Afacad',sans-serif;font-weight:500;font-size:12px;letter-spacing:4px;text-transform:uppercase;color:black;text-align:center;white-space:nowrap;">Discover Your Vibe</div>
+      <div style="position:absolute;left:50%;transform:translate(-50%,-50%);top:143px;font-family:'Afacad',sans-serif;font-weight:500;font-size:12px;letter-spacing:4px;text-transform:uppercase;color:white;text-align:center;white-space:nowrap;">Discover Your Vibe</div>
       <div style="position:absolute;left:calc(50% - 179.5px);top:25px;transform:translateY(-50%);white-space:nowrap;">
         <span style="font-family:'Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:2px;color:white;">So...what we </span><span style="font-family:'Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:2px;background:linear-gradient(90deg,rgb(174,0,255) 0%,rgb(0,255,106) 29.808%,rgb(245,90,24) 66.827%,rgb(255,0,153) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Vibing &gt;:)...</span>
       </div>
@@ -175,22 +177,24 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   <!-- ============================================================ -->
   <!-- SCREEN 2: Page 2 -->
   <!-- ============================================================ -->
-  <div class="screen" id="screen-page2" style="background:#d0cfcf;">
+  <div class="screen" id="screen-page2" style="background:#1a1a2e;">
+    <div style="position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1559511260-66a654ae982a?w=800&q=80');background-size:cover;background-position:center;filter:blur(18px);transform:scale(1.1);opacity:0.55;"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.35) 0%,rgba(0,0,0,0.15) 50%,rgba(0,0,0,0.5) 100%);"></div>
 
     <!-- Header -->
     <div style="position:absolute;height:46px;left:0;top:58px;width:393px;">
       <div onclick="navigate('starter')" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:36px;height:36px;cursor:pointer;">
         <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="-2 -3 36 36">
           <rect fill="rgba(255,255,255,0.2)" x="-2" y="-3" height="36" rx="18" width="36"/>
-          <path d="M17.8055 8.85352C17.9407 8.8559 18.0702 8.91024 18.1658 9.00586C18.2614 9.10147 18.3158 9.23105 18.3182 9.36621C18.3204 9.50115 18.2705 9.63167 18.1785 9.73047L12.9197 14.9893L18.1727 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.3231 20.4769 18.3384 20.5463 18.3397 20.6162C18.3408 20.6861 18.3277 20.7555 18.3016 20.8203C18.2753 20.8853 18.2359 20.9446 18.1863 20.9941C18.1369 21.0435 18.0783 21.0832 18.0135 21.1094C17.9485 21.1356 17.8785 21.1477 17.8084 21.1465C17.7384 21.1452 17.6693 21.1301 17.6053 21.1016C17.5424 21.0735 17.4856 21.0334 17.4383 20.9834L11.8133 15.3584C11.7156 15.2605 11.6609 15.1276 11.6609 14.9893C11.661 14.8511 11.7157 14.7189 11.8133 14.6211L17.4383 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.5401 8.90119 17.6705 8.8512 17.8055 8.85352Z" fill="black" stroke="black" stroke-width="0.2"/>
+          <path d="M17.8055 8.85352C17.9407 8.8559 18.0702 8.91024 18.1658 9.00586C18.2614 9.10147 18.3158 9.23105 18.3182 9.36621C18.3204 9.50115 18.2705 9.63167 18.1785 9.73047L12.9197 14.9893L18.1727 20.2432C18.2239 20.2909 18.2662 20.3491 18.2947 20.4131C18.3231 20.4769 18.3384 20.5463 18.3397 20.6162C18.3408 20.6861 18.3277 20.7555 18.3016 20.8203C18.2753 20.8853 18.2359 20.9446 18.1863 20.9941C18.1369 21.0435 18.0783 21.0832 18.0135 21.1094C17.9485 21.1356 17.8785 21.1477 17.8084 21.1465C17.7384 21.1452 17.6693 21.1301 17.6053 21.1016C17.5424 21.0735 17.4856 21.0334 17.4383 20.9834L11.8133 15.3584C11.7156 15.2605 11.6609 15.1276 11.6609 14.9893C11.661 14.8511 11.7157 14.7189 11.8133 14.6211L17.4383 8.99609L17.4402 8.99316L17.5027 9.06055L17.4412 8.99316C17.5401 8.90119 17.6705 8.8512 17.8055 8.85352Z" fill="white" stroke="white" stroke-width="0.2"/>
         </svg>
       </div>
       <!-- NOMITABL logo centered -->
       <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;">
-        <span class="fa" style="font-weight:700;font-size:18px;letter-spacing:10px;color:black;">NOMITABL</span>
+        <span class="fa" style="font-weight:700;font-size:18px;letter-spacing:10px;color:white;">NOMITABL</span>
       </div>
       <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);">
-        <p id="p2-counter" class="fi" style="font-weight:400;font-style:italic;font-size:12px;color:black;letter-spacing:2.4px;line-height:normal;">1/0</p>
+        <p id="p2-counter" class="fi" style="font-weight:400;font-style:italic;font-size:12px;color:white;letter-spacing:2.4px;line-height:normal;">1/0</p>
       </div>
     </div>
 
@@ -209,7 +213,9 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   <!-- ============================================================ -->
   <!-- SCREEN 3: Page 3 State 1 -->
   <!-- ============================================================ -->
-  <div class="screen" id="screen-page3s1" style="background:#d0cfcf;">
+  <div class="screen" id="screen-page3s1" style="background:#111;">
+    <div id="p3-bg-blur" style="position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(24px);transform:scale(1.12);opacity:0.5;transition:background-image 0.4s ease;"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.4) 0%,rgba(0,0,0,0.1) 40%,rgba(0,0,0,0.5) 100%);"></div>
 
   <!-- p3-hero: slides up on details reveal -->
   <div class="p3-hero">
@@ -1337,11 +1343,17 @@ function findMatchingRestaurants() {
 
 function removeVibeTag(vibeLabel, e) {
   e.stopPropagation();
-  const idx = [...selected].find(i => VIBE_CARDS[i]?.label.trim().toLowerCase() === vibeLabel.toLowerCase());
-  if (idx !== undefined) {
-    selected.delete(idx);
+  // Find the wrapper with this exact display label
+  const wrapper = [...selectedWrappers].find(w => w.dataset.label === vibeLabel);
+  if (wrapper) {
+    selectedWrappers.delete(wrapper);
+    const cardIdx = parseInt(wrapper.dataset.entryIdx);
+    // Only remove from selected if no other selected wrapper shares this cardIdx
+    const stillSelected = [...selectedWrappers].some(w => parseInt(w.dataset.entryIdx) === cardIdx);
+    if (!stillSelected) selected.delete(cardIdx);
     syncAllWrappers();
   }
+  updateCtaVisibility();
   populatePage2();
 }
 
@@ -2058,13 +2070,9 @@ function openVibeModal() {
   document.getElementById('vibe-slots-left').textContent = slotsLeft;
   const container = document.getElementById('vibe-modal-bubbles');
 
-  // Build a set of display labels already selected (by idx → display label lookup)
-  // A display label is "selected" if its VIBE_CARDS idx is in `selected`
+  // A display label is selected if a wrapper with that exact label is in selectedWrappers
   function isDisplayLabelSelected(displayLabel) {
-    // Find which idx this display label maps to via VIBE_CATEGORIES → ALL_TAGS → VIBE_CARDS
-    // We match display label against VIBE_CARDS by checking the bubble cluster data
-    const idx = getLabelIdx(displayLabel);
-    return idx !== -1 && selected.has(idx);
+    return [...selectedWrappers].some(w => w.dataset.label === displayLabel);
   }
 
   container.innerHTML = Object.entries(VIBE_CATEGORIES).map(([cat, vibes]) => `
@@ -2103,9 +2111,9 @@ function getLabelIdx(displayLabel) {
 }
 
 function toggleModalVibe(vibe, slotsLeft) {
-  const idx = getLabelIdx(vibe);
-  // Block if already selected on P1
-  if (idx !== -1 && selected.has(idx)) return;
+  // Block if already selected on P1 (check by exact display label)
+  const alreadySelected = [...selectedWrappers].some(w => w.dataset.label === vibe);
+  if (alreadySelected) return;
 
   const key = vibe.replace(/[\s&]/g,'_');
   const el = document.getElementById('modal-vibe-'+key);
@@ -2146,11 +2154,14 @@ function populatePage2() {
 
   const cuisineEl = document.getElementById('p2-cuisine-tags');
   const tagsEl    = document.getElementById('p2-tags');
+  // Display labels from selected wrappers (bubble display labels, e.g. "Comfort Craving")
+  const selectedDisplayLabels = [...selectedWrappers].map(w => w.dataset.label).filter(Boolean);
+  // VIBE_CARDS labels for filtering (kept separate)
   const vibeLabels = getSelectedVibeLabels();
 
   // ── Cuisine row ──────────────────────────────────────────────
-  const addCuisineBtn = `<div onclick="openCuisineModal()" style="padding:5px 12px;border-radius:20px;border:1px dashed black;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;white-space:nowrap;">
-      <p class="fi" style="font-weight:400;font-size:9px;color:black;letter-spacing:0.8px;text-transform:lowercase;line-height:normal;">+ add cuisine</p>
+  const addCuisineBtn = `<div onclick="openCuisineModal()" style="padding:5px 12px;border-radius:20px;border:1px dashed rgba(255,255,255,0.6);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;white-space:nowrap;">
+      <p class="fi" style="font-weight:400;font-size:9px;color:white;letter-spacing:0.8px;text-transform:lowercase;line-height:normal;">+ add cuisine</p>
     </div>`;
 
   // Merge manual cuisine selections with parsed cuisines
@@ -2167,10 +2178,10 @@ function populatePage2() {
 
   // Specialty pills — distinct style (dashed border, grey bg)
   const specialtyHTML = activeSpecialties.map(s =>
-    `<div style="padding:4px 8px 4px 12px;border-radius:20px;border:1px dashed #555;background:rgba(0,0,0,0.06);display:flex;align-items:center;gap:5px;flex-shrink:0;">
-      <p class="fi" style="font-weight:400;font-size:9px;color:#333;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;line-height:normal;">${s}</p>
-      <div onclick="removeSpecialty('${s}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
-        <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="#333" stroke-width="1.2" stroke-linecap="round"/></svg>
+    `<div style="padding:4px 8px 4px 12px;border-radius:20px;border:1px dashed rgba(255,255,255,0.5);background:rgba(255,255,255,0.1);display:flex;align-items:center;gap:5px;flex-shrink:0;">
+      <p class="fi" style="font-weight:400;font-size:9px;color:white;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;line-height:normal;">${s}</p>
+      <div onclick="removeSpecialty('${s}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+        <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
       </div>
     </div>`
   ).join('');
@@ -2179,15 +2190,15 @@ function populatePage2() {
   cuisineEl.innerHTML = cuisineHTML + specialtyHTML + showAddBtn;
 
   // ── Vibe row ─────────────────────────────────────────────────
-  const addVibeBtn = vibeLabels.length < 3
-    ? `<div onclick="openVibeModal()" style="padding:5px 12px;border-radius:20px;border:1px dashed black;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;white-space:nowrap;">
-        <p class="fi" style="font-weight:400;font-size:9px;color:black;letter-spacing:0.8px;text-transform:lowercase;line-height:normal;">+ add vibe</p>
+  const addVibeBtn = selectedDisplayLabels.length < 3
+    ? `<div onclick="openVibeModal()" style="padding:5px 12px;border-radius:20px;border:1px dashed rgba(255,255,255,0.6);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;white-space:nowrap;">
+        <p class="fi" style="font-weight:400;font-size:9px;color:white;letter-spacing:0.8px;text-transform:lowercase;line-height:normal;">+ add vibe</p>
       </div>` : '';
 
-  const vibePills = vibeLabels.map(v =>
+  const vibePills = selectedDisplayLabels.map(v =>
     `<div style="padding:4px 8px 4px 12px;border-radius:20px;border:1px solid black;background:black;display:flex;align-items:center;gap:5px;flex-shrink:1;min-width:0;">
       <p class="fi" style="font-weight:400;font-size:9px;color:white;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;line-height:normal;">${v}</p>
-      <div onclick="removeVibeTag('${v}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+      <div onclick="removeVibeTag('${v.replace(/'/g,"\\'")}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
         <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
       </div>
     </div>`
@@ -2600,6 +2611,7 @@ function computeVibeBadges() {
 const VIBE_BADGES = computeVibeBadges();
 
 const selected = new Set();
+const selectedWrappers = new Set(); // tracks individual wrapper elements for per-bubble visual state
 // Map card label (lowercase) → index for downstream matching
 const allBubbleEntries = VIBE_CARDS.map((c, i) => ({ label: c.label, isOriginal: true, idx: i }));
 
@@ -2608,11 +2620,12 @@ function getVibeCardLabel(idx) { return VIBE_CARDS[idx]?.label || ''; }
 function syncAllWrappers() {
   VIBE_CARDS.forEach((_, i) => {
     const ws = allWrappers[i] || [];
-    const isSel   = selected.has(i);
-    const isMaxed = !isSel && selected.size >= 3;
+    const isMaxed = !selected.has(i) && selected.size >= 3;
     ws.forEach(w => {
-      w.style.opacity            = isMaxed ? '0.4' : '1';
-      w.style.cursor             = isMaxed ? 'not-allowed' : 'pointer';
+      if (w.dataset.inactive === '1') return; // never touch inactive bubbles
+      const isSel = selectedWrappers.has(w);
+      w.style.opacity            = (!isSel && isMaxed) ? '0.4' : '1';
+      w.style.cursor             = (!isSel && isMaxed) ? 'not-allowed' : 'pointer';
       w.style.animationPlayState = isSel ? 'paused' : 'running';
       w.style.transform          = isSel ? 'scale(1.1)' : '';
       w.style.outline            = isSel ? '4px solid rgba(255,255,255,0.8)' : '';
@@ -2632,14 +2645,17 @@ function syncAllWrappers() {
   }
   if (foot) updateCtaVisibility();
 
-  // Update p1-selected-tags row
+  // Update p1-selected-tags row — use display labels from selected wrappers
   const tagsRow = document.getElementById('p1-selected-tags');
   if (tagsRow) {
-    tagsRow.innerHTML = [...selected].map(idx => {
-      const label = getVibeCardLabel(idx);
-      return `<div style="flex-shrink:0;padding:4px 8px 4px 12px;border-radius:20px;border:1px solid black;background:black;display:flex;align-items:center;gap:5px;">
+    tagsRow.innerHTML = [...selectedWrappers].map(w => {
+      const label = w.dataset.label || '';
+      const cardIdx = parseInt(w.dataset.entryIdx);
+      // Use VIBE_CARDS label as the key for removeVibeTag (keeps existing remove logic working)
+      const removeKey = VIBE_CARDS[cardIdx]?.label.replace(/\s+/g,' ').trim() || label;
+      return `<div style="flex-shrink:0;padding:4px 8px 4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.3);background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);display:flex;align-items:center;gap:5px;">
         <p class="fi" style="font-weight:400;font-size:9px;color:white;letter-spacing:0.8px;text-transform:capitalize;white-space:nowrap;line-height:normal;">${label}</p>
-        <div onclick="removeVibeTag('${label.replace(/'/g,"\\'")}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+        <div onclick="removeVibeTag('${removeKey.replace(/'/g,"\\'")}',event)" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
           <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
         </div>
       </div>`;
@@ -2774,6 +2790,8 @@ const container   = document.getElementById('tags-container');
     const wrapper = document.createElement('div');
     wrapper.className = 'vibe-bubble-wrapper';
     wrapper.dataset.entryIdx = cardIdx;
+    wrapper.dataset.label = b.label;
+    if (isInactive) wrapper.dataset.inactive = '1';
     wrapper.style.cssText = `position:absolute;left:${b.left}px;top:${b.top}px;width:${b.size}px;height:${b.size}px;border-radius:50%;cursor:${isInactive?'default':'pointer'};transition:transform 0.2s,outline 0.2s,opacity 0.2s;animation:bubbleDrift${driftIdx} ${driftDur}s ease-in-out ${driftDelay}s infinite;opacity:${isInactive?'0':'1'};pointer-events:${isInactive?'none':'auto'};`;
 
     const bgDiv = document.createElement('div');
@@ -2786,11 +2804,26 @@ const container   = document.getElementById('tags-container');
     wrapper.appendChild(lbl);
 
     if (!isInactive) {
-      wrapper.addEventListener('mouseenter', () => { if (selected.has(cardIdx) || selected.size >= 3) return; wrapper.style.transform = 'scale(1.05)'; });
-      wrapper.addEventListener('mouseleave', () => { if (selected.has(cardIdx)) return; wrapper.style.transform = ''; });
+      wrapper.addEventListener('mouseenter', () => {
+        if (selectedWrappers.has(wrapper) || selected.size >= 3) return;
+        wrapper.style.transform = 'scale(1.05)';
+      });
+      wrapper.addEventListener('mouseleave', () => {
+        if (selectedWrappers.has(wrapper)) return;
+        wrapper.style.transform = '';
+      });
       wrapper.addEventListener('click', () => {
-        if (selected.has(cardIdx)) { selected.delete(cardIdx); }
-        else { if (selected.size >= 3) return; selected.add(cardIdx); }
+        if (selectedWrappers.has(wrapper)) {
+          selectedWrappers.delete(wrapper);
+          // Remove cardIdx from selected only if no other active wrapper with same idx is selected
+          const stillSelected = [...selectedWrappers].some(w => parseInt(w.dataset.entryIdx) === cardIdx);
+          if (!stillSelected) selected.delete(cardIdx);
+        } else {
+          if (selected.size >= 3 && !selected.has(cardIdx)) return;
+          if (!selected.has(cardIdx) && selected.size >= 3) return;
+          selectedWrappers.add(wrapper);
+          selected.add(cardIdx);
+        }
         syncAllWrappers();
       });
     }
@@ -2996,9 +3029,9 @@ function updateP1Star() {
   const el = document.getElementById('p1-star-icon');
   if (!el) return;
   const hasSaved = savedRestaurants.size > 0;
-  el.setAttribute('fill', hasSaved ? 'black' : 'none');
-  el.querySelector('path').setAttribute('fill', hasSaved ? 'black' : 'none');
-  el.querySelector('path').setAttribute('stroke', hasSaved ? 'black' : 'black');
+  el.setAttribute('fill', hasSaved ? 'white' : 'none');
+  el.querySelector('path').setAttribute('fill', hasSaved ? 'white' : 'none');
+  el.querySelector('path').setAttribute('stroke', hasSaved ? 'white' : 'white');
 }
 
 
@@ -3400,6 +3433,15 @@ function p3PhotoNav(dir) {
 
 function populatePage3(r) {
   if (!r) return;
+
+  // Set blurred background from first photo
+  const bgBlur = document.getElementById('p3-bg-blur');
+  if (bgBlur) {
+    const base = restaurants.findIndex(x => x.id === r.id);
+    const p = P3_PALETTES[base % P3_PALETTES.length];
+    bgBlur.style.background = `linear-gradient(135deg,${p[0]} 0%,${p[1]} 100%)`;
+    bgBlur.style.backgroundSize = 'cover';
+  }
 
   // Photos
   p3CurrentPhoto = 0;

@@ -841,11 +841,12 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:8px;">RESTAURANT NAME</p>
       <div style="position:relative;margin-bottom:6px;">
-        <input id="add-spot-name" type="text" placeholder="Start typing a name…" autocomplete="off"
+        <input id="add-spot-name" type="text" placeholder="Search by name or address…" autocomplete="off"
           oninput="onSpotNameInput(this.value)"
           style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:none;background:white;font-family:'Inter',sans-serif;font-size:14px;color:black;outline:none;"/>
         <div id="add-spot-suggestions" style="position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.12);z-index:10;display:none;"></div>
       </div>
+      <p class="fi" style="font-size:10px;color:#aaa;letter-spacing:0.5px;margin-bottom:16px;">Powered by Google Places — autofill address, hours & more</p>
 
       <p class="fa" style="font-weight:600;font-size:11px;letter-spacing:3px;color:#555;margin-bottom:8px;margin-top:16px;">ADDRESS</p>
       <input id="add-spot-address" type="text" placeholder="Auto-filled or type manually…"
@@ -2804,12 +2805,26 @@ const container   = document.getElementById('tags-container');
     container.scrollLeft = Math.max(0, midCluster - 393 / 2);
   });
 
-  // Scroll bounds — clamp to last visible active bubble on each side
-  const SCROLL_MIN = 505;   // leftmost active bubble left edge - padding
-  const SCROLL_MAX = 1113;  // rightmost active bubble right edge + padding - container width
+  // Dynamic scroll bounds — computed from actual visible (non-inactive) bubble positions
+  function getScrollBounds() {
+    let minLeft = Infinity, maxRight = -Infinity;
+    document.querySelectorAll('.vibe-bubble-wrapper').forEach(w => {
+      if (parseFloat(w.style.opacity) === 0) return;
+      const l = parseInt(w.style.left);
+      const sz = parseInt(w.style.width);
+      if (l < minLeft) minLeft = l;
+      if (l + sz > maxRight) maxRight = l + sz;
+    });
+    return {
+      min: Math.max(0, minLeft - 20),
+      max: Math.max(0, maxRight + 20 - 393)
+    };
+  }
+
   function clampScroll() {
-    if (container.scrollLeft < SCROLL_MIN) container.scrollLeft = SCROLL_MIN;
-    if (container.scrollLeft > SCROLL_MAX) container.scrollLeft = SCROLL_MAX;
+    const { min, max } = getScrollBounds();
+    if (container.scrollLeft < min) container.scrollLeft = min;
+    if (container.scrollLeft > max) container.scrollLeft = max;
   }
 
   let _down = false, _sx, _sl;
@@ -2817,7 +2832,6 @@ const container   = document.getElementById('tags-container');
   document.addEventListener('mousemove', e => { if (!_down) return; container.scrollLeft = _sl - (e.pageX - _sx); clampScroll(); });
   document.addEventListener('mouseup', () => { _down = false; clampScroll(); });
   container.addEventListener('scroll', clampScroll);
-  // Touch support
   container.addEventListener('touchstart', e => { _sx = e.touches[0].pageX; _sl = container.scrollLeft; }, { passive: true });
   container.addEventListener('touchmove', e => { container.scrollLeft = _sl - (e.touches[0].pageX - _sx); clampScroll(); }, { passive: true });
   container.addEventListener('touchend', clampScroll);
@@ -3034,13 +3048,15 @@ function closeAddSpotModal() {
 
 function renderAddSpotCuisineTags() {
   const el = document.getElementById('add-spot-cuisine-tags');
-  el.innerHTML = CUISINES.map(c => {
-    const active = addSpotSelectedCuisines.includes(c);
-    return `<div onclick="toggleAddSpotCuisine('${c}')" id="as-cuisine-${c.replace(/\s/g,'_')}"
-      style="padding:6px 14px;border-radius:20px;border:1px solid black;cursor:pointer;background:${active?'black':'white'};transition:all 0.15s;">
-      <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.8px;white-space:nowrap;">${c}</p>
-    </div>`;
-  }).join('');
+  el.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:6px;">
+    ${CUISINES.map(c => {
+      const active = addSpotSelectedCuisines.includes(c);
+      return `<div onclick="toggleAddSpotCuisine('${c}')" id="as-cuisine-${c.replace(/\s/g,'_')}"
+        style="padding:6px 12px;border-radius:20px;border:1px solid ${active?'#999':'black'};cursor:${active?'default':'pointer'};background:${active?'#ccc':'white'};opacity:${active?'0.5':'1'};transition:all 0.15s;">
+        <p class="fi" style="font-size:11px;color:black;letter-spacing:0.5px;white-space:nowrap;">${c}</p>
+      </div>`;
+    }).join('')}
+  </div>`;
 }
 
 function toggleAddSpotCuisine(c) {
@@ -3052,14 +3068,18 @@ function toggleAddSpotCuisine(c) {
 
 function renderAddSpotVibeTags() {
   const el = document.getElementById('add-spot-vibe-tags');
-  el.innerHTML = VIBE_CARDS.map(card => {
-    const label = card.label.replace(/\s+/g, ' ').trim();
-    const active = addSpotSelectedVibes.includes(label);
-    return `<div onclick="toggleAddSpotVibe('${label.replace(/'/g,"\\'")}')"
-      style="padding:6px 14px;border-radius:20px;cursor:pointer;background:${active ? card.grad : 'white'};border:1px solid ${active ? 'transparent' : 'black'};transition:all 0.15s;">
-      <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.8px;white-space:nowrap;">${label}</p>
-    </div>`;
-  }).join('');
+  const allVibes = Object.values(VIBE_CATEGORIES).flat();
+  el.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:6px;">
+    ${allVibes.map(v => {
+      const active = addSpotSelectedVibes.includes(v);
+      const idx = getLabelIdx(v);
+      const grad = (active && idx >= 0) ? VIBE_CARDS[idx]?.grad : null;
+      return `<div onclick="toggleAddSpotVibe('${v.replace(/'/g,"\\'")}')"
+        style="padding:6px 12px;border-radius:20px;cursor:pointer;transition:all 0.15s;${active ? `background:${grad||'#ccc'};border:1px solid transparent;` : 'background:white;border:1px solid black;'}">
+        <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${v}</p>
+      </div>`;
+    }).join('')}
+  </div>`;
 }
 
 function toggleAddSpotVibe(label) {

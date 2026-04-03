@@ -1321,7 +1321,7 @@ function applyParsedSearch(parsed) {
     const cardIdx = VIBE_CARDS.findIndex(c =>
       c.label.replace(/\s+/g,' ').trim().toLowerCase().includes(vibeFragment)
     );
-    if (cardIdx >= 0 && selected.size < 3) {
+    if (cardIdx >= 0 && selectedWrappers.size < 3) {
       selected.add(cardIdx);
     }
   });
@@ -2159,7 +2159,7 @@ function activateBubble(label) {
     // Wire up interactions
     const cardIdx = parseInt(w.dataset.entryIdx);
     w.addEventListener('mouseenter', () => {
-      if (selectedWrappers.has(w) || selected.size >= 3) return;
+      if (selectedWrappers.has(w) || selectedWrappers.size >= 3) return;
       w.style.transform = 'scale(1.05)';
     });
     w.addEventListener('mouseleave', () => {
@@ -2172,7 +2172,7 @@ function activateBubble(label) {
         const stillSelected = [...selectedWrappers].some(x => parseInt(x.dataset.entryIdx) === cardIdx);
         if (!stillSelected) selected.delete(cardIdx);
       } else {
-        if (selected.size >= 3 && !selected.has(cardIdx)) return;
+        if (selectedWrappers.size >= 3) return;
         selectedWrappers.add(w);
         selected.add(cardIdx);
       }
@@ -2739,12 +2739,12 @@ function getVibeCardLabel(idx) { return VIBE_CARDS[idx]?.label || ''; }
 function syncAllWrappers() {
   VIBE_CARDS.forEach((_, i) => {
     const ws = allWrappers[i] || [];
-    const isMaxed = !selected.has(i) && selected.size >= 3;
     ws.forEach(w => {
       if (w.dataset.inactive === '1') return; // never touch inactive bubbles
       const isSel = selectedWrappers.has(w);
-      w.style.opacity            = (!isSel && isMaxed) ? '0.4' : '1';
-      w.style.cursor             = (!isSel && isMaxed) ? 'not-allowed' : 'pointer';
+      const isMaxed = !isSel && selectedWrappers.size >= 3;
+      w.style.opacity            = isMaxed ? '0.4' : '1';
+      w.style.cursor             = isMaxed ? 'not-allowed' : 'pointer';
       w.style.animationPlayState = isSel ? 'paused' : 'running';
       w.style.transform          = isSel ? 'scale(1.1)' : '';
       w.style.outline            = isSel ? '4px solid rgba(255,255,255,0.8)' : '';
@@ -2924,7 +2924,7 @@ const container   = document.getElementById('tags-container');
 
     if (!isInactive) {
       wrapper.addEventListener('mouseenter', () => {
-        if (selectedWrappers.has(wrapper) || selected.size >= 3) return;
+        if (selectedWrappers.has(wrapper) || selectedWrappers.size >= 3) return;
         wrapper.style.transform = 'scale(1.05)';
       });
       wrapper.addEventListener('mouseleave', () => {
@@ -2938,8 +2938,7 @@ const container   = document.getElementById('tags-container');
           const stillSelected = [...selectedWrappers].some(w => parseInt(w.dataset.entryIdx) === cardIdx);
           if (!stillSelected) selected.delete(cardIdx);
         } else {
-          if (selected.size >= 3 && !selected.has(cardIdx)) return;
-          if (!selected.has(cardIdx) && selected.size >= 3) return;
+          if (selectedWrappers.size >= 3) return;
           selectedWrappers.add(wrapper);
           selected.add(cardIdx);
         }

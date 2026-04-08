@@ -1356,7 +1356,7 @@ function buildCard(r, idx, total) {
         <p class="fi" style="font-weight:600;font-size:14px;color:white;letter-spacing:2.8px;text-transform:capitalize;line-height:normal;">${r.cuisine}</p>
       </div>
       <div style="position:absolute;left:16px;bottom:38px;z-index:4;pointer-events:none;">
-        <p class="fi" style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.8px;text-transform:lowercase;">${r.distance} AWAY</p>
+        <p data-dist="${idx}" class="fi" style="font-weight:400;font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.8px;text-transform:lowercase;">${r.distance} AWAY</p>
       </div>
     </div>
   </div>`;
@@ -3474,8 +3474,11 @@ function startLocationTracking() {
                                : (Math.round(km * 10) / 10).toFixed(1) + ' KM';
         }
       });
-      // Refresh P2 cards so distance updates immediately
-      if (matchedRestaurants.length) populatePage2();
+      // Patch distance text in place — avoids rebuilding the strip mid-scroll
+      matchedRestaurants.forEach((r, i) => {
+        const el = document.querySelector(`[data-dist="${i}"]`);
+        if (el && r.distance) el.textContent = r.distance + ' away';
+      });
       // Refresh P3 transport times if open
       if (currentRestaurant) updateTransportTimes(currentRestaurant);
     },

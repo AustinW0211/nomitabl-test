@@ -1242,7 +1242,7 @@ function getOpenStatus(r) {
 
 function renderOpenStatus(r) {
   const s = getOpenStatus(r);
-  const dotAnim = s.dot === '#4ade80' ? 'animation:pulse 2s infinite;' : '';
+  const dotAnim = s.dot === '#4ade80' ? 'animation:pulse 2s infinite;will-change:opacity;' : '';
 
   // Check if currently in happy hour — supports both formats:
   // Format A: hhStart/hhEnd (flat numbers)
@@ -1274,7 +1274,7 @@ function renderOpenStatus(r) {
       ? `${endHr % 12 || 12}:${String(endMin).padStart(2,'0')}${hhEnd >= 12 ? 'pm' : 'am'}`
       : `${endHr % 12 || 12}${hhEnd >= 12 ? 'pm' : 'am'}`;
     hhPill = `<div style="display:inline-flex;align-items:center;gap:6px;margin-right:8px;">
-      <div style="width:5px;height:5px;border-radius:50%;background:#ff6b1a;flex-shrink:0;animation:pulse 2s infinite;"></div>
+      <div style="width:5px;height:5px;border-radius:50%;background:#ff6b1a;flex-shrink:0;animation:pulse 2s infinite;will-change:opacity;"></div>
       <span class="fi" style="font-size:.67rem;font-weight:600;color:#ff6b1a;letter-spacing:0.5px;white-space:nowrap;">Happy Hour till ${endStr}</span>
     </div>`;
   }
@@ -3134,16 +3134,26 @@ function populatePage2() {
   const strip = document.getElementById('p2-strip');
   const counter = document.getElementById('p2-counter');
 
-  // Rebuild strip immediately — no opacity fade (fade hurts cards 0/1 which are in viewport)
-  currentCardIndex = 0;
-  strip.style.transition = 'none';
-  strip.style.transform = 'translateX(0)';
-  strip.innerHTML = matchedRestaurants.map((r,i) => buildCard(r,i,matchedRestaurants.length)).join('');
-  counter.textContent = `1/${matchedRestaurants.length}`;
-  void strip.offsetWidth; // force layout so transform:none takes before restoring transition
-  strip.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)';
+  // Animate strip out → rebuild → animate in so user sees the list change
+  strip.style.transition = 'opacity 0.15s ease';
+  strip.style.opacity = '0';
 
-  setupSwipe();
+  setTimeout(() => {
+    strip.style.transform = 'translateX(0)';
+    strip.innerHTML = matchedRestaurants.map((r,i) => buildCard(r,i,matchedRestaurants.length)).join('');
+    counter.textContent = `1/${matchedRestaurants.length}`;
+
+    // Flash the counter to draw attention to the new count
+    counter.style.transition = 'opacity 0.1s ease';
+    counter.style.opacity = '0';
+    requestAnimationFrame(() => {
+      strip.style.opacity = '1';
+      strip.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)';
+      setTimeout(() => { counter.style.opacity = '1'; }, 80);
+    });
+
+    setupSwipe();
+  }, 150);
 }
 
 function setupSwipe() {

@@ -1330,7 +1330,7 @@ function p2NameStyle(name) {
 
 function buildCard(r, idx, total) {
   const photoCount = 5;
-  return `<div style="width:393px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:16px 16px 100px;height:100%;will-change:transform;transform:translateZ(0);">
+  return `<div style="width:393px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:16px 16px 100px;height:100%;">
     <div style="position:relative;width:360px;height:590px;border-radius:12px;overflow:hidden;flex-shrink:0;">
       <div id="photos-${idx}" style="display:flex;width:100%;height:100%;transition:transform 0.3s ease;will-change:transform;">
         ${buildPhotoStrip(r,idx)}
@@ -3134,69 +3134,75 @@ function populatePage2() {
   const strip = document.getElementById('p2-strip');
   const counter = document.getElementById('p2-counter');
 
-  // Animate strip out → rebuild → animate in so user sees the list change
-  strip.style.transition = 'opacity 0.15s ease';
-  strip.style.opacity = '0';
-
-  setTimeout(() => {
-    strip.style.transform = 'translateX(0)';
-    strip.innerHTML = matchedRestaurants.map((r,i) => buildCard(r,i,matchedRestaurants.length)).join('');
-    counter.textContent = `1/${matchedRestaurants.length}`;
-
-    // Flash the counter to draw attention to the new count
-    counter.style.transition = 'opacity 0.1s ease';
-    counter.style.opacity = '0';
-    requestAnimationFrame(() => {
-      strip.style.opacity = '1';
-      strip.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)';
-      setTimeout(() => { counter.style.opacity = '1'; }, 80);
-    });
-
-    setupSwipe();
-  }, 150);
+  // Rebuild cards — no strip-level opacity fade (causes first-cards flicker on iOS).
+  // The page entrance slide handles the visual transition; cards render at full opacity.
+  p2RebuildStrip(strip, counter);
 }
 
-function setupSwipe() {
-  const wrap = document.getElementById('p2-strip-wrap');
-  const strip = document.getElementById('p2-strip');
-  let startX=0, startY=0, isDragging=false;
+// Separated so it can be called without re-running the full populatePage2 filter logic.
+function p2RebuildStrip(strip, counter) {
+  if (!strip) strip = document.getElementById('p2-strip');
+  if (!counter) counter = document.getElementById('p2-counter');
 
-  // Card image occupies top:190px to top:790px (174 strip top + 16 padding + 600 card height)
-  const CARD_TOP = 190;
+  // Disable transition during reset so there's no animated snap to position 0
+  strip.style.transition = 'none';
+  strip.style.opacity    = '1';
+  strip.style.transform  = 'translateX(0)';
+
+  // Replace card HTML
+  strip.innerHTML = matchedRestaurants
+    .map((r, i) => buildCard(r, i, matchedRestaurants.length))
+    .join('');
+
+  counter.textContent = `1/${matchedRestaurants.length}`;
+  counter.style.opacity = '1';
+
+  // Single reflow — flushes the transition:none and transform:0 before re-enabling
+  strip.offsetHeight; // eslint-disable-line no-unused-expressions
+
+  // Re-enable swipe transition
+  strip.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)';
+}
+
+// Swipe handler — attached once at DOMContentLoaded, not on every rebuild.
+// Reads matchedRestaurants and currentCardIndex from outer scope dynamically.
+function setupSwipe() {
+  const wrap  = document.getElementById('p2-strip-wrap');
+  const strip = document.getElementById('p2-strip');
+  if (!wrap || !strip) return;
+  if (wrap._swipeAttached) return; // guard: only attach once
+  wrap._swipeAttached = true;
+
+  let startX = 0, startY = 0, active = false;
+
+  // Card image area bounds (strip-wrap-relative coordinates)
+  const CARD_TOP    = 190;
   const CARD_BOTTOM = 790;
 
-  function inCardArea(y) { return y >= CARD_TOP && y <= CARD_BOTTOM; }
+  function onStart(x, y) { startX = x; startY = y; active = true; }
 
-  function handleSwipeEnd(startX, endX, startY, endY) {
-    const diffX = startX - endX;
-
-    if (Math.abs(diffX) < 40) return;
-
-    if (inCardArea(startY)) {
-      // Within card: swipe left/right to navigate restaurants
-      if (diffX > 0 && currentCardIndex < matchedRestaurants.length - 1) currentCardIndex++;
-      else if (diffX < 0 && currentCardIndex > 0) currentCardIndex--;
+  function onEnd(endX, endY) {
+    if (!active) return;
+    active = false;
+    const dx = startX - endX;
+    if (Math.abs(dx) < 40) return;
+    const inCard = startY >= CARD_TOP && startY <= CARD_BOTTOM;
+    if (inCard) {
+      if (dx > 0 && currentCardIndex < matchedRestaurants.length - 1) currentCardIndex++;
+      else if (dx < 0 && currentCardIndex > 0) currentCardIndex--;
       strip.style.transform = `translateX(-${currentCardIndex * 393}px)`;
       currentRestaurant = matchedRestaurants[currentCardIndex];
-      document.getElementById('p2-counter').textContent = `${currentCardIndex + 1}/${matchedRestaurants.length}`;
+      const counter = document.getElementById('p2-counter');
+      if (counter) counter.textContent = `${currentCardIndex + 1}/${matchedRestaurants.length}`;
     } else {
-      // Outside card area: right swipe → back to Page 1
-      if (diffX < 0) navigateSwipe('starter');
+      if (dx < 0) navigateSwipe('starter');
     }
   }
 
-  wrap.ontouchstart = e => { startX = e.touches[0].clientX; startY = e.touches[0].clientY; isDragging = true; };
-  wrap.ontouchend = e => {
-    if (!isDragging) return;
-    handleSwipeEnd(startX, e.changedTouches[0].clientX, startY, e.changedTouches[0].clientY);
-    isDragging = false;
-  };
-  wrap.onmousedown = e => { startX = e.clientX; startY = e.clientY; isDragging = true; };
-  wrap.onmouseup = e => {
-    if (!isDragging) return;
-    handleSwipeEnd(startX, e.clientX, startY, e.clientY);
-    isDragging = false;
-  };
+  wrap.addEventListener('touchstart',  e => onStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+  wrap.addEventListener('touchend',    e => onEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY));
+  wrap.addEventListener('mousedown',   e => onStart(e.clientX, e.clientY));
+  wrap.addEventListener('mouseup',     e => onEnd(e.clientX, e.clientY));
 }
 
 function selectRestaurant(idx) {
@@ -3489,6 +3495,7 @@ function startLocationTracking() {
 }
 
 startLocationTracking();
+setupSwipe(); // attach P2 swipe handler once at init
 
 // Re-poll when user returns to the app (tab focus or PWA foreground)
 document.addEventListener('visibilitychange', () => {

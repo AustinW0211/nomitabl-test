@@ -3148,6 +3148,8 @@ function populatePage2() {
     counter.style.opacity = '0';
     requestAnimationFrame(() => {
       strip.style.opacity = '1';
+      // Restore transform transition — was overridden by opacity fade above
+      strip.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)';
       setTimeout(() => { counter.style.opacity = '1'; }, 80);
     });
 

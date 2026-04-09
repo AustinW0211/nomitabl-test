@@ -1835,7 +1835,9 @@ function p3WalkinToggle(mode) {
     if (unitEl) { unitEl.querySelector('p').textContent = 'wks'; unitEl.style.left = '58px'; }
   } else {
     let display, unit, leftPos;
-    if (mins >= 60) {
+    if (mins == null) {
+      display = '–'; unit = ''; leftPos = '42px';
+    } else if (mins >= 60) {
       const hrs = Math.floor(mins / 60);
       const rem = mins % 60;
       display = rem > 0 ? `${hrs}h${rem}` : `${hrs}h`;
@@ -2062,7 +2064,9 @@ function p3ParkingToggle(mode) {
   const unitEl = document.getElementById('p3-parking-unit');
   if (minsEl) {
     let display, unit, leftPos;
-    if (mins >= 60) {
+    if (mins == null) {
+      display = '–'; unit = ''; leftPos = '42px';
+    } else if (mins >= 60) {
       const hrs = Math.floor(mins / 60);
       const rem = mins % 60;
       display = rem > 0 ? `${hrs}h${rem}` : `${hrs}h`;

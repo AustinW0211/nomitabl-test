@@ -1038,8 +1038,9 @@ function mapRestaurantRow(row) {
     open_hour:               row.open_hour,              // legacy fallback
     close_hour:              row.close_hour,             // legacy fallback
     // happy hour
-    hh_weekday:              row.hh_weekday || null,
-    hh_weekend:              row.hh_weekend || null,
+    happy_hours_by_day:      row.happy_hours_by_day || null,  // {mon:[{start,end},...], ...} primary source
+    hh_weekday:              row.hh_weekday || null,           // legacy fallback
+    hh_weekend:              row.hh_weekend || null,           // legacy fallback
     hh_start:                row.hh_start   || null,
     hh_end:                  row.hh_end     || null,
     hh_days:                 row.hh_days    || null,
@@ -1252,19 +1253,15 @@ function renderOpenStatus(r) {
   const h = now.getHours() + now.getMinutes() / 60;
   const isWeekend = now.getDay() === 0 || now.getDay() === 6;
 
+  // Find active HH window using unified helper (happy_hours_by_day → legacy fallback)
   let hhEnd = null;
-  // Format A
-  if (r.hh_start != null && r.hh_end != null && h >= r.hh_start && h < r.hh_end) {
-    hhEnd = r.hh_end;
+  const _hhWins = getTodayHHWindows(r);
+  for (const w of _hhWins) {
+    if (h >= w.start && h < w.end) { hhEnd = w.end; break; }
   }
-  // Format B
-  if (hhEnd === null) {
-    const slots = isWeekend ? r.hh_weekend : r.hh_weekday;
-    if (Array.isArray(slots)) {
-      for (const [start, end] of slots) {
-        if (h >= start && h < end) { hhEnd = end; break; }
-      }
-    }
+  // Legacy Format A fallback (hh_start/hh_end flat fields)
+  if (hhEnd === null && r.hh_start != null && r.hh_end != null && h >= r.hh_start && h < r.hh_end) {
+    hhEnd = r.hh_end;
   }
 
   if (hhEnd !== null) {
@@ -1727,23 +1724,20 @@ function openReminderModal() {
     if (mode === 'hh') {
       // Keep dynamic HH time copy
       const now = new Date();
-      const isWeekend = now.getDay() === 0 || now.getDay() === 6;
-      const hhRange = isWeekend ? r.hh_weekend : r.hh_weekday;
+      const h = now.getHours() + now.getMinutes() / 60;
+      const hhWins = getTodayHHWindows(r);
       let set = false;
-      if (hhRange) {
-        const h = now.getHours() + now.getMinutes() / 60;
-        for (const [hhS, hhE] of hhRange) {
-          if (h < hhS) {
-            const startH = Math.floor(hhS) % 12 || 12;
-            const startAp = hhS >= 12 ? 'pm' : 'am';
-            ctx.textContent = `Happy hour at ${r.name} starts at ${startH}:00 ${startAp}`;
-            set = true; break;
-          } else if (h >= hhS && h < hhE) {
-            const endH = Math.floor(hhE) % 12 || 12;
-            const endAp = hhE >= 12 ? 'pm' : 'am';
-            ctx.textContent = `Happy hour at ${r.name} ends at ${endH}:00 ${endAp}`;
-            set = true; break;
-          }
+      for (const w of hhWins) {
+        if (h < w.start) {
+          const startH = Math.floor(w.start) % 12 || 12;
+          const startAp = w.start >= 12 ? 'pm' : 'am';
+          ctx.textContent = `Happy hour at ${r.name} starts at ${startH}:00 ${startAp}`;
+          set = true; break;
+        } else if (h >= w.start && h < w.end) {
+          const endH = Math.floor(w.end) % 12 || 12;
+          const endAp = w.end >= 12 ? 'pm' : 'am';
+          ctx.textContent = `Happy hour at ${r.name} ends at ${endH}:00 ${endAp}`;
+          set = true; break;
         }
       }
       if (!set) ctx.textContent = `Set a reminder for ${r.name}`;
@@ -2476,14 +2470,71 @@ const HAPPY_MODES = {
   locals: { word1: 'Happy', word2: 'Locals', word3: null,  color: '#FF6B35' },
 };
 
-function getHappyMode(r) {
-  const dow = new Date().getDay(); // 0=Sun,1=Mon,...,6=Sat
-  const isWeekend = dow === 0 || dow === 6; // Sat/Sun
+// ── HH windows helper ────────────────────────────────────────────────
+// Returns today's HH windows as [{start, end}, ...].
+// Priority: happy_hours_by_day[today] → hh_weekday/hh_weekend (legacy).
+// happy_hours_by_day shape: {mon:[{start:14,end:17},...], ...}
+// hh_weekday shape: [[14,17],[21,24]] (array of [start,end] pairs)
+function getTodayHHWindows(r) {
+  const dow = new Date().getDay(); // 0=Sun … 6=Sat
+  const DAY_KEYS = ['sun','mon','tue','wed','thu','fri','sat'];
+  const dayKey   = DAY_KEYS[dow];
 
-  // 1. HH takes priority whenever it applies today
-  if (r.hh_weekday && r.hh_weekend) return 'hh'; // HH every day
-  if (r.hh_weekday && !isWeekend)   return 'hh'; // weekday HH, today is weekday
-  if (r.hh_weekend && isWeekend)    return 'hh'; // weekend HH, today is weekend
+  // Tier 1 — happy_hours_by_day
+  if (r.happy_hours_by_day) {
+    const day = r.happy_hours_by_day[dayKey];
+    if (Array.isArray(day)) return day;          // may be [] (no HH today)
+    if (day === null || day === undefined) return []; // day key absent — no HH
+  }
+
+  // Tier 2 — legacy hh_weekday / hh_weekend
+  const isWeekend = dow === 0 || dow === 6;
+  const legacy = isWeekend ? r.hh_weekend : r.hh_weekday;
+  if (Array.isArray(legacy)) {
+    // Normalise [[start,end], ...] → [{start,end}, ...]
+    return legacy.map(w => Array.isArray(w) ? { start: w[0], end: w[1] } : w);
+  }
+
+  return [];
+}
+
+// Format a single HH window {start, end} to display text.
+// 14 → "2", 17 → "5 PM", 24 → "close", 24.5 → "close"
+// close = 23.5+ is always rendered as "close"
+function _fmtHHWindow(w) {
+  const fmtH = (h) => {
+    if (h >= 23.5) return 'close';
+    const h24 = h > 24 ? h - 24 : h;
+    const hInt = Math.floor(h24);
+    const hMin = Math.round((h24 - hInt) * 60);
+    const h12  = hInt % 12 || 12;
+    const ap   = h24 >= 12 ? ' PM' : ' AM';
+    return hMin > 0
+      ? `${h12}:${String(hMin).padStart(2,'0')}${ap}`
+      : `${h12}${ap}`;
+  };
+  const startStr = fmtH(w.start);
+  const endStr   = fmtH(w.end);
+  // If end is "close", render as "X – close"
+  if (endStr === 'close') return `${startStr}–close`;
+  // Both are times — render "X – Y PM" (share AM/PM with end)
+  // Strip trailing PM/AM from start if same period as end
+  const startBase = startStr.replace(/ [AP]M$/, '');
+  return `${startBase}–${endStr}`;
+}
+
+// Format all of today's HH windows into one display string.
+// e.g. [{start:14,end:17},{start:21,end:24}] → "2–5 PM · 9 PM–close"
+function getTodayHHDisplayText(r) {
+  const windows = getTodayHHWindows(r);
+  if (!windows.length) return r.hh_days || '';
+  return windows.map(_fmtHHWindow).join(' · ');
+}
+
+function getHappyMode(r) {
+  // 1. HH takes priority whenever there are windows today
+  //    Uses happy_hours_by_day first, falls back to hh_weekday/hh_weekend
+  if (getTodayHHWindows(r).length > 0) return 'hh';
 
   // 2. Fall through by happy_type — per spec priority order
   const t = r.happy_type;
@@ -2806,67 +2857,56 @@ function updateHHClock(r) {
     hhOpen.textContent = `OPEN UNTIL ${_fmtCloseTime(_hhHrs.windows[_hhHrs.windows.length - 1].close)}`;
   }
 
-  const dow = now.getDay();
-  const isWeekend = dow === 0 || dow === 6;
-  const hhRange = isWeekend ? r.hh_weekend : r.hh_weekday;
+  // Use getTodayHHWindows — reads happy_hours_by_day first, falls back to legacy
+  const hhWindows = getTodayHHWindows(r);
   const h2 = now.getHours() + now.getMinutes() / 60;
+  const fh = document.getElementById('hh-face-happy');
+  const fo = document.getElementById('hh-face-hour');
+  const fb = document.getElementById('hh-face-bang');
+  const hhTimes = document.getElementById('p3-hh-times');
 
-  if (hhRange) {
-    let state = null, bestCountdown = null;
-    for (const [hhS, hhE] of hhRange) {
-      if (h2 >= hhS && h2 < hhE) {
-        const total = Math.round((hhE - h2) * 60);
-        const hrs = Math.floor(total / 60), mins = total % 60;
-        state = { label: 'LEFT IN HAPPY HOUR', time: hrs > 0 ? `${hrs}h${mins > 0 ? mins + 'm' : ''}` : `${mins}m` };
-        break;
-      } else if (h2 < hhS && !bestCountdown) {
-        const total = Math.round((hhS - h2) * 60);
-        const hrs = Math.floor(total / 60), mins = total % 60;
-        bestCountdown = { label: 'TO HAPPY HOUR', time: hrs > 0 ? `${hrs}h${mins > 0 ? mins + 'm' : ''}` : `${mins}m` };
-      }
+  const _setFace = (opacity, fill) => {
+    if (fh) { fh.setAttribute('opacity', opacity); fh.setAttribute('fill', fill); }
+    if (fo) { fo.setAttribute('opacity', opacity); fo.setAttribute('fill', fill); }
+    if (fb) { fb.setAttribute('opacity', opacity); fb.setAttribute('fill', fill); }
+  };
+
+  if (hhWindows.length > 0) {
+    let active = null, next = null;
+    for (const w of hhWindows) {
+      if (h2 >= w.start && h2 < w.end) { active = w; break; }
+      if (h2 < w.start && !next) next = w;
     }
-    const s = state || bestCountdown;
-    const fh = document.getElementById('hh-face-happy');
-    const fo = document.getElementById('hh-face-hour');
-    const fb = document.getElementById('hh-face-bang');
-    if (state) {
-      // HH active — full green
-      hhCountdown.textContent = state.time;
-      hhLabel.textContent = state.label;
-      if (fh) { fh.setAttribute('opacity', '1'); fh.setAttribute('fill', '#007F57'); }
-      if (fo) { fo.setAttribute('opacity', '1'); fo.setAttribute('fill', '#007F57'); }
-      if (fb) { fb.setAttribute('opacity', '1'); fb.setAttribute('fill', '#007F57'); }
-    } else if (bestCountdown) {
-      // HH coming — greyed
-      hhCountdown.textContent = bestCountdown.time;
-      hhLabel.textContent = bestCountdown.label;
-      if (fh) { fh.setAttribute('opacity', '0.35'); fh.setAttribute('fill', '#888'); }
-      if (fo) { fo.setAttribute('opacity', '0.35'); fo.setAttribute('fill', '#888'); }
-      if (fb) { fb.setAttribute('opacity', '0.35'); fb.setAttribute('fill', '#888'); }
+
+    // Display text — from new helper (formats windows) or legacy hh_days
+    if (hhTimes) hhTimes.textContent = getTodayHHDisplayText(r);
+
+    if (active) {
+      const total = Math.round((active.end - h2) * 60);
+      const hrs = Math.floor(total / 60), mins = total % 60;
+      hhCountdown.textContent = hrs > 0 ? `${hrs}h${mins > 0 ? mins + 'm' : ''}` : `${mins}m`;
+      hhLabel.textContent = 'LEFT IN HAPPY HOUR';
+      _setFace('1', '#007F57');
+    } else if (next) {
+      const total = Math.round((next.start - h2) * 60);
+      const hrs = Math.floor(total / 60), mins = total % 60;
+      hhCountdown.textContent = hrs > 0 ? `${hrs}h${mins > 0 ? mins + 'm' : ''}` : `${mins}m`;
+      hhLabel.textContent = 'TO HAPPY HOUR';
+      _setFace('0.35', '#888');
     } else {
-      // HH ended — greyed
       hhCountdown.textContent = '—';
       hhLabel.textContent = 'HAPPY HOUR ENDED';
-      if (fh) { fh.setAttribute('opacity', '0.35'); fh.setAttribute('fill', '#888'); }
-      if (fo) { fo.setAttribute('opacity', '0.35'); fo.setAttribute('fill', '#888'); }
-      if (fb) { fb.setAttribute('opacity', '0.35'); fb.setAttribute('fill', '#888'); }
+      _setFace('0.35', '#888');
     }
-    const hhTimes = document.getElementById('p3-hh-times');
-    if (hhTimes) hhTimes.textContent = r.hh_days || '';
-  } else if (r.hh_weekday || r.hh_weekend) {
-    // Has HH but not today's day type — greyed
+  } else {
+    // No HH windows today
+    const hasHHOtherDays = r.happy_hours_by_day
+      ? Object.values(r.happy_hours_by_day).some(d => Array.isArray(d) && d.length > 0)
+      : (r.hh_weekday || r.hh_weekend);
     hhCountdown.textContent = '—';
-    const dow2 = new Date().getDay();
-    const isWE2 = dow2 === 0 || dow2 === 5 || dow2 === 6;
-    hhLabel.textContent = isWE2 ? 'WEEKDAYS ONLY' : 'WEEKENDS ONLY';
-    const hhTimes2 = document.getElementById('p3-hh-times');
-    if (hhTimes2) hhTimes2.textContent = r.hh_days || '';
-    const fh = document.getElementById('hh-face-happy');
-    const fo = document.getElementById('hh-face-hour');
-    const fb = document.getElementById('hh-face-bang');
-    if (fh) { fh.setAttribute('opacity', '0.35'); fh.setAttribute('fill', '#888'); }
-    if (fo) { fo.setAttribute('opacity', '0.35'); fo.setAttribute('fill', '#888'); }
-    if (fb) { fb.setAttribute('opacity', '0.35'); fb.setAttribute('fill', '#888'); }
+    hhLabel.textContent = hasHHOtherDays ? 'NOT TODAY' : 'NO HAPPY HOUR';
+    if (hhTimes) hhTimes.textContent = '';
+    _setFace('0.35', '#888');
   }
 }
 

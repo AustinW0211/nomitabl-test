@@ -61,12 +61,12 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 }
 @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(5px)} }
 
-@keyframes bubbleDrift1 { 0%,100%{transform:translate(0,0)} 40%{transform:translate(2px,-4px)} 70%{transform:translate(-2px,-2px)} }
-@keyframes bubbleDrift2 { 0%,100%{transform:translate(0,0)} 35%{transform:translate(-3px,-3px)} 65%{transform:translate(2px,-5px)} }
-@keyframes bubbleDrift3 { 0%,100%{transform:translate(0,0)} 45%{transform:translate(3px,-2px)} 75%{transform:translate(-1px,-4px)} }
-@keyframes bubbleDrift4 { 0%,100%{transform:translate(0,0)} 30%{transform:translate(-2px,-5px)} 60%{transform:translate(3px,-2px)} }
-@keyframes bubbleDrift5 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(2px,-3px)} 80%{transform:translate(-3px,-4px)} }
-@keyframes bubbleDrift6 { 0%,100%{transform:translate(0,0)} 40%{transform:translate(-2px,-2px)} 70%{transform:translate(2px,-5px)} }
+@keyframes bubbleDrift1 { 0%,100%{transform:translate3d(0,0,0)} 40%{transform:translate3d(2px,-4px,0)} 70%{transform:translate(-2px,-2px)} }
+@keyframes bubbleDrift2 { 0%,100%{transform:translate3d(0,0,0)} 35%{transform:translate3d(-3px,-3px,0)} 65%{transform:translate(2px,-5px)} }
+@keyframes bubbleDrift3 { 0%,100%{transform:translate3d(0,0,0)} 45%{transform:translate3d(3px,-2px,0)} 75%{transform:translate(-1px,-4px)} }
+@keyframes bubbleDrift4 { 0%,100%{transform:translate3d(0,0,0)} 30%{transform:translate3d(-2px,-5px,0)} 60%{transform:translate(3px,-2px)} }
+@keyframes bubbleDrift5 { 0%,100%{transform:translate3d(0,0,0)} 50%{transform:translate3d(2px,-3px,0)} 80%{transform:translate(-3px,-4px)} }
+@keyframes bubbleDrift6 { 0%,100%{transform:translate3d(0,0,0)} 40%{transform:translate3d(-2px,-2px,0)} 70%{transform:translate(2px,-5px)} }
 .p3-score-ring-bg   { fill: none; stroke: rgba(255,255,255,.1); stroke-width: 5; }
 .p3-score-ring-fill { fill: none; stroke: rgba(255,255,255,0.6); stroke-width: 5; stroke-linecap: round; }
 .vibe-card-item:focus { outline: none; }
@@ -503,8 +503,31 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <p id="p3-hh-label" class="fi" style="position:absolute;font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;left:175px;top:85px;line-height:14px;right:10px;">TO HAPPY HOUR</p>
         <p id="p3-hh-open" class="fi" style="position:absolute;font-weight:400;font-size:12px;color:black;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap;left:175px;top:16px;line-height:14px;">OPEN UNTIL 10 PM</p>
         <p id="p3-hh-times" class="fi" style="position:absolute;font-weight:300;font-size:10px;color:black;letter-spacing:1px;text-transform:uppercase;left:175px;top:99px;line-height:10px;right:10px;">3-5 PM · 9pm - close</p>
-        <div onclick="openReminderModal()" style="position:absolute;background:#1e1e1e;height:30px;left:171px;overflow:hidden;border-radius:80px;top:126px;width:149px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
-          <p class="fi" style="font-weight:600;font-size:12px;color:white;letter-spacing:4.32px;text-transform:capitalize;line-height:12px;">Set reminder</p>
+        <!-- Reminder shape:
+             HH / Locals = original pill only (no + button, rendered by JS showing/hiding happy-card-plus)
+             Eats / Bread / Coffee / Carbs = fused Figma SVG shape (pill + waist + circle)
+             Both sit at top:126px so bottom = 156px = 16px from card bottom (172px tall card). -->
+
+        <!-- Original pill — always present, shown for HH/Locals -->
+        <div id="reminder-original" onclick="openReminderModal()" style="position:absolute;background:#1e1e1e;height:30px;left:171px;overflow:hidden;border-radius:80px;top:126px;width:149px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <p class="fi" style="font-weight:600;font-size:12px;color:white;letter-spacing:4.32px;text-transform:capitalize;line-height:12px;padding-left:4px;">Set reminder</p>
+        </div>
+
+        <!-- Fused shape — shown only for eats/bread/coffee/carbs (toggled by updateHappyCard) -->
+        <div id="reminder-fused-wrap" style="position:absolute;left:171px;top:126px;width:181px;height:30px;display:none;">
+          <svg style="position:absolute;left:0;top:0;width:181px;height:30px;" viewBox="0 0 181 30" fill="none" preserveAspectRatio="none">
+            <path d="M134 0C139.457 0 144.233 2.91447 146.857 7.27148C147.574 8.46066 149.112 9 150.5 9C151.445 9 152.41 8.57439 152.867 7.74805C155.424 3.12834 160.346 0 166 0C174.284 0 181 6.71573 181 15C181 23.2843 174.284 30 166 30C160.346 30 155.423 26.8711 152.867 22.251C152.41 21.4246 151.445 21 150.5 21C149.112 21 147.574 21.5384 146.857 22.7275C144.233 27.0849 139.457 30 134 30H15C6.71573 30 0 23.2843 0 15C0 6.71573 6.71573 1.12745e-07 15 0H134Z" fill="#1e1e1e"/>
+          </svg>
+          <!-- Set reminder — centered to match original pill, text nudged 4px right -->
+          <div onclick="openReminderModal()" style="position:absolute;left:0;top:0;width:149px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
+            <p class="fi" style="font-weight:600;font-size:12px;color:white;letter-spacing:4.32px;text-transform:capitalize;line-height:12px;white-space:nowrap;padding-left:4px;">Set reminder</p>
+          </div>
+          <!-- + icon — centered in circle at x=166, y=15 → left:161px top:10px -->
+          <div id="happy-card-plus" onclick="openHappyCardModal()" style="position:absolute;left:151px;top:0;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M10 5C10 5.11051 9.9561 5.21649 9.87796 5.29463C9.79982 5.37277 9.69384 5.41667 9.58333 5.41667H5.41667V9.58333C5.41667 9.69384 5.37277 9.79982 5.29463 9.87796C5.21649 9.9561 5.11051 10 5 10C4.88949 10 4.78351 9.9561 4.70537 9.87796C4.62723 9.79982 4.58333 9.69384 4.58333 9.58333V5.41667H0.416667C0.30616 5.41667 0.200179 5.37277 0.122039 5.29463C0.0438988 5.21649 0 5.11051 0 5C0 4.88949 0.0438988 4.78351 0.122039 4.70537C0.200179 4.62723 0.30616 4.58333 0.416667 4.58333H4.58333V0.416667C4.58333 0.30616 4.62723 0.200179 4.70537 0.122039C4.78351 0.0438988 4.88949 0 5 0C5.11051 0 5.21649 0.0438988 5.29463 0.122039C5.37277 0.200179 5.41667 0.30616 5.41667 0.416667V4.58333H9.58333C9.69384 4.58333 9.79982 4.62723 9.87796 4.70537C9.9561 4.78351 10 4.88949 10 5Z" fill="white"/>
+            </svg>
+          </div>
         </div>
         <p id="p3-hh-detail" class="fi" style="position:absolute;font-weight:600;font-size:11px;color:black;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;left:175px;top:93px;line-height:14px;display:none;"></p>
       </div>
@@ -634,27 +657,69 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <div onclick="closeReminderModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
       </div>
       <p id="reminder-context" class="fi" style="font-size:11px;font-weight:300;color:#555;letter-spacing:0.5px;margin-bottom:18px;line-height:1.5;"></p>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div onclick="setReminderWhen('tonight')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-          <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Tonight</p>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div onclick="setReminderWhen('tomorrow')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-          <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Tomorrow</p>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div onclick="setReminderWhen('weekend')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-          <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">This weekend</p>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div onclick="reminderSaveForLater()" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+      <div id="reminder-options" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+  </div>
+
+
+  <!-- ── Happy Card Modal (Eats / Bread / Coffee / Carbs) ────────── -->
+  <div id="happy-card-modal" onclick="closeHappyCardModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:200;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
+    <div id="happy-card-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);overflow-y:auto;overflow-x:hidden;max-height:40vh;scrollbar-width:none;-ms-overflow-style:none;">
+
+      <!-- Eats content -->
+      <div id="hcm-eats" style="display:none;padding:24px 20px 28px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
           <div>
-            <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Save for later</p>
-            <p class="fi" style="font-size:10px;font-weight:300;color:#888;letter-spacing:0.3px;margin-top:2px;">Adds to your favourites</p>
+            <p class="fa" style="font-weight:600;font-size:15px;letter-spacing:1.5px;color:black;line-height:1.3;white-space:nowrap;">What are they offering?</p>
           </div>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div onclick="closeHappyCardModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;margin-top:2px;">✕</div>
+        </div>
+        <!-- Website link -->
+        <div id="hcm-website-row" onclick="openRestaurantWebsite()" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:12px;">
+          <div>
+            <p class="fi" style="font-size:12px;font-weight:600;color:black;letter-spacing:0.5px;">View menu / offerings</p>
+            <p id="hcm-website-url" class="fi" style="font-size:10px;color:#888;letter-spacing:0.3px;margin-top:2px;"></p>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </div>
+        <!-- Notify bell -->
+        <div id="hcm-notify-row" onclick="submitMenuReport()" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div>
+            <p class="fi" style="font-size:12px;font-weight:600;color:black;letter-spacing:0.5px;">Something new? Notify us</p>
+            <p id="hcm-notify-sub" class="fi" style="font-size:10px;color:#888;letter-spacing:0.3px;margin-top:2px;">Let us know if the menu has changed</p>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         </div>
       </div>
+
+      <!-- Bread / Coffee / Carbs content -->
+      <div id="hcm-items" style="display:none;padding:24px 20px 0;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+          <div>
+            <p class="fa" style="font-weight:600;font-size:15px;letter-spacing:1.5px;color:black;line-height:1.3;white-space:nowrap;">What are your favs?</p>
+          </div>
+          <div onclick="closeHappyCardModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;margin-top:2px;">✕</div>
+        </div>
+        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;">Select up to 3</p>
+        <div id="hcm-item-pills" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"></div>
+        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;">Missing one?</p>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+          <input id="hcm-item-input" type="text" placeholder="type an item..." maxlength="40" autocomplete="off"
+            style="flex:1;padding:10px 14px;border-radius:12px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"
+            onkeydown="if(event.key==='Enter')addFeatureItemCandidate()"/>
+          <div id="hcm-item-add-btn" onclick="addFeatureItemCandidate()" style="width:36px;height:36px;border-radius:18px;background:black;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background 0.2s;">
+            <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Done — in scroll flow -->
+      <div id="hcm-done" style="display:none;padding:0 20px 28px;">
+        <div onclick="closeHappyCardModal()" style="background:black;border-radius:32px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">DONE</p>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -746,53 +811,55 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   <!-- Vibe modal — phone root level, visible from any screen -->
   <!-- P3 Add-Vibe Modal (dedicated, separate from P2 modal) -->
   <div id="p3-vibe-modal" onclick="closeP3VibeModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:200;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="p3-vibe-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 44px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);max-height:82vh;overflow-y:auto;">
+    <div id="p3-vibe-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:40vh;max-height:341px;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-ms-overflow-style:none;" class="hide-scrollbar">
 
-      <!-- Header -->
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
-        <div>
-          <p class="fa" style="font-weight:600;font-size:15px;letter-spacing:1.5px;color:black;line-height:1.3;">How does this place</p>
-          <p class="fa" style="font-weight:600;font-size:15px;letter-spacing:1.5px;color:black;line-height:1.3;">feel right now?</p>
+      <!-- All content scrolls together — Done lives at the bottom of the scroll flow -->
+      <div style="padding:24px 20px 0;">
+
+        <!-- Header -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+          <div>
+            <p class="fa" style="font-weight:600;font-size:15px;letter-spacing:1.5px;color:black;line-height:1.3;white-space:nowrap;">How does this place feel right now?</p>
+          </div>
+          <div onclick="closeP3VibeModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;margin-top:2px;">✕</div>
         </div>
-        <div onclick="closeP3VibeModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;margin-top:2px;">✕</div>
+
+        <!-- Section 1: Current Vibes — top 3 from r.tags (matches what's displayed on P3) -->
+        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;">Current Vibes</p>
+        <p class="fi" style="font-size:11px;color:#555;letter-spacing:0.3px;margin-bottom:12px;">Select any that feel off.</p>
+        <div id="p3vm-current" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;"></div>
+
+        <!-- Section 2: More Vibes -->
+        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;">More Vibes</p>
+        <p class="fi" style="font-size:11px;color:#555;letter-spacing:0.3px;margin-bottom:12px;">Pick up to 3 vibes that feel right.</p>
+        <div id="p3vm-more" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;"></div>
+
+        <!-- Section 3: Suggest a vibe — always visible -->
+        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;">Missing one?</p>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <input id="p3vm-custom-input" type="text" placeholder="type a vibe..." maxlength="32" autocomplete="off"
+            style="flex:1;padding:10px 14px;border-radius:12px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"
+            onkeydown="if(event.key==='Enter')addP3CustomVibe()"/>
+          <div id="p3vm-add-btn" onclick="addP3CustomVibe()" style="width:36px;height:36px;border-radius:18px;background:black;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background 0.2s;">
+            <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div id="p3vm-custom-chips" style="display:none;"></div>
+
       </div>
 
-      <!-- Section 1: Current Vibes -->
-      <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;">Current Vibes</p>
-      <p class="fi" style="font-size:11px;color:#555;letter-spacing:0.3px;margin-bottom:12px;">Select any that feel off.</p>
-      <div id="p3vm-current" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;"></div>
-
-      <!-- Section 2: More Vibes -->
-      <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;">More Vibes</p>
-      <p class="fi" style="font-size:11px;color:#555;letter-spacing:0.3px;margin-bottom:12px;">Pick up to 3 vibes that feel right.</p>
-      <div id="p3vm-more" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;"></div>
-
-      <!-- Section 3: Missing one? Add a vibe -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;">Missing one? Add a vibe</p>
-        <div onclick="toggleP3CustomVibeInput()" id="p3vm-add-btn" style="width:24px;height:24px;border-radius:12px;background:black;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <!-- Done — part of scroll flow, naturally reached by scrolling -->
+      <div style="padding:0 20px 28px;">
+        <div onclick="applyP3VibeModal()" style="background:black;border-radius:32px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">DONE</p>
         </div>
       </div>
-      <div id="p3vm-custom-wrap" style="display:none;margin-bottom:16px;">
-        <input id="p3vm-custom-input" type="text" placeholder="Type a vibe..." maxlength="32" autocomplete="off"
-          style="width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"
-          onkeydown="if(event.key==='Enter')addP3CustomVibe()"/>
-        <div onclick="addP3CustomVibe()" style="margin-top:8px;background:black;border-radius:24px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
-          <p class="fi" style="font-weight:600;font-size:12px;letter-spacing:4px;color:white;">ADD</p>
-        </div>
-      </div>
-      <div id="p3vm-custom-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;"></div>
 
-      <!-- Done -->
-      <div onclick="applyP3VibeModal()" style="background:black;border-radius:32px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:4px;">
-        <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">DONE</p>
-      </div>
     </div>
   </div>
 
   <div id="vibe-modal" onclick="closeVibeModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="vibe-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:340px;overflow-y:auto;">
+    <div id="vibe-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:340px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Add a vibe</p>
         <div onclick="closeVibeModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
@@ -893,7 +960,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
   <!-- Cuisine modal -->
   <div id="cuisine-modal" onclick="closeCuisineModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:300;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="cuisine-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:340px;overflow-y:auto;">
+    <div id="cuisine-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:340px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Add a cuisine</p>
         <div onclick="closeCuisineModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
@@ -949,14 +1016,84 @@ const sb = {
         if (!res.ok) throw new Error(`Supabase INSERT ${table}: ${res.status} ${await res.text()}`);
         return true;
       },
+      upsert: async (row, onConflict) => {
+        const params = new URLSearchParams({ on_conflict: onConflict });
+        const res = await fetch(`${base}?${params}`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal,resolution=merge-duplicates',
+          },
+          body: JSON.stringify(row),
+        });
+        if (!res.ok) throw new Error(`Supabase UPSERT ${table}: ${res.status} ${await res.text()}`);
+        return true;
+      },
+      delete: async (match) => {
+        const params = new URLSearchParams(
+          Object.entries(match).map(([k, v]) => [k, `eq.${v}`])
+        );
+        const res = await fetch(`${base}?${params}`, {
+          method: 'DELETE',
+          headers: {
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+          },
+        });
+        if (!res.ok) throw new Error(`Supabase DELETE ${table}: ${res.status} ${await res.text()}`);
+        return true;
+      },
+      selectWhere: async (match, cols = '*') => {
+        const params = new URLSearchParams({ select: cols });
+        Object.entries(match).forEach(([k, v]) => params.set(k, `eq.${v}`));
+        const res = await fetch(`${base}?${params}`, {
+          headers: {
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+          },
+        });
+        if (!res.ok) throw new Error(`Supabase SELECT ${table}: ${res.status} ${await res.text()}`);
+        return res.json();
+      },
     };
-  }
+  },
+  // Call a Supabase RPC function
+  async rpc(fnName, params = {}) {
+    const url = `${SUPABASE_URL}/rest/v1/rpc/${fnName}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_PUBLISHABLE_KEY,
+        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params),
+    });
+    if (!res.ok) throw new Error(`Supabase RPC ${fnName}: ${res.status} ${await res.text()}`);
+    return res.json();
+  },
 };
 
 // Returns true if Supabase credentials have been set
 function supabaseReady() {
   return SUPABASE_URL !== 'YOUR_SUPABASE_URL' && SUPABASE_PUBLISHABLE_KEY !== 'YOUR_SUPABASE_PUBLISHABLE_KEY';
 }
+
+// ── Session ID — stable across page refreshes, one per browser/device ──
+const SESSION_ID = (() => {
+  try {
+    let id = localStorage.getItem('nomi_session_id');
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem('nomi_session_id', id);
+    }
+    return id;
+  } catch {
+    return crypto.randomUUID(); // fallback if localStorage unavailable
+  }
+})();
 
 // Restaurant data
 const ALL_TAGS = ["Date Night","Wine & Dine","Treat Yourself","Feel Fancy","Fresh Air & Food","Happy Gut","Feel Good","Spicy","Something Different","Sunshine Plans","Patio Vibes","Girls Night Out","Romantic","First Date","Solo Night","Late Night","Low-Key","Feeling Cozy","Sweet Tooth","Comfort Craving","Brunchy Brunchy","Hangover Cure","Solo & Chill","Recovery Mode"];
@@ -1023,7 +1160,8 @@ function mapRestaurantRow(row) {
     address:                 row.address,
     cuisine:                 row.cuisine || '',
     price:                   row.price || '$$',
-    tags:                    row.tags || [],
+    tags:                    row.tags  || [],   // top 3 display vibes for P3 (written by resolver)
+    vibes:                   row.vibes || [],   // full confirmed vibe list — source of truth
     lat:                     row.lat || null,
     lng:                     row.lng || null,
     // contact — stored but not displayed in UI
@@ -1745,10 +1883,344 @@ function openReminderModal() {
       ctx.textContent = REMINDER_COPY[mode] || `Set a reminder for ${r.name}`;
     }
   }
+  // Build options based on mode
+  const optionsEl = document.getElementById('reminder-options');
+  if (optionsEl) {
+    const arrow = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const row = (label, onclick, sub) =>
+      `<div onclick="${onclick}" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+        <div>${sub
+          ? `<p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">${label}</p><p class="fi" style="font-size:10px;font-weight:300;color:#888;letter-spacing:0.3px;margin-top:2px;">${sub}</p>`
+          : `<p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">${label}</p>`}
+        </div>${arrow}
+      </div>`;
+
+    const currentMode = currentRestaurant ? getHappyMode(currentRestaurant) : null;
+
+    if (currentMode === 'hh') {
+      // HH-specific: time-relative options + inline time picker
+      const _d = new Date(Date.now() + 30 * 60000);
+      const _defaultTime = `${String(_d.getHours()).padStart(2,'0')}:${String(_d.getMinutes()).padStart(2,'0')}`;
+      optionsEl.innerHTML = [
+        row('30 minutes before', "setReminderBefore(30)"),
+        row('1 hour before',     "setReminderBefore(60)"),
+      ].join('') +
+      `<div style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;">
+        <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Remind me at</p>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <input id="reminder-time-input" type="time" value="${_defaultTime}" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:black;border:none;background:transparent;outline:none;cursor:pointer;"/>
+          <div onclick="setReminderAtTime()" style="background:#1e1e1e;border-radius:20px;padding:6px 14px;cursor:pointer;">
+            <p class="fi" style="font-size:11px;font-weight:600;color:white;letter-spacing:1px;">Set</p>
+          </div>
+        </div>
+      </div>`;
+    } else {
+      // Non-HH: day-based options
+      optionsEl.innerHTML = [
+        row('Tonight',       "setReminderWhen('tonight')"),
+        row('Tomorrow',      "setReminderWhen('tomorrow')"),
+        row('This weekend',  "setReminderWhen('weekend')"),
+        row('Save for later', 'reminderSaveForLater()', 'Adds to your favourites'),
+      ].join('');
+    }
+  }
+
   const m = document.getElementById('reminder-modal');
   const s = document.getElementById('reminder-modal-sheet');
   m.style.display = 'flex';
   requestAnimationFrame(() => { m.style.background = 'rgba(0,0,0,0.5)'; s.style.transform = 'translateY(0)'; });
+}
+
+// ── Happy card modal state ───────────────────────────────────────────
+let hcmItems       = [];        // [{id, item, display_order}] loaded from Supabase
+let hcmVotedItems  = new Set(); // item_ids this session has voted on
+let hcmMenuReported = false;    // whether this session already notified for this restaurant
+
+// Load feature items and this session's votes for current restaurant+mode
+async function loadFeatureItems(restaurantId, mode) {
+  if (!supabaseReady()) return;
+  try {
+    const [sysItems, userItems, votes] = await Promise.all([
+      sb.from('restaurant_feature_items').then(c => c.selectWhere(
+        { restaurant_id: restaurantId, mode, source: 'system' }, 'id,item,display_order,source'
+      )),
+      // Load user-submitted items for this session so they reappear on re-entry
+      sb.from('restaurant_feature_items').then(c => c.selectWhere(
+        { restaurant_id: restaurantId, mode, source: 'user', session_id_submitted: SESSION_ID }, 'id,item,display_order,source'
+      )),
+      sb.from('restaurant_item_votes').then(c => c.selectWhere(
+        { restaurant_id: restaurantId, session_id: SESSION_ID }, 'item_id'
+      )),
+    ]);
+    // System items sorted by display_order, user items appended at end
+    hcmItems = [
+      ...(sysItems || []).sort((a, b) => a.display_order - b.display_order),
+      ...(userItems || []).sort((a, b) => a.display_order - b.display_order),
+    ];
+    hcmVotedItems = new Set((votes || []).map(v => v.item_id));
+  } catch (err) {
+    console.warn('loadFeatureItems failed:', err.message);
+  }
+}
+
+// Load whether this session already reported for this restaurant
+async function loadMenuReportStatus(restaurantId) {
+  if (!supabaseReady()) return;
+  try {
+    const rows = await sb.from('restaurant_menu_reports').then(c =>
+      c.selectWhere({ restaurant_id: restaurantId, session_id: SESSION_ID }, 'id')
+    );
+    hcmMenuReported = Array.isArray(rows) && rows.length > 0;
+  } catch (err) {
+    console.warn('loadMenuReportStatus failed:', err.message);
+  }
+}
+
+function openHappyCardModal() {
+  if (!currentRestaurant) return;
+  const mode = getHappyMode(currentRestaurant);
+  const eatsEl  = document.getElementById('hcm-eats');
+  const itemsEl = document.getElementById('hcm-items');
+  const doneEl  = document.getElementById('hcm-done');
+
+  if (mode === 'eats') {
+    eatsEl.style.display  = 'block';
+    itemsEl.style.display = 'none';
+    doneEl.style.display  = 'none';
+
+    // Show website URL
+    const urlEl = document.getElementById('hcm-website-url');
+    if (urlEl) {
+      const url = currentRestaurant.website || '';
+      urlEl.textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    }
+
+    // Update notify row based on prior report
+    _updateNotifyRow();
+
+  } else if (['bread','coffee','carbs'].includes(mode)) {
+    eatsEl.style.display  = 'none';
+    itemsEl.style.display = 'block';
+    doneEl.style.display  = 'block';
+    hcmCustomItems = [];
+    const _inp = document.getElementById('hcm-item-input');
+    const _btn = document.getElementById('hcm-item-add-btn');
+    if (_inp) { _inp.value = ''; _inp.disabled = false; _inp.placeholder = 'type an item...'; }
+    if (_btn) { _btn.style.background = 'black'; _btn.style.pointerEvents = 'auto'; }
+    _renderItemPills();
+  } else {
+    return; // hh and locals have no + modal
+  }
+
+  const m = document.getElementById('happy-card-modal');
+  const s = document.getElementById('happy-card-modal-sheet');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => {
+    m.style.background = 'rgba(0,0,0,0.5)';
+    s.style.transform  = 'translateY(0)';
+  });
+}
+
+// Feature item candidate — same pattern as vibe custom input
+let hcmCustomItems = []; // items typed this session (for cap tracking)
+
+async function addFeatureItemCandidate() {
+  const input = document.getElementById('hcm-item-input');
+  const addBtn = document.getElementById('hcm-item-add-btn');
+  if (!input || !currentRestaurant) return;
+  const val = input.value.trim();
+  if (!val) return;
+
+  const MAX_CUSTOM = 5;
+  if (hcmCustomItems.length >= MAX_CUSTOM) {
+    input.value = '';
+    return;
+  }
+
+  // Content filter
+  if (!_vibeIsClean(val)) {
+    input.value = '';
+    input.placeholder = 'keep it clean ✌️';
+    setTimeout(() => { input.placeholder = 'type an item...'; }, 2000);
+    return;
+  }
+
+  const mode = getHappyMode(currentRestaurant);
+  const valUpper = val.toUpperCase();
+
+  // Reject if already in list
+  if (hcmItems.some(it => it.item.toUpperCase() === valUpper) ||
+      hcmCustomItems.some(v => v.toUpperCase() === valUpper)) {
+    input.value = '';
+    return;
+  }
+
+  // Add locally — show as voted pill with ✦
+  const tempId = `user-${Date.now()}`;
+  hcmCustomItems.push(val);
+  hcmVotedItems.add(tempId);
+  input.value = '';
+
+  // Append pill to list
+  const container = document.getElementById('hcm-item-pills');
+  if (container) {
+    const pill = document.createElement('div');
+    pill.id = `hcm-pill-${tempId}`;
+    pill.style.cssText = 'padding:8px 16px;border-radius:20px;border:1px solid black;background:black;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;';
+    pill.innerHTML = `<p class="fi" style="font-size:11px;font-weight:600;color:white;letter-spacing:0.5px;white-space:nowrap;">${valUpper}</p><span style="font-size:9px;color:rgba(255,255,255,0.4);flex-shrink:0;">✦</span>`;
+    container.appendChild(pill);
+  }
+
+  // Cap check — grey + button at 5
+  if (hcmCustomItems.length >= MAX_CUSTOM) {
+    if (addBtn) { addBtn.style.background = '#ccc'; addBtn.style.pointerEvents = 'none'; }
+    if (input)  { input.disabled = true; }
+  }
+
+  // Submit to backend
+  if (!supabaseReady()) return;
+  try {
+    await sb.rpc('submit_feature_item_candidate', {
+      p_restaurant_id: currentRestaurant.id,
+      p_mode:          mode,
+      p_session_id:    SESSION_ID,
+      p_item:          val,
+    });
+  } catch (err) {
+    console.warn('addFeatureItemCandidate failed:', err.message);
+  }
+}
+
+function closeHappyCardModal() {
+  const m = document.getElementById('happy-card-modal');
+  const s = document.getElementById('happy-card-modal-sheet');
+  m.style.background = 'rgba(0,0,0,0)';
+  s.style.transform  = 'translateY(100%)';
+  setTimeout(() => { m.style.display = 'none'; }, 400);
+}
+
+function openRestaurantWebsite() {
+  const url = currentRestaurant?.website;
+  if (url) window.open(url, '_blank');
+}
+
+function _updateNotifyRow() {
+  const row = document.getElementById('hcm-notify-row');
+  if (!row) return;
+  const sub = document.getElementById('hcm-notify-sub');
+  if (hcmMenuReported) {
+    row.style.opacity = '0.5';
+    row.style.cursor  = 'default';
+    row.style.pointerEvents = 'none';
+    row.querySelector('p').textContent = "Thanks — we'll take a look";
+    if (sub) sub.textContent = 'Report received';
+  } else {
+    row.style.opacity = '1';
+    row.style.cursor  = 'pointer';
+    row.style.pointerEvents = 'auto';
+    row.querySelector('p').textContent = 'Something new? Notify us';
+    if (sub) sub.textContent = 'Let us know if the menu has changed';
+  }
+}
+
+async function submitMenuReport() {
+  if (!currentRestaurant || hcmMenuReported || !supabaseReady()) return;
+  try {
+    const res = await sb.rpc('submit_menu_report', {
+      p_restaurant_id: currentRestaurant.id,
+      p_session_id:    SESSION_ID,
+    });
+    if (res?.ok) {
+      hcmMenuReported = true;
+      _updateNotifyRow();
+    }
+  } catch (err) {
+    console.warn('submitMenuReport failed:', err.message);
+  }
+}
+
+function _renderItemPills() {
+  const container = document.getElementById('hcm-item-pills');
+  if (!container) return;
+  if (hcmItems.length === 0) {
+    container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">No items listed yet.</p>';
+    return;
+  }
+  container.innerHTML = hcmItems.map(it => {
+    const isVoted = hcmVotedItems.has(it.id);
+    const disp = it.item.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); // Title Case display
+    const isUser = it.source === 'user';
+    return `<div id="hcm-pill-${it.id}" onclick="toggleItemVote('${it.id}')"
+      style="padding:8px 16px;border-radius:20px;border:1px solid black;background:${isVoted?'black':'white'};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
+      <p class="fi" style="font-size:11px;font-weight:600;color:${isVoted?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>${isUser ? `<span style="font-size:9px;color:${isVoted?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.25)'};flex-shrink:0;">✦</span>` : ''}
+    </div>`;
+  }).join('');
+
+  // Grey out unvoted at cap
+  _syncItemPillStates();
+}
+
+function _syncItemPillStates() {
+  const atCap = hcmVotedItems.size >= 3;
+  hcmItems.forEach(it => {
+    const pill = document.getElementById(`hcm-pill-${it.id}`);
+    if (!pill) return;
+    const isVoted = hcmVotedItems.has(it.id);
+    if (!isVoted) {
+      pill.style.opacity      = atCap ? '0.35' : '1';
+      pill.style.cursor       = atCap ? 'default' : 'pointer';
+      pill.style.pointerEvents = atCap ? 'none' : 'auto';
+    }
+  });
+}
+
+async function toggleItemVote(itemId) {
+  if (!currentRestaurant || !supabaseReady()) return;
+  const isVoted = hcmVotedItems.has(itemId);
+  const pill = document.getElementById(`hcm-pill-${itemId}`);
+
+  // Optimistic update
+  if (isVoted) {
+    hcmVotedItems.delete(itemId);
+    if (pill) { pill.style.background = 'white'; pill.querySelector('p').style.color = 'black'; }
+  } else {
+    if (hcmVotedItems.size >= 3) return;
+    hcmVotedItems.add(itemId);
+    if (pill) { pill.style.background = 'black'; pill.querySelector('p').style.color = 'white'; }
+  }
+  _syncItemPillStates();
+
+  // Persist
+  try {
+    let res;
+    if (isVoted) {
+      res = await sb.rpc('remove_item_vote', {
+        p_item_id:    itemId,
+        p_session_id: SESSION_ID,
+      });
+    } else {
+      res = await sb.rpc('submit_item_vote', {
+        p_restaurant_id: currentRestaurant.id,
+        p_item_id:       itemId,
+        p_session_id:    SESSION_ID,
+      });
+    }
+    if (res && !res.ok) {
+      // Revert optimistic update on error
+      if (isVoted) {
+        hcmVotedItems.add(itemId);
+        if (pill) { pill.style.background = 'black'; pill.querySelector('p').style.color = 'white'; }
+      } else {
+        hcmVotedItems.delete(itemId);
+        if (pill) { pill.style.background = 'white'; pill.querySelector('p').style.color = 'black'; }
+      }
+      _syncItemPillStates();
+      if (res.error === 'ITEM_VOTE_RATE_LIMIT_EXCEEDED') _showVoteToast('Daily vote limit reached');
+      if (res.error === 'ITEM_CAP_EXCEEDED') _showVoteToast('Max 3 favourites per restaurant');
+    }
+  } catch (err) {
+    console.warn('toggleItemVote failed:', err.message);
+  }
 }
 
 function closeReminderModal() {
@@ -1757,6 +2229,47 @@ function closeReminderModal() {
   m.style.background = 'rgba(0,0,0,0)';
   s.style.transform = 'translateY(100%)';
   setTimeout(() => { m.style.display = 'none'; }, 400);
+}
+
+function setReminderBefore(minsBefore) {
+  if (!currentRestaurant) return;
+  const r = currentRestaurant;
+  const h = new Date().getHours() + new Date().getMinutes() / 60;
+  const wins = getTodayHHWindows(r);
+  let targetStr = null;
+  for (const w of wins) {
+    if (h < w.start) {
+      const t = w.start - minsBefore / 60;
+      const hh = Math.floor(t > 0 ? t : t + 24);
+      const mm = Math.round((t % 1) * 60);
+      const h12 = hh % 12 || 12;
+      const ap = hh >= 12 ? 'pm' : 'am';
+      targetStr = mm > 0 ? `${h12}:${String(mm).padStart(2,'0')} ${ap}` : `${h12} ${ap}`;
+      break;
+    }
+  }
+  closeReminderModal();
+  const label = targetStr ? `at ${targetStr}` : `${minsBefore} min from now`;
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
+  toast.textContent = `REMINDER SET — ${label.toUpperCase()}`;
+  document.querySelector('.phone').appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
+
+
+function setReminderAtTime() {
+  const inp = document.getElementById('reminder-time-input');
+  if (!inp || !inp.value || !currentRestaurant) return;
+  const [hh, mm] = inp.value.split(':');
+  const h12 = parseInt(hh) % 12 || 12;
+  const ap = parseInt(hh) >= 12 ? 'pm' : 'am';
+  closeReminderModal();
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
+  toast.textContent = `REMINDER SET — ${h12}:${mm} ${ap.toUpperCase()}`;
+  document.querySelector('.phone').appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
 }
 
 function setReminderWhen(when) {
@@ -2668,6 +3181,13 @@ function updateHappyCard(r) {
     if (hhClockInterval) { clearInterval(hhClockInterval); hhClockInterval = null; }
     updateHHClock(r);
     hhClockInterval = setInterval(() => updateHHClock(r), 1000);
+    // Hide + button for HH mode
+    const _hhPlus = document.getElementById('happy-card-plus');
+    // HH: original pill, no + button
+    const _hhOrig  = document.getElementById('reminder-original');
+    const _hhFused = document.getElementById('reminder-fused-wrap');
+    if (_hhOrig)  _hhOrig.style.display  = 'flex';
+    if (_hhFused) _hhFused.style.display = 'none';
     return; // ← nothing below runs for HH mode
   }
 
@@ -2797,6 +3317,32 @@ function updateHappyCard(r) {
     if (elLabel)  { elLabel.textContent = 'NEIGHBOURHOOD SPOT'; elLabel.style.textTransform = 'uppercase'; } // always fixed — not from SQL
     if (elDetail) elDetail.style.display = 'none';
     if (elTimes)  elTimes.textContent  = r.special_detail || '';
+  }
+
+  // Show + button for eats/bread/coffee/carbs, hide for locals
+  const _plusBtn = document.getElementById('happy-card-plus');
+  if (_plusBtn) {
+    const _showPlus = ['eats','bread','coffee','carbs'].includes(mode);
+    const _origPill  = document.getElementById('reminder-original');
+    const _fusedWrap = document.getElementById('reminder-fused-wrap');
+    if (_showPlus) {
+      // eats/bread/coffee/carbs — fused shape with + button
+      if (_origPill)  _origPill.style.display  = 'none';
+      if (_fusedWrap) _fusedWrap.style.display  = 'block';
+    } else {
+      // locals — original pill, no +
+      if (_origPill)  _origPill.style.display  = 'flex';
+      if (_fusedWrap) _fusedWrap.style.display  = 'none';
+    }
+    // _plusBtn is inside the fused wrap — always visible there
+    if (_plusBtn) _plusBtn.style.display = 'flex';
+  }
+
+  // Preload feature items / menu report status for this restaurant
+  if (mode === 'eats') {
+    loadMenuReportStatus(r.id);
+  } else if (['bread','coffee','carbs'].includes(mode)) {
+    loadFeatureItems(r.id, mode);
   }
 }
 
@@ -3839,14 +4385,56 @@ const container   = document.getElementById('tags-container');
     wrapper.dataset.entryIdx = cardIdx;
     wrapper.dataset.label = b.label;
     if (isInactive) wrapper.dataset.inactive = '1';
-    wrapper.style.cssText = `position:absolute;left:${b.left}px;top:${b.top}px;width:${b.size}px;height:${b.size}px;border-radius:50%;cursor:${isInactive?'default':'pointer'};transition:transform 0.2s,outline 0.2s,opacity 0.2s;animation:bubbleDrift${driftIdx} ${driftDur}s ease-in-out ${driftDelay}s infinite;opacity:${isInactive?'0':'1'};pointer-events:${isInactive?'none':'auto'};${isInactive?'display:none;':''}`;
+    // Wrapper is the single animated element — display:flex centers the label
+    // as a layout child so it moves with the wrapper as one unit.
+    // bgDiv is position:absolute (background paint only, not a motion layer).
+    // label is a normal flex child — no separate position/transform.
+    wrapper.style.cssText = [
+      `position:absolute`,
+      `left:${b.left}px`,
+      `top:${b.top}px`,
+      `width:${b.size}px`,
+      `height:${b.size}px`,
+      `border-radius:50%`,
+      `display:flex`,
+      `align-items:center`,
+      `justify-content:center`,
+      `cursor:${isInactive ? 'default' : 'pointer'}`,
+      `transition:transform 0.2s,outline 0.2s,opacity 0.2s`,
+      `animation:bubbleDrift${driftIdx} ${driftDur}s ease-in-out ${driftDelay}s infinite`,
+      `opacity:${isInactive ? '0' : '1'}`,
+      `pointer-events:${isInactive ? 'none' : 'auto'}`,
+      `will-change:transform`,
+      `transform:translate3d(0,0,0)`,
+      isInactive ? 'display:none' : '',
+    ].filter(Boolean).join(';');
 
     const bgDiv = document.createElement('div');
+    // Background layer — absolutely fills the wrapper, no animation of its own
     bgDiv.style.cssText = `position:absolute;inset:0;border-radius:50%;filter:blur(2px);background:${grad};`;
     wrapper.appendChild(bgDiv);
 
     const lbl = document.createElement('p');
-    lbl.style.cssText = `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Afacad',sans-serif;font-weight:600;font-size:14px;line-height:1.3;color:white;text-align:center;text-transform:capitalize;font-style:normal;padding:8px;word-break:normal;overflow-wrap:normal;hyphens:none;`;
+    // Label is a flex child — centered by parent flex layout, not by absolute positioning
+    // This locks the text to the same compositing layer as the wrapper animation
+    lbl.style.cssText = [
+      `position:relative`,          // in normal flex flow, above bgDiv z-order
+      `z-index:1`,
+      `font-family:'Afacad',sans-serif`,
+      `font-weight:600`,
+      `font-size:14px`,
+      `line-height:1.3`,
+      `color:white`,
+      `text-align:center`,
+      `text-transform:capitalize`,
+      `font-style:normal`,
+      `padding:8px`,
+      `word-break:normal`,
+      `overflow-wrap:normal`,
+      `hyphens:none`,
+      `pointer-events:none`,
+      `max-width:100%`,
+    ].join(';');
     lbl.textContent = b.label;
     wrapper.appendChild(lbl);
 
@@ -4275,7 +4863,6 @@ function onSpecialtyInput(val) {
       onmouseenter="this.style.background='#f7f7f7'" onmouseleave="this.style.background=''">
       <div>
         <p style="font-family:'Afacad',sans-serif;font-weight:600;font-size:13px;letter-spacing:1px;color:#111;line-height:1.2;">${specialty}</p>
-        ${cuisine ? `<p style="font-family:'Inter',sans-serif;font-size:10px;color:#999;letter-spacing:0.5px;">in ${cuisine}</p>` : ''}
       </div>
     </div>`).join('');
   box.style.display = 'block';
@@ -4661,49 +5248,97 @@ const suggestDropdown = document.getElementById('search-suggest-dropdown');
 
 function buildSuggestions(q) {
   const raw = q.trim().toLowerCase();
-  if (!raw) { hideSuggestions(); return; }
 
-  const results = [];
+  // Require at least 2 characters before showing anything
+  if (raw.length < 2) { hideSuggestions(); return; }
 
-  // ① Restaurant name matches (exact DB only)
-  const restMatches = restaurants.filter(r =>
-    r.name.toLowerCase().includes(raw)
-  ).slice(0, 3);
-  if (restMatches.length) {
-    results.push({ type: 'header', label: 'Restaurants' });
-    restMatches.forEach(r => results.push({ type: 'restaurant', r }));
+  const isShort = raw.length === 2;          // 2-char: prefix-only, tighter limits
+  const TOTAL_CAP = isShort ? 6 : 8;         // max items across all categories
+
+  // ── Scoring helpers ──────────────────────────────────────────────────
+  // Returns a match score for a string against raw input.
+  // Higher = stronger match. 0 = no match.
+  function score(str) {
+    const s = str.toLowerCase();
+    if (s === raw)              return 100;   // exact
+    if (s.startsWith(raw))     return 80;    // strong prefix
+    if (s.includes(' ' + raw)) return 60;    // word-boundary prefix
+    if (isShort)               return 0;     // at 2 chars, only prefix matches
+    if (s.includes(raw))       return 30;    // substring (3+ chars only)
+    return 0;
   }
 
-  // ② Specialty matches — "Taco in Mexican", "Ramen in Japanese" etc.
-  const specialtyHits = new Map(); // specialty label → cuisine
+  // ── Detect strong restaurant prefix match ────────────────────────────
+  // If input clearly targets a restaurant name, promote it above others
+  const restCandidates = restaurants
+    .map(r => ({ r, s: score(r.name) }))
+    .filter(x => x.s > 0)
+    .sort((a, b) => b.s - a.s)
+    .slice(0, 3);
+  const strongRestMatch = restCandidates.length > 0 && restCandidates[0].s >= 80;
+
+  // ── Specialties ──────────────────────────────────────────────────────
+  const specialtyHits = new Map();
   for (const [variant, { specialty, cuisine }] of Object.entries(SPECIALTY_CUISINE_MAP)) {
-    if (variant.includes(raw) || specialty.toLowerCase().includes(raw)) {
-      if (!specialtyHits.has(specialty)) specialtyHits.set(specialty, cuisine);
+    const vs = Math.max(score(variant), score(specialty));
+    if (vs > 0 && !specialtyHits.has(specialty)) {
+      specialtyHits.set(specialty, { cuisine, vs });
     }
   }
-  const specialtyMatches = [...specialtyHits.entries()].slice(0, 3);
-  if (specialtyMatches.length) {
-    results.push({ type: 'header', label: 'Dishes & Drinks' });
-    specialtyMatches.forEach(([specialty, cuisine]) =>
-      results.push({ type: 'specialty', specialty, cuisine })
-    );
-  }
+  const specialtyMatches = [...specialtyHits.entries()]
+    .sort((a, b) => b[1].vs - a[1].vs)
+    .slice(0, isShort ? 3 : 4)
+    .map(([specialty, { cuisine }]) => ({ type: 'specialty', specialty, cuisine }));
 
-  // ③ Vibe matches — use VIBE_CATEGORIES as the complete source of truth
+  // ── Vibes ────────────────────────────────────────────────────────────
   const vibeLabels = [...new Set(Object.values(VIBE_CATEGORIES).flat())];
-  const vibeMatches = vibeLabels.filter(v => v.toLowerCase().includes(raw)).slice(0, 4);
-  if (vibeMatches.length) {
-    results.push({ type: 'header', label: 'Vibes' });
-    vibeMatches.forEach(v => results.push({ type: 'vibe', label: v }));
+  const vibeMatches = vibeLabels
+    .map(v => ({ v, s: score(v) }))
+    .filter(x => x.s > 0)
+    .sort((a, b) => b.s - a.s)
+    .slice(0, isShort ? 2 : 3)
+    .map(x => ({ type: 'vibe', label: x.v }));
+
+  // ── Restaurants ──────────────────────────────────────────────────────
+  const restMatches = restCandidates
+    .slice(0, isShort ? 2 : 3)
+    .map(x => ({ type: 'restaurant', r: x.r, s: x.s }));
+
+  // ── Cuisines ─────────────────────────────────────────────────────────
+  const allCuisines = Object.values(CUISINES_BY_CONTINENT).flat();
+  const cuisineMatches = allCuisines
+    .map(c => ({ c, s: score(c) }))
+    .filter(x => x.s > 0)
+    .sort((a, b) => b.s - a.s)
+    .slice(0, isShort ? 1 : 2)
+    .map(x => ({ type: 'cuisine', label: x.c }));
+
+  // ── Build ordered result list ─────────────────────────────────────────
+  // Default order: specialties → vibes → restaurants → cuisines
+  // Exception: strong restaurant prefix match → restaurants first
+  let sections;
+  if (strongRestMatch && restMatches[0].s >= 80 && specialtyMatches.length === 0) {
+    sections = [restMatches, specialtyMatches, vibeMatches, cuisineMatches];
+  } else {
+    sections = [specialtyMatches, vibeMatches, restMatches, cuisineMatches];
   }
 
-  // ④ Cuisine matches from CUISINES_BY_CONTINENT (all categories including Beverages)
-  const allCuisines = Object.values(CUISINES_BY_CONTINENT).flat();
-  const cuisineMatches = allCuisines.filter(c => c.toLowerCase().includes(raw)).slice(0, 3);
-  if (cuisineMatches.length) {
-    results.push({ type: 'header', label: 'Cuisines' });
-    cuisineMatches.forEach(c => results.push({ type: 'cuisine', label: c }));
-  }
+  // Flatten with section headers, respecting total cap
+  const results = [];
+  let itemCount = 0;
+  const sectionLabels = strongRestMatch && restMatches[0]?.s >= 80 && specialtyMatches.length === 0
+    ? ['Restaurants', 'Dishes & Drinks', 'Vibes', 'Cuisines']
+    : ['Dishes & Drinks', 'Vibes', 'Restaurants', 'Cuisines'];
+
+  sections.forEach((section, i) => {
+    if (!section.length || itemCount >= TOTAL_CAP) return;
+    const room = TOTAL_CAP - itemCount;
+    const items = section.slice(0, room);
+    if (!items.length) return;
+    results.push({ type: 'header', label: sectionLabels[i] });
+    items.forEach(item => results.push(item));
+    itemCount += items.length;
+  });
 
   if (!results.length) { hideSuggestions(); return; }
 
@@ -4730,7 +5365,6 @@ function buildSuggestions(q) {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
         <div>
           <p style="font-family:'Afacad',sans-serif;font-weight:600;font-size:13px;letter-spacing:1px;color:#111;line-height:1.2;">${item.specialty}</p>
-          ${item.cuisine ? `<p style="font-family:'Inter',sans-serif;font-size:10px;color:#999;letter-spacing:0.5px;">in ${item.cuisine}</p>` : ''}
         </div>
       </div>`;
     }
@@ -4967,18 +5601,14 @@ function populatePage3(r) {
   p3UpdateArrows();
   initP3PhotoSwipe();
 
-  // 1. Vibes: matched first, fill to 3 with restaurant fallbacks
-  const userVibes = getSelectedVibeLabels();
-  const rTags = (r.tags || []).map(t => t.toLowerCase());
-  const matched = userVibes.filter(v => rTags.some(t => t.includes(v) || v.includes(t)));
-  const fallbacks = (RESTAURANT_VIBES[r.id] || r.tags || [])
-    .map(v => v.toLowerCase())
-    .filter(v => !matched.includes(v));
-  const display = [...matched, ...fallbacks].slice(0, 3);
-  while (display.length < 3) display.push('');
+  // 1. Vibes: r.tags is the top 3 display vibes — source of truth from DB (resolver-maintained)
+  // r.tags = top 3 vibes by net community score, written by resolve_restaurant_vibes()
+  // Fallback to r.vibes if tags not yet set, then empty
+  const displayTags = (r.tags && r.tags.length ? r.tags : r.vibes || []).slice(0, 3);
+  while (displayTags.length < 3) displayTags.push('');
   ['p3-vibe-1','p3-vibe-2','p3-vibe-3'].forEach((id, i) => {
     const el = document.getElementById(id);
-    if (el) el.textContent = display[i] || '';
+    if (el) el.textContent = (displayTags[i] || '').toLowerCase();
   });
 
   // 2. Score + ring
@@ -4987,13 +5617,18 @@ function populatePage3(r) {
   if (sc) sc.textContent = score;
   p3DrawRing(score);
 
-  // 3. Votes — derived from score
-  const totalVotes = Math.round(r.vibe_score * 3.2); // scale to plausible community size
-  const upVotes = Math.round(totalVotes * (r.vibe_score / 100));
-  const downVotes = totalVotes - upVotes;
-  if (!p3Votes[r.id]) p3Votes[r.id] = { up: upVotes, down: downVotes, userVote: null };
-  else { p3Votes[r.id].up = upVotes; p3Votes[r.id].down = downVotes; }
+  // 3. Votes — derived from score; preserve existing userVote and adjusted counts
+  const totalVotes = Math.round(r.vibe_score * 3.2);
+  const upVotes    = Math.round(totalVotes * (r.vibe_score / 100));
+  const downVotes  = totalVotes - upVotes;
+  if (!p3Votes[r.id]) {
+    // First visit — initialise from derived counts
+    p3Votes[r.id] = { up: upVotes, down: downVotes, userVote: null, baseUp: upVotes, baseDn: downVotes };
+  }
+  // Render immediately with preserved/derived state
   p3RenderVotes(r.id);
+  // Then load real counts from Supabase (async — updates UI when ready)
+  loadVotesForRestaurant(r.id);
 
   // 4. Cuisine: first letter upper, rest lower, stacked
   //    First line offset 2 chars right of second line, whole block centered
@@ -5065,6 +5700,8 @@ function populatePage3(r) {
 
   // Transport times
   updateTransportTimes(r);
+  // Load fresh vibes/tags/candidates from Supabase
+  loadVibesForRestaurant(r.id);
 
   // Community quotes
   initCommunityQuotes(r);
@@ -5159,33 +5796,168 @@ function populatePage3(r) {
   const ad = document.getElementById('p3-address'); if (ad) ad.textContent = r.address;
 }
 
+// ── Vote backend helpers ─────────────────────────────────────────────
+// Loads real vote counts + this session's vote from Supabase.
+// Updates p3Votes[restaurantId] and re-renders the vote UI.
+async function loadVotesForRestaurant(restaurantId) {
+  if (!supabaseReady()) return;
+  try {
+    // Fetch weighted aggregate via RPC
+    const [scoreRows, sessionRows] = await Promise.all([
+      sb.rpc('get_restaurant_vote_score', { p_restaurant_id: restaurantId }),
+      // Fetch this session's own vote separately
+      sb.from('restaurant_votes').then(c => c.selectWhere(
+        { restaurant_id: restaurantId, session_id: SESSION_ID },
+        'vote'
+      )),
+    ]);
+
+    const agg       = Array.isArray(scoreRows) ? scoreRows[0] : scoreRows;
+    const upRaw     = parseInt(agg?.up_raw    || 0);
+    const downRaw   = parseInt(agg?.down_raw  || 0);
+    const score     = agg?.score != null ? parseFloat(agg.score) : null;
+    const userVote  = sessionRows?.length ? sessionRows[0].vote : null;
+
+    if (!p3Votes[restaurantId]) {
+      p3Votes[restaurantId] = {
+        up: upRaw, down: downRaw,
+        userVote, score,
+        baseUp: upRaw, baseDn: downRaw, baseScore: score,
+      };
+    } else {
+      Object.assign(p3Votes[restaurantId], {
+        up: upRaw, down: downRaw,
+        userVote, score,
+        baseUp: upRaw, baseDn: downRaw, baseScore: score,
+      });
+    }
+    p3RenderVotes(restaurantId);
+  } catch (err) {
+    console.warn('loadVotesForRestaurant failed:', err.message);
+  }
+}
+
 function p3RenderVotes(id) {
   const v = p3Votes[id];
   if (!v) return;
+
   const upCount = document.getElementById('p3-vote-up-count');
   if (upCount) upCount.textContent = v.up;
   const dnCount = document.getElementById('p3-vote-down-count');
   if (dnCount) dnCount.textContent = v.down || 0;
-  const up = document.getElementById('p3-thumb-up');
-  const dn = document.getElementById('p3-thumb-down');
-  if (up) up.style.opacity = v.userVote === 'up' ? '1' : '0.7';
-  if (dn) dn.style.opacity = v.userVote === 'down' ? '1' : '0.7';
+
+  // Thumb visual state — full opacity when voted, dimmed otherwise
+  const upEl = document.getElementById('p3-thumb-up');
+  const dnEl = document.getElementById('p3-thumb-down');
+  if (upEl) upEl.style.opacity = v.userVote === 'up'   ? '1' : '0.7';
+  if (dnEl) dnEl.style.opacity = v.userVote === 'down' ? '1' : '0.7';
+
+  // Score: use backend weighted score if available, else derive from raw counts
+  {
+    let newScore;
+    if (v.score != null) {
+      // Backend-computed weighted score (from get_restaurant_vote_score RPC)
+      newScore = Math.min(100, Math.max(0, Math.round(v.score)));
+    } else {
+      // Optimistic local estimate while backend loads
+      const totalNow = v.up + (v.down || 0);
+      if (totalNow > 0) {
+        newScore = Math.min(100, Math.max(0, Math.round(v.up / totalNow * 100)));
+      } else if (v.baseScore != null) {
+        newScore = Math.round(v.baseScore);
+      } else if (v.baseUp != null) {
+        const totalBase = (v.baseUp || 0) + (v.baseDn || 0);
+        newScore = totalBase > 0
+          ? Math.min(100, Math.max(0, Math.round(v.baseUp / totalBase * 100)))
+          : 0;
+      }
+    }
+    if (newScore != null) {
+      const sc = document.getElementById('p3-score');
+      if (sc) sc.textContent = newScore;
+      p3DrawRing(newScore);
+    }
+  }
 }
 
-function p3Vote(dir) {
+async function p3Vote(dir) {
   if (!currentRestaurant) return;
   const id = currentRestaurant.id;
-  if (!p3Votes[id]) p3Votes[id] = { up: 0, down: 0, userVote: null };
+
+  // Initialise from restaurant if not yet set
+  if (!p3Votes[id]) {
+    const total = Math.round(currentRestaurant.vibe_score * 3.2);
+    const up    = Math.round(total * (currentRestaurant.vibe_score / 100));
+    const dn    = total - up;
+    p3Votes[id] = { up, down: dn, userVote: null, score: null, baseUp: up, baseDn: dn, baseScore: null };
+  }
   const v = p3Votes[id];
-  if (v.userVote === dir) {
-    v[dir]--;
+
+  // Snapshot for revert on failure
+  const snapshot = { up: v.up, down: v.down, userVote: v.userVote, score: v.score };
+
+  // ── Optimistic update ──────────────────────────────────────────
+  const isUndo = v.userVote === dir;
+  if (isUndo) {
+    v[dir] = Math.max(0, v[dir] - 1);
     v.userVote = null;
   } else {
-    if (v.userVote) v[v.userVote]--;
+    if (v.userVote) v[v.userVote] = Math.max(0, v[v.userVote] - 1);
     v[dir]++;
     v.userVote = dir;
   }
+  // Clear cached weighted score — will be recalculated from raw counts until backend confirms
+  v.score = null;
   p3RenderVotes(id);
+
+  if (!supabaseReady()) return;
+
+  // ── Persist ────────────────────────────────────────────────────
+  // Current setup: all users are anonymous (no Supabase Auth yet)
+  // Future: check auth.user() here and route authenticated users to direct RLS path
+  const voteParam = isUndo ? 'remove' : dir;
+  try {
+    const result = await sb.rpc('submit_anon_vote', {
+      p_restaurant_id: id,
+      p_session_id:    SESSION_ID,
+      p_vote:          voteParam,
+    });
+
+    if (!result.ok) {
+      // Handle known errors
+      if (result.error === 'VOTE_RATE_LIMIT_EXCEEDED') {
+        _showVoteToast('Daily vote limit reached');
+      } else {
+        console.warn('p3Vote RPC error:', result.error);
+      }
+      // Revert optimistic update
+      v.up       = snapshot.up;
+      v.down     = snapshot.down;
+      v.userVote = snapshot.userVote;
+      v.score    = snapshot.score;
+      p3RenderVotes(id);
+      return;
+    }
+
+    // Success — reload real weighted score from backend
+    await loadVotesForRestaurant(id);
+
+  } catch (err) {
+    console.warn('p3Vote failed — reverting:', err.message);
+    v.up       = snapshot.up;
+    v.down     = snapshot.down;
+    v.userVote = snapshot.userVote;
+    v.score    = snapshot.score;
+    p3RenderVotes(id);
+  }
+}
+
+function _showVoteToast(msg) {
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:1.5px;z-index:300;white-space:nowrap;pointer-events:none;';
+  toast.textContent = msg.toUpperCase();
+  document.querySelector('.phone').appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
 }
 
 // ── P3 dedicated vibe modal state ─────────────────────────────────
@@ -5193,46 +5965,122 @@ let p3vmOffVibes = new Set();   // current vibes user marked as "off"
 let p3vmAddVibes = new Set();   // vibes picked from "more vibes"
 let p3vmCustomVibes = [];       // custom typed vibes
 
+// ── Vibe state for current restaurant ────────────────────────────────
+// Tracks candidates loaded from Supabase and prior signals this session sent
+let p3vmCandidates = [];       // [{vibe, source}] from restaurant_vibe_candidates
+const p3vmPriorSignals = {};   // { restaurantId: { vibe: 'off'|'support' } }
+
+// Loads fresh vibes, tags, and candidates from Supabase for a restaurant.
+// Updates currentRestaurant in-place and re-renders P3 vibe tags.
+async function loadVibesForRestaurant(restaurantId) {
+  if (!supabaseReady()) return;
+  try {
+    // Fetch vibes/tags, candidates, and this session's prior signals in parallel
+    const [rRows, allCands, signals] = await Promise.all([
+      sb.from('restaurants').then(c => c.selectWhere({ id: restaurantId }, 'vibes,tags')),
+      sb.from('restaurant_vibe_candidates').then(c => c.selectWhere({ restaurant_id: restaurantId }, 'vibe,source,session_id_submitted')),
+      sb.from('restaurant_vibe_feedback').then(c => c.selectWhere({ restaurant_id: restaurantId, session_id: SESSION_ID }, 'vibe,action')),
+    ]);
+
+    // Update restaurant vibes + tags
+    if (rRows && rRows[0]) {
+      currentRestaurant.vibes = rRows[0].vibes || [];
+      currentRestaurant.tags  = rRows[0].tags  || [];
+      const displayTags = (currentRestaurant.tags.length
+        ? currentRestaurant.tags
+        : currentRestaurant.vibes
+      ).slice(0, 3);
+      ['p3-vibe-1','p3-vibe-2','p3-vibe-3'].forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = (displayTags[i] || '').toLowerCase();
+      });
+    }
+
+    // Filter candidates:
+    // - source='system' → show to everyone
+    // - source='user'   → only show to the session that submitted it
+    p3vmCandidates = (allCands || []).filter(c =>
+      c.source === 'system' ||
+      (c.source === 'user' && c.session_id_submitted === SESSION_ID)
+    );
+
+    // Restore prior signals for this session so modal shows correct state on re-open
+    if (!p3vmPriorSignals[restaurantId]) p3vmPriorSignals[restaurantId] = {};
+    (signals || []).forEach(row => {
+      p3vmPriorSignals[restaurantId][row.vibe] = row.action;
+    });
+
+  } catch (err) {
+    console.warn('loadVibesForRestaurant failed:', err.message);
+  }
+}
+
 function p3OpenAddVibe() {
   if (!currentRestaurant) return;
   p3vmOffVibes = new Set();
   p3vmAddVibes = new Set();
   p3vmCustomVibes = [];
 
-  // Section 1: Current vibes — same order as displayed on P3 (matched first, then fallbacks)
-  // p3-vibe-1 = top/left, p3-vibe-2 = middle, p3-vibe-3 = bottom/right
-  const rTags = (currentRestaurant.tags || []).map(t => t.toLowerCase());
-  const userVibesNow = getSelectedVibeLabels();
-  const matchedNow = userVibesNow.filter(v => rTags.some(t => t.includes(v) || v.includes(t)));
-  const fallbacksNow = (RESTAURANT_VIBES[currentRestaurant.id] || currentRestaurant.tags || [])
-    .map(v => v.toLowerCase())
-    .filter(v => !matchedNow.includes(v));
-  const current = [...matchedNow, ...fallbacksNow].slice(0, 3);
+  const r = currentRestaurant;
+  const rid = r.id;
+
+  // Section 1: Current vibes — exactly the 3 shown on P3 (from r.tags)
+  // Users correct what they see on the card, not the full backend list
+  const current = (r.tags && r.tags.length ? r.tags : r.vibes || []).slice(0, 3);
+  const priorSignals = p3vmPriorSignals[rid] || {};
+
   const currentEl = document.getElementById('p3vm-current');
-  currentEl.innerHTML = current.map(v =>
-    `<div id="p3vm-curr-${v.replace(/[\s&]/g,'_')}" onclick="toggleP3OffVibe('${v.replace(/'/g,"\'")}',this)"
-      style="padding:6px 14px;border-radius:20px;border:1px solid black;background:black;cursor:pointer;transition:all 0.15s;">
-      <p class="fi" style="font-size:11px;color:white;letter-spacing:0.5px;white-space:nowrap;">${v}</p>
-    </div>`
-  ).join('');
+  currentEl.innerHTML = current.map(v => {
+    const isOff = priorSignals[v.toLowerCase()] === 'off';
+    return `<div id="p3vm-curr-${v.replace(/[\s&]/g,'_')}" onclick="toggleP3OffVibe('${v.replace(/'/g,"\'")}',this)"
+      style="padding:6px 14px;border-radius:20px;border:1px solid ${isOff?'#bbb':'black'};background:${isOff?'#ccc':'black'};opacity:${isOff?'0.5':'1'};cursor:pointer;transition:all 0.15s;">
+      <p class="fi" style="font-size:11px;color:${isOff?'#666':'white'};letter-spacing:0.5px;white-space:nowrap;">${v}</p>
+    </div>`;
+  }).join('');
 
-  // Section 2: More vibes — all VIBE_CATEGORIES vibes not already on restaurant
+  // Pre-populate off set from prior signals
+  current.forEach(v => {
+    if (priorSignals[v.toLowerCase()] === 'off') p3vmOffVibes.add(v);
+  });
+
+  // Section 2: More vibes — from p3vmCandidates (loaded from Supabase)
+  // Falls back to VIBE_CATEGORIES if candidates not yet loaded
   const currentLower = current.map(v => v.toLowerCase());
-  const allVibes = [...new Set(Object.values(VIBE_CATEGORIES).flat())];
-  const moreVibes = allVibes.filter(v => !currentLower.includes(v.toLowerCase()));
   const moreEl = document.getElementById('p3vm-more');
-  moreEl.innerHTML = moreVibes.map(v =>
-    `<div id="p3vm-more-${v.replace(/[\s&]/g,'_')}" onclick="toggleP3AddVibe('${v.replace(/'/g,"\'")}',this)"
-      style="padding:6px 14px;border-radius:20px;border:1px solid black;background:white;cursor:pointer;transition:all 0.15s;">
-      <p class="fi" style="font-size:11px;color:black;letter-spacing:0.5px;white-space:nowrap;">${v}</p>
-    </div>`
-  ).join('');
 
-  // Reset custom input
+  if (p3vmCandidates.length > 0) {
+    moreEl.innerHTML = p3vmCandidates.map(c => {
+      const v    = c.vibe; // lowercase from DB — used as key
+      const disp = v.replace(/\b\w/g, ch => ch.toUpperCase()); // display: Title Case
+      const isSupported = priorSignals[v] === 'support';
+      const isUserAdded = c.source === 'user'; // show ✦ for unreviewed user submissions
+      return `<div id="p3vm-more-${v.replace(/[\s&]/g,'_')}" onclick="toggleP3AddVibe('${v.replace(/'/g,"\'")}',this)"
+        style="padding:6px 14px;border-radius:20px;border:1px solid black;background:${isSupported?'black':'white'};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
+        <p class="fi" style="font-size:11px;color:${isSupported?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>${isUserAdded ? `<span style="font-size:9px;color:${isSupported?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.25)'};flex-shrink:0;">✦</span>` : ''}
+      </div>`;
+    }).join('');
+    // Pre-populate support set from prior signals
+    p3vmCandidates.forEach(c => {
+      if (priorSignals[c.vibe] === 'support') p3vmAddVibes.add(c.vibe);
+    });
+  } else {
+    // Fallback to VIBE_CATEGORIES if Supabase candidates not loaded
+    const allVibes = [...new Set(Object.values(VIBE_CATEGORIES).flat())];
+    const moreVibes = allVibes.filter(v => !currentLower.includes(v.toLowerCase()));
+    moreEl.innerHTML = moreVibes.map(v =>
+      `<div id="p3vm-more-${v.replace(/[\s&]/g,'_')}" onclick="toggleP3AddVibe('${v.replace(/'/g,"\'")}',this)"
+        style="padding:6px 14px;border-radius:20px;border:1px solid black;background:white;cursor:pointer;transition:all 0.15s;">
+        <p class="fi" style="font-size:11px;color:black;letter-spacing:0.5px;white-space:nowrap;">${v}</p>
+      </div>`
+    ).join('');
+  }
+
+  // Reset custom input and placeholder
   const input = document.getElementById('p3vm-custom-input');
-  if (input) input.value = '';
-  document.getElementById('p3vm-custom-wrap').style.display = 'none';
-  document.getElementById('p3vm-custom-chips').innerHTML = '';
+  if (input) { input.value = ''; input.disabled = false; }
+  const chips = document.getElementById('p3vm-custom-chips');
+  if (chips) chips.innerHTML = '';
+  _updateCustomPlaceholder();
 
   const m = document.getElementById('p3-vibe-modal');
   const s = document.getElementById('p3-vibe-modal-sheet');
@@ -5251,8 +6099,57 @@ function closeP3VibeModal() {
   setTimeout(() => { m.style.display = 'none'; }, 400);
 }
 
+// ── Immediate vibe signal — fires on every tap, no Done needed ───────
+async function _submitVibeSignal(vibe, action) {
+  if (!currentRestaurant || !supabaseReady()) return;
+  const rid = currentRestaurant.id;
+  if (!p3vmPriorSignals[rid]) p3vmPriorSignals[rid] = {};
+  const vibeLC = vibe.toLowerCase();
+  const prior  = p3vmPriorSignals[rid][vibeLC];
+
+  // Determine actual action — toggle off if same signal already sent
+  let rpcAction = action;
+  if (action === 'off'     && prior === 'off')     rpcAction = 'remove:off';
+  if (action === 'support' && prior === 'support') rpcAction = 'remove:support';
+
+  try {
+    const res = await sb.rpc('submit_vibe_feedback', {
+      p_restaurant_id: rid,
+      p_session_id:    SESSION_ID,
+      p_vibe:          vibeLC,
+      p_action:        rpcAction,
+    });
+    if (res?.ok) {
+      if (rpcAction.startsWith('remove:')) delete p3vmPriorSignals[rid][vibeLC];
+      else p3vmPriorSignals[rid][vibeLC] = action;
+      // Reload tags after signal so P3 reflects resolver output
+      loadVibesForRestaurant(rid);
+    } else if (res?.error === 'VIBE_RATE_LIMIT_EXCEEDED') {
+      _showVoteToast('Vibe feedback limit reached');
+    }
+  } catch (err) {
+    console.warn('_submitVibeSignal failed:', err.message);
+  }
+}
+
+// Fires submit_vibe_candidate immediately when user adds a custom vibe
+async function _submitVibeCandidate(vibe) {
+  if (!currentRestaurant || !supabaseReady()) return;
+  try {
+    const res = await sb.rpc('submit_vibe_candidate', {
+      p_restaurant_id: currentRestaurant.id,
+      p_session_id:    SESSION_ID,
+      p_vibe:          vibe,
+    });
+    if (res?.error === 'CANDIDATE_RATE_LIMIT_EXCEEDED') {
+      _showVoteToast('Candidate limit reached');
+    }
+  } catch (err) {
+    console.warn('_submitVibeCandidate failed:', err.message);
+  }
+}
+
 function toggleP3OffVibe(vibe, el) {
-  // Toggle: if already marked off (greyed) → restore; if active (black) → grey it out
   if (p3vmOffVibes.has(vibe)) {
     p3vmOffVibes.delete(vibe);
     el.style.background = 'black';
@@ -5266,18 +6163,25 @@ function toggleP3OffVibe(vibe, el) {
     el.style.borderColor = '#bbb';
     el.querySelector('p').style.color = '#666';
   }
+  // Fire immediately — no Done needed
+  _submitVibeSignal(vibe, 'off');
 }
 
 function toggleP3AddVibe(vibe, el) {
+  const isUserAdded = !!el.querySelector('span');
   if (p3vmAddVibes.has(vibe)) {
     p3vmAddVibes.delete(vibe);
     el.style.background = 'white';
+    el.style.borderColor = 'black';
     el.querySelector('p').style.color = 'black';
+    if (isUserAdded) el.querySelector('span').style.color = 'rgba(0,0,0,0.25)';
   } else {
     if (p3vmAddVibes.size >= 3) return;
     p3vmAddVibes.add(vibe);
     el.style.background = 'black';
+    el.style.borderColor = 'black';
     el.querySelector('p').style.color = 'white';
+    if (isUserAdded) el.querySelector('span').style.color = 'rgba(255,255,255,0.4)';
   }
   // Grey out unchosen pills at max
   const maxed = p3vmAddVibes.size >= 3;
@@ -5288,31 +6192,103 @@ function toggleP3AddVibe(vibe, el) {
       pill.style.cursor = maxed ? 'default' : 'pointer';
     }
   });
+  // Fire immediately — no Done needed
+  _submitVibeSignal(vibe, 'support');
 }
 
-function toggleP3CustomVibeInput() {
-  const wrap = document.getElementById('p3vm-custom-wrap');
-  const isVisible = wrap.style.display !== 'none';
-  wrap.style.display = isVisible ? 'none' : 'block';
-  if (!isVisible) setTimeout(() => document.getElementById('p3vm-custom-input').focus(), 50);
+// ── Vibe input blocklist ─────────────────────────────────────────────
+// Client-side first line of defense. Not exhaustive — admin approval
+// is the real guardrail for public visibility.
+const VIBE_BLOCKLIST = [
+  'fuck','fucked','fucking','fucker','shit','shitting','bitch','bitches',
+  'ass','asshole','bastard','cunt','dick','cock','pussy','whore','slut',
+  'nigger','nigga','faggot','fag','retard','retarded','kike','spic','chink',
+  'rape','rapist','kill','murder','terrorist','nazi','porn','sex','sexy',
+  'drugs','weed','cocaine','meth','heroin',
+];
+
+function _vibeIsClean(val) {
+  const lc = val.toLowerCase();
+  return !VIBE_BLOCKLIST.some(w => lc.includes(w));
 }
 
 function addP3CustomVibe() {
   const input = document.getElementById('p3vm-custom-input');
   const val = input.value.trim();
-  if (!val || p3vmCustomVibes.includes(val)) return;
-  p3vmCustomVibes.push(val);
+  if (!val) return;
+  const valLC = val.toLowerCase();
+
+  // Cap: 5 user-typed vibes per modal session
+  const MAX_CUSTOM = 5;
+  if (p3vmCustomVibes.length >= MAX_CUSTOM) {
+    input.value = '';
+    return;
+  }
+
+  // Reject if already in live vibes, candidates, or already typed this session
+  const liveVibes = (currentRestaurant?.vibes || []).map(v => v.toLowerCase());
+  const candidateVibes = p3vmCandidates.map(c => c.vibe.toLowerCase());
+  if (
+    liveVibes.includes(valLC) ||
+    candidateVibes.includes(valLC) ||
+    p3vmCustomVibes.some(v => v.toLowerCase() === valLC)
+  ) {
+    input.value = '';
+    return;
+  }
+
+  // Client-side content filter
+  if (!_vibeIsClean(val)) {
+    input.value = '';
+    input.placeholder = 'keep it clean ✌️';
+    setTimeout(() => { _updateCustomPlaceholder(); }, 2000);
+    return;
+  }
+
+  // Normalise: lowercase for DB key, display with first letter of each word capitalised
+  const displayVal = valLC.replace(/\b\w/g, c => c.toUpperCase());
+
+  // Add to custom list and inject directly into more vibes pool as a selected pill
+  p3vmCustomVibes.push(valLC);
+  p3vmAddVibes.add(valLC);  // auto-select it for the user
   input.value = '';
-  // Render chip
-  const chips = document.getElementById('p3vm-custom-chips');
-  chips.innerHTML = p3vmCustomVibes.map(v =>
-    `<div style="display:flex;align-items:center;gap:5px;padding:5px 10px 5px 12px;border-radius:20px;background:black;">
-      <p class="fi" style="font-size:11px;color:white;letter-spacing:0.5px;">${v}</p>
-      <div onclick="removeP3CustomVibe('${v.replace(/'/g,"\'")}',this.parentNode)" style="width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;">
-        <svg width="7" height="7" viewBox="0 0 7 7" fill="none"><path d="M1 1l5 5M6 1L1 6" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
-      </div>
-    </div>`
-  ).join('');
+  _updateCustomPlaceholder();
+
+  // Append pill to more vibes section — marked with a subtle indicator (user-submitted)
+  const moreEl = document.getElementById('p3vm-more');
+  const pill = document.createElement('div');
+  const safeId = `p3vm-more-${valLC.replace(/[\s&]/g,'_')}`;
+  pill.id = safeId;
+  pill.onclick = function() { toggleP3AddVibe(valLC, this); };
+  pill.style.cssText = 'padding:6px 14px;border-radius:20px;border:1px solid black;background:black;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;';
+  pill.innerHTML = `<p class="fi" style="font-size:11px;color:white;letter-spacing:0.5px;white-space:nowrap;">${displayVal}</p><span style="font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:0px;flex-shrink:0;">✦</span>`;
+  moreEl.appendChild(pill);
+
+  // Fire candidate submission immediately — also fire support signal
+  _submitVibeCandidate(valLC);
+  _submitVibeSignal(valLC, 'support');
+
+  // Update max greyed state
+  const maxed = p3vmAddVibes.size >= 3;
+  document.querySelectorAll('[id^="p3vm-more-"]').forEach(p => {
+    const isChosen = p.style.background === 'black';
+    if (!isChosen) { p.style.opacity = maxed ? '0.35' : '1'; p.style.cursor = maxed ? 'default' : 'pointer'; }
+  });
+}
+
+function _updateCustomPlaceholder() {
+  const input = document.getElementById('p3vm-custom-input');
+  const btn   = document.getElementById('p3vm-add-btn');
+  if (!input) return;
+  const MAX_CUSTOM = 5;
+  const atLimit = p3vmCustomVibes.length >= MAX_CUSTOM;
+  input.placeholder = 'type a vibe...';
+  input.disabled = atLimit;
+  if (btn) {
+    btn.style.background = atLimit ? '#ccc' : 'black';
+    btn.style.cursor     = atLimit ? 'default' : 'pointer';
+    btn.style.pointerEvents = atLimit ? 'none' : 'auto';
+  }
 }
 
 function removeP3CustomVibe(vibe, chipEl) {
@@ -5321,32 +6297,8 @@ function removeP3CustomVibe(vibe, chipEl) {
 }
 
 function applyP3VibeModal() {
-  const restaurant_id = currentRestaurant ? currentRestaurant.id : null;
-  if (!restaurant_id) { closeP3VibeModal(); return; }
-  if (!p3UserVibes[restaurant_id]) p3UserVibes[restaurant_id] = [];
-
-  // Build vibe_reports payloads (mock-only — not yet POSTing to Supabase)
-  const vibeReportRows = [];
-
-  [...p3vmAddVibes].forEach(vibe => {
-    if (!p3UserVibes[restaurant_id].includes(vibe)) p3UserVibes[restaurant_id].push(vibe);
-    vibeReportRows.push({ restaurant_id, vibe, action: 'add' });
-  });
-
-  [...p3vmCustomVibes].forEach(vibe => {
-    if (!p3UserVibes[restaurant_id].includes(vibe)) p3UserVibes[restaurant_id].push(vibe);
-    vibeReportRows.push({ restaurant_id, vibe, action: 'custom' });
-  });
-
-  p3vmOffVibes.forEach(vibe => {
-    p3UserVibes[restaurant_id] = p3UserVibes[restaurant_id]
-      .filter(u => u.toLowerCase() !== vibe.toLowerCase());
-    vibeReportRows.push({ restaurant_id, vibe, action: 'off' });
-  });
-
-  // TODO: POST each row to Supabase vibe_reports
-  if (vibeReportRows.length) console.log('vibe reports:', vibeReportRows);
-
+  // Signals are submitted immediately on tap via _submitVibeSignal and _submitVibeCandidate.
+  // Done just closes the modal — no re-submission needed.
   closeP3VibeModal();
 }
 

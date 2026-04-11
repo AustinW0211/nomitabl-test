@@ -172,7 +172,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     <!-- Foot: LET'S VIBE → Page 2 — always visible -->
     <div style="position:absolute;display:flex;flex-direction:column;height:90px;align-items:center;left:0;padding:12px 16px 16px;bottom:20px;width:393px;z-index:50;pointer-events:none;opacity:0;transition:opacity 0.3s ease;" id="lets-vibe-foot">
       <div style="background:#b0b0b0;height:48px;position:relative;border-radius:32px;flex-shrink:0;width:100%;pointer-events:all;">
-        <div onclick="if(selected.size>0){populatePage2();navigateSwipe('page2');}" id="lets-vibe-btn" style="position:absolute;background:#b0b0b0;height:48px;left:0;border-radius:32px;top:0;width:100%;cursor:default;display:flex;align-items:center;justify-content:center;">
+        <div onclick="_letsVibeTap()" id="lets-vibe-btn" style="position:absolute;background:#b0b0b0;height:48px;left:0;border-radius:32px;top:0;width:100%;cursor:default;display:flex;align-items:center;justify-content:center;">
           <span style="font-family:'Inter',sans-serif;font-weight:700;font-size:14px;letter-spacing:8.4px;text-transform:capitalize;color:white;">LET'S VIBE</span>
         </div>
       </div>
@@ -734,12 +734,14 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       <!-- Quick options — 2 column grid -->
       <div id="wait-report-options" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;"></div>
       <!-- Custom input -->
-      <div style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div id="wait-input-row" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:10px;margin-bottom:14px;">
         <p class="fi" style="font-size:13px;font-weight:400;color:#888;flex-shrink:0;">or type:</p>
-        <input id="wait-report-input" type="text" placeholder="e.g. 25 mins" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:black;border:none;outline:none;background:transparent;flex:1;"/>
+        <input id="wait-report-input" type="text" placeholder="e.g. 25" oninput="_onReportTypedInput(this)" inputmode="decimal" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:black;border:none;outline:none;background:transparent;flex:1;min-width:0;"/>
+        <span id="wait-input-unit" class="fi" style="font-size:13px;font-weight:400;color:#aaa;flex-shrink:0;pointer-events:none;min-width:28px;"></span>
+        <div id="wait-input-circle" style="width:18px;height:18px;border-radius:50%;border:1.5px solid #ccc;background:white;flex-shrink:0;transition:background 0.15s,border-color 0.15s;"></div>
       </div>
       <!-- Submit at bottom -->
-      <div onclick="submitWaitReport()" style="background:#1e1e1e;border-radius:32px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+      <div onclick="_dispatchReportSubmit()" style="background:#1e1e1e;border-radius:32px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
         <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">SUBMIT</p>
       </div>
     </div>
@@ -1075,6 +1077,14 @@ const sb = {
     return res.json();
   },
 };
+
+// Deterministic init — sb is fully defined, call loadSaves now
+loadSaves();
+
+// Reload saves whenever auth state changes (sign-in / sign-out)
+if (typeof sb !== 'undefined' && sb.auth && sb.auth.onAuthStateChange) {
+  sb.auth.onAuthStateChange(() => loadSaves());
+}
 
 // Returns true if Supabase credentials have been set
 function supabaseReady() {
@@ -1481,7 +1491,7 @@ function buildCard(r, idx, total) {
         ${buildDots(photoCount,0)}
       </div>
       <div style="position:absolute;background:rgba(0,0,0,0.2);left:292.5px;border-radius:22px;width:58px;height:58px;top:10px;display:flex;align-items:center;justify-content:center;z-index:4;">
-        <span class="fa" style="font-weight:600;font-size:28px;color:white;">${r.vibe_score}</span>
+        <span class="fa" style="font-weight:600;font-size:28px;color:white;">${(() => { const lv = p3Votes[r.id]; const s = lv && lv.score != null ? Math.round(lv.score) : (lv ? Math.round(lv.up / Math.max(1, lv.up + (lv.down||0)) * 100) : null); return (s != null && s > 0) ? s : (r.vibe_score > 0 ? r.vibe_score : '–'); })()}</span>
       </div>
       <div style="position:absolute;left:16px;bottom:132px;z-index:4;pointer-events:none;">${renderOpenStatus(r)}</div>
       <div style="position:absolute;left:16px;bottom:82px;right:16px;z-index:4;pointer-events:none;overflow:hidden;">
@@ -1515,6 +1525,7 @@ function changePhoto(cardIdx, dir, total, e) {
 }
 
 let activeSearchTerm = '';   // raw input, kept for cuisine modal compatibility
+let pinnedRestaurant = null;  // restaurant pinned from search — always shown first on P2
 let activeCuisines   = [];  // parsed broad cuisines from phrase
 let activeSpecialties = []; // parsed dish/specialty terms
 let activeSearchVibes = []; // parsed vibe terms from phrase
@@ -1818,10 +1829,12 @@ function findMatchingRestaurants() {
   if (vibes.length > 0) {
     const scored = pool.map(r => {
       const tags = r.tags.map(t => t.toLowerCase());
-      const score = vibes.filter(v => tags.some(t => t.includes(v) || v.includes(t))).length;
+      let score = vibes.filter(v => tags.some(t => t.includes(v) || v.includes(t))).length;
+      // Pinned restaurant gets a large boost so it always appears at the top
+      if (pinnedRestaurant && r.id === pinnedRestaurant.id) score += 999;
       return { ...r, matchScore: score };
-    }).filter(r => r.matchScore > 0)
-      .sort((a, b) => b.matchScore - a.matchScore || b.vibeScore - a.vibeScore);
+    }).filter(r => r.matchScore > 0 || (pinnedRestaurant && r.id === pinnedRestaurant.id))
+      .sort((a, b) => b.matchScore - a.matchScore || b.vibe_score - a.vibe_score);
     return scored;
   }
 
@@ -1934,7 +1947,7 @@ function openReminderModal() {
 // ── Happy card modal state ───────────────────────────────────────────
 let hcmItems       = [];        // [{id, item, display_order}] loaded from Supabase
 let hcmVotedItems  = new Set(); // item_ids this session has voted on
-let hcmMenuReported = false;    // whether this session already notified for this restaurant
+const hcmMenuReported = {};     // { restaurantId: true } — per-restaurant notify state
 
 // Load feature items and this session's votes for current restaurant+mode
 async function loadFeatureItems(restaurantId, mode) {
@@ -1970,7 +1983,7 @@ async function loadMenuReportStatus(restaurantId) {
     const rows = await sb.from('restaurant_menu_reports').then(c =>
       c.selectWhere({ restaurant_id: restaurantId, session_id: SESSION_ID }, 'id')
     );
-    hcmMenuReported = Array.isArray(rows) && rows.length > 0;
+    hcmMenuReported[restaurantId] = Array.isArray(rows) && rows.length > 0;
   } catch (err) {
     console.warn('loadMenuReportStatus failed:', err.message);
   }
@@ -2108,7 +2121,7 @@ function _updateNotifyRow() {
   const row = document.getElementById('hcm-notify-row');
   if (!row) return;
   const sub = document.getElementById('hcm-notify-sub');
-  if (hcmMenuReported) {
+  if (currentRestaurant && hcmMenuReported[currentRestaurant.id]) {
     row.style.opacity = '0.5';
     row.style.cursor  = 'default';
     row.style.pointerEvents = 'none';
@@ -2124,14 +2137,14 @@ function _updateNotifyRow() {
 }
 
 async function submitMenuReport() {
-  if (!currentRestaurant || hcmMenuReported || !supabaseReady()) return;
+  if (!currentRestaurant || hcmMenuReported[currentRestaurant.id] || !supabaseReady()) return;
   try {
     const res = await sb.rpc('submit_menu_report', {
       p_restaurant_id: currentRestaurant.id,
       p_session_id:    SESSION_ID,
     });
     if (res?.ok) {
-      hcmMenuReported = true;
+      hcmMenuReported[currentRestaurant.id] = true;
       _updateNotifyRow();
     }
   } catch (err) {
@@ -2317,10 +2330,12 @@ let walkinIsWeekend = false;
 let parkingIsWeekend = false;
 
 function initDayRangeBadges() {
-  // getDay(): 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
-  // Weekday = Mon–Thu (1,2,3,4)  |  Weekend = Fri–Sun (5,6,0)
-  const dow = new Date().getDay();
-  const isWE = dow === 5 || dow === 6 || dow === 0;
+  // Community report bucketing: Weekday = Mon–Thu | Weekend = Fri–Sun
+  // Friday is treated as weekend for walk-in/parking behavior patterns.
+  // NOTE: this flag is ONLY for community report slot grouping.
+  // Happy hour day logic is completely separate and uses its own inline getDay() checks.
+  const dow = new Date().getDay(); // 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+  const isWE = dow === 5 || dow === 6 || dow === 0; // Fri/Sat/Sun
   walkinIsWeekend = isWE;
   parkingIsWeekend = isWE;
 }
@@ -2330,10 +2345,27 @@ function p3WalkinToggle(mode) {
   const r = currentRestaurant;
   const isDinner = mode === 'dinner';
   // Pick weekday or weekend data
-  const mins = walkinIsWeekend
-    ? (isDinner ? (r.walkin_dinner_we || Math.round((r.walkin_dinner_wd||r.walkin_base)*1.55)) : (r.walkin_lunch_we || Math.round((r.walkin_lunch_wd||r.walkin_base)*1.35)))
-    : (isDinner ? (r.walkin_dinner_wd || r.walkin_base) : (r.walkin_lunch_wd || r.walkin_base));
-  const isReso = isDinner && !!r.reso_note && (r.reso_reports || 0) >= 5;
+  // Use live RPC-loaded value only — no seed fallback for minutes display
+  // Seed fallback preserved only for reso_note / mode detection
+  const _slotDay   = walkinIsWeekend ? 'weekend' : 'weekday';
+  const _slotMeal  = isDinner ? 'dinner' : 'lunch';
+  const _slotKey   = `${r.id}-${_slotMeal}-${_slotDay}`;
+  const _slotStats = _reportStatsCache[_slotKey];
+
+  // Read mins from stats cache first — prevents cross-slot contamination on toggle.
+  // Falls back to currentRestaurant fields only if cache has no entry for this slot.
+  let mins = null;
+  if (_slotStats) {
+    mins = _slotStats.mode === 'reso' ? (_slotStats.reso_days ?? null) : (_slotStats.walkin_mins ?? null);
+  } else {
+    mins = walkinIsWeekend
+      ? (isDinner ? r.walkin_dinner_we ?? null : r.walkin_lunch_we ?? null)
+      : (isDinner ? r.walkin_dinner_wd ?? null : r.walkin_lunch_wd ?? null);
+  }
+
+  // Mode from live stats cache
+  const isReso = (_slotStats && _slotStats.mode === 'reso') ||
+                 (!_slotStats && isDinner && !!r.reso_note && (r.reso_reports || 0) >= 5);
 
   // Title: walk-in or reservation
   const title = document.getElementById('p3-walkin-title');
@@ -2388,11 +2420,20 @@ function p3WalkinToggle(mode) {
     }
   }
 
-  // Update report count
+  // Walk-in count from walkin_weight + reso_rec_weight — type-specific, no parking contamination
   const repEl = document.getElementById('p3-walkin-reports');
-  if (repEl) repEl.textContent = (walkinIsWeekend
-    ? (isDinner ? (r.dinner_reports_we || Math.round((r.dinner_reports||r.walkin_reports||80)*0.42)) : (r.lunch_reports_we || Math.round((r.lunch_reports||r.walkin_reports||40)*0.42)))
-    : (isDinner ? (r.dinner_reports || r.walkin_reports) : (r.lunch_reports || r.walkin_reports))) + ' reports';
+  if (repEl) {
+    if (_slotStats) {
+      const wCount = _slotStats.mode === 'reso'
+        ? (_slotStats.reso_leadtime_count ?? 0)
+        : (_slotStats.walkin_family_count != null
+            ? _slotStats.walkin_family_count
+            : (() => { const w=(_slotStats.walkin_weight||0)+(_slotStats.reso_rec_weight||0); return w>0?Math.max(1,Math.round(w/0.6)):0; })());
+      repEl.textContent = wCount + ' reports';
+    } else {
+      repEl.textContent = '0 reports';
+    }
+  }
   const pill = document.getElementById('walkin-pill');
   const dinnerLabel = document.getElementById('walkin-label-dinner');
   const lunchLabel = document.getElementById('walkin-label-lunch');
@@ -2402,13 +2443,92 @@ function p3WalkinToggle(mode) {
 }
 
 
+// ── 24h report choice memory ─────────────────────────────────────────
+// Stores last bucket chosen per (restaurantId, reportType, mealPeriod, dayType)
+// Key format: "rid|reportType|meal|day"
+// Persisted in localStorage so it survives page refreshes for 24h
+const REPORT_CHOICE_KEY = 'nomi_report_choices';
+
+function _getReportChoices() {
+  try {
+    const raw = localStorage.getItem(REPORT_CHOICE_KEY);
+    if (!raw) return {};
+    const data = JSON.parse(raw);
+    // Purge entries older than 24h
+    const cutoff = Date.now() - 86400000;
+    const clean = {};
+    for (const [k, v] of Object.entries(data)) {
+      if (v.ts && v.ts > cutoff) clean[k] = v;
+    }
+    return clean;
+  } catch { return {}; }
+}
+
+function _saveReportChoice(restaurantId, reportType, mealPeriod, dayType, bucket) {
+  try {
+    const choices = _getReportChoices();
+    const key = `${restaurantId}|${reportType}|${mealPeriod}|${dayType}`;
+    choices[key] = { bucket, ts: Date.now() };
+    localStorage.setItem(REPORT_CHOICE_KEY, JSON.stringify(choices));
+  } catch {}
+}
+
+function _getReportChoice(restaurantId, reportType, mealPeriod, dayType) {
+  const choices = _getReportChoices();
+  const key = `${restaurantId}|${reportType}|${mealPeriod}|${dayType}`;
+  return choices[key] ? choices[key].bucket : null;
+}
+
+// Highlight a pill that matches the prior choice, grey it slightly
+function _restoreModalChoices(restaurantId, reportType, mealPeriod, dayType) {
+  const prior = _getReportChoice(restaurantId, reportType, mealPeriod, dayType);
+  if (!prior) return;
+  // Find the pill with this value and style it as "previously chosen"
+  document.querySelectorAll('#wait-report-options [onclick^="selectWaitOption"]').forEach(el => {
+    const onclick = el.getAttribute('onclick') || '';
+    const match = onclick.match(/'([^']+)'/);
+    if (match && match[1] === prior) {
+      // Highlight as prior selection — slightly different from fresh selection
+      el.style.background = '#f0f0f0';
+      const circle = el.querySelector('div');
+      if (circle) { circle.style.background = '#999'; circle.style.borderColor = '#999'; }
+    }
+  });
+}
+
+// Restore prior parking type selection
+function _restoreParkingTypeChoice(restaurantId, mealPeriod, dayType) {
+  const prior = _getReportChoice(restaurantId, 'parking_type', mealPeriod, dayType);
+  if (!prior) return;
+  setTimeout(() => {
+    document.querySelectorAll('#parking-type-row [onclick^="selectParkingType"]').forEach(el => {
+      const onclick = el.getAttribute('onclick') || '';
+      const match = onclick.match(/'([^']+)'/);
+      if (match && match[1] === prior) {
+        el.style.background = '#555';
+        el.style.borderColor = '#555';
+        const p = el.querySelector('p');
+        if (p) p.style.color = 'white';
+      }
+    });
+  }, 50); // slight delay so DOM is ready
+}
+
 function openWaitReportModal() {
   if (!currentRestaurant) return;
   const r = currentRestaurant;
   // Detect current mode from pill position
   const pill = document.getElementById('walkin-pill');
-  const isReso = pill && pill.style.left !== '2px' ? false : 
-    (r.reso_note && (r.walkin_dinner_wd || r.walkin_base) >= 45 && document.getElementById('walkin-label-dinner').style.color === 'rgb(2, 2, 2)');
+  const _mPill  = pill && pill.style.left === '2px';
+  const _mMeal  = _mPill ? 'dinner' : 'lunch';
+  const _mDay   = walkinIsWeekend ? 'weekend' : 'weekday';
+  const _mKey   = currentRestaurant ? `${currentRestaurant.id}-${_mMeal}-${_mDay}` : null;
+  const _mStats = _mKey ? _reportStatsCache[_mKey] : null;
+  // isReso: use stats cache mode first, fall back to static reso_note
+  const isReso = (_mStats && _mStats.mode === 'reso') ||
+    (!_mStats && pill && pill.style.left === '2px' &&
+     r.reso_note && (r.walkin_dinner_wd || r.walkin_base) >= 45 &&
+     document.getElementById('walkin-label-dinner').style.color === 'rgb(2, 2, 2)');
 
   const title = document.getElementById('wait-report-title');
   const subtitle = document.getElementById('wait-report-subtitle');
@@ -2418,6 +2538,21 @@ function openWaitReportModal() {
   if (isReso) {
     if (title) title.textContent = 'Report booking lead time';
     if (subtitle) subtitle.textContent = `How far in advance did you book at ${r.name}?`;
+    // Replace input bar with day/week dropdowns for reservation mode
+    const inputRow = document.getElementById('wait-input-row');
+    if (inputRow) {
+      inputRow.innerHTML = `
+        <p class="fi" style="font-size:13px;font-weight:400;color:#888;flex-shrink:0;">or pick:</p>
+        <select id="reso-qty-select" onchange="_onResoDropdownChange()" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:black;border:none;outline:none;background:transparent;flex:1;cursor:pointer;appearance:none;-webkit-appearance:none;text-align:center;">
+          <option value="">—</option>
+          ${[1,2,3,4,5,6,7,8,9,10,11,12].map(n => `<option value="${n}">${n}</option>`).join('')}
+        </select>
+        <select id="reso-unit-select" onchange="_onResoDropdownChange()" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:#555;border:none;outline:none;background:transparent;flex-shrink:0;cursor:pointer;appearance:none;-webkit-appearance:none;">
+          <option value="days">days</option>
+          <option value="weeks">weeks</option>
+        </select>
+        <div id="wait-input-circle" style="width:18px;height:18px;border-radius:50%;border:1.5px solid #ccc;background:white;flex-shrink:0;transition:background 0.15s,border-color 0.15s;"></div>`;
+    }
     if (input) input.placeholder = 'e.g. 10 days or 2 weeks';
     if (options) options.innerHTML = [
       ['Less than a week', 'less-week'],
@@ -2432,12 +2567,23 @@ function openWaitReportModal() {
   } else {
     if (title) title.textContent = 'Report wait time';
     if (subtitle) subtitle.textContent = `How long did you wait at ${r.name}?`;
-    if (input) input.placeholder = 'e.g. 25 mins';
+    // Restore normal input bar (may have been replaced by reso dropdowns)
+    const inputRow2 = document.getElementById('wait-input-row');
+    if (inputRow2 && !inputRow2.querySelector('#wait-report-input')) {
+      inputRow2.innerHTML = `
+        <p class="fi" style="font-size:13px;font-weight:400;color:#888;flex-shrink:0;">or type:</p>
+        <input id="wait-report-input" type="text" placeholder="e.g. 25" oninput="_onReportTypedInput(this)" inputmode="decimal" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:black;border:none;outline:none;background:transparent;flex:1;min-width:0;"/>
+        <span id="wait-input-unit" class="fi" style="font-size:13px;font-weight:400;color:#aaa;flex-shrink:0;pointer-events:none;min-width:28px;"></span>
+        <div id="wait-input-circle" style="width:18px;height:18px;border-radius:50%;border:1.5px solid #ccc;background:white;flex-shrink:0;transition:background 0.15s,border-color 0.15s;"></div>`;
+    }
+    if (input) input.placeholder = 'e.g. 25';
     if (options) options.innerHTML = [
-      ['Less than 10 min', 'lt-10'],
-      ['10–30 min', '10-30'],
-      ['30–60 min', '30-60'],
-      ['60+ min<br>reso rec.', '60plus']
+      ['Under 10 min',      'lt-10'],
+      ['10–25 min',         '10-25'],
+      ['25–45 min',         '25-45'],
+      ['45–60 min',         '45-60'],
+      ['60+ min',           '60plus'],
+      ['Reso rec',          'reso_rec']
     ].map(([label, val]) => `
       <div onclick="selectWaitOption('${val}', this)" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background 0.15s;gap:8px;">
         <p class="fi" style="font-size:13px;font-weight:500;color:black;line-height:1.4;">${label}</p>
@@ -2445,13 +2591,52 @@ function openWaitReportModal() {
       </div>`).join('');
   }
 
+  // Remove parking type row if lingering from a previous parking modal open
+  const staleRow = document.getElementById('parking-type-row');
+  if (staleRow) staleRow.remove();
+
+  // Restore prior choice into state variable so submit works without re-tap
+  const _wPill = document.getElementById('walkin-pill');
+  const _wDinner = _wPill && _wPill.style.left === '2px';
+  const _wMeal = _wDinner ? 'dinner' : 'lunch';
+  const _wDay  = walkinIsWeekend ? 'weekend' : 'weekday';
+  // Restore both walkin_wait and walkin_reso_rec choices — user may have chosen either
+  const _wTypePrimary = isReso ? 'reso_leadtime' : 'walkin_wait';
+  const _wPriorPrimary = currentRestaurant ? _getReportChoice(currentRestaurant.id, _wTypePrimary, _wMeal, _wDay) : null;
+  // Also check walkin_reso_rec in case user selected Reso rec in walk-in mode
+  const _wPriorReso = currentRestaurant ? _getReportChoice(currentRestaurant.id, 'walkin_reso_rec', _wMeal, _wDay) : null;
+  const _wPrior = _wPriorPrimary || (_wPriorReso ? 'reso_rec' : null);
+  selectedWaitOption = _wPrior || null;
+
+  // Mark modal as walk-in mode
+  _parkingModalActive = false;
+
   const m = document.getElementById('wait-report-modal');
   const s = document.getElementById('wait-report-sheet');
   m.style.display = 'flex';
-  requestAnimationFrame(() => { m.style.background = 'rgba(0,0,0,0.5)'; s.style.transform = 'translateY(0)'; });
+  requestAnimationFrame(() => {
+    m.style.background = 'rgba(0,0,0,0.5)';
+    s.style.transform = 'translateY(0)';
+    // Visually restore prior selection — grey circle = from localStorage memory (not live backend)
+    // Black circle = freshly selected this session
+    if (_wPrior) {
+      document.querySelectorAll('#wait-report-options [onclick^="selectWaitOption"]').forEach(el => {
+        const m2 = (el.getAttribute('onclick') || '').match(/'([^']+)'/);
+        if (m2 && m2[1] === _wPrior) {
+          el.style.background = '#f7f7f7';
+          const circle = el.querySelector('div');
+          if (circle) { circle.style.background = '#888'; circle.style.borderColor = '#888'; }
+        }
+      });
+    }
+  });
 }
 
 function closeWaitReportModal() {
+  _parkingModalActive = false;
+  const _inp = document.getElementById('wait-report-input');
+  if (_inp) _inp.value = '';
+  _clearInputActiveState();
   const m = document.getElementById('wait-report-modal');
   const s = document.getElementById('wait-report-sheet');
   m.style.background = 'rgba(0,0,0,0)';
@@ -2461,15 +2646,103 @@ function closeWaitReportModal() {
 
 let selectedWaitOption = null;
 
+// ── Typed input active-state handler ─────────────────────────────────
+// When user types: deselect all pills, show filled circle on input bar.
+// When user taps a pill: clear input and remove input circle fill.
+function _onReportTypedInput(inputEl) {
+  const raw = inputEl.value;
+  const val = raw.trim();
+  const unitEl = document.getElementById('wait-input-unit');
+
+  if (!val) {
+    _clearInputActiveState();
+    if (unitEl) unitEl.textContent = '';
+    return;
+  }
+
+  // Update live unit display for walk-in / parking (minutes/hours)
+  // Detects: "1h", "1 hr", "1 hour", "90" (pure number = minutes)
+  if (!_parkingModalActive || _parkingModalActive) {
+    // Applies to both walk-in and parking
+    const lc = val.toLowerCase();
+    const hrMatch  = lc.match(/^(\d+)\s*h/);   // "1h", "1hr", "1 hour"
+    const minMatch = lc.match(/^(\d+)$/);        // bare number
+
+    if (unitEl) {
+      if (hrMatch) {
+        const hrs = parseInt(hrMatch[1], 10);
+        // Also check if remainder mins typed e.g. "1h30"
+        const remMatch = lc.match(/\d+\s*h(?:r|rs|our|ours)?\s*(\d+)/);
+        if (remMatch) {
+          unitEl.textContent = 'hr ' + remMatch[1] + 'min';
+        } else {
+          unitEl.textContent = hrs === 1 ? 'hr' : 'hr';
+        }
+      } else if (minMatch) {
+        unitEl.textContent = 'min';
+      } else {
+        unitEl.textContent = '';
+      }
+    }
+  }
+
+  // Deselect all pills when user types
+  document.querySelectorAll('#wait-report-options [onclick^="selectWaitOption"]').forEach(el => {
+    el.style.background = 'white';
+    const circle = el.querySelector('div');
+    if (circle) { circle.style.background = 'white'; circle.style.borderColor = '#ccc'; }
+  });
+  selectedWaitOption = null;
+
+  // Fill input bar circle
+  const inputCircle = document.getElementById('wait-input-circle');
+  if (inputCircle) { inputCircle.style.background = '#1e1e1e'; inputCircle.style.borderColor = '#1e1e1e'; }
+}
+
+// ── Reservation dropdown handler ─────────────────────────────────────
+function _onResoDropdownChange() {
+  const qty  = document.getElementById('reso-qty-select');
+  const unit = document.getElementById('reso-unit-select');
+  if (!qty || !unit || !qty.value) {
+    _clearInputActiveState();
+    return;
+  }
+  // Encode as typed value for submitWaitReport to pick up
+  // Format: "Xdays" or "Xweeks" — _extractTypedDays handles both
+  const syntheticVal = qty.value + unit.value;
+  const inp = document.getElementById('wait-report-input');
+  // Store in a hidden field that submitWaitReport can read
+  if (inp) { inp.value = syntheticVal; }
+  // Fill circle to show active state
+  const inputCircle = document.getElementById('wait-input-circle');
+  if (inputCircle) { inputCircle.style.background = '#1e1e1e'; inputCircle.style.borderColor = '#1e1e1e'; }
+  // Deselect pills
+  document.querySelectorAll('#wait-report-options [onclick^="selectWaitOption"]').forEach(el => {
+    el.style.background = 'white';
+    const circle = el.querySelector('div');
+    if (circle) { circle.style.background = 'white'; circle.style.borderColor = '#ccc'; }
+  });
+  selectedWaitOption = null;
+}
+
+function _clearInputActiveState() {
+  const inputCircle = document.getElementById('wait-input-circle');
+  if (inputCircle) { inputCircle.style.background = 'white'; inputCircle.style.borderColor = '#ccc'; }
+}
+
 function selectWaitOption(val, el) {
   selectedWaitOption = val;
-  // Reset only time-slot rows (exclude parking type pills which use selectParkingType)
+  // Clear typed input and its active state
+  const inp = document.getElementById('wait-report-input');
+  if (inp) inp.value = '';
+  _clearInputActiveState();
+  // Reset all time-slot pills
   document.querySelectorAll('#wait-report-options [onclick^="selectWaitOption"]').forEach(row => {
     row.style.background = 'white';
     const circle = row.querySelector('div');
     if (circle) { circle.style.background = 'white'; circle.style.borderColor = '#ccc'; }
   });
-  // Fill selected row
+  // Fill selected pill — black = freshly selected
   el.style.background = '#f7f7f7';
   const circle = el.querySelector('div');
   if (circle) { circle.style.background = '#1e1e1e'; circle.style.borderColor = '#1e1e1e'; }
@@ -2480,79 +2753,293 @@ function selectWaitOption(val, el) {
 // Keeps append-only reports as clean ints — no slug strings in the DB.
 function normaliseReportValue(val) {
   const map = {
-    // Walk-in wait
+    // Walk-in wait — matches backend bucket_values in submit_restaurant_report RPC
     'lt-10':      5,
-    '10-30':      20,
-    '30-60':      45,
-    '60plus':     75,   // 60+ min / reso rec — stored as 75 (conservative midpoint)
-    // Reservation lead time (weeks → days for consistent unit)
+    '10-25':      17,
+    '25-45':      35,
+    '45-60':      52,
+    '60plus':     75,
+    // Reservation lead time (days)
     'less-week':  3,
     '1-2-weeks':  10,
     '3-4-weeks':  24,
     '4plus-weeks':35,
-    // Parking
+    // Parking time
     'lt-5':       3,
     '5-15':       10,
     '15-30':      22,
     '30plus':     40,
   };
   if (map[val] !== undefined) return map[val];
-  const n = parseInt(val, 10);
-  return Number.isFinite(n) && n >= 0 ? n : null;
+  // Strip non-numeric chars so "25 mins", "25min", "~25" all parse as 25
+  const cleaned = String(val).replace(/[^0-9]/g, '');
+  const n = parseInt(cleaned, 10);
+  return Number.isFinite(n) && n >= 0 && n <= 300 ? n : null;
 }
 
-function submitWaitReport() {
+// ── Live report stats — reads from get_restaurant_report_stats RPC ───
+// Called after each successful report submission.
+// Updates card display with fresh community data.
+// Falls back silently — cards keep showing cached/seed data if RPC unavailable.
+const _reportStatsCache = {}; // { "id-lunch-weekday": { mode, walkin_mins, ... } }
+
+async function loadReportStats(restaurantId, mealPeriod, dayType) {
+  if (!supabaseReady()) return;
+  try {
+    const stats = await sb.rpc('get_restaurant_report_stats', {
+      p_restaurant_id: restaurantId,
+      p_meal_period:   mealPeriod,
+      p_day_type:      dayType,
+    });
+    console.log('[NomiTabl] get_restaurant_report_stats response:', mealPeriod, dayType, stats);
+    if (!stats || stats.error) return;
+
+    const key = `${restaurantId}-${mealPeriod}-${dayType}`;
+    _reportStatsCache[key] = stats;
+
+    // Walk-in display gate: keyed off walkin-pill slot
+    const wPill = document.getElementById('walkin-pill');
+    const wCurDinner = wPill && wPill.style.left === '2px';
+    const wCurMeal = wCurDinner ? 'dinner' : 'lunch';
+    const wCurDay  = walkinIsWeekend ? 'weekend' : 'weekday';
+    const _walkinSlotMatch = currentRestaurant &&
+      currentRestaurant.id === restaurantId &&
+      wCurMeal === mealPeriod && wCurDay === dayType;
+
+    // Parking display gate: keyed off parking-pill slot — independent of walk-in pill
+    const pkPill = document.getElementById('parking-pill');
+    const pkCurDinner = pkPill && pkPill.style.left === '2px';
+    const pkCurMeal = pkCurDinner ? 'dinner' : 'lunch';
+    const pkCurDay  = parkingIsWeekend ? 'weekend' : 'weekday';
+    const _parkingSlotMatch = currentRestaurant &&
+      currentRestaurant.id === restaurantId &&
+      pkCurMeal === mealPeriod && pkCurDay === dayType;
+
+    if (!_walkinSlotMatch && !_parkingSlotMatch) return;
+
+    // Update walk-in / reso card
+    if (_walkinSlotMatch && (stats.mode === 'reso' || stats.mode === 'walkin')) {
+      if (stats.mode === 'reso') {
+        currentRestaurant.reso_reports = 99;
+      }
+      p3WalkinToggle(wCurDinner ? 'dinner' : 'lunch');
+      // Walk-in count: walkin_weight + reso_rec_weight only
+      const repEl = document.getElementById('p3-walkin-reports');
+      if (repEl) {
+        // Show count matching current mode: walk-in family or reso leadtime
+      const wCount = stats.mode === 'reso'
+        ? (stats.reso_leadtime_count ?? 0)
+        : (stats.walkin_family_count != null
+            ? stats.walkin_family_count
+            : (() => { const w=(stats.walkin_weight||0)+(stats.reso_rec_weight||0); return w>0?Math.max(1,Math.round(w/0.6)):0; })());
+        repEl.textContent = wCount + ' reports';
+      }
+    }
+
+    // Update parking card — gated on parking-pill slot, not walkin-pill slot
+    if (_parkingSlotMatch) {
+      p3ParkingToggle(pkCurDinner ? 'dinner' : 'lunch');
+      // Parking count: parking_weight only
+      const parkRepEl = document.getElementById('p3-parking-reports');
+      if (parkRepEl && stats.parking_weight != null) {
+        const pCount = stats.parking_count != null
+          ? stats.parking_count
+          : (stats.parking_weight > 0 ? Math.max(1, Math.round(stats.parking_weight / 0.6)) : 0);
+        parkRepEl.textContent = pCount + ' reports';
+      }
+    }
+  } catch (err) {
+    console.warn('loadReportStats failed:', err.message);
+  }
+}
+
+function _dispatchReportSubmit() {
+  if (_parkingModalActive) submitParkingReport();
+  else submitWaitReport();
+}
+
+// ── Typed input → structured bucket mapping ──────────────────────────
+// Maps a typed number (minutes) to the correct walk-in bucket key.
+// Backend only accepts structured enum buckets, not raw numbers.
+// ── Reservation typed input → bucket ─────────────────────────────────
+// Typed number = days. "2 weeks" / "14 days" / "14" all map to 1-2-weeks.
+function mapToResoBucket(val) {
+  const resoBuckets = ['less-week','1-2-weeks','3-4-weeks','4plus-weeks'];
+  if (resoBuckets.includes(val)) return val;
+  // Normalise "2 weeks" → 14 days, "1 week" → 7 days, plain number → days
+  let days = null;
+  const lc = String(val).toLowerCase().trim();
+  const weekMatch = lc.match(/(\d+)\s*week/);
+  const dayMatch  = lc.match(/(\d+)\s*day/);
+  const numOnly   = lc.match(/^(\d+)$/);
+  if (weekMatch)     days = parseInt(weekMatch[1], 10) * 7;
+  else if (dayMatch) days = parseInt(dayMatch[1], 10);
+  else if (numOnly)  days = parseInt(numOnly[1], 10); // bare number = days
+  if (days === null || !Number.isFinite(days)) return null;
+  if (days < 7)  return 'less-week';
+  if (days < 21) return '1-2-weeks';
+  if (days < 35) return '3-4-weeks';
+  return '4plus-weeks';
+}
+
+// Extract the actual typed numeric value (minutes) from raw input.
+// Returns null if input is a structured bucket key (not typed).
+function _extractTypedNumber(val) {
+  const knownBuckets = ['lt-10','10-25','25-45','45-60','60plus','reso_rec',
+                        'less-week','1-2-weeks','3-4-weeks','4plus-weeks',
+                        'lt-5','5-15','15-30','30plus'];
+  if (knownBuckets.includes(val)) return null; // structured pill — use bucket midpoint
+  const n = parseInt(String(val).replace(/[^0-9]/g, ''), 10);
+  return Number.isFinite(n) && n >= 0 && n <= 300 ? n : null;
+}
+
+// Extract actual typed days from reso input.
+// Returns null if input is a structured bucket key.
+function _extractTypedDays(val) {
+  const resoBuckets = ['less-week','1-2-weeks','3-4-weeks','4plus-weeks'];
+  if (resoBuckets.includes(val)) return null;
+  const lc = String(val).toLowerCase().trim();
+  const weekMatch = lc.match(/(\d+)\s*week/);
+  const dayMatch  = lc.match(/(\d+)\s*day/);
+  const numOnly   = lc.match(/^(\d+)$/);
+  if (weekMatch)     return Math.min(parseInt(weekMatch[1], 10) * 7, 300);
+  if (dayMatch)      return Math.min(parseInt(dayMatch[1], 10), 300);
+  if (numOnly)       return Math.min(parseInt(numOnly[1], 10), 300);
+  return null;
+}
+
+function mapToWalkinBucket(val) {
+  // If already a valid bucket key, pass through
+  const buckets = ['lt-10','10-25','25-45','45-60','60plus','reso_rec',
+                   'less-week','1-2-weeks','3-4-weeks','4plus-weeks'];
+  if (buckets.includes(val)) return val;
+  // Try to parse as a number (minutes)
+  const n = parseInt(String(val).replace(/[^0-9]/g, ''), 10);
+  if (!Number.isFinite(n)) return null;
+  if (n < 10)  return 'lt-10';
+  if (n < 25)  return '10-25';
+  if (n < 45)  return '25-45';
+  if (n < 60)  return '45-60';
+  return '60plus';
+}
+
+function mapToParkingTimeBucket(val) {
+  // If already a valid bucket key, pass through
+  const buckets = ['lt-5','5-15','15-30','30plus'];
+  if (buckets.includes(val)) return val;
+  // Try to parse as a number (minutes)
+  const n = parseInt(String(val).replace(/[^0-9]/g, ''), 10);
+  if (!Number.isFinite(n)) return null;
+  if (n < 5)  return 'lt-5';
+  if (n < 15) return '5-15';
+  if (n < 30) return '15-30';
+  return '30plus';
+}
+
+async function submitWaitReport() {
+  // Read from typed input or reso dropdowns
   const input = document.getElementById('wait-report-input');
-  const rawVal = selectedWaitOption || (input && input.value.trim());
-  if (!rawVal) return;
-  const normVal = normaliseReportValue(rawVal);
+  let rawVal = selectedWaitOption || (input && input.value.trim()) || null;
+  // If reso dropdowns are active, synthesize value from them
+  if (!rawVal) {
+    const resoQty  = document.getElementById('reso-qty-select');
+    const resoUnit = document.getElementById('reso-unit-select');
+    if (resoQty && resoUnit && resoQty.value) rawVal = resoQty.value + resoUnit.value;
+  }
+  if (!rawVal || !currentRestaurant) return;
+
+  const pill       = document.getElementById('walkin-pill');
+  const isDinner   = pill && pill.style.left === '2px';
+  const mealPeriod = isDinner ? 'dinner' : 'lunch';
+  const dayType    = walkinIsWeekend ? 'weekend' : 'weekday';
+
+  // Detect current modal mode — same logic as openWaitReportModal
+  const _sMeal  = isDinner ? 'dinner' : 'lunch';
+  const _sDay   = walkinIsWeekend ? 'weekend' : 'weekday';
+  const _sKey   = `${currentRestaurant.id}-${_sMeal}-${_sDay}`;
+  const _sStats = _reportStatsCache[_sKey];
+  const _modalIsReso = (_sStats && _sStats.mode === 'reso');
+
+  // Three distinct paths:
+  // 1. walkin_reso_rec — mode-shift signal from walk-in modal, no bucket value
+  // 2. reso_leadtime   — reservation lead-time bucket from reso modal
+  // 3. walkin_wait     — standard walk-in wait bucket
+  let reportType, bucket, normVal;
+
+  if (rawVal === 'reso_rec') {
+    // Reso rec pill — mode-shift signal
+    reportType = 'walkin_reso_rec';
+    bucket     = 'reso_rec';
+    normVal    = null;
+  } else if (_modalIsReso) {
+    // Reservation modal — lead-time bucket
+    reportType = 'reso_leadtime';
+    bucket     = mapToResoBucket(rawVal);
+    if (!bucket) return;
+    // Typed number in reso modal = days; preserve actual typed value if available
+    const typedDays = _extractTypedDays(rawVal);
+    normVal = typedDays !== null ? typedDays : normaliseReportValue(bucket);
+  } else {
+    // Walk-in modal — wait time bucket
+    reportType = 'walkin_wait';
+    bucket     = mapToWalkinBucket(rawVal);
+    if (!bucket) return;
+    // Typed number = minutes; preserve actual typed value over bucket midpoint
+    const typedMins = _extractTypedNumber(rawVal);
+    normVal = typedMins !== null ? typedMins : normaliseReportValue(bucket);
+  }
+
   closeWaitReportModal();
 
-  if (currentRestaurant) {
-    const pill = document.getElementById('walkin-pill');
-    const isDinner = pill && pill.style.left === '2px';
-    const dayType = walkinIsWeekend ? 'weekend' : 'weekday';
-
-    // Increment cached report count (optimistic local update)
-    if (isDinner && dayType === 'weekday') {
-      currentRestaurant.dinner_reports = (currentRestaurant.dinner_reports || 0) + 1;
-    } else if (!isDinner && dayType === 'weekday') {
-      currentRestaurant.lunch_reports = (currentRestaurant.lunch_reports || 0) + 1;
-    } else if (isDinner && dayType === 'weekend') {
-      currentRestaurant.dinner_reports_we = (currentRestaurant.dinner_reports_we || 0) + 1;
-    } else {
-      currentRestaurant.lunch_reports_we = (currentRestaurant.lunch_reports_we || 0) + 1;
-    }
-
-    // Trigger reso mode if 60+ reported during dinner weekday
-    if (rawVal === '60plus' && isDinner) {
-      currentRestaurant.reso_reports = (currentRestaurant.reso_reports || 0) + 1;
-    }
-
-    const repEl = document.getElementById('p3-walkin-reports');
-    if (repEl) {
-      const count = isDinner
-        ? (dayType === 'weekday' ? currentRestaurant.dinner_reports : currentRestaurant.dinner_reports_we)
-        : (dayType === 'weekday' ? currentRestaurant.lunch_reports : currentRestaurant.lunch_reports_we);
-      repEl.textContent = (count || 0) + ' reports';
-    }
-
-    const waitRow = {
-      restaurant_id: currentRestaurant.id,
-      report_type:   'walkin_wait',
-      meal_period:   isDinner ? 'dinner' : 'lunch',
-      day_type:      dayType,
-      value:         normVal,
-    };
-    if (supabaseReady()) {
-      sb.from('restaurant_reports').then(c => c.insert(waitRow)).catch(err =>
-        console.error('restaurant_reports insert failed:', err.message)
-      );
-    } else {
-      console.log('walkin report (mock):', waitRow);
-    }
+  // Optimistic +1 only if this is a genuinely new report for this slot
+  // If the user already has a saved choice, this is a replace — count stays the same
+  const _isNewReport = !_getReportChoice(currentRestaurant.id, reportType, mealPeriod, dayType);
+  const repEl = document.getElementById('p3-walkin-reports');
+  if (repEl && _isNewReport) {
+    const curCount = parseInt(repEl.textContent) || 0;
+    repEl.textContent = (curCount + 1) + ' reports';
   }
+
   selectedWaitOption = null;
+
+  if (!supabaseReady()) return;
+  // DEBUG: log exact payload before sending
+  console.log('[NomiTabl] submitWaitReport payload:', {
+    restaurant_id: currentRestaurant.id,
+    session_id:    SESSION_ID,
+    report_type:   reportType,
+    meal_period:   mealPeriod,
+    day_type:      dayType,
+    bucket,
+    value:         normVal,
+    rawVal,
+    _modalIsReso,
+  });
+  try {
+    const res = await sb.rpc('submit_restaurant_report', {
+      p_restaurant_id: currentRestaurant.id,
+      p_session_id:    SESSION_ID,
+      p_report_type:   reportType,
+      p_meal_period:   mealPeriod,
+      p_day_type:      dayType,
+      p_bucket:        bucket,
+      p_value:         normVal,
+    });
+    // DEBUG: log raw RPC response
+    console.log('[NomiTabl] submit_restaurant_report response:', res);
+    // Handle both direct object {ok,action} and array-wrapped [{ok,action}]
+    const resData = Array.isArray(res) ? res[0] : res;
+    if (resData && !resData.ok) {
+      console.warn('[NomiTabl] submit failed:', resData.error);
+      if (resData.error === 'RATE_LIMIT_EXCEEDED') _showVoteToast('Report limit reached for today');
+    } else {
+      console.log('[NomiTabl] submit success — reloading stats for slot:', mealPeriod, dayType);
+      _saveReportChoice(currentRestaurant.id, reportType, mealPeriod, dayType, bucket);
+      loadReportStats(currentRestaurant.id, mealPeriod, dayType);
+    }
+  } catch (err) {
+    console.warn('[NomiTabl] submitWaitReport RPC threw:', err.message);
+  }
 }
 
 
@@ -2560,17 +3047,24 @@ function p3ParkingToggle(mode) {
   if (!currentRestaurant) return;
   const r = currentRestaurant;
   const isDinner = mode === 'dinner';
-  const mins = parkingIsWeekend
-    ? (isDinner ? (r.parking_dinner_we || Math.round((r.parking_dinner_wd||15)*1.6)) : (r.parking_lunch_we || Math.round((r.parking_lunch_wd||5)*1.4)))
-    : (isDinner ? r.parking_dinner_wd : r.parking_lunch_wd);
-  const reports = parkingIsWeekend
-    ? (isDinner ? (r.parking_dinner_reports_we || Math.round((r.parking_dinner_reports||60)*0.42)) : (r.parking_lunch_reports_we || Math.round((r.parking_lunch_reports||30)*0.42)))
-    : (isDinner ? r.parking_dinner_reports : r.parking_lunch_reports);
+  const _parkSlotDay2  = parkingIsWeekend ? 'weekend' : 'weekday';
+  const _parkSlotMeal2 = isDinner ? 'dinner' : 'lunch';
+  const _parkSlotKey2  = `${r.id}-${_parkSlotMeal2}-${_parkSlotDay2}`;
+  const _parkStats2    = _reportStatsCache[_parkSlotKey2];
 
-  // Title based on parkingType
-  const titles = { street: 'street parking', parkade: 'parkade', restaurant: 'valet' };
+  // Read parking mins from stats cache first — prevents cross-slot contamination on toggle
+  const mins = _parkStats2 ? (_parkStats2.parking_mins ?? null)
+    : (parkingIsWeekend
+        ? (isDinner ? r.parking_dinner_we ?? null : r.parking_lunch_we ?? null)
+        : (isDinner ? r.parking_dinner_wd ?? null : r.parking_lunch_wd ?? null));
+  const reports = null; // no longer used — replaced by cache below
+
+  // Title from slot-specific cache only — never from global r.parking_type
+  // r.parking_type is a seed field that is the same for all slots and overwrites on toggle
+  const titles = { street: 'street parking', parkade: 'parkade', restaurant: 'valet', valet: 'valet', 'self-drive not rec': 'self-drive not rec' };
+  const _slotParkingType = (_parkStats2 && _parkStats2.parking_type) || null;
   const titleEl = document.getElementById('p3-parking-title');
-  if (titleEl) titleEl.textContent = titles[r.parking_type] || 'street parking';
+  if (titleEl) titleEl.textContent = _slotParkingType ? (titles[_slotParkingType] || _slotParkingType) : (titles[r.parking_type] || 'parking');
 
   // Minutes
   const minsEl = document.getElementById('p3-parking-mins');
@@ -2595,9 +3089,19 @@ function p3ParkingToggle(mode) {
     if (unitEl) { unitEl.querySelector('p').textContent = unit; unitEl.style.left = leftPos; }
   }
 
-  // Reports
+  // Parking count from parking_weight — type-specific, no walk-in contamination
   const repEl = document.getElementById('p3-parking-reports');
-  if (repEl) repEl.textContent = (reports || 0) + ' reports';
+  if (repEl) {
+    if (_parkStats2) {
+      const pCount = _parkStats2.parking_count != null
+        ? _parkStats2.parking_count
+        : (_parkStats2.parking_weight > 0 ? Math.max(1, Math.round(_parkStats2.parking_weight / 0.6)) : 0);
+      repEl.textContent = pCount + ' reports';
+    } else {
+      repEl.textContent = '0 reports';
+    }
+  }
+  // Do NOT write back to r.parking_type — that contaminates other slots
 
   // Slide pill
   const pill = document.getElementById('parking-pill');
@@ -2608,55 +3112,99 @@ function p3ParkingToggle(mode) {
   if (lunchLabel) lunchLabel.style.color = !isDinner ? '#020202' : 'white';
 }
 
+// Stable flag — tracks that wait-report modal is in parking mode
+let _parkingModalActive = false;
+
 function openParkingReportModal() {
   if (!currentRestaurant) return;
   const r = currentRestaurant;
-  const pill = document.getElementById('parking-pill');
-  const isDinner = pill && pill.style.left === '2px';
+  const pkpill = document.getElementById('parking-pill');
+  const isDinner = pkpill && pkpill.style.left === '2px';
+  const mealPeriod = isDinner ? 'dinner' : 'lunch';
+  const dayType = parkingIsWeekend ? 'weekend' : 'weekday';
 
-  const title = document.getElementById('wait-report-title');
+  const title    = document.getElementById('wait-report-title');
   const subtitle = document.getElementById('wait-report-subtitle');
-  const options = document.getElementById('wait-report-options');
-  const input = document.getElementById('wait-report-input');
+  const options  = document.getElementById('wait-report-options');
+  const input    = document.getElementById('wait-report-input');
+  const sheet    = document.getElementById('wait-report-sheet');
 
-  if (title) title.textContent = 'Report parking';
+  if (title)    title.textContent = 'Report parking';
   if (subtitle) subtitle.textContent = `How long to find parking near ${r.name}?`;
-  if (input) input.placeholder = 'e.g. 12 mins';
+  if (input)    { input.placeholder = 'e.g. 12 mins'; input.value = ''; }
 
+  // Restore prior time choice into state variable (not just visual)
+  const priorTime = _getReportChoice(r.id, 'parking_time', mealPeriod, dayType);
+  selectedWaitOption  = priorTime || null;
+  // Restore prior type choice into state variable
+  const priorType = _getReportChoice(r.id, 'parking_type', mealPeriod, dayType);
+  selectedParkingType = priorType || null;
+
+  // Build time pills — mark prior selection as selected
   if (options) options.innerHTML = [
     ['Under 5 min', 'lt-5'],
-    ['5–15 min', '5-15'],
-    ['15–30 min', '15-30'],
-    ['30+ min', '30plus']
-  ].map(([label, val]) => `
-    <div onclick="selectWaitOption('${val}', this)" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background 0.15s;gap:8px;">
+    ['5–15 min',    '5-15'],
+    ['15–30 min',   '15-30'],
+    ['30+ min',     '30plus']
+  ].map(([label, val]) => {
+    const isSelected = val === priorTime;
+    // Grey circle = restored from localStorage memory (not live backend)
+    return `<div onclick="selectWaitOption('${val}', this)" style="background:${isSelected ? '#f7f7f7' : 'white'};border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background 0.15s;gap:8px;">
       <p class="fi" style="font-size:13px;font-weight:500;color:black;line-height:1.4;">${label}</p>
-      <div style="width:18px;height:18px;border-radius:50%;border:1.5px solid #ccc;flex-shrink:0;"></div>
-    </div>`).join('');
+      <div style="width:18px;height:18px;border-radius:50%;border:1.5px solid ${isSelected ? '#888' : '#ccc'};background:${isSelected ? '#888' : 'white'};flex-shrink:0;"></div>
+    </div>`;
+  }).join('');
 
-  // Also add parking type options
-  options.innerHTML += `<div style="grid-column:1/-1;margin-top:4px;">
-    <p class="fi" style="font-size:10px;font-weight:300;color:#888;letter-spacing:0.5px;margin-bottom:8px;">parking type</p>
+  // Parking type row — always inject, stable anchor is the submit button by ID
+  const existingParkingType = document.getElementById('parking-type-row');
+  if (existingParkingType) existingParkingType.remove();
+  const parkingTypeDiv = document.createElement('div');
+  parkingTypeDiv.id = 'parking-type-row';
+  parkingTypeDiv.style.cssText = 'margin-bottom:14px;';
+  parkingTypeDiv.innerHTML = `<p class="fi" style="font-size:10px;font-weight:300;color:#888;letter-spacing:0.5px;margin-bottom:8px;">parking type</p>
     <div style="display:flex;justify-content:space-between;">
-      ${['Street','Parkade','Valet','Self-drive not recommended'].map(t => `<div onclick="selectParkingType('${t.toLowerCase()}',this)" style="background:#f0f0f0;border-radius:20px;padding:5px 8px;cursor:pointer;border:1.5px solid transparent;transition:all 0.15s;"><p class="fi" style="font-size:10px;font-weight:500;color:black;">${t}</p></div>`).join('')}
-    </div>
-  </div>`;
+      ${['Street','Parkade','Valet','Self-drive not rec'].map(t => {
+        const isSelected = t.toLowerCase() === priorType;
+        // Grey = restored from localStorage memory (not live backend)
+        return `<div onclick="selectParkingType('${t.toLowerCase()}',this)" style="background:${isSelected ? '#888' : '#f0f0f0'};border-radius:20px;padding:6px 10px;cursor:pointer;border:1.5px solid ${isSelected ? '#888' : 'transparent'};transition:all 0.15s;white-space:nowrap;"><p class="fi" style="font-size:12px;font-weight:500;color:${isSelected ? 'white' : 'black'};">${t}</p></div>`;
+      }).join('')}
+    </div>`;
 
-  // Override submit button to use parking-specific handler
-  const submitBtn = document.querySelector('#wait-report-sheet [onclick="submitWaitReport()"]');
-  if (submitBtn) submitBtn.setAttribute('onclick', 'submitParkingReport()');
+  // Use a stable anchor — the submit button is always the last child of the sheet
+  // Find it by its text content, not its onclick attr (which changes)
+  const allBtns = sheet.querySelectorAll('div[style*="background:#1e1e1e"]');
+  let submitAnchor = null;
+  allBtns.forEach(b => {
+    if (b.querySelector('p') && b.querySelector('p').textContent.includes('SUBMIT')) submitAnchor = b;
+  });
+  if (submitAnchor) sheet.insertBefore(parkingTypeDiv, submitAnchor);
+  else sheet.appendChild(parkingTypeDiv);
+
+  // Mark modal as parking mode — submitWaitReport checks this flag
+  _parkingModalActive = true;
 
   const m = document.getElementById('wait-report-modal');
   const s = document.getElementById('wait-report-sheet');
   m.style.display = 'flex';
-  requestAnimationFrame(() => { m.style.background = 'rgba(0,0,0,0.5)'; s.style.transform = 'translateY(0)'; });
+  requestAnimationFrame(() => {
+    m.style.background = 'rgba(0,0,0,0.5)';
+    s.style.transform = 'translateY(0)';
+  });
 }
 
 let selectedParkingType = null;
 function selectParkingType(type, el) {
+  // Toggle: tap selected type again to deselect
+  if (selectedParkingType === type) {
+    selectedParkingType = null;
+    el.style.background = '#f0f0f0';
+    el.style.borderColor = 'transparent';
+    el.querySelector('p').style.color = 'black';
+    return;
+  }
   selectedParkingType = type;
-  // Reset only parking type pills
-  document.querySelectorAll('#wait-report-options [onclick^="selectParkingType"]').forEach(e => {
+  // Reset all parking type pills — query sheet since row is injected outside options grid
+  document.querySelectorAll('#parking-type-row [onclick^="selectParkingType"]').forEach(e => {
     e.style.background = '#f0f0f0';
     e.style.borderColor = 'transparent';
     const p = e.querySelector('p');
@@ -2667,58 +3215,85 @@ function selectParkingType(type, el) {
   el.querySelector('p').style.color = 'white';
 }
 
-function submitParkingReport() {
+async function submitParkingReport() {
   const input = document.getElementById('wait-report-input');
-  const rawVal = selectedWaitOption || (input && input.value.trim());
-  if (!rawVal) return;
-  const normVal = normaliseReportValue(rawVal);
+  const rawVal = selectedWaitOption || (input && input.value.trim()) || null;
+  const capturedParkingType = selectedParkingType;
+
+  // Allow submit when at least one of time or type is provided
+  if (!rawVal && !capturedParkingType) return;
+  if (!currentRestaurant) return;
+
+  const pill       = document.getElementById('parking-pill');
+  const isDinner   = pill && pill.style.left === '2px';
+  const mealPeriod = isDinner ? 'dinner' : 'lunch';
+  const dayType    = parkingIsWeekend ? 'weekend' : 'weekday';
+
+  // Map rawVal to valid bucket; preserve actual typed number as supporting value
+  const timeBucket = rawVal ? mapToParkingTimeBucket(rawVal) : null;
+  const _typedMins = rawVal ? _extractTypedNumber(rawVal) : null;
+  const normVal    = timeBucket ? (_typedMins !== null ? _typedMins : normaliseReportValue(timeBucket)) : null;
+
   closeWaitReportModal();
+  _parkingModalActive = false;
 
-  // Restore submit button to default
-  const submitBtn = document.querySelector('#wait-report-sheet [onclick="submitParkingReport()"]');
-  if (submitBtn) submitBtn.setAttribute('onclick', 'submitWaitReport()');
-
-  if (currentRestaurant) {
-    const pill = document.getElementById('parking-pill');
-    const isDinner = pill && pill.style.left === '2px';
-    const dayType = parkingIsWeekend ? 'weekend' : 'weekday';
-
-    // Optimistic local update of cached counts
-    if (isDinner && dayType === 'weekday') {
-      currentRestaurant.parking_dinner_reports = (currentRestaurant.parking_dinner_reports || 0) + 1;
-    } else if (!isDinner && dayType === 'weekday') {
-      currentRestaurant.parking_lunch_reports = (currentRestaurant.parking_lunch_reports || 0) + 1;
-    } else if (isDinner && dayType === 'weekend') {
-      currentRestaurant.parking_dinner_reports_we = (currentRestaurant.parking_dinner_reports_we || 0) + 1;
-    } else {
-      currentRestaurant.parking_lunch_reports_we = (currentRestaurant.parking_lunch_reports_we || 0) + 1;
-    }
-
-    const repEl = document.getElementById('p3-parking-reports');
-    if (repEl) {
-      const count = isDinner
-        ? (dayType === 'weekday' ? currentRestaurant.parking_dinner_reports : currentRestaurant.parking_dinner_reports_we)
-        : (dayType === 'weekday' ? currentRestaurant.parking_lunch_reports : currentRestaurant.parking_lunch_reports_we);
-      repEl.textContent = (count || 0) + ' reports';
-    }
-
-    const parkRow = {
-      restaurant_id: currentRestaurant.id,
-      report_type:   'parking_wait',
-      meal_period:   isDinner ? 'dinner' : 'lunch',
-      day_type:      dayType,
-      value:         normVal,
-    };
-    if (supabaseReady()) {
-      sb.from('restaurant_reports').then(c => c.insert(parkRow)).catch(err =>
-        console.error('restaurant_reports insert failed:', err.message)
-      );
-    } else {
-      console.log('parking report (mock):', parkRow);
-    }
+  // Optimistic +1 only if this is the first parking_time report for this slot
+  // parking_count = distinct reporters by parking_time; type-only submissions don't increment
+  const _pkNewTime = timeBucket && !_getReportChoice(currentRestaurant.id, 'parking_time', mealPeriod, dayType);
+  const repEl = document.getElementById('p3-parking-reports');
+  if (repEl && _pkNewTime) {
+    const curCount = parseInt(repEl.textContent) || 0;
+    repEl.textContent = (curCount + 1) + ' reports';
   }
-  selectedWaitOption = null;
-  selectedParkingType = null;
+
+  selectedWaitOption   = null;
+  selectedParkingType  = null;
+
+  if (!supabaseReady()) return;
+
+  const calls = [];
+
+  if (timeBucket) {
+    calls.push(
+      sb.rpc('submit_restaurant_report', {
+        p_restaurant_id: currentRestaurant.id,
+        p_session_id:    SESSION_ID,
+        p_report_type:   'parking_time',
+        p_meal_period:   mealPeriod,
+        p_day_type:      dayType,
+        p_bucket:        timeBucket,
+        p_value:         normVal,
+      })
+    );
+  }
+
+  if (capturedParkingType) {
+    calls.push(
+      sb.rpc('submit_restaurant_report', {
+        p_restaurant_id: currentRestaurant.id,
+        p_session_id:    SESSION_ID,
+        p_report_type:   'parking_type',
+        p_meal_period:   mealPeriod,
+        p_day_type:      dayType,
+        p_bucket:        capturedParkingType,
+        p_value:         null,
+      })
+    );
+  }
+
+  try {
+    const results = await Promise.all(calls);
+    const failed = results.find(r => r && !r.ok);
+    if (failed && failed.error === 'RATE_LIMIT_EXCEEDED') {
+      _showVoteToast('Report limit reached for today');
+    } else {
+      if (timeBucket) _saveReportChoice(currentRestaurant.id, 'parking_time', mealPeriod, dayType, timeBucket);
+      if (capturedParkingType) _saveReportChoice(currentRestaurant.id, 'parking_type', mealPeriod, dayType, capturedParkingType);
+      loadReportStats(currentRestaurant.id, mealPeriod, dayType);
+    }
+  } catch (err) {
+    console.warn('submitParkingReport RPC failed:', err.message);
+  }
 }
 
 // Detect iOS once — Apple Maps only makes sense on iPhone/iPad
@@ -2847,6 +3422,9 @@ function updateTransportTimes(r) {
 }
 
 // Community quotes per restaurant
+// Session-local pending quotes — visible to submitter only until approved
+const pendingQuotes = {}; // { restaurantId: [quoteText, ...] }
+
 const SEED_QUOTES = {
   'combine':       ["Energy hits different after 9pm", "Best Korean fried chicken in DT", "Go with a group, share everything"],
   'miku':          ["Aburi salmon is non-negotiable", "Views of the water make it", "Lunch is the move — shorter wait"],
@@ -2877,42 +3455,64 @@ const SEED_QUOTES = {
 let quoteRotationTimer = null;
 let currentQuoteIndex = 0;
 
-function initCommunityQuotes(r) {
+async function initCommunityQuotes(r) {
   if (quoteRotationTimer) clearInterval(quoteRotationTimer);
-  const quotes = [...(SEED_QUOTES[r.id] || ["Great spot — be the first to share a vibe"])];
   currentQuoteIndex = 0;
 
   const el = document.getElementById('p3-community-quote');
   if (!el) return;
 
-  const showQuote = (idx) => {
-    el.style.transition = 'transform 0.4s cubic-bezier(.4,0,.2,1), opacity 0.4s ease';
-    el.style.transform = 'translateY(0%)';
-    el.style.opacity = '1';
+  // 1. Fetch approved quotes from Supabase (public, moderated)
+  let approved = [];
+  if (supabaseReady()) {
+    try {
+      const rows = await sb.from('restaurant_quotes').then(c =>
+        c.selectWhere({ restaurant_id: r.id, status: 'approved' }, 'quote')
+      );
+      approved = (rows || []).map(row => row.quote);
+    } catch (err) {
+      console.warn('initCommunityQuotes fetch failed:', err.message);
+    }
+  }
 
+  // 2. Append this session's locally-pending quotes (optimistic, not public)
+  const local = pendingQuotes[r.id] || [];
+
+  // 3. Fall back to SEED_QUOTES scaffold if both are empty
+  let quotes;
+  if (approved.length > 0 || local.length > 0) {
+    quotes = [...approved, ...local];
+  } else {
+    quotes = [...(SEED_QUOTES[r.id] || ['Great spot — be the first to share a vibe'])];
+  }
+
+  // Set initial quote text immediately (no transition on first render)
+  el.style.transition = 'none';
+  el.style.transform = 'translateY(0%)';
+  el.style.opacity = '1';
+  el.textContent = `'${quotes[0]}'`;
+
+  if (quotes.length <= 1) return; // no rotation needed for single quote
+
+  const showQuote = (idx) => {
     // Roll up out
-    setTimeout(() => {
-      el.style.transition = 'transform 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s ease';
-      el.style.transform = 'translateY(-120%)';
-      el.style.opacity = '0';
-    }, 11200);
+    el.style.transition = 'transform 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s ease';
+    el.style.transform = 'translateY(-120%)';
+    el.style.opacity = '0';
 
     // Snap to bottom, then roll up in
     setTimeout(() => {
       el.style.transition = 'none';
       el.style.transform = 'translateY(120%)';
-      el.textContent = `'${quotes[(idx + 1) % quotes.length]}'`;
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          el.style.transition = 'transform 0.45s cubic-bezier(.32,.72,0,1), opacity 0.3s ease';
-          el.style.transform = 'translateY(0%)';
-          el.style.opacity = '1';
-        });
-      });
-    }, 11700);
+      el.textContent = `'${quotes[idx]}'`;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        el.style.transition = 'transform 0.45s cubic-bezier(.32,.72,0,1), opacity 0.3s ease';
+        el.style.transform = 'translateY(0%)';
+        el.style.opacity = '1';
+      }));
+    }, 500);
   };
 
-  showQuote(0);
   quoteRotationTimer = setInterval(() => {
     currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
     showQuote(currentQuoteIndex);
@@ -2945,15 +3545,28 @@ function closeQuoteModal() {
   setTimeout(() => { m.style.display = 'none'; }, 400);
 }
 
-function submitQuote() {
+async function submitQuote() {
   const input = document.getElementById('quote-input');
   const text = input && input.value.trim();
   if (!text || !currentRestaurant) return;
-  // Add to seed quotes for this session
-  if (!SEED_QUOTES[currentRestaurant.id]) SEED_QUOTES[currentRestaurant.id] = [];
-  SEED_QUOTES[currentRestaurant.id].push(text);
+
+  // Client-side content filter — same blocklist as vibes
+  if (!_vibeIsClean(text)) {
+    input.value = '';
+    input.placeholder = 'keep it respectful ✌️';
+    setTimeout(() => { input.placeholder = 'e.g. Best hidden patio in Gastown…'; }, 2500);
+    return;
+  }
+
+  const rid = currentRestaurant.id;
+
+  // Store locally as pending — visible to this session only
+  if (!pendingQuotes[rid]) pendingQuotes[rid] = [];
+  pendingQuotes[rid].push(text);
+
   closeQuoteModal();
-  // Show new quote with roll-up
+
+  // Optimistic display — roll in immediately
   const el = document.getElementById('p3-community-quote');
   if (el) {
     el.style.transition = 'transform 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s ease';
@@ -2969,6 +3582,30 @@ function submitQuote() {
         el.style.opacity = '1';
       }));
     }, 400);
+  }
+
+  // Submit to backend as pending — does not go public until approved
+  if (!supabaseReady()) return;
+  try {
+    const res = await sb.rpc('submit_restaurant_quote', {
+      p_restaurant_id: rid,
+      p_session_id:    SESSION_ID,
+      p_quote:         text,
+    });
+    if (res && !res.ok) {
+      if (res.error === 'RATE_LIMIT_EXCEEDED') {
+        _showVoteToast('One quote per restaurant per day');
+      } else if (res.error === 'CONTENT_BLOCKED') {
+        // Backend rejected content that slipped past frontend filter
+        // Remove from local pending and show nudge
+        if (pendingQuotes[rid]) {
+          pendingQuotes[rid] = pendingQuotes[rid].filter(q => q !== text);
+        }
+        _showVoteToast('Keep it respectful ✌️');
+      }
+    }
+  } catch (err) {
+    console.warn('submitQuote RPC failed:', err.message);
   }
 }
 
@@ -3664,6 +4301,15 @@ function applyVibeModal() {
 function populatePage2() {
   matchedRestaurants = findMatchingRestaurants();
   if (matchedRestaurants.length===0) matchedRestaurants = restaurants.slice(0,8);
+
+  // Pinned restaurant always first — remove duplicate then prepend
+  if (pinnedRestaurant) {
+    matchedRestaurants = [
+      pinnedRestaurant,
+      ...matchedRestaurants.filter(r => r.id !== pinnedRestaurant.id)
+    ];
+  }
+
   currentCardIndex = 0;
   currentRestaurant = matchedRestaurants[0];
 
@@ -4510,20 +5156,46 @@ const container   = document.getElementById('tags-container');
 })();
 
 
+function _letsVibeTap() {
+  const active = selected.size > 0 || !!activeSearchTerm || !!pinnedRestaurant;
+  if (!active) return;
+  populatePage2();
+  navigateSwipe('page2');
+}
+
 function updateCtaVisibility() {
   const foot = document.getElementById('lets-vibe-foot');
+  const btn  = document.getElementById('lets-vibe-btn');
   if (!foot) return;
   const searchFilled = document.getElementById('vibe-search')?.value.trim().length > 0;
-  const show = selected.size > 0 || searchFilled;
-  foot.style.opacity = show ? '1' : '0';
+  const show   = selected.size > 0 || searchFilled || !!activeSearchTerm || !!pinnedRestaurant;
+  // Active = can actually navigate (search confirmed or bubbles selected, not just mid-typing)
+  const active = selected.size > 0 || !!activeSearchTerm || !!pinnedRestaurant;
+  foot.style.opacity      = show ? '1' : '0';
   foot.style.pointerEvents = show ? 'all' : 'none';
+  if (btn) {
+    btn.style.background = active ? '#1e1e1e' : '#b0b0b0';
+    btn.style.cursor     = active ? 'pointer'  : 'default';
+    // Also update outer wrapper so no grey ring shows behind the active button
+    const outer = btn.parentElement;
+    if (outer) outer.style.background = active ? '#1e1e1e' : '#b0b0b0';
+  }
 }
 
 function clearVibeSearch() {
   const input = document.getElementById('vibe-search');
   const clear = document.getElementById('vibe-search-clear');
-  if (input) { input.value = ''; input.focus(); }
+  if (input) {
+    input.value = '';
+    input.style.color = '';
+    input.style.fontWeight = '';
+    input.focus();
+  }
   if (clear) clear.style.display = 'none';
+  pinnedRestaurant = null;   // clear pinned restaurant when X is tapped
+  activeSearchTerm = '';     // clear active search term so CTA hides if no bubbles
+  searchInput.style.color = '';
+  searchInput.style.fontWeight = '';
   updateCtaVisibility();
 }
 
@@ -4533,6 +5205,12 @@ function clearVibeSearch() {
 // ── Search bar — intent mode, direct to Page 2 ─────────────────
 const searchInput = document.getElementById('vibe-search');
 searchInput.addEventListener('input', () => {
+  // If user types after pinning a restaurant, clear the pin and reset styling
+  if (pinnedRestaurant) {
+    pinnedRestaurant = null;
+    searchInput.style.color = '';
+    searchInput.style.fontWeight = '';
+  }
   updateCtaVisibility();
   const clear = document.getElementById('vibe-search-clear');
   if (clear) clear.style.display = searchInput.value.length > 0 ? 'flex' : 'none';
@@ -4542,31 +5220,38 @@ searchInput.addEventListener('input', () => {
 function executeSearch(q) {
   const term = q.trim();
   if (!term) return;
-  searchInput.value = '';
-  searchInput.blur();
-  updateCtaVisibility();
-  const clear = document.getElementById('vibe-search-clear');
-  if (clear) clear.style.display = 'none';
   activeSearchTerm = term;
+  // Show the search term in the bar as a confirmed tag, then blur
+  searchInput.value = term;
+  searchInput.style.color = '#111';
+  searchInput.style.fontWeight = '600';
+  searchInput.blur(); // dismiss keyboard
+  const clear = document.getElementById('vibe-search-clear');
+  if (clear) clear.style.display = 'flex'; // keep X visible so user can clear
 
   const parsed = parseSearchPhrase(term);
   applyParsedSearch(parsed);
 
-  populatePage2();
-  navigateSwipe('page2');
+  updateCtaVisibility(); // CTA stays lit via activeSearchTerm
 }
 
 function doubleTapSave() {
   if (!currentRestaurant) return;
   const restaurant_id = currentRestaurant.id;
-  const name = currentRestaurant.name; // still needed for UI star checks
   if (!savedRestaurants.has(restaurant_id)) {
+    // Optimistic update
     savedRestaurants.add(restaurant_id);
     updateP3StarIcons();
     updateP1Star();
-    // TODO: POST to Supabase saves { restaurant_id, session_id }
-    console.log('save:', { restaurant_id });
     showSaveBurst();
+    // Persist — revert on failure
+    _insertSave(restaurant_id).then(ok => {
+      if (!ok) {
+        savedRestaurants.delete(restaurant_id);
+        updateP3StarIcons();
+        updateP1Star();
+      }
+    });
   }
 }
 
@@ -4654,22 +5339,105 @@ function navigateToSaved(restaurant_id) {
 
 const savedRestaurants = new Set();
 
+// Returns the active identity branch for saves:
+// auth → { user_id } ; anon → { session_id, user_id: null }
+// When Supabase Auth is wired, call sb.auth.onAuthStateChange((_e, s) => loadSaves())
+// in the auth init block to re-run saves load on sign-in/sign-out.
+function _saveIdentity() {
+  const user = typeof sb !== 'undefined' && sb.auth && sb.auth.user ? sb.auth.user() : null;
+  if (user && user.id) return { user_id: user.id };
+  return { session_id: SESSION_ID, user_id: null };
+}
+
+// Load saves on app start — anon by session_id, auth by user_id (future)
+async function loadSaves() {
+  if (!supabaseReady()) return;
+  try {
+    const identity = _saveIdentity();
+    let rows;
+    if (identity.user_id) {
+      // Auth: fetch by user_id
+      rows = await sb.from('saves').then(c =>
+        c.selectWhere({ user_id: identity.user_id }, 'restaurant_id')
+      );
+    } else {
+      // Anon: fetch by session_id AND user_id is null (partial index safe)
+      const url = `${SUPABASE_URL}/rest/v1/saves?select=restaurant_id&session_id=eq.${encodeURIComponent(SESSION_ID)}&user_id=is.null`;
+      const res = await fetch(url, {
+        headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY, 'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}` }
+      });
+      rows = res.ok ? await res.json() : [];
+    }
+    (rows || []).forEach(row => savedRestaurants.add(row.restaurant_id));
+    updateP1Star();
+  } catch (err) {
+    console.warn('loadSaves failed:', err.message);
+  }
+}
+
+async function _insertSave(restaurant_id) {
+  if (!supabaseReady()) return true;
+  try {
+    const identity = _saveIdentity();
+    // upsert treats conflict (duplicate) as success — idempotent
+    await sb.from('saves').then(c => c.upsert(
+      { restaurant_id, ...identity },
+      identity.user_id ? 'restaurant_id,user_id' : 'restaurant_id,session_id'
+    ));
+    return true;
+  } catch (err) {
+    console.warn('_insertSave failed:', err.message);
+    return false;
+  }
+}
+
+async function _deleteSave(restaurant_id) {
+  if (!supabaseReady()) return true;
+  try {
+    const identity = _saveIdentity();
+    if (identity.user_id) {
+      await sb.from('saves').then(c => c.deleteWhere({ restaurant_id, user_id: identity.user_id }));
+    } else {
+      // Anon: must include user_id=is.null to match partial index correctly
+      const url = `${SUPABASE_URL}/rest/v1/saves?restaurant_id=eq.${restaurant_id}&session_id=eq.${encodeURIComponent(SESSION_ID)}&user_id=is.null`;
+      await fetch(url, {
+        method: 'DELETE',
+        headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY, 'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}` }
+      });
+    }
+    return true;
+  } catch (err) {
+    console.warn('_deleteSave failed:', err.message);
+    return false;
+  }
+}
+
 function toggleSaveRestaurant(e) {
   e.stopPropagation();
   if (!currentRestaurant) return;
   const restaurant_id = currentRestaurant.id;
-  const name = currentRestaurant.name; // still needed for UI star checks
-  if (savedRestaurants.has(restaurant_id)) {
+  const wasSaved = savedRestaurants.has(restaurant_id);
+
+  // Optimistic update
+  if (wasSaved) {
     savedRestaurants.delete(restaurant_id);
-    // TODO: DELETE from Supabase saves where restaurant_id = restaurant_id
-    console.log('unsave:', { restaurant_id });
   } else {
     savedRestaurants.add(restaurant_id);
-    // TODO: POST to Supabase saves { restaurant_id, session_id }
-    console.log('save:', { restaurant_id });
   }
   updateP3StarIcons();
   updateP1Star();
+
+  // Persist — revert on failure
+  const op = wasSaved ? _deleteSave(restaurant_id) : _insertSave(restaurant_id);
+  op.then(ok => {
+    if (!ok) {
+      // Revert
+      if (wasSaved) savedRestaurants.add(restaurant_id);
+      else savedRestaurants.delete(restaurant_id);
+      updateP3StarIcons();
+      updateP1Star();
+    }
+  });
 }
 
 function updateP3StarIcons() {
@@ -5398,27 +6166,37 @@ function hideSuggestions() {
 function selectSuggestion(type, value, e) {
   e && e.stopPropagation();
   hideSuggestions();
-  searchInput.value = '';
-  searchInput.blur();
-  const clear = document.getElementById('vibe-search-clear');
-  if (clear) clear.style.display = 'none';
 
   if (type === 'restaurant') {
-    // Direct navigate: find the restaurant and open P3 directly
+    // Pin the restaurant — it will appear first on P2 when user taps Let's Vibe
     const r = restaurants.find(x => x.name === value);
     if (r) {
-      matchedRestaurants = [r];
-      currentCardIndex = 0;
-      currentRestaurant = r;
-      selectRestaurant(0);
+      pinnedRestaurant = r;
+      // Show the name as a tag-like label in the search bar area rather than clearing
+      // Blur keyboard, keep foot visible so user can still pick vibes then tap Let's Vibe
+      searchInput.blur();
+      // Show restaurant name in input as confirmation, then clear on next keystroke
+      searchInput.value = r.name;
+      searchInput.style.color = '#111';
+      searchInput.style.fontWeight = '600';
+      const clear = document.getElementById('vibe-search-clear');
+      if (clear) clear.style.display = 'flex';
     }
-  } else if (type === 'specialty') {
-    // Add as specialty filter and go to P2
-    if (!activeSpecialties.includes(value)) activeSpecialties.push(value);
-    populatePage2();
-    navigateSwipe('page2');
-  } else if (type === 'vibe') {
-    // Try to find a matching bubble wrapper by label (covers all VIBE_CATEGORIES entries)
+    updateCtaVisibility();
+    return; // skip the hideSuggestions input-clear at top
+  } else {
+    // Non-restaurant: show selected value in bar as confirmation, blur keyboard
+    searchInput.value = value;
+    searchInput.style.color = '#111';
+    searchInput.style.fontWeight = '600';
+    searchInput.blur();
+    const clear2 = document.getElementById('vibe-search-clear');
+    if (clear2) clear2.style.display = 'flex';
+    // Always set activeSearchTerm so CTA stays active
+    activeSearchTerm = value;
+  }
+
+  if (type === 'vibe') {
     const labelNorm = value.replace(/\s+/g,' ').trim().toLowerCase();
     const wrapper = [...document.querySelectorAll('.vibe-bubble-wrapper')]
       .find(w => w.dataset.label && w.dataset.label.replace(/\s+/g,' ').trim().toLowerCase() === labelNorm && w.dataset.inactive !== '1');
@@ -5427,17 +6205,13 @@ function selectSuggestion(type, value, e) {
       selected.add(parseInt(wrapper.dataset.entryIdx));
       syncAllWrappers();
     } else {
-      // Fallback: run through parseSearchPhrase for VIBE_WORD_MAP-mapped words
-      activeSearchTerm = value;
       const parsed = parseSearchPhrase(value);
       applyParsedSearch(parsed);
     }
-    populatePage2();
-    navigateSwipe('page2');
   } else if (type === 'cuisine') {
     if (!activeCuisines.includes(value)) activeCuisines.push(value);
-    populatePage2();
-    navigateSwipe('page2');
+  } else if (type === 'specialty') {
+    if (!activeSpecialties.includes(value)) activeSpecialties.push(value);
   }
   updateCtaVisibility();
 }
@@ -5493,22 +6267,23 @@ const RESTAURANT_VIBES = {
 };
 
 const p3Votes = {};
-const p3UserVibes = {};
 
+let _p3RingLastScore = null;
 function p3DrawRing(score) {
   const ring = document.getElementById('p3-ring-fill');
   if (!ring) return;
-  const circumference = 268.50;
   const pct = Math.max(0, Math.min(100, score));
+  // Skip redraw if score hasn't changed — prevents animation flicker on backend confirm
+  if (_p3RingLastScore === pct) return;
+  _p3RingLastScore = pct;
+  const circumference = 268.50;
   const offset = circumference * (1 - pct / 100);
-  // Reset to empty first (no transition), then animate to score
   ring.style.transition = 'none';
   ring.style.strokeDashoffset = circumference;
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       ring.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)';
       ring.style.strokeDashoffset = offset;
-      // After animation, remove transition so it never re-triggers on visibility change
       setTimeout(() => { ring.style.transition = 'none'; }, 1500);
     });
   });
@@ -5569,6 +6344,7 @@ function p3PhotoNav(dir) {
 
 function populatePage3(r) {
   if (!r) return;
+  _p3RingLastScore = null; // reset so new restaurant always draws ring fresh
 
   // Set blurred background from first photo
   const bgBlur = document.getElementById('p3-bg-blur');
@@ -5708,6 +6484,13 @@ function populatePage3(r) {
 
   // State 2 happy card — mode-aware
   updateHappyCard(r);
+
+  // Load live report stats — overrides seed/cached values on the walk-in + parking cards
+  // If no fresh reports exist within the freshness window, cards will show '–'
+  // Load both dinner and lunch so toggle switches show correct data immediately
+  const _initDay = walkinIsWeekend ? 'weekend' : 'weekday';
+  loadReportStats(r.id, 'dinner', _initDay);
+  loadReportStats(r.id, 'lunch',  _initDay);
   if (false) { // legacy block preserved for reference — driven by updateHappyCard now
     const hhCountdown = document.getElementById('p3-hh-countdown');
     const hhLabel = document.getElementById('p3-hh-label');
@@ -5872,10 +6655,14 @@ function p3RenderVotes(id) {
           : 0;
       }
     }
-    if (newScore != null) {
-      const sc = document.getElementById('p3-score');
+    const sc = document.getElementById('p3-score');
+    if (newScore != null && newScore > 0) {
       if (sc) sc.textContent = newScore;
       p3DrawRing(newScore);
+    } else {
+      // No votes yet — show dash, empty ring
+      if (sc) sc.textContent = '–';
+      p3DrawRing(0);
     }
   }
 }
@@ -6200,16 +6987,27 @@ function toggleP3AddVibe(vibe, el) {
 // Client-side first line of defense. Not exhaustive — admin approval
 // is the real guardrail for public visibility.
 const VIBE_BLOCKLIST = [
+  // Profanity
   'fuck','fucked','fucking','fucker','shit','shitting','bitch','bitches',
-  'ass','asshole','bastard','cunt','dick','cock','pussy','whore','slut',
+  'asshole','bastard','cunt','pussy','whore','slut',
+  // Slurs
   'nigger','nigga','faggot','fag','retard','retarded','kike','spic','chink',
-  'rape','rapist','kill','murder','terrorist','nazi','porn','sex','sexy',
-  'drugs','weed','cocaine','meth','heroin',
+  // Harmful
+  'rape','rapist','terrorist','nazi','porn','cocaine','meth','heroin',
+  // Removed from naive list: 'ass','dick','cock','sex','sexy','kill','murder','weed','drugs'
+  // These caused false positives: cassoulet, benedict, cocktail, Essex, grill, seaweed
+  // Word-boundary regex handles these safely instead (see _vibeIsClean)
 ];
 
+// Word-boundary matching — same approach as backend SQL ( in JS regex)
+// Prevents false positives: "cocktail" passes, "cock" alone is blocked
+// "cassoulet" passes, "asshole" is blocked
 function _vibeIsClean(val) {
   const lc = val.toLowerCase();
-  return !VIBE_BLOCKLIST.some(w => lc.includes(w));
+  return !VIBE_BLOCKLIST.some(w => {
+    const esc = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp('\\b' + esc + '\\b').test(lc);
+  });
 }
 
 function addP3CustomVibe() {
@@ -6291,18 +7089,11 @@ function _updateCustomPlaceholder() {
   }
 }
 
-function removeP3CustomVibe(vibe, chipEl) {
-  p3vmCustomVibes = p3vmCustomVibes.filter(v => v !== vibe);
-  if (chipEl) chipEl.remove();
-}
-
 function applyP3VibeModal() {
   // Signals are submitted immediately on tap via _submitVibeSignal and _submitVibeCandidate.
   // Done just closes the modal — no re-submission needed.
   closeP3VibeModal();
 }
-
-const p3SuggestionPending = new Set();
 
 // City dropdown
 const GVR_CITIES = [
@@ -6363,19 +7154,6 @@ document.addEventListener('click', e => {
     cityDropdownOpen = false;
   }
 });
-
-function p3ApplyVibeSuggestion() {
-  if (!currentRestaurant) return;
-  const id = currentRestaurant.id;
-  if (!p3UserVibes[id]) p3UserVibes[id] = [];
-  p3SuggestionPending.forEach(v => { if (!p3UserVibes[id].includes(v)) p3UserVibes[id].push(v); });
-  p3SuggestionPending.clear();
-  closeVibeModal();
-  // Restore page 2 modal DONE to original
-  const doneBtn = document.getElementById('vibe-modal-done');
-  if (doneBtn) doneBtn.setAttribute('onclick','applyVibeModal()');
-}
-
 
 
 // ── DEV PREVIEW HARNESS ──────────────────────────────────────────────────

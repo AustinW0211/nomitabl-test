@@ -553,15 +553,15 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <div style="position:absolute;left:16px;top:92.5px;transform:translateY(-50%);width:139px;"><p id="p3-walkin-subtitle" class="fi" style="font-weight:300;font-size:9px;color:black;letter-spacing:0;text-transform:lowercase;line-height:12px;white-space:nowrap;">avg wait · community reported</p></div>
         <div style="position:absolute;left:16px;top:125.5px;transform:translateY(-50%);width:139px;"><p id="p3-walkin-reports" class="fi" style="font-weight:300;font-style:italic;font-size:10px;color:black;letter-spacing:0.8px;text-transform:lowercase;line-height:14px;">52 reports</p></div>
         <div style="position:absolute;left:14px;top:138.5px;transform:translateY(-50%);width:139px;"><p onclick="openWaitReportModal()" class="fi" style="font-weight:400;font-size:10px;color:black;letter-spacing:1px;text-transform:lowercase;text-decoration:underline;line-height:12px;cursor:pointer;">+ report wait time</p></div>
-        <div style="position:absolute;background:white;height:30px;left:12px;border-radius:80px;top:5px;width:162px;display:flex;align-items:center;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(0);border:1px solid #ccc;">
+        <div style="position:absolute;background:#1e1e1e;height:30px;left:12px;border-radius:80px;top:5px;width:162px;display:flex;align-items:center;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(0);">
           <!-- Sliding white pill indicator -->
-          <div id="walkin-pill" style="position:absolute;background:#1e1e1e;height:26px;width:76px;border-radius:13px;top:50%;left:2px;transform:translateY(-50%) translateX(0px);transition:transform 0.25s cubic-bezier(.4,0,.2,1);will-change:transform;"></div>
+          <div id="walkin-pill" style="position:absolute;background:white;height:26px;width:76px;border-radius:13px;top:50%;left:2px;transform:translateY(-50%) translateX(0px);transition:transform 0.25s cubic-bezier(.4,0,.2,1);will-change:transform;"></div>
           <!-- Labels sit on top, each exactly pill-width so text centers to pill -->
-          <div onclick="p3WalkinToggle('dinner')" style="position:absolute;left:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;background:rgba(255,0,0,0.3);">
-            <p id="walkin-label-dinner" class="fi" style="font-weight:600;font-size:12px;color:white;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">dinner</p>
+          <div onclick="p3WalkinToggle('dinner')" style="position:absolute;left:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
+            <p id="walkin-label-dinner" class="fi" style="font-weight:600;font-size:12px;color:#020202;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">dinner</p>
           </div>
-          <div onclick="p3WalkinToggle('lunch')" style="position:absolute;right:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;background:rgba(0,0,255,0.3);">
-            <p id="walkin-label-lunch" class="fi" style="font-weight:600;font-size:12px;color:#020202;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">lunch</p>
+          <div onclick="p3WalkinToggle('lunch')" style="position:absolute;right:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
+            <p id="walkin-label-lunch" class="fi" style="font-weight:600;font-size:12px;color:white;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">lunch</p>
           </div>
         </div>
       </div>
@@ -576,13 +576,13 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <div style="position:absolute;left:16px;top:92.5px;transform:translateY(-50%);width:139px;"><p id="p3-parking-subtitle" class="fi" style="font-weight:300;font-size:9px;color:black;letter-spacing:0;text-transform:lowercase;line-height:12px;white-space:nowrap;">avg to find · community reported</p></div>
         <div style="position:absolute;left:16px;top:125.5px;transform:translateY(-50%);width:139px;"><p id="p3-parking-reports" class="fi" style="font-weight:300;font-style:italic;font-size:10px;color:black;letter-spacing:0.8px;text-transform:lowercase;line-height:14px;">52 reports</p></div>
         <div style="position:absolute;left:14px;top:138.5px;transform:translateY(-50%);width:139px;"><p onclick="openParkingReportModal()" class="fi" style="font-weight:400;font-size:10px;color:black;letter-spacing:1px;text-transform:lowercase;text-decoration:underline;line-height:12px;cursor:pointer;">+ report parking</p></div>
-        <div style="position:absolute;background:white;height:30px;left:12px;border-radius:80px;top:5px;width:162px;display:flex;align-items:center;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(0);border:1px solid #ccc;">
-          <div id="parking-pill" style="position:absolute;background:#1e1e1e;height:26px;width:76px;border-radius:13px;top:50%;left:2px;transform:translateY(-50%) translateX(0px);transition:transform 0.25s cubic-bezier(.4,0,.2,1);will-change:transform;"></div>
-          <div onclick="p3ParkingToggle('dinner')" style="position:absolute;left:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;background:rgba(255,0,0,0.3);">
-            <p id="parking-label-dinner" class="fi" style="font-weight:600;font-size:12px;color:white;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">dinner</p>
+        <div style="position:absolute;background:#1e1e1e;height:30px;left:12px;border-radius:80px;top:5px;width:162px;display:flex;align-items:center;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(0);">
+          <div id="parking-pill" style="position:absolute;background:white;height:26px;width:76px;border-radius:13px;top:50%;left:2px;transform:translateY(-50%) translateX(0px);transition:transform 0.25s cubic-bezier(.4,0,.2,1);will-change:transform;"></div>
+          <div onclick="p3ParkingToggle('dinner')" style="position:absolute;left:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
+            <p id="parking-label-dinner" class="fi" style="font-weight:600;font-size:12px;color:#020202;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">dinner</p>
           </div>
-          <div onclick="p3ParkingToggle('lunch')" style="position:absolute;right:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;background:rgba(0,0,255,0.3);">
-            <p id="parking-label-lunch" class="fi" style="font-weight:600;font-size:12px;color:#020202;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">lunch</p>
+          <div onclick="p3ParkingToggle('lunch')" style="position:absolute;right:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
+            <p id="parking-label-lunch" class="fi" style="font-weight:600;font-size:12px;color:white;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">lunch</p>
           </div>
         </div>
       </div>
@@ -2446,9 +2446,13 @@ function p3WalkinToggle(mode) {
   const pill = document.getElementById('walkin-pill');
   const dinnerLabel = document.getElementById('walkin-label-dinner');
   const lunchLabel = document.getElementById('walkin-label-lunch');
+  // Move pill immediately — compositor handles transform
   if (pill) { pill.style.transform = isDinner ? 'translateY(-50%) translateX(0px)' : 'translateY(-50%) translateX(82px)'; pill.dataset.mode = isDinner ? 'dinner' : 'lunch'; }
-  if (dinnerLabel) dinnerLabel.style.color = isDinner ? '#020202' : 'white';
-  if (lunchLabel) lunchLabel.style.color = !isDinner ? '#020202' : 'white';
+  // Defer label color swap to next frame so pill is already visually under the label
+  requestAnimationFrame(() => {
+    if (dinnerLabel) dinnerLabel.style.color = isDinner ? '#020202' : 'white';
+    if (lunchLabel) lunchLabel.style.color = !isDinner ? '#020202' : 'white';
+  });
 }
 
 
@@ -3116,9 +3120,13 @@ function p3ParkingToggle(mode) {
   const pill = document.getElementById('parking-pill');
   const dinnerLabel = document.getElementById('parking-label-dinner');
   const lunchLabel = document.getElementById('parking-label-lunch');
+  // Move pill immediately — compositor handles transform
   if (pill) { pill.style.transform = isDinner ? 'translateY(-50%) translateX(0px)' : 'translateY(-50%) translateX(82px)'; pill.dataset.mode = isDinner ? 'dinner' : 'lunch'; }
-  if (dinnerLabel) dinnerLabel.style.color = isDinner ? '#020202' : 'white';
-  if (lunchLabel) lunchLabel.style.color = !isDinner ? '#020202' : 'white';
+  // Defer label color swap to next frame so pill is already visually under the label
+  requestAnimationFrame(() => {
+    if (dinnerLabel) dinnerLabel.style.color = isDinner ? '#020202' : 'white';
+    if (lunchLabel) lunchLabel.style.color = !isDinner ? '#020202' : 'white';
+  });
 }
 
 // Stable flag — tracks that wait-report modal is in parking mode

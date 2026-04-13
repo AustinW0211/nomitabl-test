@@ -551,7 +551,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
            during mobile Safari repaint on toggle tap. Sits at z-index 0, visually hidden. -->
       <div style="position:absolute;inset:0;background:white;z-index:0;border-radius:24px;transform:translateZ(0);"></div>
       <!-- Walk-in -->
-      <div style="background:white;height:159px;position:relative;border-radius:24px;clip-path:inset(0 round 24px);flex-shrink:0;width:186px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;">
+      <div style="background:white;height:159px;position:relative;border-radius:24px;overflow:hidden;isolation:isolate;flex-shrink:0;width:186px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;">
         <div style="position:absolute;left:16px;top:50.5px;transform:translateY(-50%);width:136px;"><p id="p3-walkin-title" class="fi" style="font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;text-transform:capitalize;line-height:12px;">walk - in</p></div>
 
         <div style="position:absolute;height:24px;left:16px;overflow:hidden;top:59.5px;width:136px;">
@@ -574,7 +574,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         </div>
       </div>
       <!-- Parking -->
-      <div style="background:white;height:159px;position:relative;border-radius:24px;clip-path:inset(0 round 24px);flex-shrink:0;width:186px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;">
+      <div style="background:white;height:159px;position:relative;border-radius:24px;overflow:hidden;isolation:isolate;flex-shrink:0;width:186px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;">
         <div style="position:absolute;left:16px;top:50.5px;transform:translateY(-50%);width:136px;"><p id="p3-parking-title" class="fi" style="font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;text-transform:capitalize;line-height:12px;">street parking</p></div>
 
         <div style="position:absolute;height:24px;left:16px;overflow:hidden;top:59.5px;width:136px;">
@@ -1213,7 +1213,7 @@ function mapRestaurantRow(row) {
     // parking
     parking_type:            row.parking_type || 'street',
     // vibe
-    vibe_score:              row.vibe_score || 0,
+    vibe_score:              row.vibe_score ?? null,  // null = no score yet, show live from p3Votes
     // walk-in aggregates (weekday)
     walkin_dinner_wd:        row.walkin_dinner_wd  || null,
     walkin_lunch_wd:         row.walkin_lunch_wd   || null,
@@ -1256,6 +1256,8 @@ async function loadRestaurants() {
       if (Array.isArray(rows) && rows.length > 0) {
         restaurants = rows.map(mapRestaurantRow);
         console.log(`Loaded ${restaurants.length} restaurants from Supabase`);
+        // Pre-fetch vote scores for all restaurants so P2 shows live scores immediately
+        await Promise.all(restaurants.map(r => loadVotesForRestaurant(r.id)));
         return;
       }
       console.warn('Supabase returned empty restaurants — using fallback');
@@ -4316,6 +4318,8 @@ function applyVibeModal() {
 function populatePage2() {
   matchedRestaurants = findMatchingRestaurants();
   if (matchedRestaurants.length===0) matchedRestaurants = restaurants.slice(0,8);
+  // Reset refresh cap — new restaurant set means all cards need fresh vote data
+  Object.keys(_p2RefreshCap).forEach(k => delete _p2RefreshCap[k]);
 
   // Pinned restaurant always first — remove duplicate then prepend
   if (pinnedRestaurant) {
@@ -4388,6 +4392,10 @@ function populatePage2() {
   // Rebuild cards — no strip-level opacity fade (causes first-cards flicker on iOS).
   // The page entrance slide handles the visual transition; cards render at full opacity.
   p2RebuildStrip(strip, counter);
+  console.log('[P2sync] populatePage2 done — first card DOM:', document.querySelector(`[data-restaurant-id="${matchedRestaurants[0]?.id}"]`) ? 'EXISTS' : 'MISSING');
+  // Immediately patch any cards that already have live vote data in p3Votes
+  // (e.g. returning from P3 where votes were loaded). No network call — sync patch.
+  matchedRestaurants.forEach(r => { if (p3Votes[r.id]) _updateP2CardScore(r.id); });
 }
 
 // Separated so it can be called without re-running the full populatePage2 filter logic.
@@ -4400,27 +4408,42 @@ const _p2RefreshCap = {};   // { restaurantId: refreshCount }
 const P2_MAX_REFRESHES = 10; // max refreshes per restaurant per session
 let _p2PollTimer = null;
 
-function _p2LoadVisible() {
+function _p2LoadAll() {
+  // Called once on P2 entry — loads every restaurant in the current set
+  if (!supabaseReady()) return;
+  for (let i = 0; i < matchedRestaurants.length; i++) {
+    const r = matchedRestaurants[i];
+    if (!r) continue;
+    const count = _p2RefreshCap[r.id] || 0;
+    if (count >= P2_MAX_REFRESHES) continue;
+    _p2RefreshCap[r.id] = count + 1;
+    loadVotesForRestaurant(r.id);
+  }
+}
+
+function _p2LoadNearby() {
+  // Called on poll interval — only refreshes current card ±2
   if (!supabaseReady()) return;
   const start = Math.max(0, currentCardIndex - 1);
   const end   = Math.min(matchedRestaurants.length - 1, currentCardIndex + 2);
-  console.log('[P2sync] _p2LoadVisible start=', start, 'end=', end);
   for (let i = start; i <= end; i++) {
     const r = matchedRestaurants[i];
     if (!r) continue;
     const count = _p2RefreshCap[r.id] || 0;
-    if (count >= P2_MAX_REFRESHES) { console.log('[P2sync] cap hit for', r.id); continue; }
+    if (count >= P2_MAX_REFRESHES) continue;
     _p2RefreshCap[r.id] = count + 1;
-    console.log('[P2sync] loading votes for', r.id, r.name);
     loadVotesForRestaurant(r.id);
   }
 }
 
 function startP2ScorePolling() {
   stopP2ScorePolling();
-  // Load immediately on arrival — do not wait 30s for first tick
-  _p2LoadVisible();
-  _p2PollTimer = setInterval(_p2LoadVisible, 30000);
+  // One rAF to ensure p2RebuildStrip DOM is painted, then load all restaurants once
+  requestAnimationFrame(() => {
+    _p2LoadAll();
+  });
+  // Ongoing poll: lightweight, only near-visible cards
+  _p2PollTimer = setInterval(_p2LoadNearby, 30000);
 }
 
 function stopP2ScorePolling() {
@@ -4436,22 +4459,22 @@ function _updateP2CardScore(restaurantId) {
       ? Math.round(lv.score)
       : (lv.up != null ? Math.round(lv.up / Math.max(1, lv.up + (lv.down||0)) * 100) : null);
   }
-  const nodes = document.querySelectorAll(`[data-restaurant-id="${restaurantId}"] .p2-score-display`);
-  console.log('[P2sync] _updateP2CardScore', restaurantId, 's=', s, 'nodes=', nodes.length, 'caller=', new Error().stack.split('\n')[2]?.trim());
-  if (s == null) return; // no vote data at all — nothing to patch
+  if (s == null) return; // no vote data — nothing to patch
 
-  // Patch DOM — score 0 is valid (revert/undo), show '–' not stale number
+  // Patch DOM
   const display = s > 0 ? String(s) : '–';
-  nodes.forEach(el => { el.textContent = display; });
+  document.querySelectorAll(`[data-restaurant-id="${restaurantId}"] .p2-score-display`)
+    .forEach(el => { el.textContent = display; });
 
-  // Patch restaurants[] — canonical source for all render paths.
-  const rIdx = restaurants.findIndex(r => r.id === restaurantId);
-  if (rIdx !== -1) restaurants[rIdx].vibe_score = s;
-
-  // Patch matchedRestaurants spread copies
-  matchedRestaurants.forEach(r => {
-    if (r.id === restaurantId) r.vibe_score = s;
-  });
+  // Only patch the data sources when we have a meaningful score (> 0).
+  // Writing s=0 to restaurants[] overwrites the seed vibe_score and breaks fallback display.
+  if (s > 0) {
+    const rIdx = restaurants.findIndex(r => r.id === restaurantId);
+    if (rIdx !== -1) restaurants[rIdx].vibe_score = s;
+    matchedRestaurants.forEach(r => {
+      if (r.id === restaurantId) r.vibe_score = s;
+    });
+  }
 }
 
 function p2RebuildStrip(strip, counter) {
@@ -6408,8 +6431,11 @@ function p3DrawRing(score) {
   if (_p3RingRAF) { cancelAnimationFrame(_p3RingRAF); _p3RingRAF = null; }
   if (_p3RingTimeout) { clearTimeout(_p3RingTimeout); _p3RingTimeout = null; }
 
-  // Read current painted offset — animate from wherever ring is now, not from full
-  const currentOffset = parseFloat(ring.style.strokeDashoffset) || circumference;
+  // Read the actual painted offset via getComputedStyle — not ring.style which may be
+  // empty string if only the HTML attribute was set, causing parseFloat to return NaN
+  // and the ring to snap to circumference before animating forward instead of reversing.
+  const computedOffset = parseFloat(getComputedStyle(ring).strokeDashoffset);
+  const currentOffset = isNaN(computedOffset) ? circumference : computedOffset;
   ring.style.transition = 'none';
   ring.style.strokeDashoffset = currentOffset;
 
@@ -6863,7 +6889,7 @@ async function p3Vote(dir) {
     const total = Math.round(currentRestaurant.vibe_score * 3.2);
     const up    = Math.round(total * (currentRestaurant.vibe_score / 100));
     const dn    = total - up;
-    p3Votes[id] = { up, down: dn, userVote: null, score: null, baseUp: up, baseDn: dn, baseScore: null };
+    p3Votes[id] = { up, down: dn, userVote: null, score: null, baseUp: up, baseDn: dn, baseScore: currentRestaurant.vibe_score };
   }
   const v = p3Votes[id];
 

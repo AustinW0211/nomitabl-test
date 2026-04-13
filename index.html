@@ -6611,7 +6611,7 @@ function populatePage3(r) {
   const parkingPill = document.getElementById('parking-pill');
   const parkingDL = document.getElementById('parking-label-dinner');
   const parkingLL = document.getElementById('parking-label-lunch');
-  if (parkingPill) { parkingPill.style.transition = 'none'; parkingPill.style.left = '2px'; requestAnimationFrame(() => { parkingPill.style.transition = 'left 0.25s cubic-bezier(.4,0,.2,1)'; }); }
+  if (parkingPill) { parkingPill.style.transition = 'none'; parkingPill.style.transform = 'translateY(-50%) translateX(0px)'; parkingPill.dataset.mode = 'dinner'; requestAnimationFrame(() => { parkingPill.style.transition = 'transform 0.25s cubic-bezier(.4,0,.2,1)'; }); }
   if (parkingDL) parkingDL.style.color = '#020202';
   if (parkingLL) parkingLL.style.color = 'white';
   p3ParkingToggle('dinner');
@@ -6757,6 +6757,8 @@ async function loadVotesForRestaurant(restaurantId) {
       });
     }
     p3RenderVotes(restaurantId);
+    // Patch P2 card immediately after p3Votes state is updated — guaranteed sequencing
+    _updateP2CardScore(restaurantId);
   } catch (err) {
     console.warn('loadVotesForRestaurant failed:', err.message);
   }
@@ -6871,9 +6873,8 @@ async function p3Vote(dir) {
     }
 
     // Success — reload real weighted score from backend
+    // _updateP2CardScore is called inside loadVotesForRestaurant after state is updated
     await loadVotesForRestaurant(id);
-    // Immediately patch P2 card if visible — no waiting for poll timer
-    _updateP2CardScore(id);
 
   } catch (err) {
     console.warn('p3Vote failed — reverting:', err.message);

@@ -540,10 +540,14 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       </div>
     </div>
 
+    <!-- Stable white backing for card region — prevents #111 screen background from
+         bleeding through during mobile Safari repaint on toggle animation -->
+    <div style="position:absolute;top:444px;left:6px;width:381px;height:160px;background:white;border-radius:24px;z-index:0;transform:translateZ(0);"></div>
+
     <!-- Walk-in + Parking cards -->
-    <div style="position:absolute;display:flex;height:160px;align-items:center;justify-content:space-between;left:0;overflow:hidden;padding:0 6px;top:444px;width:393px;">
+    <div style="position:absolute;display:flex;height:160px;align-items:center;justify-content:space-between;left:0;overflow:hidden;padding:0 6px;top:444px;width:393px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;">
       <!-- Walk-in -->
-      <div style="background:white;height:159px;overflow:hidden;position:relative;border-radius:24px;flex-shrink:0;width:186px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;">
+      <div style="background:white;height:159px;position:relative;border-radius:24px;clip-path:inset(0 round 24px);flex-shrink:0;width:186px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;">
         <div style="position:absolute;left:16px;top:50.5px;transform:translateY(-50%);width:136px;"><p id="p3-walkin-title" class="fi" style="font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;text-transform:capitalize;line-height:12px;">walk - in</p></div>
 
         <div style="position:absolute;height:24px;left:16px;overflow:hidden;top:59.5px;width:136px;">
@@ -566,7 +570,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         </div>
       </div>
       <!-- Parking -->
-      <div style="background:white;height:159px;overflow:hidden;position:relative;border-radius:24px;flex-shrink:0;width:186px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;">
+      <div style="background:white;height:159px;position:relative;border-radius:24px;clip-path:inset(0 round 24px);flex-shrink:0;width:186px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;">
         <div style="position:absolute;left:16px;top:50.5px;transform:translateY(-50%);width:136px;"><p id="p3-parking-title" class="fi" style="font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;text-transform:capitalize;line-height:12px;">street parking</p></div>
 
         <div style="position:absolute;height:24px;left:16px;overflow:hidden;top:59.5px;width:136px;">
@@ -4418,16 +4422,26 @@ function stopP2ScorePolling() {
 }
 
 function _updateP2CardScore(restaurantId) {
-  // Find the card in the strip by data attribute and update score span only
-  const card = document.querySelector(`[data-restaurant-id="${restaurantId}"]`);
-  if (!card) return;
-  const scoreEl = card.querySelector('.p2-score-display');
-  if (!scoreEl) return;
   const lv = p3Votes[restaurantId];
   if (!lv) return;
   const s = lv.score != null ? Math.round(lv.score)
     : (lv.up != null ? Math.round(lv.up / Math.max(1, lv.up + (lv.down||0)) * 100) : null);
-  if (s != null && s > 0) scoreEl.textContent = s;
+  if (s == null || s <= 0) return;
+
+  // Patch DOM — all visible P2 cards for this restaurant
+  document.querySelectorAll(`[data-restaurant-id="${restaurantId}"] .p2-score-display`)
+    .forEach(el => { el.textContent = s; });
+
+  // Patch restaurants[] — canonical source. Without vibes, matchedRestaurants items
+  // ARE restaurants[] objects (same ref). With vibes they are spread copies, so
+  // patching restaurants[] ensures the next populatePage2/buildCard call reads fresh score.
+  const rIdx = restaurants.findIndex(r => r.id === restaurantId);
+  if (rIdx !== -1) restaurants[rIdx].vibe_score = s;
+
+  // Patch matchedRestaurants too — covers spread copies from vibe-filtered results
+  matchedRestaurants.forEach(r => {
+    if (r.id === restaurantId) r.vibe_score = s;
+  });
 }
 
 function p2RebuildStrip(strip, counter) {
@@ -6366,22 +6380,36 @@ const RESTAURANT_VIBES = {
 const p3Votes = {};
 
 let _p3RingLastScore = null;
+let _p3RingRAF = null;
+let _p3RingTimeout = null;
+
 function p3DrawRing(score) {
   const ring = document.getElementById('p3-ring-fill');
   if (!ring) return;
   const pct = Math.max(0, Math.min(100, score));
-  // Skip redraw if score hasn't changed — prevents animation flicker on backend confirm
   if (_p3RingLastScore === pct) return;
   _p3RingLastScore = pct;
   const circumference = 268.50;
-  const offset = circumference * (1 - pct / 100);
+  const targetOffset = circumference * (1 - pct / 100);
+
+  // Cancel any in-flight animation before starting a new one
+  if (_p3RingRAF) { cancelAnimationFrame(_p3RingRAF); _p3RingRAF = null; }
+  if (_p3RingTimeout) { clearTimeout(_p3RingTimeout); _p3RingTimeout = null; }
+
+  // Read current painted offset — animate from wherever ring is now, not from full
+  const currentOffset = parseFloat(ring.style.strokeDashoffset) || circumference;
   ring.style.transition = 'none';
-  ring.style.strokeDashoffset = circumference;
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
+  ring.style.strokeDashoffset = currentOffset;
+
+  _p3RingRAF = requestAnimationFrame(() => {
+    _p3RingRAF = requestAnimationFrame(() => {
+      _p3RingRAF = null;
       ring.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)';
-      ring.style.strokeDashoffset = offset;
-      setTimeout(() => { ring.style.transition = 'none'; }, 1500);
+      ring.style.strokeDashoffset = targetOffset;
+      _p3RingTimeout = setTimeout(() => {
+        _p3RingTimeout = null;
+        ring.style.transition = 'none';
+      }, 1500);
     });
   });
 }
@@ -6484,7 +6512,10 @@ function p3PhotoNav(dir) {
 
 function populatePage3(r) {
   if (!r) return;
-  _p3RingLastScore = null; // reset so new restaurant always draws ring fresh
+  // Reset ring state for new restaurant — cancel any in-flight animation
+  _p3RingLastScore = null;
+  if (_p3RingRAF) { cancelAnimationFrame(_p3RingRAF); _p3RingRAF = null; }
+  if (_p3RingTimeout) { clearTimeout(_p3RingTimeout); _p3RingTimeout = null; }
   const _addBtn = document.getElementById('p3-add-photo-btn');
   if (_addBtn) _addBtn.style.opacity = '0'; // reset add photo button visibility
 
@@ -6783,10 +6814,8 @@ function p3RenderVotes(id) {
   {
     let newScore;
     if (v.score != null) {
-      // Backend-computed weighted score (from get_restaurant_vote_score RPC)
       newScore = Math.min(100, Math.max(0, Math.round(v.score)));
     } else {
-      // Optimistic local estimate while backend loads
       const totalNow = v.up + (v.down || 0);
       if (totalNow > 0) {
         newScore = Math.min(100, Math.max(0, Math.round(v.up / totalNow * 100)));
@@ -6802,9 +6831,11 @@ function p3RenderVotes(id) {
     const sc = document.getElementById('p3-score');
     if (newScore != null && newScore > 0) {
       if (sc) sc.textContent = newScore;
+      // Always animate ring — optimistic and backend both trigger smooth animation.
+      // p3DrawRing skips if score unchanged (_p3RingLastScore guard), so backend
+      // confirm only redraws if the final weighted score differs from the optimistic estimate.
       p3DrawRing(newScore);
     } else {
-      // No votes yet — show dash, empty ring
       if (sc) sc.textContent = '–';
       p3DrawRing(0);
     }
@@ -6869,6 +6900,7 @@ async function p3Vote(dir) {
       v.userVote = snapshot.userVote;
       v.score    = snapshot.score;
       p3RenderVotes(id);
+      _updateP2CardScore(id);
       return;
     }
 
@@ -6883,6 +6915,7 @@ async function p3Vote(dir) {
     v.userVote = snapshot.userVote;
     v.score    = snapshot.score;
     p3RenderVotes(id);
+    _updateP2CardScore(id);
   }
 }
 

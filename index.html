@@ -256,7 +256,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     <!-- Hero image (z-index 2, in front) -->
     <div style="position:absolute;height:700px;left:0;top:0;width:393px;z-index:2;">
       <!-- Swipeable photo strip -->
-      <div style="position:absolute;left:0;height:700px;border-radius:0 0 24px 24px;top:0;width:393px;overflow:hidden;" id="p3-photo-wrap" ondblclick="doubleTapSave()">
+      <div style="position:absolute;left:0;height:700px;border-radius:0 0 24px 24px;top:0;width:393px;overflow:hidden;" id="p3-photo-wrap">
         <div id="p3-photo-strip" style="display:flex;height:100%;transition:transform 0.3s ease;will-change:transform;touch-action:pan-y;"></div>
         <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0) 55%,rgba(0,0,0,0.85) 100%);pointer-events:none;"></div>
         <!-- Arrow nav buttons -->
@@ -269,6 +269,13 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       </div>
       <!-- Scroll indicator dots — 20px above pricing (pricing top:560px → dots at 536px) -->
       <div id="p3-photo-dots" style="position:absolute;left:50%;transform:translateX(-50%);top:536px;display:flex;gap:5px;align-items:center;z-index:4;pointer-events:none;"></div>
+      <!-- Add photo button — centered between arrows (~350px) and dots (536px), label below circle -->
+      <div id="p3-add-photo-btn" onclick="event.stopPropagation();openAddPhotoSheet();" style="position:absolute;left:50%;transform:translateX(-50%);top:calc(50% - 14px);z-index:5;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;transition:opacity 0.2s;opacity:0;">
+        <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <p class="fi" style="font-size:9px;font-weight:400;color:rgba(255,255,255,0.7);letter-spacing:0.8px;text-transform:lowercase;line-height:normal;">add photo</p>
+      </div>
       <div id="p3-vibes-wrap" style="position:absolute;display:flex;flex-direction:column;gap:5px;height:90px;left:0;top:66px;width:393px;overflow:hidden;">
         <p id="p3-vibe-1" class="fi" style="font-weight:200;font-size:11px;color:white;letter-spacing:2.2px;text-align:center;width:100%;line-height:normal;">feel fancy</p>
         <p id="p3-vibe-2" class="fi" style="font-weight:200;font-size:11px;color:white;letter-spacing:2.2px;text-align:center;width:100%;line-height:normal;">cozy stuff</p>
@@ -548,7 +555,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <div style="position:absolute;left:14px;top:138.5px;transform:translateY(-50%);width:139px;"><p onclick="openWaitReportModal()" class="fi" style="font-weight:400;font-size:10px;color:black;letter-spacing:1px;text-transform:lowercase;text-decoration:underline;line-height:12px;cursor:pointer;">+ report wait time</p></div>
         <div style="position:absolute;background:#1e1e1e;height:30px;left:12px;border-radius:80px;top:5px;width:162px;display:flex;align-items:center;position:absolute;">
           <!-- Sliding white pill indicator -->
-          <div id="walkin-pill" style="position:absolute;background:white;height:26px;width:76px;border-radius:13px;top:50%;transform:translateY(-50%);left:2px;transition:left 0.25s cubic-bezier(.4,0,.2,1);"></div>
+          <div id="walkin-pill" style="position:absolute;background:white;height:26px;width:76px;border-radius:13px;top:50%;left:2px;transform:translateY(-50%) translateX(0px);transition:transform 0.25s cubic-bezier(.4,0,.2,1);will-change:transform;"></div>
           <!-- Labels sit on top, each exactly pill-width so text centers to pill -->
           <div onclick="p3WalkinToggle('dinner')" style="position:absolute;left:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
             <p id="walkin-label-dinner" class="fi" style="font-weight:600;font-size:12px;color:#020202;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">dinner</p>
@@ -570,7 +577,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <div style="position:absolute;left:16px;top:125.5px;transform:translateY(-50%);width:139px;"><p id="p3-parking-reports" class="fi" style="font-weight:300;font-style:italic;font-size:10px;color:black;letter-spacing:0.8px;text-transform:lowercase;line-height:14px;">52 reports</p></div>
         <div style="position:absolute;left:14px;top:138.5px;transform:translateY(-50%);width:139px;"><p onclick="openParkingReportModal()" class="fi" style="font-weight:400;font-size:10px;color:black;letter-spacing:1px;text-transform:lowercase;text-decoration:underline;line-height:12px;cursor:pointer;">+ report parking</p></div>
         <div style="position:absolute;background:#1e1e1e;height:30px;left:12px;border-radius:80px;top:5px;width:162px;display:flex;align-items:center;">
-          <div id="parking-pill" style="position:absolute;background:white;height:26px;width:76px;border-radius:13px;top:50%;transform:translateY(-50%);left:2px;transition:left 0.25s cubic-bezier(.4,0,.2,1);"></div>
+          <div id="parking-pill" style="position:absolute;background:white;height:26px;width:76px;border-radius:13px;top:50%;left:2px;transform:translateY(-50%) translateX(0px);transition:transform 0.25s cubic-bezier(.4,0,.2,1);will-change:transform;"></div>
           <div onclick="p3ParkingToggle('dinner')" style="position:absolute;left:0;width:80px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
             <p id="parking-label-dinner" class="fi" style="font-weight:600;font-size:12px;color:#020202;letter-spacing:3.6px;text-transform:capitalize;line-height:12px;transition:color 0.25s;">dinner</p>
           </div>
@@ -1475,7 +1482,7 @@ function p2NameStyle(name) {
 
 function buildCard(r, idx, total) {
   const photoCount = 5;
-  return `<div style="width:393px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:16px 16px 100px;height:100%;">
+  return `<div data-restaurant-id="${r.id}" style="width:393px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:16px 16px 100px;height:100%;">
     <div style="position:relative;width:360px;height:590px;border-radius:12px;overflow:hidden;flex-shrink:0;">
       <div id="photos-${idx}" style="display:flex;width:100%;height:100%;transition:transform 0.3s ease;">
         ${buildPhotoStrip(r,idx)}
@@ -1491,7 +1498,7 @@ function buildCard(r, idx, total) {
         ${buildDots(photoCount,0)}
       </div>
       <div style="position:absolute;background:rgba(0,0,0,0.2);left:292.5px;border-radius:22px;width:58px;height:58px;top:10px;display:flex;align-items:center;justify-content:center;z-index:4;">
-        <span class="fa" style="font-weight:600;font-size:28px;color:white;">${(() => { const lv = p3Votes[r.id]; const s = lv && lv.score != null ? Math.round(lv.score) : (lv ? Math.round(lv.up / Math.max(1, lv.up + (lv.down||0)) * 100) : null); return (s != null && s > 0) ? s : (r.vibe_score > 0 ? r.vibe_score : '–'); })()}</span>
+        <span class="fa p2-score-display" style="font-weight:600;font-size:28px;color:white;">${(() => { const lv = p3Votes[r.id]; const s = lv && lv.score != null ? Math.round(lv.score) : (lv ? Math.round(lv.up / Math.max(1, lv.up + (lv.down||0)) * 100) : null); return (s != null && s > 0) ? s : (r.vibe_score > 0 ? r.vibe_score : '–'); })()}</span>
       </div>
       <div style="position:absolute;left:16px;bottom:132px;z-index:4;pointer-events:none;">${renderOpenStatus(r)}</div>
       <div style="position:absolute;left:16px;bottom:82px;right:16px;z-index:4;pointer-events:none;overflow:hidden;">
@@ -2437,7 +2444,7 @@ function p3WalkinToggle(mode) {
   const pill = document.getElementById('walkin-pill');
   const dinnerLabel = document.getElementById('walkin-label-dinner');
   const lunchLabel = document.getElementById('walkin-label-lunch');
-  if (pill) pill.style.left = isDinner ? '2px' : '84px';
+  if (pill) { pill.style.transform = isDinner ? 'translateY(-50%) translateX(0px)' : 'translateY(-50%) translateX(82px)'; pill.dataset.mode = isDinner ? 'dinner' : 'lunch'; }
   if (dinnerLabel) dinnerLabel.style.color = isDinner ? '#020202' : 'white';
   if (lunchLabel) lunchLabel.style.color = !isDinner ? '#020202' : 'white';
 }
@@ -2519,14 +2526,14 @@ function openWaitReportModal() {
   const r = currentRestaurant;
   // Detect current mode from pill position
   const pill = document.getElementById('walkin-pill');
-  const _mPill  = pill && pill.style.left === '2px';
+  const _mPill  = pill && pill.dataset.mode === 'dinner';
   const _mMeal  = _mPill ? 'dinner' : 'lunch';
   const _mDay   = walkinIsWeekend ? 'weekend' : 'weekday';
   const _mKey   = currentRestaurant ? `${currentRestaurant.id}-${_mMeal}-${_mDay}` : null;
   const _mStats = _mKey ? _reportStatsCache[_mKey] : null;
   // isReso: use stats cache mode first, fall back to static reso_note
   const isReso = (_mStats && _mStats.mode === 'reso') ||
-    (!_mStats && pill && pill.style.left === '2px' &&
+    (!_mStats && pill && pill.dataset.mode === 'dinner' &&
      r.reso_note && (r.walkin_dinner_wd || r.walkin_base) >= 45 &&
      document.getElementById('walkin-label-dinner').style.color === 'rgb(2, 2, 2)');
 
@@ -2949,7 +2956,7 @@ async function submitWaitReport() {
   if (!rawVal || !currentRestaurant) return;
 
   const pill       = document.getElementById('walkin-pill');
-  const isDinner   = pill && pill.style.left === '2px';
+  const isDinner   = pill && pill.dataset.mode === 'dinner';
   const mealPeriod = isDinner ? 'dinner' : 'lunch';
   const dayType    = walkinIsWeekend ? 'weekend' : 'weekday';
 
@@ -3107,7 +3114,7 @@ function p3ParkingToggle(mode) {
   const pill = document.getElementById('parking-pill');
   const dinnerLabel = document.getElementById('parking-label-dinner');
   const lunchLabel = document.getElementById('parking-label-lunch');
-  if (pill) pill.style.left = isDinner ? '2px' : '84px';
+  if (pill) { pill.style.transform = isDinner ? 'translateY(-50%) translateX(0px)' : 'translateY(-50%) translateX(82px)'; pill.dataset.mode = isDinner ? 'dinner' : 'lunch'; }
   if (dinnerLabel) dinnerLabel.style.color = isDinner ? '#020202' : 'white';
   if (lunchLabel) lunchLabel.style.color = !isDinner ? '#020202' : 'white';
 }
@@ -3119,7 +3126,7 @@ function openParkingReportModal() {
   if (!currentRestaurant) return;
   const r = currentRestaurant;
   const pkpill = document.getElementById('parking-pill');
-  const isDinner = pkpill && pkpill.style.left === '2px';
+  const isDinner = pkpill && pkpill.dataset.mode === 'dinner';
   const mealPeriod = isDinner ? 'dinner' : 'lunch';
   const dayType = parkingIsWeekend ? 'weekend' : 'weekday';
 
@@ -3225,7 +3232,7 @@ async function submitParkingReport() {
   if (!currentRestaurant) return;
 
   const pill       = document.getElementById('parking-pill');
-  const isDinner   = pill && pill.style.left === '2px';
+  const isDinner   = pill && pill.dataset.mode === 'dinner';
   const mealPeriod = isDinner ? 'dinner' : 'lunch';
   const dayType    = parkingIsWeekend ? 'weekend' : 'weekday';
 
@@ -4376,6 +4383,53 @@ function populatePage2() {
 }
 
 // Separated so it can be called without re-running the full populatePage2 filter logic.
+// ── P2 score refresh — polls live scores for visible cards ───────────
+// Interval: 30s — frequent enough to feel responsive, not so fast it hammers the DB
+// Anti-abuse: only runs when P2 is visible, stops when user navigates away
+// Per-session refresh cap: tracks how many times each restaurant has been refreshed
+//   to prevent a single session from generating excessive RPC calls
+const _p2RefreshCap = {};   // { restaurantId: refreshCount }
+const P2_MAX_REFRESHES = 10; // max refreshes per restaurant per session
+let _p2PollTimer = null;
+
+function startP2ScorePolling() {
+  stopP2ScorePolling();
+  _p2PollTimer = setInterval(() => {
+    if (!supabaseReady()) return;
+    // Only refresh visible restaurants (current card ± 2)
+    const start = Math.max(0, currentCardIndex - 1);
+    const end   = Math.min(matchedRestaurants.length - 1, currentCardIndex + 2);
+    for (let i = start; i <= end; i++) {
+      const r = matchedRestaurants[i];
+      if (!r) continue;
+      const count = _p2RefreshCap[r.id] || 0;
+      if (count >= P2_MAX_REFRESHES) continue; // cap reached — skip
+      _p2RefreshCap[r.id] = count + 1;
+      loadVotesForRestaurant(r.id).then(() => {
+        // After loading, rebuild only the score element on the card — no full strip rebuild
+        _updateP2CardScore(r.id);
+      });
+    }
+  }, 30000); // 30 seconds
+}
+
+function stopP2ScorePolling() {
+  if (_p2PollTimer) { clearInterval(_p2PollTimer); _p2PollTimer = null; }
+}
+
+function _updateP2CardScore(restaurantId) {
+  // Find the card in the strip by data attribute and update score span only
+  const card = document.querySelector(`[data-restaurant-id="${restaurantId}"]`);
+  if (!card) return;
+  const scoreEl = card.querySelector('.p2-score-display');
+  if (!scoreEl) return;
+  const lv = p3Votes[restaurantId];
+  if (!lv) return;
+  const s = lv.score != null ? Math.round(lv.score)
+    : (lv.up != null ? Math.round(lv.up / Math.max(1, lv.up + (lv.down||0)) * 100) : null);
+  if (s != null && s > 0) scoreEl.textContent = s;
+}
+
 function p2RebuildStrip(strip, counter) {
   if (!strip) strip = document.getElementById('p2-strip');
   if (!counter) counter = document.getElementById('p2-counter');
@@ -4482,6 +4536,29 @@ function hideDetails() {
   }, 400);
 }
 
+function hideDetailsRight() {
+  // Slides panel out to the right — matches navigateSwipe horizontal transition
+  if (hhClockInterval) { clearInterval(hhClockInterval); hhClockInterval = null; }
+  if (quoteRotationTimer) { clearInterval(quoteRotationTimer); quoteRotationTimer = null; }
+  const ring = document.getElementById('p3-ring-fill');
+  if (ring) ring.style.transition = 'none';
+  const panel = document.getElementById('p3DetailsPanel');
+  document.getElementById('screen-page3s1').classList.remove('details-open');
+  // Slide right out
+  panel.style.transition = 'transform 0.38s cubic-bezier(0.4,0,0.2,1)';
+  panel.style.transform = 'translateX(100%)';
+  setTimeout(() => {
+    // Reset to default off-screen-below so next reveal comes from bottom
+    panel.classList.remove('revealed');
+    panel.style.transition = 'none';
+    panel.style.transform = '';
+    if (currentRestaurant) {
+      updateHappyCard(currentRestaurant);
+      initCommunityQuotes(currentRestaurant);
+    }
+  }, 400);
+}
+
 // Swipe up on State 1 → reveal State 2; swipe down on State 2 → hide; swipe left → back to Page 2
 (function initP3Swipe() {
   let startY = 0, startX = 0;
@@ -4502,17 +4579,22 @@ function hideDetails() {
       // Horizontal swipe
       if (Math.abs(dx) > 50 && Math.abs(dy) < 60) {
         if (dx < 0) {
-          // Right swipe → back to Page 2 with slide transition
-          if (hhClockInterval) { clearInterval(hhClockInterval); hhClockInterval = null; }
-          document.getElementById('screen-page3s1').classList.remove('details-open');
-          const panel = document.getElementById('p3DetailsPanel');
-          if (panel) panel.classList.remove('revealed');
-          navigateSwipe('page2');
-          const strip = document.getElementById('p2-strip');
-          if (strip) {
-            strip.style.transition = 'none';
-            strip.style.transform = `translateX(-${currentCardIndex * 393}px)`;
-            requestAnimationFrame(() => { strip.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)'; });
+          if (isRevealed) {
+            // Right swipe in State 2 → collapse back to State 1 with horizontal slide
+            hideDetailsRight();
+          } else {
+            // Right swipe in State 1 → back to Page 2
+            if (hhClockInterval) { clearInterval(hhClockInterval); hhClockInterval = null; }
+            document.getElementById('screen-page3s1').classList.remove('details-open');
+            const panel = document.getElementById('p3DetailsPanel');
+            if (panel) panel.classList.remove('revealed');
+            navigateSwipe('page2');
+            const strip = document.getElementById('p2-strip');
+            if (strip) {
+              strip.style.transition = 'none';
+              strip.style.transform = `translateX(-${currentCardIndex * 393}px)`;
+              requestAnimationFrame(() => { strip.style.transition = 'transform 0.35s cubic-bezier(.4,0,.2,1)'; });
+            }
           }
         }
         return;
@@ -4564,6 +4646,12 @@ function navigate(screen) {
     activeCuisines = [];
     activeSpecialties = [];
     activeSearchVibes = [];
+    stopP2ScorePolling();
+  }
+  if (screen === 'page2') {
+    startP2ScorePolling();
+  } else {
+    stopP2ScorePolling();
   }
   document.querySelectorAll('.screen').forEach(s => {
     s.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-right', 'slide-in-left');
@@ -5376,18 +5464,27 @@ async function loadSaves() {
 }
 
 async function _insertSave(restaurant_id) {
-  if (!supabaseReady()) return true;
+  if (!supabaseReady()) return Promise.resolve(true);
   try {
     const identity = _saveIdentity();
-    // upsert treats conflict (duplicate) as success — idempotent
-    await sb.from('saves').then(c => c.upsert(
-      { restaurant_id, ...identity },
-      identity.user_id ? 'restaurant_id,user_id' : 'restaurant_id,session_id'
-    ));
-    return true;
+    const body = { restaurant_id, ...identity };
+    const conflict = identity.user_id ? 'restaurant_id,user_id' : 'restaurant_id,session_id';
+    return fetch(`${SUPABASE_URL}/rest/v1/saves?on_conflict=${conflict}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_PUBLISHABLE_KEY,
+        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+        'Prefer': 'resolution=merge-duplicates,return=minimal',
+      },
+      body: JSON.stringify(body),
+    }).then(r => r.ok).catch(err => {
+      console.warn('_insertSave failed:', err.message);
+      return false;
+    });
   } catch (err) {
     console.warn('_insertSave failed:', err.message);
-    return false;
+    return Promise.resolve(false);
   }
 }
 
@@ -6304,6 +6401,11 @@ const P3_PALETTES = [
 let p3CurrentPhoto = 0;
 const P3_PHOTO_COUNT = 10;
 
+// ── Add photo — frontend stub, BD wired at Add a Spot sprint ─────────
+function openAddPhotoSheet() {
+  _showVoteToast('Photo uploads coming soon ✦');
+}
+
 function p3BuildPhotos(r) {
   const base = r ? restaurants.findIndex(x => x.id === r.id) : 0;
   return Array.from({length: P3_PHOTO_COUNT}, (_, i) => {
@@ -6313,9 +6415,25 @@ function p3BuildPhotos(r) {
 }
 
 function initP3PhotoSwipe() {
+  const wrap  = document.getElementById('p3-photo-wrap');
   const strip = document.getElementById('p3-photo-strip');
-  if (!strip) return;
+  if (!strip || !wrap) return;
   let startX = 0, isDragging = false;
+
+  // Manual double-tap detector — ondblclick is unreliable on mobile Safari
+  let _lastTap = 0;
+  wrap.addEventListener('touchend', e => {
+    // Skip if this tap was on the add-photo button (it stops propagation)
+    const now = Date.now();
+    if (now - _lastTap < 320) {
+      // Double tap — save
+      doubleTapSave();
+      _lastTap = 0;
+    } else {
+      _lastTap = now;
+    }
+  }, { passive: true });
+
   strip.ontouchstart = e => { startX = e.touches[0].clientX; isDragging = true; };
   strip.ontouchend = e => {
     if (!isDragging) return;
@@ -6340,11 +6458,16 @@ function p3PhotoNav(dir) {
   const dots = document.getElementById('p3-photo-dots');
   if (dots) dots.innerHTML = p3BuildDots(P3_PHOTO_COUNT, p3CurrentPhoto);
   p3UpdateArrows();
+  // Show/hide the + add photo button when on last photo
+  const addBtn = document.getElementById('p3-add-photo-btn');
+  if (addBtn) addBtn.style.opacity = p3CurrentPhoto === P3_PHOTO_COUNT - 1 ? '1' : '0';
 }
 
 function populatePage3(r) {
   if (!r) return;
   _p3RingLastScore = null; // reset so new restaurant always draws ring fresh
+  const _addBtn = document.getElementById('p3-add-photo-btn');
+  if (_addBtn) _addBtn.style.opacity = '0'; // reset add photo button visibility
 
   // Set blurred background from first photo
   const bgBlur = document.getElementById('p3-bg-blur');
@@ -6460,7 +6583,7 @@ function populatePage3(r) {
   const pill = document.getElementById('walkin-pill');
   const dinnerLabel = document.getElementById('walkin-label-dinner');
   const lunchLabel = document.getElementById('walkin-label-lunch');
-  if (pill) { pill.style.transition = 'none'; pill.style.left = '2px'; requestAnimationFrame(() => { pill.style.transition = 'left 0.25s cubic-bezier(.4,0,.2,1)'; }); }
+  if (pill) { pill.style.transition = 'none'; pill.style.transform = 'translateY(-50%) translateX(0px)'; pill.dataset.mode = 'dinner'; requestAnimationFrame(() => { pill.style.transition = 'transform 0.25s cubic-bezier(.4,0,.2,1)'; }); }
   if (dinnerLabel) dinnerLabel.style.color = '#020202';
   if (lunchLabel) lunchLabel.style.color = 'white';
   p3WalkinToggle('dinner');

@@ -546,6 +546,10 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
     <!-- Walk-in + Parking cards -->
     <div style="position:absolute;display:flex;height:160px;align-items:center;justify-content:space-between;left:0;overflow:hidden;padding:0 6px;top:444px;width:393px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;">
+      <!-- Backing layer: opaque white fill behind both cards.
+           Prevents dark ancestors (#111 screen, black body) from showing through
+           during mobile Safari repaint on toggle tap. Sits at z-index 0, visually hidden. -->
+      <div style="position:absolute;inset:0;background:white;z-index:0;border-radius:24px;transform:translateZ(0);"></div>
       <!-- Walk-in -->
       <div style="background:white;height:159px;position:relative;border-radius:24px;clip-path:inset(0 round 24px);flex-shrink:0;width:186px;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden;">
         <div style="position:absolute;left:16px;top:50.5px;transform:translateY(-50%);width:136px;"><p id="p3-walkin-title" class="fi" style="font-weight:600;font-size:12px;color:black;letter-spacing:1.2px;text-transform:capitalize;line-height:12px;">walk - in</p></div>
@@ -4396,25 +4400,27 @@ const _p2RefreshCap = {};   // { restaurantId: refreshCount }
 const P2_MAX_REFRESHES = 10; // max refreshes per restaurant per session
 let _p2PollTimer = null;
 
+function _p2LoadVisible() {
+  if (!supabaseReady()) return;
+  const start = Math.max(0, currentCardIndex - 1);
+  const end   = Math.min(matchedRestaurants.length - 1, currentCardIndex + 2);
+  console.log('[P2sync] _p2LoadVisible start=', start, 'end=', end);
+  for (let i = start; i <= end; i++) {
+    const r = matchedRestaurants[i];
+    if (!r) continue;
+    const count = _p2RefreshCap[r.id] || 0;
+    if (count >= P2_MAX_REFRESHES) { console.log('[P2sync] cap hit for', r.id); continue; }
+    _p2RefreshCap[r.id] = count + 1;
+    console.log('[P2sync] loading votes for', r.id, r.name);
+    loadVotesForRestaurant(r.id);
+  }
+}
+
 function startP2ScorePolling() {
   stopP2ScorePolling();
-  _p2PollTimer = setInterval(() => {
-    if (!supabaseReady()) return;
-    // Only refresh visible restaurants (current card ± 2)
-    const start = Math.max(0, currentCardIndex - 1);
-    const end   = Math.min(matchedRestaurants.length - 1, currentCardIndex + 2);
-    for (let i = start; i <= end; i++) {
-      const r = matchedRestaurants[i];
-      if (!r) continue;
-      const count = _p2RefreshCap[r.id] || 0;
-      if (count >= P2_MAX_REFRESHES) continue; // cap reached — skip
-      _p2RefreshCap[r.id] = count + 1;
-      loadVotesForRestaurant(r.id).then(() => {
-        // After loading, rebuild only the score element on the card — no full strip rebuild
-        _updateP2CardScore(r.id);
-      });
-    }
-  }, 30000); // 30 seconds
+  // Load immediately on arrival — do not wait 30s for first tick
+  _p2LoadVisible();
+  _p2PollTimer = setInterval(_p2LoadVisible, 30000);
 }
 
 function stopP2ScorePolling() {
@@ -4422,23 +4428,27 @@ function stopP2ScorePolling() {
 }
 
 function _updateP2CardScore(restaurantId) {
+  // Compute display score from p3Votes state
   const lv = p3Votes[restaurantId];
-  if (!lv) return;
-  const s = lv.score != null ? Math.round(lv.score)
-    : (lv.up != null ? Math.round(lv.up / Math.max(1, lv.up + (lv.down||0)) * 100) : null);
-  if (s == null || s <= 0) return;
+  let s = null;
+  if (lv) {
+    s = lv.score != null
+      ? Math.round(lv.score)
+      : (lv.up != null ? Math.round(lv.up / Math.max(1, lv.up + (lv.down||0)) * 100) : null);
+  }
+  const nodes = document.querySelectorAll(`[data-restaurant-id="${restaurantId}"] .p2-score-display`);
+  console.log('[P2sync] _updateP2CardScore', restaurantId, 's=', s, 'nodes=', nodes.length, 'caller=', new Error().stack.split('\n')[2]?.trim());
+  if (s == null) return; // no vote data at all — nothing to patch
 
-  // Patch DOM — all visible P2 cards for this restaurant
-  document.querySelectorAll(`[data-restaurant-id="${restaurantId}"] .p2-score-display`)
-    .forEach(el => { el.textContent = s; });
+  // Patch DOM — score 0 is valid (revert/undo), show '–' not stale number
+  const display = s > 0 ? String(s) : '–';
+  nodes.forEach(el => { el.textContent = display; });
 
-  // Patch restaurants[] — canonical source. Without vibes, matchedRestaurants items
-  // ARE restaurants[] objects (same ref). With vibes they are spread copies, so
-  // patching restaurants[] ensures the next populatePage2/buildCard call reads fresh score.
+  // Patch restaurants[] — canonical source for all render paths.
   const rIdx = restaurants.findIndex(r => r.id === restaurantId);
   if (rIdx !== -1) restaurants[rIdx].vibe_score = s;
 
-  // Patch matchedRestaurants too — covers spread copies from vibe-filtered results
+  // Patch matchedRestaurants spread copies
   matchedRestaurants.forEach(r => {
     if (r.id === restaurantId) r.vibe_score = s;
   });
@@ -4454,6 +4464,7 @@ function p2RebuildStrip(strip, counter) {
   strip.style.transform  = 'translateX(0)';
 
   // Replace card HTML
+  console.log('[P2sync] p2RebuildStrip — rebuilding', matchedRestaurants.length, 'cards, first id=', matchedRestaurants[0]?.id, 'first vibe_score=', matchedRestaurants[0]?.vibe_score, 'p3Votes[0]=', p3Votes[matchedRestaurants[0]?.id]);
   strip.innerHTML = matchedRestaurants
     .map((r, i) => buildCard(r, i, matchedRestaurants.length))
     .join('');
@@ -4663,6 +4674,7 @@ function navigate(screen) {
     stopP2ScorePolling();
   }
   if (screen === 'page2') {
+    console.log('[P2sync] navigating to page2 — starting poll, matchedRestaurants[0]=', matchedRestaurants[0]?.id);
     startP2ScorePolling();
   } else {
     stopP2ScorePolling();
@@ -6868,8 +6880,15 @@ async function p3Vote(dir) {
     v[dir]++;
     v.userVote = dir;
   }
-  // Clear cached weighted score — will be recalculated from raw counts until backend confirms
-  v.score = null;
+  // On undo: restore to last known confirmed score so ring animates back cleanly.
+  // On add: clear score so optimistic ratio is used until backend confirms.
+  if (isUndo) {
+    // Use last confirmed backend score (snapshot.score) as the undo target.
+    // Falls back to baseScore if no backend score was ever loaded.
+    v.score = snapshot.score != null ? snapshot.score : v.baseScore;
+  } else {
+    v.score = null;
+  }
   p3RenderVotes(id);
   // Optimistic patch P2 immediately so user sees their vote reflected right away
   _updateP2CardScore(id);

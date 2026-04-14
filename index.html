@@ -615,7 +615,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     <!-- GET DIRECTIONS foot -->
     <div style="position:absolute;display:flex;flex-direction:column;height:132px;align-items:center;left:0;overflow:hidden;padding:30px 16px 42px;top:720px;width:393px;">
       <div style="background:black;height:48px;overflow:hidden;position:relative;border-radius:32px;flex-shrink:0;width:100%;">
-        <div onclick="openDirectionsModal()" style="position:absolute;background:black;height:48px;left:0;overflow:hidden;border-radius:32px;top:0;width:361px;cursor:pointer;display:flex;align-items:center;justify-content:center;" onmouseenter="this.style.background='#222'" onmouseleave="this.style.background='black'">
+        <div onclick="openDirectionsModal()" style="position:absolute;background:black;height:48px;left:0;overflow:hidden;border-radius:32px;top:0;width:361px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
           <p class="fi" style="font-weight:700;font-size:14px;letter-spacing:8.4px;text-transform:capitalize;color:white;line-height:normal;">gET DIRECTIONS</p>
         </div>
       </div>
@@ -626,7 +626,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
   <!-- Reservation modal -->
   <div id="reso-modal" onclick="closeResoModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="reso-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 44px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+    <div id="reso-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 44px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);;height:auto;max-height:40vh;overflow-y:auto;scrollbar-width:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Book a table</p>
         <div onclick="closeResoModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
@@ -658,7 +658,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
   <!-- Reminder modal -->
   <div id="reminder-modal" onclick="closeReminderModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="reminder-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 44px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+    <div id="reminder-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 44px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);;height:auto;max-height:40vh;overflow-y:auto;scrollbar-width:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Set a reminder</p>
         <div onclick="closeReminderModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
@@ -671,7 +671,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
   <!-- ── Happy Card Modal (Eats / Bread / Coffee / Carbs) ────────── -->
   <div id="happy-card-modal" onclick="closeHappyCardModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:200;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="happy-card-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);overflow-y:auto;overflow-x:hidden;max-height:40vh;scrollbar-width:none;-ms-overflow-style:none;">
+    <div id="happy-card-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);overflow-y:auto;overflow-x:hidden;height:auto;max-height:40vh;scrollbar-width:none;-ms-overflow-style:none;">
 
       <!-- Eats content -->
       <div id="hcm-eats" style="display:none;padding:24px 20px 28px;">
@@ -690,12 +690,29 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </div>
         <!-- Notify bell -->
-        <div id="hcm-notify-row" onclick="submitMenuReport()" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+        <div id="hcm-notify-row" onclick="submitMenuReport()" style="background:white;border-radius:16px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:20px;">
           <div>
             <p class="fi" style="font-size:12px;font-weight:600;color:black;letter-spacing:0.5px;">Something new? Notify us</p>
             <p id="hcm-notify-sub" class="fi" style="font-size:10px;color:#888;letter-spacing:0.3px;margin-top:2px;">Let us know if the menu has changed</p>
           </div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <!-- What are your favs — same as bread/coffee/carbs -->
+        <p class="fa" style="font-weight:600;font-size:15px;letter-spacing:1.5px;color:black;line-height:1.3;margin-bottom:10px;">What are your favs?</p>
+        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;">Select up to 3</p>
+        <div id="hcm-item-pills-eats" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"></div>
+        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;">Missing one?</p>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+          <input id="hcm-item-input-eats" type="text" placeholder="type an item..." maxlength="40" autocomplete="off"
+            style="flex:1;padding:10px 14px;border-radius:12px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"
+            onkeydown="if(event.key==='Enter')addFeatureItemCandidate('eats')"/>
+          <div onclick="addFeatureItemCandidate('eats')" style="width:36px;height:36px;border-radius:18px;background:black;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background 0.2s;">
+            <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <!-- Done button for eats too -->
+        <div onclick="closeHappyCardModal()" style="background:black;border-radius:32px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:8px;">
+          <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">DONE</p>
         </div>
       </div>
 
@@ -727,12 +744,34 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         </div>
       </div>
 
+      <!-- HH / Eats / Locals favs — personal tags, not community voting -->
+      <div id="hcm-favs" style="display:none;padding:24px 20px 28px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+          <p class="fa" style="font-weight:600;font-size:15px;letter-spacing:1.5px;color:black;line-height:1.3;">What do you love here?</p>
+          <div onclick="closeHappyCardModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;margin-top:2px;">✕</div>
+        </div>
+        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;">Tag your favourites</p>
+        <div id="hcm-fav-pills" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"></div>
+        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;">Add one</p>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
+          <input id="hcm-fav-input" type="text" placeholder="dish or drink..." maxlength="40" autocomplete="off"
+            style="flex:1;padding:10px 14px;border-radius:12px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"
+            onkeydown="if(event.key==='Enter')addFavItem()"/>
+          <div onclick="addFavItem()" style="width:36px;height:36px;border-radius:18px;background:black;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+            <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <div onclick="closeHappyCardModal()" style="background:black;border-radius:32px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <p class="fi" style="font-weight:700;font-size:13px;letter-spacing:6px;color:white;">DONE</p>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <!-- Wait report modal -->
   <div id="wait-report-modal" onclick="closeWaitReportModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="wait-report-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 44px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);">
+    <div id="wait-report-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 44px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);;height:auto;max-height:40vh;overflow-y:auto;scrollbar-width:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <p id="wait-report-title" class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Report wait time</p>
         <div onclick="closeWaitReportModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
@@ -820,7 +859,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   <!-- Vibe modal — phone root level, visible from any screen -->
   <!-- P3 Add-Vibe Modal (dedicated, separate from P2 modal) -->
   <div id="p3-vibe-modal" onclick="closeP3VibeModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:200;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="p3-vibe-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:40vh;max-height:341px;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-ms-overflow-style:none;" class="hide-scrollbar">
+    <div id="p3-vibe-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:auto;max-height:40vh;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-ms-overflow-style:none;" class="hide-scrollbar">
 
       <!-- All content scrolls together — Done lives at the bottom of the scroll flow -->
       <div style="padding:24px 20px 0;">
@@ -868,7 +907,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
   </div>
 
   <div id="vibe-modal" onclick="closeVibeModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:100;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="vibe-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:340px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;">
+    <div id="vibe-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:auto;max-height:40vh;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Add a vibe</p>
         <div onclick="closeVibeModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
@@ -969,7 +1008,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
   <!-- Cuisine modal -->
   <div id="cuisine-modal" onclick="closeCuisineModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:300;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="cuisine-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:340px;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;">
+    <div id="cuisine-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;padding:24px 20px 40px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);height:auto;max-height:40vh;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Add a cuisine</p>
         <div onclick="closeCuisineModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
@@ -988,6 +1027,13 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
 
 <script>
+// ── Text normalisation ───────────────────────────────────────────
+// Applied to all user-typed input before display or submission.
+// "apPLe pIE" → "Apple Pie"
+function toTitleCase(str) {
+  return str.trim().toLowerCase().replace(/\w/g, c => c.toUpperCase());
+}
+
 // ── Supabase config ─────────────────────────────────────────────
 // Replace these two values with your project's URL and anon key.
 // Found in: Supabase dashboard → Project Settings → API
@@ -1085,9 +1131,6 @@ const sb = {
   },
 };
 
-// Deterministic init — sb is fully defined, call loadSaves now
-loadSaves();
-
 // Reload saves whenever auth state changes (sign-in / sign-out)
 if (typeof sb !== 'undefined' && sb.auth && sb.auth.onAuthStateChange) {
   sb.auth.onAuthStateChange(() => loadSaves());
@@ -1111,6 +1154,9 @@ const SESSION_ID = (() => {
     return crypto.randomUUID(); // fallback if localStorage unavailable
   }
 })();
+
+// SESSION_ID is now defined — safe to call loadSaves
+loadSaves();
 
 // Restaurant data
 const ALL_TAGS = ["Date Night","Wine & Dine","Treat Yourself","Feel Fancy","Fresh Air & Food","Happy Gut","Feel Good","Spicy","Something Different","Sunshine Plans","Patio Vibes","Girls Night Out","Romantic","First Date","Solo Night","Late Night","Low-Key","Feeling Cozy","Sweet Tooth","Comfort Craving","Brunchy Brunchy","Hangover Cure","Solo & Chill","Recovery Mode"];
@@ -1230,7 +1276,7 @@ function mapRestaurantRow(row) {
     walkin_base:    row.walkin_base    || null,
     walkin_reports: row.walkin_reports || 0,
     // happy card mode fields
-    happy_type:     row.happy_type     || null,   // 'eats','bread','coffee','carbs','locals'
+    happy_type:     row.happy_type     || null,   // 'eats','sweets'(stored as 'bread'),'coffee','carbs','locals'
     special_title:  row.special_title  || null,   // big line: 'SPECIAL', 'APPLE PIE'
     special_detail: row.special_detail || null,   // medium line: 'ALL DAY BREAKFAST'
     special_note:   row.special_note   || null,   // small line: 'NEW SPOT', 'FEB – MAR'
@@ -1980,6 +2026,9 @@ async function loadFeatureItems(restaurantId, mode) {
       ...(userItems || []).sort((a, b) => a.display_order - b.display_order),
     ];
     hcmVotedItems = new Set((votes || []).map(v => v.item_id));
+    // Render pills after data loads — avoids showing stale items from previous restaurant
+    _renderItemPills();
+    _renderItemPillsEats();
   } catch (err) {
     console.warn('loadFeatureItems failed:', err.message);
   }
@@ -1998,42 +2047,21 @@ async function loadMenuReportStatus(restaurantId) {
   }
 }
 
-function openHappyCardModal() {
+async function openHappyCardModal() {
   if (!currentRestaurant) return;
   const mode = getHappyMode(currentRestaurant);
   const eatsEl  = document.getElementById('hcm-eats');
   const itemsEl = document.getElementById('hcm-items');
   const doneEl  = document.getElementById('hcm-done');
+  const favsEl  = document.getElementById('hcm-favs');
 
-  if (mode === 'eats') {
-    eatsEl.style.display  = 'block';
-    itemsEl.style.display = 'none';
-    doneEl.style.display  = 'none';
+  // Hide all sections — show correct one below
+  eatsEl.style.display  = 'none';
+  itemsEl.style.display = 'none';
+  doneEl.style.display  = 'none';
+  if (favsEl) favsEl.style.display = 'none';
 
-    // Show website URL
-    const urlEl = document.getElementById('hcm-website-url');
-    if (urlEl) {
-      const url = currentRestaurant.website || '';
-      urlEl.textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
-    }
-
-    // Update notify row based on prior report
-    _updateNotifyRow();
-
-  } else if (['bread','coffee','carbs'].includes(mode)) {
-    eatsEl.style.display  = 'none';
-    itemsEl.style.display = 'block';
-    doneEl.style.display  = 'block';
-    hcmCustomItems = [];
-    const _inp = document.getElementById('hcm-item-input');
-    const _btn = document.getElementById('hcm-item-add-btn');
-    if (_inp) { _inp.value = ''; _inp.disabled = false; _inp.placeholder = 'type an item...'; }
-    if (_btn) { _btn.style.background = 'black'; _btn.style.pointerEvents = 'auto'; }
-    _renderItemPills();
-  } else {
-    return; // hh and locals have no + modal
-  }
-
+  // Open sheet immediately so user sees it slide up
   const m = document.getElementById('happy-card-modal');
   const s = document.getElementById('happy-card-modal-sheet');
   m.style.display = 'flex';
@@ -2041,25 +2069,55 @@ function openHappyCardModal() {
     m.style.background = 'rgba(0,0,0,0.5)';
     s.style.transform  = 'translateY(0)';
   });
+
+  // Clear all item state — strict restaurant+mode isolation
+  hcmItems = []; hcmVotedItems = new Set(); hcmCustomItems = [];
+
+  if (mode === 'eats') {
+    eatsEl.style.display = 'block';
+    const urlEl = document.getElementById('hcm-website-url');
+    if (urlEl) {
+      const url = currentRestaurant.website || '';
+      urlEl.textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    }
+    _updateNotifyRow();
+    // Show loading state, then fetch and render
+    _renderItemPillsEats();
+    await loadFeatureItems(currentRestaurant.id, 'eats');
+
+  } else if (['sweets','coffee','carbs'].includes(mode)) {
+    itemsEl.style.display = 'block';
+    doneEl.style.display  = 'block';
+    const _inp = document.getElementById('hcm-item-input');
+    const _btn = document.getElementById('hcm-item-add-btn');
+    if (_inp) { _inp.value = ''; _inp.disabled = false; _inp.placeholder = 'type an item...'; }
+    if (_btn) { _btn.style.background = 'black'; _btn.style.pointerEvents = 'auto'; }
+    // Show loading state, await fresh DB fetch, then render
+    _renderItemPills();
+    await loadFeatureItems(currentRestaurant.id, mode);
+
+  } else {
+    // hh / locals — personal favs (sessionStorage, not community voting)
+    if (favsEl) favsEl.style.display = 'block';
+    _loadFavItems(currentRestaurant.id);
+  }
 }
 
 // Feature item candidate — same pattern as vibe custom input
 let hcmCustomItems = []; // items typed this session (for cap tracking)
 
-async function addFeatureItemCandidate() {
-  const input = document.getElementById('hcm-item-input');
+async function addFeatureItemCandidate(suffix) {
+  const inputId = suffix ? `hcm-item-input-${suffix}` : 'hcm-item-input';
+  const input = document.getElementById(inputId);
   const addBtn = document.getElementById('hcm-item-add-btn');
   if (!input || !currentRestaurant) return;
-  const val = input.value.trim();
+  const val = toTitleCase(input.value);
   if (!val) return;
 
   const MAX_CUSTOM = 5;
-  if (hcmCustomItems.length >= MAX_CUSTOM) {
-    input.value = '';
-    return;
-  }
+  if (hcmCustomItems.length >= MAX_CUSTOM) { input.value = ''; return; }
 
-  // Content filter
+  // Client-side basic filter
   if (!_vibeIsClean(val)) {
     input.value = '';
     input.placeholder = 'keep it clean ✌️';
@@ -2077,38 +2135,91 @@ async function addFeatureItemCandidate() {
     return;
   }
 
-  // Add locally — show as voted pill with ✦
-  const tempId = `user-${Date.now()}`;
-  hcmCustomItems.push(val);
-  hcmVotedItems.add(tempId);
   input.value = '';
+  hcmCustomItems.push(val);
 
-  // Append pill to list
-  const container = document.getElementById('hcm-item-pills');
+  // Create pending pill immediately — shows raw text with loading opacity
+  const tempId = `user-${Date.now()}`;
+  const containerId = suffix ? `hcm-item-pills-${suffix}` : 'hcm-item-pills';
+  const container = document.getElementById(containerId);
   if (container) {
     const pill = document.createElement('div');
     pill.id = `hcm-pill-${tempId}`;
-    pill.style.cssText = 'padding:8px 16px;border-radius:20px;border:1px solid black;background:black;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;';
-    pill.innerHTML = `<p class="fi" style="font-size:11px;font-weight:600;color:white;letter-spacing:0.5px;white-space:nowrap;">${valUpper}</p><span style="font-size:9px;color:rgba(255,255,255,0.4);flex-shrink:0;">✦</span>`;
+    pill.style.cssText = 'padding:8px 16px;border-radius:20px;border:1px solid #aaa;background:#aaa;cursor:default;transition:all 0.2s;display:flex;align-items:center;gap:5px;opacity:0.6;';
+    const rawDisplay = val; // already Title Case from toTitleCase()
+    pill.innerHTML = `<p class="fi" style="font-size:11px;font-weight:600;color:white;letter-spacing:0.5px;white-space:nowrap;">${rawDisplay}</p><span style="font-size:9px;color:rgba(255,255,255,0.5);flex-shrink:0;">✦</span>`;
     container.appendChild(pill);
   }
 
-  // Cap check — grey + button at 5
+  // Cap check
   if (hcmCustomItems.length >= MAX_CUSTOM) {
     if (addBtn) { addBtn.style.background = '#ccc'; addBtn.style.pointerEvents = 'none'; }
     if (input)  { input.disabled = true; }
   }
 
-  // Submit to backend
   if (!supabaseReady()) return;
+
   try {
-    await sb.rpc('submit_feature_item_candidate', {
+    // 1. Submit to DB — gets an id back
+    const rpcResult = await sb.rpc('submit_feature_item_candidate', {
       p_restaurant_id: currentRestaurant.id,
       p_mode:          mode,
       p_session_id:    SESSION_ID,
       p_item:          val,
     });
+
+    const itemId = rpcResult?.id || rpcResult?.[0]?.id;
+    if (!itemId) throw new Error('no item id returned');
+
+    // 2. Call moderate-content Edge Function directly — returns canonical text
+    const _itemUrl = `${SUPABASE_URL}/functions/v1/moderate-content`;
+    const _itemPayload = { content_type: 'feature_item', item_id: itemId };
+    console.log('[MC] item invoke url:', _itemUrl);
+    console.log('[MC] item payload:', JSON.stringify(_itemPayload));
+    const modRes = await fetch(_itemUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      },
+      body: JSON.stringify(_itemPayload),
+    });
+    console.log('[MC] item response status:', modRes.status);
+
+    const modData = await modRes.json();
+    const pill = document.getElementById(`hcm-pill-${tempId}`);
+
+    if (modData.status === 'approved') {
+      // Update pill with backend-confirmed canonical text
+      const canonical = modData.canonical_text || val;
+      const display = canonical.toLowerCase().replace(/\w/g, c => c.toUpperCase());
+      if (pill) {
+        pill.style.cssText = 'padding:8px 16px;border-radius:20px;border:1px solid black;background:black;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;opacity:1;';
+        pill.innerHTML = `<p class="fi" style="font-size:11px;font-weight:600;color:white;letter-spacing:0.5px;white-space:nowrap;">${display}</p><span style="font-size:9px;color:rgba(255,255,255,0.4);flex-shrink:0;">✦</span>`;
+        // Now it can be voted on — wire click
+        pill.onclick = () => toggleItemVote(itemId);
+        hcmVotedItems.add(itemId);
+      }
+    } else {
+      // rejected or needs_review — remove pending pill, show feedback
+      if (pill) pill.remove();
+      hcmCustomItems = hcmCustomItems.filter(v => v !== val);
+      if (modData.status === 'rejected') {
+        if (input) {
+          input.placeholder = modData.reason?.includes('safety') ? 'keep it clean ✌️' : "doesn't fit this spot";
+          setTimeout(() => { input.placeholder = 'type an item...'; }, 2500);
+        }
+        if (addBtn) { addBtn.style.background = 'black'; addBtn.style.pointerEvents = 'auto'; }
+        if (input)  { input.disabled = false; }
+      } else {
+        // needs_review — pill stays removed, no error shown (submitter doesn't need to know)
+      }
+    }
   } catch (err) {
+    // Network/Edge Function failure — remove pending pill silently
+    const pill = document.getElementById(`hcm-pill-${tempId}`);
+    if (pill) pill.remove();
+    hcmCustomItems = hcmCustomItems.filter(v => v !== val);
     console.warn('addFeatureItemCandidate failed:', err.message);
   }
 }
@@ -2161,9 +2272,110 @@ async function submitMenuReport() {
   }
 }
 
+function _renderItemPillsEats() {
+  const container = document.getElementById('hcm-item-pills-eats');
+  if (!container) return;
+  if (hcmItems.length === 0) {
+    container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">No items listed yet.</p>';
+    return;
+  }
+  container.innerHTML = hcmItems.map(it => {
+    const isVoted = hcmVotedItems.has(it.id);
+    const disp = it.item.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    const isUser = it.source === 'user';
+    return `<div id="hcm-pill-eats-${it.id}" onclick="toggleItemVote('${it.id}', true)"
+      style="padding:8px 16px;border-radius:20px;border:1px solid black;background:${isVoted?'black':'white'};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
+      <p class="fi" style="font-size:11px;font-weight:600;color:${isVoted?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>${isUser ? `<span style="font-size:9px;color:${isVoted?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.25)'};flex-shrink:0;">✦</span>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ── HH / Eats / Locals personal favs ─────────────────────────────────
+// Stored in sessionStorage keyed by restaurant id.
+// Highlighted pills = user's personal tags for this restaurant.
+// Does NOT affect rotating card items (that's bread/coffee/carbs only).
+
+let _favItems = {}; // { restaurantId: [{ id, label, tagged }] }
+
+function _loadFavItems(restaurantId) {
+  try {
+    const stored = sessionStorage.getItem(`favs_${restaurantId}`);
+    _favItems[restaurantId] = stored ? JSON.parse(stored) : [];
+  } catch(e) {
+    _favItems[restaurantId] = [];
+  }
+  _renderFavPills(restaurantId);
+}
+
+function _saveFavItems(restaurantId) {
+  try {
+    sessionStorage.setItem(`favs_${restaurantId}`, JSON.stringify(_favItems[restaurantId] || []));
+  } catch(e) {}
+}
+
+function addFavItem() {
+  if (!currentRestaurant) return;
+  const input = document.getElementById('hcm-fav-input');
+  if (!input) return;
+  const val = toTitleCase(input.value);
+  if (!val) return;
+  if (!_vibeIsClean(val)) {
+    input.value = '';
+    input.placeholder = 'keep it clean ✌️';
+    setTimeout(() => { input.placeholder = 'dish or drink...'; }, 2000);
+    return;
+  }
+  const id = currentRestaurant.id;
+  if (!_favItems[id]) _favItems[id] = [];
+  const valUp = val.toUpperCase();
+  if (_favItems[id].some(f => f.label.toUpperCase() === valUp)) {
+    input.value = '';
+    return;
+  }
+  const newFav = { id: `fav-${Date.now()}`, label: val, tagged: true };
+  _favItems[id].push(newFav);
+  _saveFavItems(id);
+  input.value = '';
+  _renderFavPills(id);
+}
+
+function toggleFavItem(favId) {
+  if (!currentRestaurant) return;
+  const id = currentRestaurant.id;
+  if (!_favItems[id]) return;
+  const fav = _favItems[id].find(f => f.id === favId);
+  if (!fav) return;
+  fav.tagged = !fav.tagged;
+  _saveFavItems(id);
+  const pill = document.getElementById(`hcm-fav-pill-${favId}`);
+  if (pill) {
+    pill.style.background = fav.tagged ? 'black' : 'white';
+    pill.querySelector('p').style.color = fav.tagged ? 'white' : 'black';
+  }
+}
+
+function _renderFavPills(restaurantId) {
+  const container = document.getElementById('hcm-fav-pills');
+  if (!container) return;
+  const items = _favItems[restaurantId] || [];
+  if (items.length === 0) {
+    container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">Nothing tagged yet.</p>';
+    return;
+  }
+  container.innerHTML = items.map(f => {
+    const disp = f.label.toLowerCase().replace(/\w/g, c => c.toUpperCase());
+    return `<div id="hcm-fav-pill-${f.id}" onclick="toggleFavItem('${f.id}')"
+      style="padding:8px 16px;border-radius:20px;border:1px solid black;background:${f.tagged?'black':'white'};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
+      <p class="fi" style="font-size:11px;font-weight:600;color:${f.tagged?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>
+    </div>`;
+  }).join('');
+}
+
 function _renderItemPills() {
   const container = document.getElementById('hcm-item-pills');
   if (!container) return;
+  // Always clear first — prevents stale pills from previous restaurant persisting in DOM
+  container.innerHTML = '';
   if (hcmItems.length === 0) {
     container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">No items listed yet.</p>';
     return;
@@ -3479,45 +3691,67 @@ async function initCommunityQuotes(r) {
   const el = document.getElementById('p3-community-quote');
   if (!el) return;
 
-  // 1. Fetch approved quotes from Supabase (public, moderated)
+  // 1. Fetch approved quotes with score + created_at for selection logic
   let approved = [];
   if (supabaseReady()) {
     try {
-      const rows = await sb.from('restaurant_quotes').then(c =>
-        c.selectWhere({ restaurant_id: r.id, status: 'approved' }, 'quote')
-      );
-      approved = (rows || []).map(row => row.quote);
+      const url = `${SUPABASE_URL}/rest/v1/restaurant_quotes?restaurant_id=eq.${encodeURIComponent(r.id)}&status=eq.approved&select=quote,moderation_score,created_at&order=moderation_score.desc.nullslast`;
+      const res = await fetch(url, {
+        headers: {
+          'apikey': SUPABASE_PUBLISHABLE_KEY,
+          'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+        }
+      });
+      const rows = res.ok ? await res.json() : [];
+      approved = rows || [];
     } catch (err) {
       console.warn('initCommunityQuotes fetch failed:', err.message);
     }
   }
 
-  // 2. Append this session's locally-pending quotes (optimistic, not public)
-  const local = pendingQuotes[r.id] || [];
+  // 2. Append this session's locally-pending quotes (optimistic, not public yet)
+  const local = (pendingQuotes[r.id] || []).map(q => ({ quote: q, moderation_score: 0.5, created_at: new Date().toISOString() }));
 
-  // 3. Fall back to SEED_QUOTES scaffold if both are empty
-  let quotes;
+  // 3. Fall back to seed if nothing available
+  let pool;
   if (approved.length > 0 || local.length > 0) {
-    quotes = [...approved, ...local];
+    pool = [...approved, ...local];
   } else {
-    quotes = [...(SEED_QUOTES[r.id] || ['Great spot — be the first to share a vibe'])];
+    pool = [{ quote: SEED_QUOTES[r.id]?.[0] || 'Great spot — be the first to share a vibe', moderation_score: 0, created_at: '' }];
   }
 
-  // Set initial quote text immediately (no transition on first render)
+  // 4. Score-prioritized + freshness-aware selection, capped at 10
+  // Algorithm:
+  //   - Sort by moderation_score DESC as the primary signal
+  //   - Add a small random jitter so the exact same set doesn't always appear
+  //   - Quotes from the last 7 days get a freshness bonus so new strong quotes surface
+  //   - Cap at 10
+  const QUOTE_CAP = 10;
+  const now = Date.now();
+  const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+
+  const scored = pool.map(row => {
+    const base  = row.moderation_score ?? 0.5;
+    const fresh = row.created_at && (now - new Date(row.created_at).getTime()) < SEVEN_DAYS ? 0.15 : 0;
+    const jitter = Math.random() * 0.1;  // ±0.1 light randomness
+    return { quote: row.quote, sortKey: base + fresh + jitter };
+  });
+
+  scored.sort((a, b) => b.sortKey - a.sortKey);
+  const quotes = scored.slice(0, QUOTE_CAP).map(s => s.quote);
+
+  // Set initial quote immediately (no transition on first render)
   el.style.transition = 'none';
   el.style.transform = 'translateY(0%)';
   el.style.opacity = '1';
   el.textContent = `'${quotes[0]}'`;
 
-  if (quotes.length <= 1) return; // no rotation needed for single quote
+  if (quotes.length <= 1) return;
 
   const showQuote = (idx) => {
-    // Roll up out
     el.style.transition = 'transform 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s ease';
     el.style.transform = 'translateY(-120%)';
     el.style.opacity = '0';
-
-    // Snap to bottom, then roll up in
     setTimeout(() => {
       el.style.transition = 'none';
       el.style.transform = 'translateY(120%)';
@@ -3636,7 +3870,7 @@ const HAPPY_MODES = {
   hh:     { word1: 'Happy', word2: 'Hour',   word3: '!!!', color: '#007F57' },
   eats:   { word1: 'Happy', word2: 'Eats',   word3: null,  color: '#007F57' },
   coffee: { word1: 'Happy', word2: 'Coffee', word3: null,  color: '#007F57' },
-  bread:  { word1: 'Happy', word2: 'Bread',  word3: null,  color: '#007F57' },
+  sweets: { word1: 'Happy', word2: 'Sweets', word3: null,  color: '#007F57' },
   carbs:  { word1: 'Happy', word2: 'Carbs',  word3: null,  color: '#007F57' },
   locals: { word1: 'Happy', word2: 'Locals', word3: null,  color: '#FF6B35' },
 };
@@ -3703,17 +3937,23 @@ function getTodayHHDisplayText(r) {
 }
 
 function getHappyMode(r) {
-  // 1. HH takes priority whenever there are windows today
-  //    Uses happy_hours_by_day first, falls back to hh_weekday/hh_weekend
+  // 1. HH only when there are windows today
   if (getTodayHHWindows(r).length > 0) return 'hh';
 
-  // 2. Fall through by happy_type — per spec priority order
+  // 2. Explicit happy_type set in DB — honour it directly
   const t = r.happy_type;
   if (t === 'coffee') return 'coffee';
-  if (t === 'bread')  return 'bread';
+  if (t === 'bread' || t === 'sweets') return 'sweets';
   if (t === 'carbs')  return 'carbs';
   if (t === 'eats')   return 'eats';
-  return 'locals'; // fallback for any restaurant with no happy_type
+  if (t === 'locals') return 'locals';
+
+  // 3. No happy_type set — cascade:
+  //    HH restaurant on a non-HH day → check if it has a special to feature
+  //    Has special_title → eats
+  //    Otherwise → locals (community favourite, nothing specific to highlight)
+  if (r.special_title) return 'eats';
+  return 'locals';
 }
 
 // Rotating fan-fav items for bread/coffee/carbs
@@ -3837,11 +4077,11 @@ function updateHappyCard(r) {
     hhClockInterval = setInterval(() => updateHHClock(r), 1000);
     // Hide + button for HH mode
     const _hhPlus = document.getElementById('happy-card-plus');
-    // HH: original pill, no + button
+    // HH: fused shape (same as eats/bread/coffee/carbs)
     const _hhOrig  = document.getElementById('reminder-original');
     const _hhFused = document.getElementById('reminder-fused-wrap');
-    if (_hhOrig)  _hhOrig.style.display  = 'flex';
-    if (_hhFused) _hhFused.style.display = 'none';
+    if (_hhOrig)  _hhOrig.style.display  = 'none';
+    if (_hhFused) _hhFused.style.display = 'block';
     return; // ← nothing below runs for HH mode
   }
 
@@ -3921,12 +4161,13 @@ function updateHappyCard(r) {
       elTimes.textContent = r.special_note || '';
     }
 
-  } else if (mode === 'bread' || mode === 'coffee') {
+  } else if (mode === 'sweets' || mode === 'coffee') {
     // Hero: rotating featured item at 30px (deliberate — dish names are longer)
     if (elCount) {
       elCount.style.fontSize      = '32px';
       elCount.style.letterSpacing = '1px';
       elCount.style.lineHeight    = '24px';
+      elCount.style.whiteSpace    = 'normal';  // allow 2-line wrap for long item names
       elCount.style.transition    = 'opacity 0.2s ease';
       // top is set dynamically by rollIn based on text length
     }
@@ -3950,6 +4191,7 @@ function updateHappyCard(r) {
       elCount.style.fontSize      = '32px';
       elCount.style.letterSpacing = '1px';
       elCount.style.lineHeight    = '24px';
+      elCount.style.whiteSpace    = 'normal';  // allow 2-line wrap for long item names
       elCount.style.transition    = 'opacity 0.2s ease';
       // top is set dynamically by rollIn based on text length
     }
@@ -3976,7 +4218,7 @@ function updateHappyCard(r) {
   // Show + button for eats/bread/coffee/carbs, hide for locals
   const _plusBtn = document.getElementById('happy-card-plus');
   if (_plusBtn) {
-    const _showPlus = ['eats','bread','coffee','carbs'].includes(mode);
+    const _showPlus = ['eats','sweets','coffee','carbs'].includes(mode);
     const _origPill  = document.getElementById('reminder-original');
     const _fusedWrap = document.getElementById('reminder-fused-wrap');
     if (_showPlus) {
@@ -3984,9 +4226,9 @@ function updateHappyCard(r) {
       if (_origPill)  _origPill.style.display  = 'none';
       if (_fusedWrap) _fusedWrap.style.display  = 'block';
     } else {
-      // locals — original pill, no +
-      if (_origPill)  _origPill.style.display  = 'flex';
-      if (_fusedWrap) _fusedWrap.style.display  = 'none';
+      // locals — fused shape with + button (same as eats/bread/coffee/carbs)
+      if (_origPill)  _origPill.style.display  = 'none';
+      if (_fusedWrap) _fusedWrap.style.display  = 'block';
     }
     // _plusBtn is inside the fused wrap — always visible there
     if (_plusBtn) _plusBtn.style.display = 'flex';
@@ -3995,7 +4237,7 @@ function updateHappyCard(r) {
   // Preload feature items / menu report status for this restaurant
   if (mode === 'eats') {
     loadMenuReportStatus(r.id);
-  } else if (['bread','coffee','carbs'].includes(mode)) {
+  } else if (['sweets','coffee','carbs'].includes(mode)) {
     loadFeatureItems(r.id, mode);
   }
 }
@@ -4695,6 +4937,16 @@ function navigate(screen) {
     activeSpecialties = [];
     activeSearchVibes = [];
     stopP2ScorePolling();
+    // Clear bubble selection so CTA renders correctly on return to P1
+    selected.clear();
+    selectedWrappers.forEach(w => {
+      w.style.background = '';
+      w.style.color = '';
+      w.style.transform = '';
+    });
+    selectedWrappers.clear();
+    pinnedRestaurant = null;
+    requestAnimationFrame(() => updateCtaVisibility());
   }
   if (screen === 'page2') {
     console.log('[P2sync] navigating to page2 — starting poll, matchedRestaurants[0]=', matchedRestaurants[0]?.id);
@@ -5016,8 +5268,7 @@ function syncAllWrappers() {
     btn.style.background = active ? 'black' : '#b0b0b0';
     btn.style.cursor = active ? 'pointer' : 'default';
     btn.parentElement.style.background = active ? 'black' : '#b0b0b0';
-    btn.onmouseenter = active ? function(){ this.style.background='#222'; } : null;
-    btn.onmouseleave = active ? function(){ this.style.background='black'; } : null;
+    // No hover state — colour only changes on selection, not on mouse-over
   }
   if (foot) updateCtaVisibility();
 
@@ -5311,11 +5562,11 @@ function updateCtaVisibility() {
   foot.style.opacity      = show ? '1' : '0';
   foot.style.pointerEvents = show ? 'all' : 'none';
   if (btn) {
-    btn.style.background = active ? '#1e1e1e' : '#b0b0b0';
+    btn.style.background = active ? 'black' : '#b0b0b0';
     btn.style.cursor     = active ? 'pointer'  : 'default';
     // Also update outer wrapper so no grey ring shows behind the active button
     const outer = btn.parentElement;
-    if (outer) outer.style.background = active ? '#1e1e1e' : '#b0b0b0';
+    if (outer) outer.style.background = active ? 'black' : '#b0b0b0';
   }
 }
 
@@ -7148,6 +7399,7 @@ async function _submitVibeSignal(vibe, action) {
 async function _submitVibeCandidate(vibe) {
   if (!currentRestaurant || !supabaseReady()) return;
   try {
+    // Submit to DB first — get candidate id
     const res = await sb.rpc('submit_vibe_candidate', {
       p_restaurant_id: currentRestaurant.id,
       p_session_id:    SESSION_ID,
@@ -7155,7 +7407,28 @@ async function _submitVibeCandidate(vibe) {
     });
     if (res?.error === 'CANDIDATE_RATE_LIMIT_EXCEEDED') {
       _showVoteToast('Candidate limit reached');
+      return;
     }
+    const candidateId = res?.id || res?.[0]?.id;
+    if (!candidateId) return; // no id = no moderation needed
+
+    // Call moderate-content — fire and forget, no UI update needed for vibes
+    const _vibeUrl = `${SUPABASE_URL}/functions/v1/moderate-content`;
+    const _vibePayload = { content_type: 'vibe_candidate', candidate_id: candidateId };
+    console.log('[MC] vibe invoke url:', _vibeUrl);
+    console.log('[MC] vibe payload:', JSON.stringify(_vibePayload));
+    fetch(_vibeUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      },
+      body: JSON.stringify(_vibePayload),
+    }).then(async r => {
+      const body = await r.text();
+      console.log('[MC] vibe response status:', r.status, 'body:', body);
+    }).catch(err => console.warn('[MC] vibe fetch error:', err.message));
+
   } catch (err) {
     console.warn('_submitVibeCandidate failed:', err.message);
   }
@@ -7238,6 +7511,7 @@ function _vibeIsClean(val) {
 function addP3CustomVibe() {
   const input = document.getElementById('p3vm-custom-input');
   const val = input.value.trim();
+  console.log('[VIBE] addP3CustomVibe fired, val=', val, 'restaurant=', currentRestaurant?.id);
   if (!val) return;
   const valLC = val.toLowerCase();
 
@@ -7288,6 +7562,7 @@ function addP3CustomVibe() {
   moreEl.appendChild(pill);
 
   // Fire candidate submission immediately — also fire support signal
+  console.log('[VIBE] calling _submitVibeCandidate with', valLC);
   _submitVibeCandidate(valLC);
   _submitVibeSignal(valLC, 'support');
 

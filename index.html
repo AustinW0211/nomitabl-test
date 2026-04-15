@@ -605,11 +605,11 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
     </div>
 
     <!-- Community quote -->
-    <div style="position:absolute;left:0;top:604px;display:flex;height:80px;align-items:center;justify-content:space-between;overflow:hidden;padding:22px 10px;width:393px;">
-      <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;text-align:center;width:341px;overflow:hidden;">
-        <p id="p3-community-quote" class="fa" style="font-weight:400;font-style:italic;font-size:14px;color:black;letter-spacing:2px;text-align:center;line-height:18px;">'Unexpected lively after 8pm'</p>
+    <div style="position:absolute;left:0;top:620px;display:flex;height:48px;align-items:center;justify-content:space-between;overflow:hidden;padding:0 10px;width:393px;background:rgba(255,255,255,0.2);border-radius:0;">
+      <div style="display:flex;flex-direction:column;justify-content:center;flex-shrink:0;text-align:center;width:341px;overflow:hidden;height:48px;">
+        <p id="p3-community-quote" class="fa" style="font-weight:400;font-style:italic;font-size:14px;color:white;letter-spacing:2px;text-align:center;line-height:18px;">'Unexpected lively after 8pm'</p>
       </div>
-      <svg onclick="openQuoteModal()" style="flex-shrink:0;width:13px;height:13px;cursor:pointer;" fill="none" viewBox="0 0 13 13"><path d="M11.5 6.5C11.5 6.65913 11.4368 6.81174 11.3243 6.92426C11.2117 7.03679 11.0591 7.1 10.9 7.1H7.1V10.9C7.1 11.0591 7.03679 11.2117 6.92426 11.3243C6.81174 11.4368 6.65913 11.5 6.5 11.5C6.34087 11.5 6.18826 11.4368 6.07574 11.3243C5.96321 11.2117 5.9 11.0591 5.9 10.9V7.1H2.1C1.94087 7.1 1.78826 7.03679 1.67574 6.92426C1.56321 6.81174 1.5 6.65913 1.5 6.5C1.5 6.34087 1.56321 6.18826 1.67574 6.07574C1.78826 5.96321 1.94087 5.9 2.1 5.9H5.9V2.1C5.9 1.94087 5.96321 1.78826 6.07574 1.67574C6.18826 1.56321 6.34087 1.5 6.5 1.5C6.65913 1.5 6.81174 1.56321 6.92426 1.67574C7.03679 1.78826 7.1 1.94087 7.1 2.1V5.9H10.9C11.0591 5.9 11.2117 5.96321 11.3243 6.07574C11.4368 6.18826 11.5 6.34087 11.5 6.5Z" fill="black"/></svg>
+      <svg onclick="openQuoteModal()" style="flex-shrink:0;width:13px;height:13px;cursor:pointer;" fill="none" viewBox="0 0 13 13"><path d="M11.5 6.5C11.5 6.65913 11.4368 6.81174 11.3243 6.92426C11.2117 7.03679 11.0591 7.1 10.9 7.1H7.1V10.9C7.1 11.0591 7.03679 11.2117 6.92426 11.3243C6.81174 11.4368 6.65913 11.5 6.5 11.5C6.34087 11.5 6.18826 11.4368 6.07574 11.3243C5.96321 11.2117 5.9 11.0591 5.9 10.9V7.1H2.1C1.94087 7.1 1.78826 7.03679 1.67574 6.92426C1.56321 6.81174 1.5 6.65913 1.5 6.5C1.5 6.34087 1.56321 6.18826 1.67574 6.07574C1.78826 5.96321 1.94087 5.9 2.1 5.9H5.9V2.1C5.9 1.94087 5.96321 1.78826 6.07574 1.67574C6.18826 1.56321 6.34087 1.5 6.5 1.5C6.65913 1.5 6.81174 1.56321 6.92426 1.67574C7.03679 1.78826 7.1 1.94087 7.1 2.1V5.9H10.9C11.0591 5.9 11.2117 5.96321 11.3243 6.07574C11.4368 6.18826 11.5 6.34087 11.5 6.5Z" fill="white"/></svg>
     </div>
 
     <!-- GET DIRECTIONS foot -->
@@ -671,13 +671,13 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
   <!-- ── Happy Card Modal (Eats / Bread / Coffee / Carbs) ────────── -->
   <div id="happy-card-modal" onclick="closeHappyCardModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0);z-index:200;display:none;align-items:flex-end;justify-content:center;transition:background 0.3s ease;">
-    <div id="happy-card-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);overflow-y:auto;overflow-x:hidden;height:auto;max-height:40vh;scrollbar-width:none;-ms-overflow-style:none;">
+    <div id="happy-card-modal-sheet" onclick="event.stopPropagation()" style="background:#d0cfcf;border-radius:24px 24px 0 0;width:100%;transform:translateY(100%);transition:transform 0.4s cubic-bezier(.32,.72,0,1);overflow-y:auto;overflow-x:hidden;height:auto;max-height:60vh;scrollbar-width:none;-ms-overflow-style:none;">
 
       <!-- Eats content -->
       <div id="hcm-eats" style="display:none;padding:24px 20px 28px;">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
           <div>
-            <p class="fa" style="font-weight:600;font-size:15px;letter-spacing:1.5px;color:black;line-height:1.3;white-space:nowrap;">What are they offering?</p>
+            <p class="fa" style="font-weight:600;font-size:15px;letter-spacing:1.5px;color:black;line-height:1.3;white-space:nowrap;">What do you love here?</p>
           </div>
           <div onclick="closeHappyCardModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;margin-top:2px;">✕</div>
         </div>
@@ -697,16 +697,13 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           </div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         </div>
-        <!-- What are your favs — same as bread/coffee/carbs -->
-        <p class="fa" style="font-weight:600;font-size:15px;letter-spacing:1.5px;color:black;line-height:1.3;margin-bottom:10px;">What are your favs?</p>
-        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;">Select up to 3</p>
         <div id="hcm-item-pills-eats" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"></div>
         <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;">Missing one?</p>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
           <input id="hcm-item-input-eats" type="text" placeholder="type an item..." maxlength="40" autocomplete="off"
             style="flex:1;padding:10px 14px;border-radius:12px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"
             onkeydown="if(event.key==='Enter')addFeatureItemCandidate('eats')"/>
-          <div onclick="addFeatureItemCandidate('eats')" style="width:36px;height:36px;border-radius:18px;background:black;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background 0.2s;">
+          <div id="hcm-item-add-btn-eats" onclick="addFeatureItemCandidate('eats')" style="width:36px;height:36px;border-radius:18px;background:black;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background 0.2s;">
             <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
         </div>
@@ -751,13 +748,13 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           <div onclick="closeHappyCardModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;margin-top:2px;">✕</div>
         </div>
         <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;">Tag your favourites</p>
-        <div id="hcm-fav-pills" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"></div>
+        <div id="hcm-item-pills-favs" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"></div>
         <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;">Add one</p>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
-          <input id="hcm-fav-input" type="text" placeholder="dish or drink..." maxlength="40" autocomplete="off"
+          <input id="hcm-item-input-favs" type="text" placeholder="dish or drink..." maxlength="40" autocomplete="off"
             style="flex:1;padding:10px 14px;border-radius:12px;border:none;background:white;font-family:'Inter',sans-serif;font-size:13px;color:black;outline:none;"
-            onkeydown="if(event.key==='Enter')addFavItem()"/>
-          <div onclick="addFavItem()" style="width:36px;height:36px;border-radius:18px;background:black;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
+            onkeydown="if(event.key==='Enter')addFeatureItemCandidate('favs')"/>
+          <div id="hcm-item-add-btn-favs" onclick="addFeatureItemCandidate('favs')" style="width:36px;height:36px;border-radius:18px;background:black;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;">
             <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M5 1v8M1 5h8" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
         </div>
@@ -845,7 +842,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       </div>
       <p class="fi" style="font-size:11px;font-weight:300;color:#555;letter-spacing:0.5px;margin-bottom:16px;">What's your one-liner about this place?</p>
       <div style="background:white;border-radius:16px;padding:16px 18px;margin-bottom:8px;">
-        <textarea id="quote-input" maxlength="120" placeholder="e.g. Best hidden patio in Gastown…" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:black;border:none;outline:none;background:transparent;width:100%;resize:none;height:72px;line-height:1.5;"></textarea>
+        <textarea id="quote-input" maxlength="80" placeholder="e.g. Best hidden patio in Gastown…" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:400;color:black;border:none;outline:none;background:transparent;width:100%;resize:none;height:72px;line-height:1.5;"></textarea>
         <div style="display:flex;justify-content:flex-end;">
           <p id="quote-char-count" class="fi" style="font-size:10px;font-weight:300;color:#aaa;">0 / 120</p>
         </div>
@@ -1031,7 +1028,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 // Applied to all user-typed input before display or submission.
 // "apPLe pIE" → "Apple Pie"
 function toTitleCase(str) {
-  return str.trim().toLowerCase().replace(/\w/g, c => c.toUpperCase());
+  return str.trim().toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 }
 
 // ── Supabase config ─────────────────────────────────────────────
@@ -2000,41 +1997,583 @@ function openReminderModal() {
 }
 
 // ── Happy card modal state ───────────────────────────────────────────
-let hcmItems       = [];        // [{id, item, display_order}] loaded from Supabase
-let hcmVotedItems  = new Set(); // item_ids this session has voted on
-const hcmMenuReported = {};     // { restaurantId: true } — per-restaurant notify state
+// ── Happy card item subsystem — clean rewrite ────────────────────────
+//
+// Four layers, strict ownership:
+//   hcm.dbItems[]       — DB truth from get_item_scores. Never mutated by UI.
+//   hcm.userVotes Set   — DB truth from restaurant_item_votes. Written only by toggleItemVote.
+//   hcm.session{}       — In-session submitted items. tempId → {val, itemId, status}.
+//   hcm.selOrder[]      — Ordered array of voted itemIds for auto-deselect (coffee/sweets/carbs).
+//
+// Mode flags:
+//   hcm.mode            — current modal mode string
+//   hcm.isSelection     — true for coffee/sweets/carbs (3-cap, no upvote/downvote)
+//
+// Backend calls (unchanged):
+//   submit_feature_item_candidate → writes to DB
+//   moderate-content              → runs moderation
+//   get_item_scores               → loads hcm.dbItems
+//   restaurant_item_votes         → loads hcm.userVotes
+//   submit_item_vote              → persists selection
+//   remove_item_vote              → removes selection
+//
+// HTML containers (unchanged):
+//   hcm-item-pills      → coffee/sweets/carbs
+//   hcm-item-pills-eats → eats
+//   hcm-item-pills-favs → hh/locals
 
-// Load feature items and this session's votes for current restaurant+mode
+const hcm = {
+  dbItems:     [],         // [{item_id, item, weighted_score, source}]
+  userVotes:   new Set(),  // Set of item_ids user has voted on (from DB)
+  session:     {},         // tempId → {val, itemId|null, status, selected}
+  selOrder:    [],         // ordered itemIds voted (oldest first) — coffee/sweets/carbs only
+  mode:        null,
+  isSelection: false,      // true = coffee/sweets/carbs (max-3 cap, auto-deselect)
+  inFlight:    0,          // moderation requests in flight
+};
+
+// Kept from original (backend/non-item state)
+const hcmMenuReported = {};
+
+// ── Load from DB ──────────────────────────────────────────────────────
 async function loadFeatureItems(restaurantId, mode) {
   if (!supabaseReady()) return;
   try {
-    const [sysItems, userItems, votes] = await Promise.all([
-      sb.from('restaurant_feature_items').then(c => c.selectWhere(
-        { restaurant_id: restaurantId, mode, source: 'system' }, 'id,item,display_order,source'
-      )),
-      // Load user-submitted items for this session so they reappear on re-entry
-      sb.from('restaurant_feature_items').then(c => c.selectWhere(
-        { restaurant_id: restaurantId, mode, source: 'user', session_id_submitted: SESSION_ID }, 'id,item,display_order,source'
-      )),
+    const [scoredItems, votes] = await Promise.all([
+      sb.rpc('get_item_scores', { p_restaurant_id: restaurantId, p_mode: mode }),
       sb.from('restaurant_item_votes').then(c => c.selectWhere(
         { restaurant_id: restaurantId, session_id: SESSION_ID }, 'item_id'
       )),
     ]);
-    // System items sorted by display_order, user items appended at end
-    hcmItems = [
-      ...(sysItems || []).sort((a, b) => a.display_order - b.display_order),
-      ...(userItems || []).sort((a, b) => a.display_order - b.display_order),
-    ];
-    hcmVotedItems = new Set((votes || []).map(v => v.item_id));
-    // Render pills after data loads — avoids showing stale items from previous restaurant
-    _renderItemPills();
-    _renderItemPillsEats();
+    hcm.dbItems   = scoredItems || [];
+    hcm.userVotes = new Set((votes || []).map(v => v.item_id));
+    // Caller controls rendering after state is set
   } catch (err) {
     console.warn('loadFeatureItems failed:', err.message);
   }
 }
 
-// Load whether this session already reported for this restaurant
+// ── Modal open ────────────────────────────────────────────────────────
+async function openHappyCardModal() {
+  if (!currentRestaurant) return;
+  const mode = getHappyMode(currentRestaurant);
+
+  const eatsEl  = document.getElementById('hcm-eats');
+  const itemsEl = document.getElementById('hcm-items');
+  const doneEl  = document.getElementById('hcm-done');
+  const favsEl  = document.getElementById('hcm-favs');
+
+  eatsEl.style.display  = 'none';
+  itemsEl.style.display = 'none';
+  doneEl.style.display  = 'none';
+  if (favsEl) favsEl.style.display = 'none';
+
+  const m = document.getElementById('happy-card-modal');
+  const s = document.getElementById('happy-card-modal-sheet');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => {
+    m.style.background = 'rgba(0,0,0,0.5)';
+    s.style.transform  = 'translateY(0)';
+  });
+
+  // Reset state — strict isolation per restaurant+mode
+  hcm.dbItems     = [];
+  hcm.userVotes   = new Set();
+  hcm.selOrder    = [];
+  hcm.inFlight    = 0;
+  hcm.mode        = mode;
+  hcm.isSelection = ['coffee','sweets','carbs'].includes(mode);
+
+  // Restore in-session items for this restaurant+mode
+  // Only restore pending/needs_review — approved come from DB, rejected are gone
+  const _sk = `${currentRestaurant.id}:${mode}`;
+  const _entry = hcm.session[_sk] || {};
+  // Prune rejected from session store
+  Object.keys(_entry).forEach(tid => {
+    if (_entry[tid].status === 'rejected') delete _entry[tid];
+  });
+  hcm.session[_sk] = _entry;
+
+  // Show section
+  if (mode === 'eats') {
+    eatsEl.style.display = 'block';
+    const urlEl = document.getElementById('hcm-website-url');
+    if (urlEl) {
+      const url = currentRestaurant.website || '';
+      urlEl.textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    }
+    _updateNotifyRow();
+    const _ei = document.getElementById('hcm-item-input-eats');
+    const _eb = document.getElementById('hcm-item-add-btn-eats');
+    if (_ei) { _ei.value = ''; _ei.disabled = false; _ei.placeholder = 'type an item...'; }
+    if (_eb) { _eb.style.background = 'black'; _eb.style.pointerEvents = 'auto'; }
+
+  } else if (hcm.isSelection) {
+    itemsEl.style.display = 'block';
+    doneEl.style.display  = 'block';
+    const _ii = document.getElementById('hcm-item-input');
+    const _ib = document.getElementById('hcm-item-add-btn');
+    if (_ii) { _ii.value = ''; _ii.disabled = false; _ii.placeholder = 'type an item...'; }
+    if (_ib) { _ib.style.background = 'black'; _ib.style.pointerEvents = 'auto'; }
+
+  } else {
+    // hh / locals
+    if (favsEl) favsEl.style.display = 'block';
+    const _fi = document.getElementById('hcm-item-input-favs');
+    const _fb = document.getElementById('hcm-item-add-btn-favs');
+    if (_fi) { _fi.value = ''; _fi.disabled = false; _fi.placeholder = 'dish or drink...'; }
+    if (_fb) { _fb.style.background = 'black'; _fb.style.pointerEvents = 'auto'; }
+  }
+
+  // Initial render with empty state (shows loading state)
+  _hcmRender();
+
+  // Fetch from DB
+  await loadFeatureItems(currentRestaurant.id, mode);
+
+  // Reconcile session entries against DB truth:
+  // If a session item now exists as an approved DB item, drop the session entry.
+  // This prevents approved DB pill + session pill duplicates on reopen.
+  const _sk2 = `${currentRestaurant.id}:${mode}`;
+  if (hcm.session[_sk2]) {
+    const _normR = s => s.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/ +/g, ' ').trim();
+    const _approvedNorms = new Set(hcm.dbItems.map(it => _normR(it.item)));
+    Object.keys(hcm.session[_sk2]).forEach(tid => {
+      const entry = hcm.session[_sk2][tid];
+      if (_approvedNorms.has(_normR(entry.val))) {
+        delete hcm.session[_sk2][tid];  // approved in DB — drop session duplicate
+      }
+    });
+  }
+
+  // For coffee/sweets/carbs: ensure feature_item_1/2/3 are present and at top
+  if (hcm.isSelection) {
+    _hcmMergeFeatureItems();
+    _hcmRender();
+  }
+
+  // For eats: sort voted items first
+  if (mode === 'eats' && hcm.dbItems.length > 0) {
+    hcm.dbItems.sort((a, b) => {
+      const av = hcm.userVotes.has(a.item_id || a.id) ? 1 : 0;
+      const bv = hcm.userVotes.has(b.item_id || b.id) ? 1 : 0;
+      if (bv !== av) return bv - av;
+      return (b.weighted_score || 0) - (a.weighted_score || 0);
+    });
+    _hcmRender();
+  }
+
+  // For hh/locals: render after reconciliation (no sort/merge needed)
+  if (mode === 'hh' || mode === 'locals') {
+    _hcmRender();
+  }
+
+  // Restore selection order from current votes
+  hcm.selOrder = [...hcm.userVotes];
+}
+
+// ── Feature item merge (coffee/sweets/carbs only) ─────────────────────
+// Ensures feature_item_1/2/3 are in dbItems at the top.
+// If already in DB: bumps score to 999 so it sorts first.
+// If absent: adds as synthetic entry.
+function _hcmMergeFeatureItems() {
+  const r = currentRestaurant;
+  if (!r) return;
+  const featNames = [r.feature_item_1, r.feature_item_2, r.feature_item_3]
+    .filter(Boolean).map(s => s.trim()).filter(Boolean);
+  if (!featNames.length) return;
+
+  const norm = s => s.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/ +/g, ' ').trim();
+
+  featNames.forEach(fi => {
+    const existing = hcm.dbItems.find(it => norm(it.item) === norm(fi));
+    if (existing) {
+      existing.weighted_score = 999;  // bump to top
+    } else {
+      hcm.dbItems.push({
+        item_id: 'feat-' + fi.toUpperCase().replace(/ +/g, '-'),
+        item: fi,
+        weighted_score: 999,
+        source: 'system',
+      });
+    }
+  });
+
+  // Sort: score desc
+  hcm.dbItems.sort((a, b) => (b.weighted_score || 0) - (a.weighted_score || 0));
+}
+
+// ── Master render ─────────────────────────────────────────────────────
+// Single function that reads all three layers and writes to the correct container.
+// Called after any state change.
+function _hcmRender() {
+  const mode = hcm.mode;
+  if (mode === 'eats')   return _hcmRenderEats();
+  if (mode === 'hh' || mode === 'locals') return _hcmRenderFavs();
+  if (hcm.isSelection)  return _hcmRenderSelection();
+}
+
+// ── Pill builder ──────────────────────────────────────────────────────
+// Returns an HTML string for a DB item pill.
+// black = voted/selected, white = unvoted/unselected
+function _hcmPillHTML(id, itemText, isVoted, pillIdPrefix, onclickStr) {
+  const bg = isVoted ? 'black' : 'white';
+  const fg = isVoted ? 'white' : 'black';
+  const disp = itemText.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  return `<div id="${pillIdPrefix}${id}" onclick="${onclickStr}"
+    style="padding:8px 16px;border-radius:20px;border:1px solid black;background:${bg};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
+    <p class="fi" style="font-size:11px;font-weight:600;color:${fg};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>
+  </div>`;
+}
+
+// Returns a DOM element for a session (pending/needs_review) item pill.
+// In-session: always black/white/tail while modal is open.
+// On reopen: restored from hcm.session as black/white/tail (pending+selected state).
+function _hcmMakePendingPillEl(tempId, val) {
+  const el = document.createElement('div');
+  el.id = `hcm-sess-${tempId}`;
+  el.style.cssText = 'padding:8px 16px;border-radius:20px;border:1px solid black;background:black;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;';
+  el.innerHTML = `<p class="fi" style="font-size:11px;font-weight:600;color:white;letter-spacing:0.5px;white-space:nowrap;">${val}</p><span style="font-size:9px;color:rgba(255,255,255,0.5);flex-shrink:0;">✦</span>`;
+  return el;
+}
+
+// ── Render: coffee/sweets/carbs ───────────────────────────────────────
+function _hcmRenderSelection() {
+  const container = document.getElementById('hcm-item-pills');
+  if (!container) return;
+
+  const sk = `${currentRestaurant?.id}:${hcm.mode}`;
+  const sessionItems = hcm.session[sk] || {};
+
+  if (hcm.dbItems.length === 0 && Object.keys(sessionItems).length === 0) {
+    container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">No items listed yet.</p>';
+    return;
+  }
+
+  // DB items
+  container.innerHTML = hcm.dbItems.map(it => {
+    const id = it.item_id || it.id;
+    const isVoted = hcm.userVotes.has(id);
+    return _hcmPillHTML(id, it.item, isVoted, 'hcm-pill-', `toggleItemVote('${id}')`);
+  }).join('');
+
+  // Session items (pending/needs_review) — appended after DB items
+  Object.entries(sessionItems).forEach(([tid, s]) => {
+    const el = _hcmMakePendingPillEl(tid, s.val);
+    // If user previously deselected this pending item, show unselected style
+    if (s.selected === false) {
+      el.style.background = 'white';
+      el.querySelector('p').style.color = 'black';
+      const tail = el.querySelector('span');
+      if (tail) tail.style.color = 'rgba(0,0,0,0.4)';
+    }
+    container.appendChild(el);
+  });
+
+  _hcmSyncCap();
+}
+
+// ── Render: eats ──────────────────────────────────────────────────────
+function _hcmRenderEats() {
+  const container = document.getElementById('hcm-item-pills-eats');
+  if (!container) return;
+
+  const sk = `${currentRestaurant?.id}:${hcm.mode}`;
+  const sessionItems = hcm.session[sk] || {};
+
+  const dbHTML = hcm.dbItems.map(it => {
+    const id = it.item_id || it.id;
+    const isVoted = hcm.userVotes.has(id);
+    return _hcmPillHTML(id, it.item, isVoted, 'hcm-pill-eats-', `toggleItemVote('${id}', true)`);
+  }).join('');
+
+  if (!dbHTML && Object.keys(sessionItems).length === 0) {
+    container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">No items listed yet.</p>';
+    return;
+  }
+
+  container.innerHTML = dbHTML;
+
+  Object.entries(sessionItems).forEach(([tid, s]) => {
+    const el = _hcmMakePendingPillEl(tid, s.val);
+    if (s.selected === false) {
+      el.style.background = 'white';
+      el.querySelector('p').style.color = 'black';
+      const tail = el.querySelector('span');
+      if (tail) tail.style.color = 'rgba(0,0,0,0.4)';
+    }
+    container.appendChild(el);
+  });
+}
+
+// ── Render: hh/locals ─────────────────────────────────────────────────
+function _hcmRenderFavs() {
+  const container = document.getElementById('hcm-item-pills-favs');
+  if (!container) return;
+
+  const sk = `${currentRestaurant?.id}:${hcm.mode}`;
+  const sessionItems = hcm.session[sk] || {};
+
+  const dbHTML = hcm.dbItems.map(it => {
+    const id = it.item_id || it.id;
+    const isVoted = hcm.userVotes.has(id);
+    return _hcmPillHTML(id, it.item, isVoted, 'hcm-pill-favs-', `toggleItemVote('${id}', true)`);
+  }).join('');
+
+  if (!dbHTML && Object.keys(sessionItems).length === 0) {
+    container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">Nothing tagged yet.</p>';
+    return;
+  }
+
+  container.innerHTML = dbHTML;
+
+  Object.entries(sessionItems).forEach(([tid, s]) => {
+    const el = _hcmMakePendingPillEl(tid, s.val);
+    if (s.selected === false) {
+      el.style.background = 'white';
+      el.querySelector('p').style.color = 'black';
+      const tail = el.querySelector('span');
+      if (tail) tail.style.color = 'rgba(0,0,0,0.4)';
+    }
+    container.appendChild(el);
+  });
+}
+
+// ── Cap sync (coffee/sweets/carbs only) ───────────────────────────────
+// Greys out unvoted DB pills when 3 are selected.
+// Session (pending) pills are not affected — they stay interactive.
+function _hcmSyncCap() {
+  if (!hcm.isSelection) return;
+  const atCap = hcm.userVotes.size >= 3;
+  hcm.dbItems.forEach(it => {
+    const id = it.item_id || it.id;
+    const pill = document.getElementById(`hcm-pill-${id}`);
+    if (!pill) return;
+    const isVoted = hcm.userVotes.has(id);
+    pill.style.opacity       = (!isVoted && atCap) ? '0.35' : '1';
+    pill.style.cursor        = (!isVoted && atCap) ? 'default' : 'pointer';
+    pill.style.pointerEvents = (!isVoted && atCap) ? 'none' : 'auto';
+  });
+}
+
+// ── Toggle vote ───────────────────────────────────────────────────────
+async function toggleItemVote(itemId, isEats) {
+  if (!currentRestaurant || !supabaseReady()) return;
+  const isVoted = hcm.userVotes.has(itemId);
+  const pillPrefix = isEats ? 'hcm-pill-eats-' : hcm.mode === 'locals' || hcm.mode === 'hh' ? 'hcm-pill-favs-' : 'hcm-pill-';
+  const pill = document.getElementById(`${pillPrefix}${itemId}`);
+
+  if (isVoted) {
+    // Deselect
+    hcm.userVotes.delete(itemId);
+    hcm.selOrder = hcm.selOrder.filter(id => id !== itemId);
+    if (pill) { pill.style.background = 'white'; pill.querySelector('p').style.color = 'black'; }
+  } else {
+    // Select — auto-deselect oldest if at cap in selection mode
+    if (hcm.isSelection && hcm.userVotes.size >= 3) {
+      const oldestId = hcm.selOrder[0];
+      if (oldestId) {
+        hcm.userVotes.delete(oldestId);
+        hcm.selOrder.shift();
+        const oldPill = document.getElementById(`hcm-pill-${oldestId}`);
+        if (oldPill) { oldPill.style.background = 'white'; oldPill.querySelector('p').style.color = 'black'; }
+        // Persist deselect to DB
+        sb.rpc('remove_item_vote', { p_item_id: oldestId, p_session_id: SESSION_ID }).catch(() => {});
+      }
+    }
+    hcm.userVotes.add(itemId);
+    hcm.selOrder.push(itemId);
+    if (pill) { pill.style.background = 'black'; pill.querySelector('p').style.color = 'white'; }
+  }
+  if (hcm.isSelection) _hcmSyncCap();
+
+  // Persist to DB
+  try {
+    let res;
+    if (isVoted) {
+      res = await sb.rpc('remove_item_vote', { p_item_id: itemId, p_session_id: SESSION_ID });
+    } else {
+      res = await sb.rpc('submit_item_vote', {
+        p_restaurant_id: currentRestaurant.id,
+        p_item_id:       itemId,
+        p_session_id:    SESSION_ID,
+      });
+    }
+    if (res && !res.ok) {
+      // Revert
+      if (isVoted) {
+        hcm.userVotes.add(itemId);
+        hcm.selOrder.push(itemId);
+        if (pill) { pill.style.background = 'black'; pill.querySelector('p').style.color = 'white'; }
+      } else {
+        hcm.userVotes.delete(itemId);
+        hcm.selOrder = hcm.selOrder.filter(id => id !== itemId);
+        if (pill) { pill.style.background = 'white'; pill.querySelector('p').style.color = 'black'; }
+      }
+      if (hcm.isSelection) _hcmSyncCap();
+      if (res.error === 'ITEM_VOTE_RATE_LIMIT_EXCEEDED') _showVoteToast('Daily vote limit reached');
+      if (res.error === 'ITEM_CAP_EXCEEDED') _showVoteToast('Max 3 favourites per restaurant');
+    }
+  } catch (err) {
+    console.warn('toggleItemVote failed:', err.message);
+  }
+}
+
+// ── Add item ──────────────────────────────────────────────────────────
+async function addFeatureItemCandidate(suffix) {
+  const inputId = suffix ? `hcm-item-input-${suffix}` : 'hcm-item-input';
+  const input   = document.getElementById(inputId);
+  const addBtn  = suffix === 'eats'  ? document.getElementById('hcm-item-add-btn-eats')
+                : suffix === 'favs'  ? document.getElementById('hcm-item-add-btn-favs')
+                :                      document.getElementById('hcm-item-add-btn');
+  if (!input || !currentRestaurant) return;
+  const val = toTitleCase(input.value);
+  if (!val) return;
+
+  const mode = hcm.mode || getHappyMode(currentRestaurant);
+  const sk   = `${currentRestaurant.id}:${mode}`;
+  const sessionItems = hcm.session[sk] || {};
+
+  // ── Gate 1: session cap (5 per week — mirrored from backend) ─────────
+  const sessionCount = Object.keys(sessionItems).length;
+  if (sessionCount >= 5) {
+    input.value = '';
+    input.placeholder = 'max items reached';
+    setTimeout(() => { input.placeholder = 'type an item...'; }, 2000);
+    return;
+  }
+
+  // ── Gate 2: bad words ─────────────────────────────────────────────────
+  if (!_vibeIsClean(val)) {
+    input.value = '';
+    input.placeholder = 'keep it clean ✌️';
+    setTimeout(() => { input.placeholder = 'type an item...'; }, 2000);
+    return;
+  }
+
+  // ── Gate 3: normalized duplicate check ───────────────────────────────
+  const norm = s => s.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/ +/g, ' ').trim();
+  const valNorm = norm(val);
+
+  if (hcm.dbItems.some(it => norm(it.item) === valNorm)) {
+    input.value = '';
+    input.placeholder = 'already on the list';
+    setTimeout(() => { input.placeholder = 'type an item...'; }, 2000);
+    return;
+  }
+  if (Object.values(sessionItems).some(s => norm(s.val) === valNorm)) {
+    input.value = '';
+    input.placeholder = 'already added';
+    setTimeout(() => { input.placeholder = 'type an item...'; }, 2000);
+    return;
+  }
+
+  // ── Create session entry + pending pill ───────────────────────────────
+  input.value = '';
+  const tempId = `t-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
+  if (!hcm.session[sk]) hcm.session[sk] = {};
+  hcm.session[sk][tempId] = { val, itemId: null, status: 'pending', selected: true };
+
+  // Render immediately so pill appears
+  _hcmRender();
+
+  // Disable input if at cap
+  const newCount = Object.keys(hcm.session[sk]).length;
+  if (newCount >= 5) {
+    if (addBtn) { addBtn.style.background = '#ccc'; addBtn.style.pointerEvents = 'none'; }
+    if (input)  { input.disabled = true; }
+  }
+
+  if (!supabaseReady()) return;
+
+  // ── Submit to DB ──────────────────────────────────────────────────────
+  hcm.inFlight++;
+  try {
+    const rpcResult = await sb.rpc('submit_feature_item_candidate', {
+      p_restaurant_id: currentRestaurant.id,
+      p_mode:          mode,
+      p_session_id:    SESSION_ID,
+      p_item:          val,
+    });
+
+    if (rpcResult?.ok === false) {
+      const errCode = rpcResult?.error;
+      hcm.inFlight--;
+
+      if (errCode === 'ALREADY_EXISTS') {
+        // Item in DB already — remove session entry, show feedback
+        delete hcm.session[sk][tempId];
+        _hcmRender();
+        if (input) { input.placeholder = 'already on the list'; setTimeout(() => { input.placeholder = 'type an item...'; }, 2500); }
+        if (addBtn) { addBtn.style.background = 'black'; addBtn.style.pointerEvents = 'auto'; }
+        if (input) input.disabled = false;
+        return;
+      }
+      if (errCode === 'CANDIDATE_RATE_LIMIT_EXCEEDED') {
+        delete hcm.session[sk][tempId];
+        _hcmRender();
+        _showVoteToast('Item limit reached for this week');
+        if (addBtn) { addBtn.style.background = 'black'; addBtn.style.pointerEvents = 'auto'; }
+        if (input) input.disabled = false;
+        return;
+      }
+      // Other RPC error
+      delete hcm.session[sk][tempId];
+      _hcmRender();
+      if (input) { input.placeholder = 'try again later'; setTimeout(() => { input.placeholder = 'type an item...'; }, 2500); }
+      if (addBtn) { addBtn.style.background = 'black'; addBtn.style.pointerEvents = 'auto'; }
+      if (input) input.disabled = false;
+      return;
+    }
+
+    const itemId = rpcResult?.id || rpcResult?.[0]?.id;
+    if (!itemId) throw new Error('no itemId: ' + JSON.stringify(rpcResult));
+
+    // Store real itemId in session entry
+    hcm.session[sk][tempId].itemId = itemId;
+
+    // ── Moderate ──────────────────────────────────────────────────────
+    const modRes = await fetch(`${SUPABASE_URL}/functions/v1/moderate-content`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}` },
+      body: JSON.stringify({ content_type: 'feature_item', item_id: itemId }),
+    });
+    const modData = await modRes.json();
+    hcm.inFlight--;
+
+    hcm.session[sk][tempId].status = modData.status;
+
+    if (modData.status === 'approved') {
+      // Item is now in DB as approved — will appear via loadFeatureItems on next open.
+      // Mark user as having voted on it (so it shows selected on reopen).
+      hcm.userVotes.add(itemId);
+      hcm.selOrder.push(itemId);
+      // Persist vote to DB (fire-and-forget)
+      sb.rpc('submit_item_vote', {
+        p_restaurant_id: currentRestaurant.id,
+        p_item_id:       itemId,
+        p_session_id:    SESSION_ID,
+      }).catch(() => {});
+      // No live re-render — pill stays visible as pending until modal reopen
+    } else if (modData.status === 'rejected') {
+      // Remove from session — will be gone on reopen
+      delete hcm.session[sk][tempId];
+      const el = document.getElementById(`hcm-sess-${tempId}`);
+      if (el) el.remove();
+      if (input) { input.placeholder = "doesn't fit this spot"; setTimeout(() => { input.placeholder = 'type an item...'; }, 2500); }
+    }
+    // needs_review: leave pill as-is (pending style) — no live change
+
+  } catch (err) {
+    hcm.inFlight--;
+    delete hcm.session[sk]?.[tempId];
+    _hcmRender();
+    if (input) { input.placeholder = 'try again later'; setTimeout(() => { input.placeholder = 'type an item...'; }, 2500); }
+    console.warn('addFeatureItemCandidate failed:', err.message);
+  }
+}
+
+// ── Menu report (unchanged logic, kept here for proximity) ────────────
 async function loadMenuReportStatus(restaurantId) {
   if (!supabaseReady()) return;
   try {
@@ -2047,182 +2586,42 @@ async function loadMenuReportStatus(restaurantId) {
   }
 }
 
-async function openHappyCardModal() {
-  if (!currentRestaurant) return;
-  const mode = getHappyMode(currentRestaurant);
-  const eatsEl  = document.getElementById('hcm-eats');
-  const itemsEl = document.getElementById('hcm-items');
-  const doneEl  = document.getElementById('hcm-done');
-  const favsEl  = document.getElementById('hcm-favs');
-
-  // Hide all sections — show correct one below
-  eatsEl.style.display  = 'none';
-  itemsEl.style.display = 'none';
-  doneEl.style.display  = 'none';
-  if (favsEl) favsEl.style.display = 'none';
-
-  // Open sheet immediately so user sees it slide up
-  const m = document.getElementById('happy-card-modal');
-  const s = document.getElementById('happy-card-modal-sheet');
-  m.style.display = 'flex';
-  requestAnimationFrame(() => {
-    m.style.background = 'rgba(0,0,0,0.5)';
-    s.style.transform  = 'translateY(0)';
-  });
-
-  // Clear all item state — strict restaurant+mode isolation
-  hcmItems = []; hcmVotedItems = new Set(); hcmCustomItems = [];
-
-  if (mode === 'eats') {
-    eatsEl.style.display = 'block';
-    const urlEl = document.getElementById('hcm-website-url');
-    if (urlEl) {
-      const url = currentRestaurant.website || '';
-      urlEl.textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
-    }
-    _updateNotifyRow();
-    // Show loading state, then fetch and render
-    _renderItemPillsEats();
-    await loadFeatureItems(currentRestaurant.id, 'eats');
-
-  } else if (['sweets','coffee','carbs'].includes(mode)) {
-    itemsEl.style.display = 'block';
-    doneEl.style.display  = 'block';
-    const _inp = document.getElementById('hcm-item-input');
-    const _btn = document.getElementById('hcm-item-add-btn');
-    if (_inp) { _inp.value = ''; _inp.disabled = false; _inp.placeholder = 'type an item...'; }
-    if (_btn) { _btn.style.background = 'black'; _btn.style.pointerEvents = 'auto'; }
-    // Show loading state, await fresh DB fetch, then render
-    _renderItemPills();
-    await loadFeatureItems(currentRestaurant.id, mode);
-
+function _updateNotifyRow() {
+  const row = document.getElementById('hcm-notify-row');
+  if (!row) return;
+  const sub = document.getElementById('hcm-notify-sub');
+  if (currentRestaurant && hcmMenuReported[currentRestaurant.id]) {
+    row.style.opacity = '0.5';
+    row.style.cursor  = 'default';
+    row.style.pointerEvents = 'none';
+    row.querySelector('p').textContent = "Thanks — we'll take a look";
+    if (sub) sub.textContent = 'Report received';
   } else {
-    // hh / locals — personal favs (sessionStorage, not community voting)
-    if (favsEl) favsEl.style.display = 'block';
-    _loadFavItems(currentRestaurant.id);
+    row.style.opacity = '1';
+    row.style.cursor  = 'pointer';
+    row.style.pointerEvents = 'auto';
+    row.querySelector('p').textContent = 'Something new? Notify us';
+    if (sub) sub.textContent = 'Let us know if the menu has changed';
   }
 }
 
-// Feature item candidate — same pattern as vibe custom input
-let hcmCustomItems = []; // items typed this session (for cap tracking)
-
-async function addFeatureItemCandidate(suffix) {
-  const inputId = suffix ? `hcm-item-input-${suffix}` : 'hcm-item-input';
-  const input = document.getElementById(inputId);
-  const addBtn = document.getElementById('hcm-item-add-btn');
-  if (!input || !currentRestaurant) return;
-  const val = toTitleCase(input.value);
-  if (!val) return;
-
-  const MAX_CUSTOM = 5;
-  if (hcmCustomItems.length >= MAX_CUSTOM) { input.value = ''; return; }
-
-  // Client-side basic filter
-  if (!_vibeIsClean(val)) {
-    input.value = '';
-    input.placeholder = 'keep it clean ✌️';
-    setTimeout(() => { input.placeholder = 'type an item...'; }, 2000);
-    return;
-  }
-
-  const mode = getHappyMode(currentRestaurant);
-  const valUpper = val.toUpperCase();
-
-  // Reject if already in list
-  if (hcmItems.some(it => it.item.toUpperCase() === valUpper) ||
-      hcmCustomItems.some(v => v.toUpperCase() === valUpper)) {
-    input.value = '';
-    return;
-  }
-
-  input.value = '';
-  hcmCustomItems.push(val);
-
-  // Create pending pill immediately — shows raw text with loading opacity
-  const tempId = `user-${Date.now()}`;
-  const containerId = suffix ? `hcm-item-pills-${suffix}` : 'hcm-item-pills';
-  const container = document.getElementById(containerId);
-  if (container) {
-    const pill = document.createElement('div');
-    pill.id = `hcm-pill-${tempId}`;
-    pill.style.cssText = 'padding:8px 16px;border-radius:20px;border:1px solid #aaa;background:#aaa;cursor:default;transition:all 0.2s;display:flex;align-items:center;gap:5px;opacity:0.6;';
-    const rawDisplay = val; // already Title Case from toTitleCase()
-    pill.innerHTML = `<p class="fi" style="font-size:11px;font-weight:600;color:white;letter-spacing:0.5px;white-space:nowrap;">${rawDisplay}</p><span style="font-size:9px;color:rgba(255,255,255,0.5);flex-shrink:0;">✦</span>`;
-    container.appendChild(pill);
-  }
-
-  // Cap check
-  if (hcmCustomItems.length >= MAX_CUSTOM) {
-    if (addBtn) { addBtn.style.background = '#ccc'; addBtn.style.pointerEvents = 'none'; }
-    if (input)  { input.disabled = true; }
-  }
-
-  if (!supabaseReady()) return;
-
+async function submitMenuReport() {
+  if (!currentRestaurant || hcmMenuReported[currentRestaurant.id] || !supabaseReady()) return;
   try {
-    // 1. Submit to DB — gets an id back
-    const rpcResult = await sb.rpc('submit_feature_item_candidate', {
+    const res = await sb.rpc('submit_menu_report', {
       p_restaurant_id: currentRestaurant.id,
-      p_mode:          mode,
       p_session_id:    SESSION_ID,
-      p_item:          val,
     });
-
-    const itemId = rpcResult?.id || rpcResult?.[0]?.id;
-    if (!itemId) throw new Error('no item id returned');
-
-    // 2. Call moderate-content Edge Function directly — returns canonical text
-    const _itemUrl = `${SUPABASE_URL}/functions/v1/moderate-content`;
-    const _itemPayload = { content_type: 'feature_item', item_id: itemId };
-    console.log('[MC] item invoke url:', _itemUrl);
-    console.log('[MC] item payload:', JSON.stringify(_itemPayload));
-    const modRes = await fetch(_itemUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-      },
-      body: JSON.stringify(_itemPayload),
-    });
-    console.log('[MC] item response status:', modRes.status);
-
-    const modData = await modRes.json();
-    const pill = document.getElementById(`hcm-pill-${tempId}`);
-
-    if (modData.status === 'approved') {
-      // Update pill with backend-confirmed canonical text
-      const canonical = modData.canonical_text || val;
-      const display = canonical.toLowerCase().replace(/\w/g, c => c.toUpperCase());
-      if (pill) {
-        pill.style.cssText = 'padding:8px 16px;border-radius:20px;border:1px solid black;background:black;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;opacity:1;';
-        pill.innerHTML = `<p class="fi" style="font-size:11px;font-weight:600;color:white;letter-spacing:0.5px;white-space:nowrap;">${display}</p><span style="font-size:9px;color:rgba(255,255,255,0.4);flex-shrink:0;">✦</span>`;
-        // Now it can be voted on — wire click
-        pill.onclick = () => toggleItemVote(itemId);
-        hcmVotedItems.add(itemId);
-      }
-    } else {
-      // rejected or needs_review — remove pending pill, show feedback
-      if (pill) pill.remove();
-      hcmCustomItems = hcmCustomItems.filter(v => v !== val);
-      if (modData.status === 'rejected') {
-        if (input) {
-          input.placeholder = modData.reason?.includes('safety') ? 'keep it clean ✌️' : "doesn't fit this spot";
-          setTimeout(() => { input.placeholder = 'type an item...'; }, 2500);
-        }
-        if (addBtn) { addBtn.style.background = 'black'; addBtn.style.pointerEvents = 'auto'; }
-        if (input)  { input.disabled = false; }
-      } else {
-        // needs_review — pill stays removed, no error shown (submitter doesn't need to know)
-      }
+    if (res?.ok) {
+      hcmMenuReported[currentRestaurant.id] = true;
+      _updateNotifyRow();
     }
   } catch (err) {
-    // Network/Edge Function failure — remove pending pill silently
-    const pill = document.getElementById(`hcm-pill-${tempId}`);
-    if (pill) pill.remove();
-    hcmCustomItems = hcmCustomItems.filter(v => v !== val);
-    console.warn('addFeatureItemCandidate failed:', err.message);
+    console.warn('submitMenuReport failed:', err.message);
   }
 }
+
+
 
 function closeHappyCardModal() {
   const m = document.getElementById('happy-card-modal');
@@ -2275,19 +2674,48 @@ async function submitMenuReport() {
 function _renderItemPillsEats() {
   const container = document.getElementById('hcm-item-pills-eats');
   if (!container) return;
-  if (hcmItems.length === 0) {
+  // Build from hcmItems (DB-sourced)
+  const dbPills = hcmItems.map(it => {
+    const id = it.item_id || it.id;
+    const isVoted = hcmVotedItems.has(id);
+    const disp = it.item.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    return `<div id="hcm-pill-eats-${id}" onclick="toggleItemVote('${id}', true)"
+      style="padding:8px 16px;border-radius:20px;border:1px solid black;background:${isVoted?'black':'white'};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
+      <p class="fi" style="font-size:11px;font-weight:600;color:${isVoted?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>
+    </div>`;
+  }).join('');
+
+  if (!dbPills && Object.keys(hcmPendingPills).length === 0) {
     container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">No items listed yet.</p>';
     return;
   }
-  container.innerHTML = hcmItems.map(it => {
-    const isVoted = hcmVotedItems.has(it.id);
+  container.innerHTML = dbPills;
+  // Re-append any pending (in-moderation) pills after DB pills — maintains flex order
+  Object.values(hcmPendingPills).forEach(pill => {
+    if (pill && pill.parentNode !== container) container.appendChild(pill);
+  });
+}
+
+function _renderItemPillsFavs() {
+  const container = document.getElementById('hcm-item-pills-favs');
+  if (!container) return;
+  const dbPills = hcmItems.map(it => {
+    const id = it.item_id || it.id;
+    const isVoted = hcmVotedItems.has(id);
     const disp = it.item.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-    const isUser = it.source === 'user';
-    return `<div id="hcm-pill-eats-${it.id}" onclick="toggleItemVote('${it.id}', true)"
+    return `<div id="hcm-pill-favs-${id}" onclick="toggleItemVote('${id}', true)"
       style="padding:8px 16px;border-radius:20px;border:1px solid black;background:${isVoted?'black':'white'};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
-      <p class="fi" style="font-size:11px;font-weight:600;color:${isVoted?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>${isUser ? `<span style="font-size:9px;color:${isVoted?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.25)'};flex-shrink:0;">✦</span>` : ''}
+      <p class="fi" style="font-size:11px;font-weight:600;color:${isVoted?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>
     </div>`;
   }).join('');
+  if (!dbPills && Object.keys(hcmPendingPills).length === 0) {
+    container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">Nothing tagged yet.</p>';
+    return;
+  }
+  container.innerHTML = dbPills;
+  Object.values(hcmPendingPills).forEach(pill => {
+    if (pill && pill.parentNode !== container) container.appendChild(pill);
+  });
 }
 
 // ── HH / Eats / Locals personal favs ─────────────────────────────────
@@ -2332,7 +2760,7 @@ function addFavItem() {
     input.value = '';
     return;
   }
-  const newFav = { id: `fav-${Date.now()}`, label: val, tagged: true };
+  const newFav = { id: `fav-${Date.now()}`, label: val, tagged: true, pending: true };
   _favItems[id].push(newFav);
   _saveFavItems(id);
   input.value = '';
@@ -2363,10 +2791,10 @@ function _renderFavPills(restaurantId) {
     return;
   }
   container.innerHTML = items.map(f => {
-    const disp = f.label.toLowerCase().replace(/\w/g, c => c.toUpperCase());
+    const disp = f.label.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
     return `<div id="hcm-fav-pill-${f.id}" onclick="toggleFavItem('${f.id}')"
       style="padding:8px 16px;border-radius:20px;border:1px solid black;background:${f.tagged?'black':'white'};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
-      <p class="fi" style="font-size:11px;font-weight:600;color:${f.tagged?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>
+      <p class="fi" style="font-size:11px;font-weight:600;color:${f.tagged?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>${f.pending !== false ? `<span style="font-size:9px;color:${f.tagged?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.25)'};flex-shrink:0;">✦</span>` : ''}
     </div>`;
   }).join('');
 }
@@ -2374,21 +2802,30 @@ function _renderFavPills(restaurantId) {
 function _renderItemPills() {
   const container = document.getElementById('hcm-item-pills');
   if (!container) return;
-  // Always clear first — prevents stale pills from previous restaurant persisting in DOM
-  container.innerHTML = '';
-  if (hcmItems.length === 0) {
+
+  const hasPending = Object.keys(hcmPendingPills).length > 0;
+
+  if (hcmItems.length === 0 && !hasPending) {
     container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">No items listed yet.</p>';
     return;
   }
+
   container.innerHTML = hcmItems.map(it => {
-    const isVoted = hcmVotedItems.has(it.id);
-    const disp = it.item.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); // Title Case display
-    const isUser = it.source === 'user';
-    return `<div id="hcm-pill-${it.id}" onclick="toggleItemVote('${it.id}')"
-      style="padding:8px 16px;border-radius:20px;border:1px solid black;background:${isVoted?'black':'white'};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
-      <p class="fi" style="font-size:11px;font-weight:600;color:${isVoted?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>${isUser ? `<span style="font-size:9px;color:${isVoted?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.25)'};flex-shrink:0;">✦</span>` : ''}
+    const id = it.item_id || it.id;
+    const isVoted = hcmVotedItems.has(id);
+    const bg = isVoted ? 'black' : 'white';
+    const fg = isVoted ? 'white' : 'black';
+    const disp = it.item.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+    return `<div id="hcm-pill-${id}" onclick="toggleItemVote('${id}')"
+      style="padding:8px 16px;border-radius:20px;border:1px solid black;background:${bg};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
+      <p class="fi" style="font-size:11px;font-weight:600;color:${fg};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>
     </div>`;
   }).join('');
+
+  // Always append pending pills — even when hcmItems is empty (DB not yet loaded)
+  Object.values(hcmPendingPills).forEach(pill => {
+    if (pill && pill.parentNode !== container) container.appendChild(pill);
+  });
 
   // Grey out unvoted at cap
   _syncItemPillStates();
@@ -2397,32 +2834,70 @@ function _renderItemPills() {
 function _syncItemPillStates() {
   const atCap = hcmVotedItems.size >= 3;
   hcmItems.forEach(it => {
-    const pill = document.getElementById(`hcm-pill-${it.id}`);
+    const id = it.item_id || it.id;
+    const pill = document.getElementById(`hcm-pill-${id}`);
     if (!pill) return;
-    const isVoted = hcmVotedItems.has(it.id);
-    if (!isVoted) {
-      pill.style.opacity      = atCap ? '0.35' : '1';
-      pill.style.cursor       = atCap ? 'default' : 'pointer';
+    const isVoted = hcmVotedItems.has(id);  // use same id as pill lookup
+    if (isVoted) {
+      // Voted pills always fully interactive — user must be able to deselect
+      pill.style.opacity       = '1';
+      pill.style.cursor        = 'pointer';
+      pill.style.pointerEvents = 'auto';
+    } else {
+      // Unvoted pills greyed out at cap — cannot add more
+      pill.style.opacity       = atCap ? '0.35' : '1';
+      pill.style.cursor        = atCap ? 'default' : 'pointer';
       pill.style.pointerEvents = atCap ? 'none' : 'auto';
     }
   });
 }
 
-async function toggleItemVote(itemId) {
+async function toggleItemVote(itemId, isEats) {
   if (!currentRestaurant || !supabaseReady()) return;
   const isVoted = hcmVotedItems.has(itemId);
-  const pill = document.getElementById(`hcm-pill-${itemId}`);
+  // For eats mode: no selection cap (unlimited)
+  // For coffee/sweets/carbs: max 3
+  const pillPrefix = isEats ? 'hcm-pill-eats-' : 'hcm-pill-';
+  const pill = document.getElementById(`${pillPrefix}${itemId}`);
 
   // Optimistic update
   if (isVoted) {
+    // Deselect
     hcmVotedItems.delete(itemId);
-    if (pill) { pill.style.background = 'white'; pill.querySelector('p').style.color = 'black'; }
+    hcmSelectionOrder = hcmSelectionOrder.filter(id => id !== itemId);
+    if (pill) {
+      pill.style.background = 'white';
+      pill.querySelector('p').style.color = 'black';
+      // If this is a pending pill (has ✦ tail), show pending+unselected style
+      const tail = pill.querySelector('span');
+      if (tail) tail.style.color = 'rgba(0,0,0,0.4)';  // black tail on white bg
+    }
   } else {
-    if (hcmVotedItems.size >= 3) return;
+    if (hcmSelectionMode && hcmVotedItems.size >= 3) {
+      // At cap in selection mode — auto-deselect oldest, then select new
+      const oldestId = hcmSelectionOrder[0];
+      if (oldestId) {
+        hcmVotedItems.delete(oldestId);
+        hcmSelectionOrder.shift();
+        const oldPill = document.getElementById(`hcm-pill-${oldestId}`);
+        if (oldPill) {
+          oldPill.style.background = 'white';
+          oldPill.querySelector('p').style.color = 'black';
+          const oldTail = oldPill.querySelector('span');
+          if (oldTail) oldTail.style.color = 'rgba(0,0,0,0.4)';
+        }
+      }
+    }
     hcmVotedItems.add(itemId);
-    if (pill) { pill.style.background = 'black'; pill.querySelector('p').style.color = 'white'; }
+    hcmSelectionOrder.push(itemId);
+    if (pill) {
+      pill.style.background = 'black';
+      pill.querySelector('p').style.color = 'white';
+      const tail = pill.querySelector('span');
+      if (tail) tail.style.color = 'rgba(255,255,255,0.5)';
+    }
   }
-  _syncItemPillStates();
+  if (hcmSelectionMode) _syncItemPillStates();
 
   // Persist
   try {
@@ -2451,6 +2926,9 @@ async function toggleItemVote(itemId) {
       _syncItemPillStates();
       if (res.error === 'ITEM_VOTE_RATE_LIMIT_EXCEEDED') _showVoteToast('Daily vote limit reached');
       if (res.error === 'ITEM_CAP_EXCEEDED') _showVoteToast('Max 3 favourites per restaurant');
+    } else {
+      // Persist selection state locally (3-day TTL — survives page reload without sign-in)
+      if (currentRestaurant) _saveItemSelections(currentRestaurant.id);
     }
   } catch (err) {
     console.warn('toggleItemVote failed:', err.message);
@@ -2673,6 +3151,68 @@ function p3WalkinToggle(mode) {
 // Key format: "rid|reportType|meal|day"
 // Persisted in localStorage so it survives page refreshes for 24h
 const REPORT_CHOICE_KEY = 'nomi_report_choices';
+const NOMI_VOTE_KEY    = 'nomi_vote_state';   // permanent, no TTL
+const NOMI_VIBE_KEY    = 'nomi_vibe_state';   // 3-day TTL per restaurant
+const NOMI_ITEM_SEL_KEY = 'nomi_item_sel';    // 3-day TTL — item selections per restaurant
+const VIBE_TTL_MS      = 3 * 24 * 60 * 60 * 1000;
+
+// Save vibe selection state (off-vibes + add-vibes) to localStorage
+function _saveVibeState(restaurantId, offVibes, addVibes) {
+  try {
+    const state = JSON.parse(localStorage.getItem(NOMI_VIBE_KEY) || '{}');
+    state[restaurantId] = {
+      off: [...offVibes],
+      add: [...addVibes],
+      ts:  Date.now(),
+    };
+    localStorage.setItem(NOMI_VIBE_KEY, JSON.stringify(state));
+  } catch {}
+}
+
+function _getVibeState(restaurantId) {
+  try {
+    const state = JSON.parse(localStorage.getItem(NOMI_VIBE_KEY) || '{}');
+    const entry = state[restaurantId];
+    if (!entry) return null;
+    if (Date.now() - entry.ts > VIBE_TTL_MS) return null;  // expired
+    return entry;
+  } catch { return null; }
+}
+
+// ── Item selection localStorage — 3-day TTL ─────────────────────────
+function _saveItemSelections(restaurantId) {
+  try {
+    const state = JSON.parse(localStorage.getItem(NOMI_ITEM_SEL_KEY) || '{}');
+    state[restaurantId] = { ids: [...hcmVotedItems], ts: Date.now() };
+    localStorage.setItem(NOMI_ITEM_SEL_KEY, JSON.stringify(state));
+  } catch {}
+}
+
+function _loadItemSelections(restaurantId) {
+  try {
+    const state = JSON.parse(localStorage.getItem(NOMI_ITEM_SEL_KEY) || '{}');
+    const entry = state[restaurantId];
+    if (!entry) return null;
+    if (Date.now() - entry.ts > VIBE_TTL_MS) return null;  // expired
+    return new Set(entry.ids || []);
+  } catch { return null; }
+}
+
+// Save ring vote visual state to localStorage (permanent — DB is source of truth)
+function _saveVoteState(restaurantId, userVote) {
+  try {
+    const state = JSON.parse(localStorage.getItem(NOMI_VOTE_KEY) || '{}');
+    state[restaurantId] = userVote;  // null = no vote, 'up' or 'down'
+    localStorage.setItem(NOMI_VOTE_KEY, JSON.stringify(state));
+  } catch {}
+}
+
+function _getVoteState(restaurantId) {
+  try {
+    const state = JSON.parse(localStorage.getItem(NOMI_VOTE_KEY) || '{}');
+    return state[restaurantId] ?? null;
+  } catch { return null; }
+}
 
 function _getReportChoices() {
   try {
@@ -2822,7 +3362,7 @@ function openWaitReportModal() {
 
   // Restore prior choice into state variable so submit works without re-tap
   const _wPill = document.getElementById('walkin-pill');
-  const _wDinner = _wPill && _wPill.style.left === '2px';
+  const _wDinner = _wPill && _wPill.dataset.mode === 'dinner';
   const _wMeal = _wDinner ? 'dinner' : 'lunch';
   const _wDay  = walkinIsWeekend ? 'weekend' : 'weekday';
   // Restore both walkin_wait and walkin_reso_rec choices — user may have chosen either
@@ -3040,37 +3580,44 @@ async function loadReportStats(restaurantId, mealPeriod, dayType) {
       currentRestaurant.id === restaurantId &&
       pkCurMeal === mealPeriod && pkCurDay === dayType;
 
-    if (!_walkinSlotMatch && !_parkingSlotMatch) return;
+    // Always re-render both cards after a fresh stat fetch —
+    // slot matching was preventing UI updates when display slot and submit slot aligned
+    // but the gate check had a mismatch. Cache is keyed correctly so reads are safe.
 
-    // Update walk-in / reso card
-    if (_walkinSlotMatch && (stats.mode === 'reso' || stats.mode === 'walkin')) {
-      if (stats.mode === 'reso') {
-        currentRestaurant.reso_reports = 99;
+    // Re-render the currently visible slot for each card from cache
+    // This fires after every stat fetch — card always shows latest community truth
+    if (currentRestaurant?.id === restaurantId) {
+      // Walk-in card
+      const _visWMeal = (document.getElementById('walkin-pill')?.dataset.mode === 'dinner') ? 'dinner' : 'lunch';
+      const _visWDay  = walkinIsWeekend ? 'weekend' : 'weekday';
+      if (mealPeriod === _visWMeal && dayType === _visWDay) {
+        // This fetch is for the currently visible walkin slot — re-render it
+        if (stats.mode === 'reso' || stats.mode === 'walkin') {
+          if (stats.mode === 'reso') currentRestaurant.reso_reports = 99;
+          p3WalkinToggle(_visWMeal);
+          const repEl = document.getElementById('p3-walkin-reports');
+          if (repEl) {
+            const wCount = stats.mode === 'reso'
+              ? (stats.reso_leadtime_count ?? 0)
+              : (stats.walkin_family_count != null
+                  ? stats.walkin_family_count
+                  : (() => { const w=(stats.walkin_weight||0)+(stats.reso_rec_weight||0); return w>0?Math.max(1,Math.round(w/0.6)):0; })());
+            repEl.textContent = wCount + ' reports';
+          }
+        }
       }
-      p3WalkinToggle(wCurDinner ? 'dinner' : 'lunch');
-      // Walk-in count: walkin_weight + reso_rec_weight only
-      const repEl = document.getElementById('p3-walkin-reports');
-      if (repEl) {
-        // Show count matching current mode: walk-in family or reso leadtime
-      const wCount = stats.mode === 'reso'
-        ? (stats.reso_leadtime_count ?? 0)
-        : (stats.walkin_family_count != null
-            ? stats.walkin_family_count
-            : (() => { const w=(stats.walkin_weight||0)+(stats.reso_rec_weight||0); return w>0?Math.max(1,Math.round(w/0.6)):0; })());
-        repEl.textContent = wCount + ' reports';
-      }
-    }
-
-    // Update parking card — gated on parking-pill slot, not walkin-pill slot
-    if (_parkingSlotMatch) {
-      p3ParkingToggle(pkCurDinner ? 'dinner' : 'lunch');
-      // Parking count: parking_weight only
-      const parkRepEl = document.getElementById('p3-parking-reports');
-      if (parkRepEl && stats.parking_weight != null) {
-        const pCount = stats.parking_count != null
-          ? stats.parking_count
-          : (stats.parking_weight > 0 ? Math.max(1, Math.round(stats.parking_weight / 0.6)) : 0);
-        parkRepEl.textContent = pCount + ' reports';
+      // Parking card
+      const _visPMeal = (document.getElementById('parking-pill')?.dataset.mode === 'dinner') ? 'dinner' : 'lunch';
+      const _visPDay  = parkingIsWeekend ? 'weekend' : 'weekday';
+      if (mealPeriod === _visPMeal && dayType === _visPDay) {
+        p3ParkingToggle(_visPMeal);
+        const parkRepEl = document.getElementById('p3-parking-reports');
+        if (parkRepEl && stats.parking_weight != null) {
+          const pCount = stats.parking_count != null
+            ? stats.parking_count
+            : (stats.parking_weight > 0 ? Math.max(1, Math.round(stats.parking_weight / 0.6)) : 0);
+          parkRepEl.textContent = pCount + ' reports';
+        }
       }
     }
   } catch (err) {
@@ -3256,11 +3803,16 @@ async function submitWaitReport() {
     const resData = Array.isArray(res) ? res[0] : res;
     if (resData && !resData.ok) {
       console.warn('[NomiTabl] submit failed:', resData.error);
-      if (resData.error === 'RATE_LIMIT_EXCEEDED') _showVoteToast('Report limit reached for today');
+      if (resData.error === 'WALKIN_CHANGE_LIMIT_EXCEEDED') _showVoteToast('Walk-in report limit reached for today');
+      else if (resData.error === 'RESTAURANT_LIMIT_EXCEEDED') _showVoteToast('3 restaurant limit reached for today');
     } else {
-      console.log('[NomiTabl] submit success — reloading stats for slot:', mealPeriod, dayType);
       _saveReportChoice(currentRestaurant.id, reportType, mealPeriod, dayType, bucket);
-      loadReportStats(currentRestaurant.id, mealPeriod, dayType);
+      // Refresh both slots so toggle always shows correct data regardless of current pill position
+      const _wDay = walkinIsWeekend ? 'weekend' : 'weekday';
+      await Promise.all([
+        loadReportStats(currentRestaurant.id, 'dinner', _wDay),
+        loadReportStats(currentRestaurant.id, 'lunch',  _wDay),
+      ]);
     }
   } catch (err) {
     console.warn('[NomiTabl] submitWaitReport RPC threw:', err.message);
@@ -3513,12 +4065,19 @@ async function submitParkingReport() {
   try {
     const results = await Promise.all(calls);
     const failed = results.find(r => r && !r.ok);
-    if (failed && failed.error === 'RATE_LIMIT_EXCEEDED') {
-      _showVoteToast('Report limit reached for today');
+    if (failed && failed.error === 'PARKING_CHANGE_LIMIT_EXCEEDED') {
+      _showVoteToast('Parking report limit reached for today');
+    } else if (failed && failed.error === 'RESTAURANT_LIMIT_EXCEEDED') {
+      _showVoteToast('3 restaurant limit reached for today');
     } else {
       if (timeBucket) _saveReportChoice(currentRestaurant.id, 'parking_time', mealPeriod, dayType, timeBucket);
       if (capturedParkingType) _saveReportChoice(currentRestaurant.id, 'parking_type', mealPeriod, dayType, capturedParkingType);
-      loadReportStats(currentRestaurant.id, mealPeriod, dayType);
+      // Refresh both slots so toggle always shows correct data
+      const _pDay = parkingIsWeekend ? 'weekend' : 'weekday';
+      Promise.all([
+        loadReportStats(currentRestaurant.id, 'dinner', _pDay),
+        loadReportStats(currentRestaurant.id, 'lunch',  _pDay),
+      ]);
     }
   } catch (err) {
     console.warn('submitParkingReport RPC failed:', err.message);
@@ -3717,7 +4276,9 @@ async function initCommunityQuotes(r) {
   if (approved.length > 0 || local.length > 0) {
     pool = [...approved, ...local];
   } else {
-    pool = [{ quote: SEED_QUOTES[r.id]?.[0] || 'Great spot — be the first to share a vibe', moderation_score: 0, created_at: '' }];
+    // Use all seed quotes so rotation works — not just the first one
+    const seeds = SEED_QUOTES[r.id] || ['Great spot — be the first to share a vibe'];
+    pool = seeds.map(q => ({ quote: q, moderation_score: 0, created_at: '' }));
   }
 
   // 4. Score-prioritized + freshness-aware selection, capped at 10
@@ -3943,7 +4504,7 @@ function getHappyMode(r) {
   // 2. Explicit happy_type set in DB — honour it directly
   const t = r.happy_type;
   if (t === 'coffee') return 'coffee';
-  if (t === 'bread' || t === 'sweets') return 'sweets';
+  if (t === 'sweets') return 'sweets';
   if (t === 'carbs')  return 'carbs';
   if (t === 'eats')   return 'eats';
   if (t === 'locals') return 'locals';
@@ -4238,7 +4799,11 @@ function updateHappyCard(r) {
   if (mode === 'eats') {
     loadMenuReportStatus(r.id);
   } else if (['sweets','coffee','carbs'].includes(mode)) {
-    loadFeatureItems(r.id, mode);
+    // Only preload if the happy card modal is NOT open — modal manages its own LFI calls
+    const _hcModal = document.getElementById('happy-card-modal');
+    if (!_hcModal || _hcModal.style.display !== 'flex') {
+      loadFeatureItems(r.id, mode);
+    }
   }
 }
 
@@ -6799,8 +7364,13 @@ function p3PhotoNav(dir) {
   if (addBtn) addBtn.style.opacity = p3CurrentPhoto === P3_PHOTO_COUNT - 1 ? '1' : '0';
 }
 
-function populatePage3(r) {
+async function populatePage3(r) {
   if (!r) return;
+  // Clear session item store for previous restaurant — fresh state on new restaurant
+  if (currentRestaurant && currentRestaurant.id !== r.id) {
+    const prevKey = `${currentRestaurant.id}:${getHappyMode(currentRestaurant)}`;
+    delete hcmSessionItems[prevKey];
+  }
   // Reset ring state for new restaurant — cancel any in-flight animation
   _p3RingLastScore = null;
   if (_p3RingRAF) { cancelAnimationFrame(_p3RingRAF); _p3RingRAF = null; }
@@ -6919,21 +7489,22 @@ function populatePage3(r) {
   initDayRangeBadges();
 
   // Reset toggle to dinner state
+  // Always default to dinner on P3 entry — prior choice only affects modal highlight, not pill
   const pill = document.getElementById('walkin-pill');
   const dinnerLabel = document.getElementById('walkin-label-dinner');
   const lunchLabel = document.getElementById('walkin-label-lunch');
   if (pill) { pill.style.transition = 'none'; pill.style.transform = 'translateY(-50%) translateX(0px)'; pill.dataset.mode = 'dinner'; requestAnimationFrame(() => { pill.style.transition = 'transform 0.25s cubic-bezier(.4,0,.2,1)'; }); }
   if (dinnerLabel) dinnerLabel.style.color = '#020202';
-  if (lunchLabel) lunchLabel.style.color = 'white';
+  if (lunchLabel)  lunchLabel.style.color  = 'white';
   p3WalkinToggle('dinner');
 
-  // Init parking card
+  // Always default to dinner on P3 entry — prior choice only affects modal highlight, not pill
   const parkingPill = document.getElementById('parking-pill');
   const parkingDL = document.getElementById('parking-label-dinner');
   const parkingLL = document.getElementById('parking-label-lunch');
   if (parkingPill) { parkingPill.style.transition = 'none'; parkingPill.style.transform = 'translateY(-50%) translateX(0px)'; parkingPill.dataset.mode = 'dinner'; requestAnimationFrame(() => { parkingPill.style.transition = 'transform 0.25s cubic-bezier(.4,0,.2,1)'; }); }
   if (parkingDL) parkingDL.style.color = '#020202';
-  if (parkingLL) parkingLL.style.color = 'white';
+  if (parkingLL) parkingLL.style.color  = 'white';
   p3ParkingToggle('dinner');
 
   // Transport times
@@ -6947,12 +7518,13 @@ function populatePage3(r) {
   // State 2 happy card — mode-aware
   updateHappyCard(r);
 
-  // Load live report stats — overrides seed/cached values on the walk-in + parking cards
-  // If no fresh reports exist within the freshness window, cards will show '–'
-  // Load both dinner and lunch so toggle switches show correct data immediately
+  // Load live report stats — fetch both slots in parallel, then render dinner default
+  // Awaiting ensures cache is populated before p3WalkinToggle/p3ParkingToggle read it
   const _initDay = walkinIsWeekend ? 'weekend' : 'weekday';
-  loadReportStats(r.id, 'dinner', _initDay);
-  loadReportStats(r.id, 'lunch',  _initDay);
+  await Promise.all([
+    loadReportStats(r.id, 'dinner', _initDay),
+    loadReportStats(r.id, 'lunch',  _initDay),
+  ]);
   if (false) { // legacy block preserved for reference — driven by updateHappyCard now
     const hhCountdown = document.getElementById('p3-hh-countdown');
     const hhLabel = document.getElementById('p3-hh-label');
@@ -7076,6 +7648,8 @@ async function loadVotesForRestaurant(restaurantId) {
         baseUp: upRaw, baseDn: downRaw, baseScore: score,
       });
     }
+    // Persist vote visual state — no expiry, DB is source of truth
+    _saveVoteState(restaurantId, userVote);
     p3RenderVotes(restaurantId);
     // Patch P2 card immediately after p3Votes state is updated — guaranteed sequencing
     _updateP2CardScore(restaurantId);
@@ -7088,6 +7662,13 @@ function p3RenderVotes(id) {
   const v = p3Votes[id];
   if (!v) return;
 
+  // If userVote not yet loaded from DB, use localStorage as visual hint
+  // DB fetch will correct it if wrong — this just avoids flicker on entry
+  if (v.userVote === null || v.userVote === undefined) {
+    const cached = _getVoteState(id);
+    if (cached) v.userVote = cached;
+  }
+
   const upCount = document.getElementById('p3-vote-up-count');
   if (upCount) upCount.textContent = v.up;
   const dnCount = document.getElementById('p3-vote-down-count');
@@ -7096,8 +7677,16 @@ function p3RenderVotes(id) {
   // Thumb visual state — full opacity when voted, dimmed otherwise
   const upEl = document.getElementById('p3-thumb-up');
   const dnEl = document.getElementById('p3-thumb-down');
-  if (upEl) upEl.style.opacity = v.userVote === 'up'   ? '1' : '0.7';
-  if (dnEl) dnEl.style.opacity = v.userVote === 'down' ? '1' : '0.7';
+  if (upEl) {
+    upEl.style.opacity = v.userVote === 'up' ? '1' : '0.7';
+    const upSvg = upEl.querySelector('svg');
+    if (upSvg) upSvg.setAttribute('fill', v.userVote === 'up' ? 'white' : 'none');
+  }
+  if (dnEl) {
+    dnEl.style.opacity = v.userVote === 'down' ? '1' : '0.7';
+    const dnSvg = dnEl.querySelector('svg');
+    if (dnSvg) dnSvg.setAttribute('fill', v.userVote === 'down' ? 'white' : 'none');
+  }
 
   // Score: use backend weighted score if available, else derive from raw counts
   {
@@ -7280,8 +7869,10 @@ async function loadVibesForRestaurant(restaurantId) {
 
 function p3OpenAddVibe() {
   if (!currentRestaurant) return;
-  p3vmOffVibes = new Set();
-  p3vmAddVibes = new Set();
+  // Restore from localStorage (3-day TTL) — DB signals will confirm via p3vmPriorSignals
+  const _cachedVibes = currentRestaurant ? _getVibeState(currentRestaurant.id) : null;
+  p3vmOffVibes    = new Set(_cachedVibes?.off || []);
+  p3vmAddVibes    = new Set(_cachedVibes?.add || []);
   p3vmCustomVibes = [];
 
   const r = currentRestaurant;
@@ -7450,6 +8041,7 @@ function toggleP3OffVibe(vibe, el) {
   }
   // Fire immediately — no Done needed
   _submitVibeSignal(vibe, 'off');
+  if (currentRestaurant) _saveVibeState(currentRestaurant.id, p3vmOffVibes, p3vmAddVibes);
 }
 
 function toggleP3AddVibe(vibe, el) {
@@ -7479,6 +8071,7 @@ function toggleP3AddVibe(vibe, el) {
   });
   // Fire immediately — no Done needed
   _submitVibeSignal(vibe, 'support');
+  if (currentRestaurant) _saveVibeState(currentRestaurant.id, p3vmOffVibes, p3vmAddVibes);
 }
 
 // ── Vibe input blocklist ─────────────────────────────────────────────

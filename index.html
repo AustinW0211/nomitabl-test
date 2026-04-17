@@ -7681,7 +7681,7 @@ async function p3Vote(dir) {
 
 function _showVoteToast(msg) {
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.2);color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:1.4px;z-index:300;white-space:nowrap;pointer-events:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);';
+  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.2);color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-weight:300;font-size:12px;letter-spacing:1.4px;z-index:300;white-space:nowrap;pointer-events:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);';
   toast.textContent = msg.toLowerCase();
   document.querySelector('.phone').appendChild(toast);
   setTimeout(() => toast.remove(), 3000);

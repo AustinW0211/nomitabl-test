@@ -2942,11 +2942,7 @@ function p3WalkinToggle(mode) {
   const repEl = document.getElementById('p3-walkin-reports');
   if (repEl) {
     if (_slotStats) {
-      const wCount = _slotStats.mode === 'reso'
-        ? (_slotStats.reso_leadtime_count ?? 0)
-        : (_slotStats.walkin_family_count != null
-            ? _slotStats.walkin_family_count
-            : (() => { const w=(_slotStats.walkin_weight||0)+(_slotStats.reso_rec_weight||0); return w>0?Math.max(1,Math.round(w/0.6)):0; })());
+      const wCount = _slotStats.total_walkin_count ?? _slotStats.walkin_family_count ?? 0;
       repEl.textContent = wCount + ' reports';
     } else {
       repEl.textContent = '0 reports';
@@ -3416,11 +3412,7 @@ async function loadReportStats(restaurantId, mealPeriod, dayType) {
           p3WalkinToggle(_visWMeal);
           const repEl = document.getElementById('p3-walkin-reports');
           if (repEl) {
-            const wCount = stats.mode === 'reso'
-              ? (stats.reso_leadtime_count ?? 0)
-              : (stats.walkin_family_count != null
-                  ? stats.walkin_family_count
-                  : (() => { const w=(stats.walkin_weight||0)+(stats.reso_rec_weight||0); return w>0?Math.max(1,Math.round(w/0.6)):0; })());
+            const wCount = stats.total_walkin_count ?? stats.walkin_family_count ?? 0;
             repEl.textContent = wCount + ' reports';
           }
         }
@@ -3432,9 +3424,7 @@ async function loadReportStats(restaurantId, mealPeriod, dayType) {
         p3ParkingToggle(_visPMeal);
         const parkRepEl = document.getElementById('p3-parking-reports');
         if (parkRepEl && stats.parking_weight != null) {
-          const pCount = stats.parking_count != null
-            ? stats.parking_count
-            : (stats.parking_weight > 0 ? Math.max(1, Math.round(stats.parking_weight / 0.6)) : 0);
+          const pCount = stats.total_parking_count ?? stats.parking_count ?? 0;
           parkRepEl.textContent = pCount + ' reports';
         }
       }

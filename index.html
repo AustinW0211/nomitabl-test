@@ -2104,14 +2104,28 @@ const hcmMenuReported = {};
 async function loadFeatureItems(restaurantId, mode) {
   if (!supabaseReady()) return;
   try {
-    const [scoredItems, votes] = await Promise.all([
-      sb.rpc('get_item_scores', { p_restaurant_id: restaurantId, p_mode: mode }),
+    // Votes: always fetch by session_id (covers anon + auth votes stored with session).
+    // When authenticated, also fetch by user_id to catch votes stored against auth identity.
+    // Both sets are merged — union naturally deduplicates by item_id value.
+    const votePromises = [
       sb.from('restaurant_item_votes').then(c => c.selectWhere(
         { restaurant_id: restaurantId, session_id: SESSION_ID }, 'item_id'
       )),
+    ];
+    if (currentUser && currentUser.id) {
+      votePromises.push(
+        sb.from('restaurant_item_votes').then(c => c.selectWhere(
+          { restaurant_id: restaurantId, user_id: currentUser.id }, 'item_id'
+        ))
+      );
+    }
+    const [scoredItems, ...voteResults] = await Promise.all([
+      sb.rpc('get_item_scores', { p_restaurant_id: restaurantId, p_mode: mode }),
+      ...votePromises,
     ]);
     hcm.dbItems   = scoredItems || [];
-    hcm.userVotes = new Set((votes || []).map(v => v.item_id));
+    const allVotes = voteResults.flat().filter(Boolean);
+    hcm.userVotes = new Set(allVotes.map(v => v.item_id));
     // Caller controls rendering after state is set
   } catch (err) {
     console.warn('loadFeatureItems failed:', err.message);
@@ -2382,7 +2396,7 @@ function _hcmRenderFavs() {
   const dbHTML = hcm.dbItems.map(it => {
     const id = it.item_id || it.id;
     const isVoted = hcm.userVotes.has(id);
-    return _hcmPillHTML(id, it.item, isVoted, 'hcm-pill-favs-', `toggleItemVote('${id}', true)`);
+    return _hcmPillHTML(id, it.item, isVoted, 'hcm-pill-favs-', `toggleItemVote('${id}', false, true)`);
   }).join('');
 
   if (!dbHTML && Object.keys(sessionItems).length === 0) {
@@ -2422,10 +2436,10 @@ function _hcmSyncCap() {
 }
 
 // ── Toggle vote ───────────────────────────────────────────────────────
-async function toggleItemVote(itemId, isEats) {
+async function toggleItemVote(itemId, isEats, isFavs) {
   if (!currentRestaurant || !supabaseReady()) return;
   const isVoted = hcm.userVotes.has(itemId);
-  const pillPrefix = isEats ? 'hcm-pill-eats-' : hcm.mode === 'locals' || hcm.mode === 'hh' ? 'hcm-pill-favs-' : 'hcm-pill-';
+  const pillPrefix = isFavs ? 'hcm-pill-favs-' : isEats ? 'hcm-pill-eats-' : 'hcm-pill-';
   const pill = document.getElementById(`${pillPrefix}${itemId}`);
 
   if (isVoted) {
@@ -2511,7 +2525,7 @@ async function addFeatureItemCandidate(suffix) {
   // ── Gate 2: bad words ─────────────────────────────────────────────────
   if (!_vibeIsClean(val)) {
     input.value = '';
-    input.placeholder = 'keep it clean ✌️';
+    input.placeholder = 'keep it clean';
     setTimeout(() => { input.placeholder = 'type an item...'; }, 2000);
     return;
   }
@@ -2569,7 +2583,7 @@ async function addFeatureItemCandidate(suffix) {
         // Item in DB already — remove session entry, show feedback
         delete hcm.session[sk][tempId];
         _hcmRender();
-        if (input) { input.placeholder = 'already on the list'; setTimeout(() => { input.placeholder = 'type an item...'; }, 2500); }
+        if (input) { input.placeholder = 'already on the list'; setTimeout(() => { input.placeholder = 'type an item...'; }, 3000); }
         if (addBtn) { addBtn.style.background = 'black'; addBtn.style.pointerEvents = 'auto'; }
         if (input) input.disabled = false;
         return;
@@ -2585,7 +2599,7 @@ async function addFeatureItemCandidate(suffix) {
       // Other RPC error
       delete hcm.session[sk][tempId];
       _hcmRender();
-      if (input) { input.placeholder = 'try again later'; setTimeout(() => { input.placeholder = 'type an item...'; }, 2500); }
+      if (input) { input.placeholder = 'try again later'; setTimeout(() => { input.placeholder = 'type an item...'; }, 3000); }
       if (addBtn) { addBtn.style.background = 'black'; addBtn.style.pointerEvents = 'auto'; }
       if (input) input.disabled = false;
       return;
@@ -2625,7 +2639,10 @@ async function addFeatureItemCandidate(suffix) {
       delete hcm.session[sk][tempId];
       const el = document.getElementById(`hcm-sess-${tempId}`);
       if (el) el.remove();
-      if (input) { input.placeholder = "doesn't fit this spot"; setTimeout(() => { input.placeholder = 'type an item...'; }, 2500); }
+      const _dupMsg = (modData.reason && String(modData.reason).startsWith('duplicate_of:'))
+        ? 'already on the list'
+        : "doesn't fit this spot";
+      if (input) { input.placeholder = _dupMsg; setTimeout(() => { input.placeholder = 'type an item...'; }, 3000); }
     }
     // needs_review: leave pill as-is (pending style) — no live change
 
@@ -2633,7 +2650,7 @@ async function addFeatureItemCandidate(suffix) {
     hcm.inFlight--;
     delete hcm.session[sk]?.[tempId];
     _hcmRender();
-    if (input) { input.placeholder = 'try again later'; setTimeout(() => { input.placeholder = 'type an item...'; }, 2500); }
+    if (input) { input.placeholder = 'try again later'; setTimeout(() => { input.placeholder = 'type an item...'; }, 3000); }
     console.warn('addFeatureItemCandidate failed:', err.message);
   }
 }
@@ -2768,7 +2785,7 @@ function setReminderBefore(minsBefore) {
   toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = `REMINDER SET — ${label.toUpperCase()}`;
   document.querySelector('.phone').appendChild(toast);
-  setTimeout(() => toast.remove(), 2500);
+  setTimeout(() => toast.remove(), 3000);
 }
 
 
@@ -2783,7 +2800,7 @@ function setReminderAtTime() {
   toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = `REMINDER SET — ${h12}:${mm} ${ap.toUpperCase()}`;
   document.querySelector('.phone').appendChild(toast);
-  setTimeout(() => toast.remove(), 2500);
+  setTimeout(() => toast.remove(), 3000);
 }
 
 function setReminderWhen(when) {
@@ -2802,7 +2819,7 @@ function setReminderWhen(when) {
   toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = `REMINDER SET — ${label.toUpperCase()}`;
   document.querySelector('.phone').appendChild(toast);
-  setTimeout(() => toast.remove(), 2500);
+  setTimeout(() => toast.remove(), 3000);
 }
 
 function reminderSaveForLater() {
@@ -2820,7 +2837,7 @@ function reminderSaveForLater() {
   toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = 'SAVED TO FAVOURITES';
   document.querySelector('.phone').appendChild(toast);
-  setTimeout(() => toast.remove(), 2500);
+  setTimeout(() => toast.remove(), 3000);
 }
 
 
@@ -4166,7 +4183,7 @@ async function submitQuote() {
   // Client-side content filter — same blocklist as vibes
   if (!_vibeIsClean(text)) {
     input.value = '';
-    input.placeholder = 'keep it respectful ✌️';
+    input.placeholder = 'keep it respectful';
     setTimeout(() => { input.placeholder = 'e.g. Best hidden patio in Gastown…'; }, 2500);
     return;
   }
@@ -4214,7 +4231,7 @@ async function submitQuote() {
         if (pendingQuotes[rid]) {
           pendingQuotes[rid] = pendingQuotes[rid].filter(q => q !== text);
         }
-        _showVoteToast('Keep it respectful ✌️');
+        _showVoteToast('keep it respectful');
       }
     }
   } catch (err) {
@@ -6711,7 +6728,7 @@ function submitAddSpot() {
     toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;';
     toast.textContent = 'SPOT SUBMITTED — THANKS!';
     document.querySelector('.phone').appendChild(toast);
-    setTimeout(() => toast.remove(), 2500);
+    setTimeout(() => toast.remove(), 3000);
   }, 450);
 }
 
@@ -7464,20 +7481,34 @@ async function loadVotesForRestaurant(restaurantId) {
   if (!supabaseReady()) return;
   try {
     // Fetch weighted aggregate via RPC
-    const [scoreRows, sessionRows] = await Promise.all([
-      sb.rpc('get_restaurant_vote_score', { p_restaurant_id: restaurantId }),
-      // Fetch this session's own vote separately
+    // Fetch score + user's own vote. When authenticated, also check by user_id
+    // so auth votes are correctly detected even if anon row is also present.
+    const voteRowPromises = [
       sb.from('restaurant_votes').then(c => c.selectWhere(
-        { restaurant_id: restaurantId, session_id: SESSION_ID },
-        'vote'
+        { restaurant_id: restaurantId, session_id: SESSION_ID }, 'vote,user_id'
       )),
+    ];
+    if (currentUser && currentUser.id) {
+      voteRowPromises.push(
+        sb.from('restaurant_votes').then(c => c.selectWhere(
+          { restaurant_id: restaurantId, user_id: currentUser.id }, 'vote,user_id'
+        ))
+      );
+    }
+    const [scoreRows, ...voteRowResults] = await Promise.all([
+      sb.rpc('get_restaurant_vote_score', { p_restaurant_id: restaurantId }),
+      ...voteRowPromises,
     ]);
 
-    const agg       = Array.isArray(scoreRows) ? scoreRows[0] : scoreRows;
-    const upRaw     = parseInt(agg?.up_raw    || 0);
-    const downRaw   = parseInt(agg?.down_raw  || 0);
-    const score     = agg?.score != null ? parseFloat(agg.score) : null;
-    const userVote  = sessionRows?.length ? sessionRows[0].vote : null;
+    const agg      = Array.isArray(scoreRows) ? scoreRows[0] : scoreRows;
+    const upRaw    = parseInt(agg?.up_raw   || 0);
+    const downRaw  = parseInt(agg?.down_raw || 0);
+    const score    = agg?.score != null ? parseFloat(agg.score) : null;
+    // Prefer auth vote row if available — auth row is most authoritative
+    const allVoteRows = voteRowResults.flat().filter(Boolean);
+    const authRow  = allVoteRows.find(r => r.user_id != null);
+    const anonRow  = allVoteRows.find(r => r.user_id == null);
+    const userVote = (authRow || anonRow)?.vote ?? null;
 
     if (!p3Votes[restaurantId]) {
       p3Votes[restaurantId] = {
@@ -7650,10 +7681,10 @@ async function p3Vote(dir) {
 
 function _showVoteToast(msg) {
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:1.5px;z-index:300;white-space:nowrap;pointer-events:none;';
-  toast.textContent = msg.toUpperCase();
+  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.2);color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:1.4px;z-index:300;white-space:nowrap;pointer-events:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);';
+  toast.textContent = msg.toLowerCase();
   document.querySelector('.phone').appendChild(toast);
-  setTimeout(() => toast.remove(), 2500);
+  setTimeout(() => toast.remove(), 3000);
 }
 
 // ── P3 dedicated vibe modal state ─────────────────────────────────
@@ -7974,7 +8005,7 @@ function addP3CustomVibe() {
   // Client-side content filter
   if (!_vibeIsClean(val)) {
     input.value = '';
-    input.placeholder = 'keep it clean ✌️';
+    input.placeholder = 'keep it clean';
     setTimeout(() => { _updateCustomPlaceholder(); }, 2000);
     return;
   }

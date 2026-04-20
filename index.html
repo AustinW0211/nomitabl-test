@@ -636,23 +636,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <p id="reso-intel-text" class="fi" style="font-size:11px;font-weight:300;color:black;letter-spacing:0.5px;line-height:1.5;"></p>
         <p class="fi" style="font-size:9px;font-weight:300;color:#888;letter-spacing:0.5px;margin-top:3px;">community reported</p>
       </div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <!-- OpenTable -->
-        <div onclick="openResoOption('opentable')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-          <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Book with OpenTable</p>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <!-- Resy -->
-        <div onclick="openResoOption('resy')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-          <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Book with Resy</p>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <!-- Google -->
-        <div onclick="openResoOption('google')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-          <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Book with Google</p>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-      </div>
+      <div id="reso-options" style="display:flex;flex-direction:column;gap:10px;"></div>
     </div>
   </div>
 
@@ -797,39 +781,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Get there</p>
         <div onclick="closeDirectionsModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-
-        <!-- Uber -->
-        <div onclick="openDirection('uber')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-          <p class="fi" style="font-size:13px;font-weight:600;color:black;">Ride with Uber</p>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-
-        <!-- Lyft -->
-        <div onclick="openDirection('lyft')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-          <p class="fi" style="font-size:13px;font-weight:600;color:black;">Ride with Lyft</p>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-
-        <!-- Evo -->
-        <div onclick="openDirection('evo')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-          <p class="fi" style="font-size:13px;font-weight:600;color:black;">Find an Evo</p>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-
-        <!-- Google Maps -->
-        <div onclick="openDirection('google')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-          <p class="fi" style="font-size:13px;font-weight:600;color:black;">Open in Google Maps</p>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-
-        <!-- Apple Maps — iOS only -->
-        <div id="apple-maps-row" onclick="openDirection('apple')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-          <p class="fi" style="font-size:13px;font-weight:600;color:black;">Open in Apple Maps</p>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-
-      </div>
+      <div id="directions-options" style="display:flex;flex-direction:column;gap:10px;"></div>
     </div>
   </div>
 
@@ -1310,6 +1262,10 @@ function mapRestaurantRow(row) {
     // reservation
     reso_note:               row.reso_note   || null,
     reso_reports:            row.reso_reports || 0,
+    website:                 row.website || null,
+    phone:                   row.phone   || null,
+    reservation_url:         row.reservation_url    || null,
+    reservation_method:      row.reservation_method || null,
     // parking
     parking_type:            row.parking_type || 'street',
     // vibe
@@ -2782,7 +2738,7 @@ function setReminderBefore(minsBefore) {
   closeReminderModal();
   const label = targetStr ? `at ${targetStr}` : `${minsBefore} min from now`;
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
+  toast.style.cssText = 'position:absolute;bottom:114px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = `REMINDER SET — ${label.toUpperCase()}`;
   document.querySelector('.phone').appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
@@ -2797,7 +2753,7 @@ function setReminderAtTime() {
   const ap = parseInt(hh) >= 12 ? 'pm' : 'am';
   closeReminderModal();
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
+  toast.style.cssText = 'position:absolute;bottom:114px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = `REMINDER SET — ${h12}:${mm} ${ap.toUpperCase()}`;
   document.querySelector('.phone').appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
@@ -2816,7 +2772,7 @@ function setReminderWhen(when) {
   console.log(`Reminder: ${label} for ${currentRestaurant.name}`);
   // Lightweight toast confirmation
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
+  toast.style.cssText = 'position:absolute;bottom:114px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = `REMINDER SET — ${label.toUpperCase()}`;
   document.querySelector('.phone').appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
@@ -2834,7 +2790,7 @@ function reminderSaveForLater() {
     console.log('save (from reminder):', { restaurant_id });
   }
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
+  toast.style.cssText = 'position:absolute;bottom:114px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = 'SAVED TO FAVOURITES';
   document.querySelector('.phone').appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
@@ -3900,10 +3856,90 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   if (row) row.style.display = isIOS ? 'flex' : 'none';
 })();
 
+// Directions actions config — data-driven, extensible by city later
+// Each action: id, label, condition(r), buildUrl(destStr, r)
+// condition: returns true if action should render for this restaurant/context
+// buildUrl:  constructs the deep link, given already-encoded destStr + raw r
+const DIRECTION_ACTIONS = [
+  {
+    id: 'uber',
+    label: 'Ride with Uber',
+    condition: () => true,
+    buildUrl: (dest, r) => {
+      // Uber universal link format: https://m.uber.com/looking?drop[0]={json}
+      // Uses lat/lng + address for reliable destination pickup
+      if (r.lat != null && r.lng != null) {
+        const drop = {
+          latitude: r.lat,
+          longitude: r.lng,
+          addressLine1: r.name || '',
+          addressLine2: r.address || '',
+        };
+        return `https://m.uber.com/looking?drop[0]=${encodeURIComponent(JSON.stringify(drop))}`;
+      }
+      // Fallback to address-only if coords missing
+      const name = encodeURIComponent(r.name || '');
+      return `https://m.uber.com/ul/?action=setDestination&dropoff[nickname]=${name}&dropoff[formatted_address]=${dest}`;
+    },
+  },
+  {
+    id: 'lyft',
+    label: 'Ride with Lyft',
+    condition: () => true,
+    buildUrl: (dest, r) => {
+      const name = encodeURIComponent(r.name || '');
+      return `https://www.lyft.com/ride?destination[address]=${dest}&destination[name]=${name}`;
+    },
+  },
+  {
+    id: 'evo',
+    label: 'Find an Evo',
+    // BC-only service — show when restaurant address looks like it's in BC / Vancouver area
+    condition: (r) => {
+      const a = (r && r.address) ? r.address.toLowerCase() : '';
+      return a.includes('vancouver') || a.includes(' bc') || a.includes(', bc') || a.endsWith(' bc');
+    },
+    buildUrl: () => 'https://evo.ca',
+  },
+  {
+    id: 'google',
+    label: 'Open in Google Maps',
+    condition: () => true,
+    buildUrl: (dest) => `https://www.google.com/maps/dir/?api=1&destination=${dest}`,
+  },
+  {
+    id: 'apple',
+    label: 'Open in Apple Maps',
+    condition: () => isIOS,
+    buildUrl: (dest) => `https://maps.apple.com/?daddr=${dest}`,
+  },
+];
+
+// Build destination string — prefers full address, falls back to name only.
+// Never returns `undefined ...` or other broken strings.
+function _buildDirectionsDest(r) {
+  if (!r) return '';
+  const parts = [];
+  if (r.name)    parts.push(r.name);
+  if (r.address) parts.push(r.address);
+  if (!parts.length) return '';
+  return encodeURIComponent(parts.join(' '));
+}
+
 function openDirectionsModal() {
-  // Re-check in case DOM wasn't ready at parse time
-  const row = document.getElementById('apple-maps-row');
-  if (row) row.style.display = isIOS ? 'flex' : 'none';
+  const optsEl = document.getElementById('directions-options');
+  if (optsEl && currentRestaurant) {
+    const arrow = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const rows = DIRECTION_ACTIONS
+      .filter(a => a.condition(currentRestaurant))
+      .map(a =>
+        `<div onclick="openDirection('${a.id}')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <p class="fi" style="font-size:13px;font-weight:600;color:black;">${a.label}</p>
+          ${arrow}
+        </div>`
+      );
+    optsEl.innerHTML = rows.join('');
+  }
   const m = document.getElementById('directions-modal');
   const s = document.getElementById('directions-modal-sheet');
   m.style.display = 'flex';
@@ -3918,19 +3954,16 @@ function closeDirectionsModal() {
   setTimeout(() => { m.style.display = 'none'; }, 400);
 }
 
-function openDirection(platform) {
-  if (!currentRestaurant) return;
-  const addr = encodeURIComponent(currentRestaurant.address + ' Vancouver BC');
-  const name = encodeURIComponent(currentRestaurant.name);
-  const urls = {
-    uber:   `https://m.uber.com/ul/?action=setPickup&dropoff[nickname]=${name}&dropoff[formatted_address]=${addr}`,
-    lyft:   `https://www.lyft.com/ride?destination[address]=${addr}&destination[name]=${name}`,
-    evo:    `https://www.evocarshare.com`,
-    google: `https://www.google.com/maps/dir/?api=1&destination=${addr}`,
-    apple:  `https://maps.apple.com/?daddr=${addr}`
-  };
+function openDirection(actionId) {
+  if (!currentRestaurant) { closeDirectionsModal(); return; }
+  const r    = currentRestaurant;
+  const dest = _buildDirectionsDest(r);
+  // Guard: if we have no destination info, fall back to plain Google Maps home
+  const action = DIRECTION_ACTIONS.find(a => a.id === actionId);
+  if (!action) { closeDirectionsModal(); return; }
+  const url = action.buildUrl(dest, r);
   closeDirectionsModal();
-  window.open(urls[platform], '_blank');
+  if (url) window.open(url, '_blank');
 }
 
 // Transport times — geolocation + distance estimation
@@ -4743,6 +4776,37 @@ function openResoModal() {
       intel.textContent = `Walk-ins welcome — avg ${mins}–${mins + 8} min wait`;
     }
   }
+
+  // Dynamic action rendering — trust-first, only show actions with verified data
+  const optsEl = document.getElementById('reso-options');
+  if (optsEl && currentRestaurant) {
+    const r = currentRestaurant;
+    const rows = [];
+    const arrow = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const mkRow = (action, label) =>
+      `<div onclick="openResoOption('${action}')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+        <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">${label}</p>
+        ${arrow}
+      </div>`;
+
+    // 1. Verified booking destination
+    if (r.reservation_url) {
+      const m = (r.reservation_method || '').toLowerCase();
+      const label = m === 'resy'       ? 'Book via Resy'
+                  : m === 'opentable'  ? 'Book via OpenTable'
+                  : 'Book with Restaurant';
+      rows.push(mkRow('reserve', label));
+    }
+    // 2. General website
+    if (r.website)              rows.push(mkRow('website', 'Visit Website'));
+    // 3. Phone
+    if (r.phone)                rows.push(mkRow('call',    'Call to Reserve'));
+    // 4. Google fallback — always shown
+    rows.push(mkRow('google', 'Look up on Google'));
+
+    optsEl.innerHTML = rows.join('');
+  }
+
   const m = document.getElementById('reso-modal');
   const s = document.getElementById('reso-modal-sheet');
   m.style.display = 'flex';
@@ -4760,15 +4824,27 @@ function closeResoModal() {
   setTimeout(() => { m.style.display = 'none'; }, 400);
 }
 
-function openResoOption(platform) {
-  const name = currentRestaurant ? encodeURIComponent(currentRestaurant.name + ' Vancouver reservation') : 'restaurant+reservation+Vancouver';
-  const urls = {
-    opentable: `https://www.opentable.com/s/?term=${name}`,
-    resy: `https://resy.com/cities/van?query=${name}`,
-    google: `https://www.google.com/search?q=${name}`
-  };
+function openResoOption(action) {
+  if (!currentRestaurant) { closeResoModal(); return; }
+  const r = currentRestaurant;
+  const normUrl = u => (u && !/^https?:\/\//i.test(u)) ? 'https://' + u : u;
+  let url = null;
+
+  if (action === 'reserve' && r.reservation_url) {
+    url = normUrl(r.reservation_url);
+  } else if (action === 'website' && r.website) {
+    url = normUrl(r.website);
+  } else if (action === 'call' && r.phone) {
+    closeResoModal();
+    window.location.href = 'tel:' + String(r.phone).replace(/\D/g, '');
+    return;
+  } else if (action === 'google') {
+    const q = encodeURIComponent(`${r.name || ''} ${r.address || ''}`.trim());
+    url = `https://www.google.com/search?q=${q}`;
+  }
+
   closeResoModal();
-  window.open(urls[platform], '_blank');
+  if (url) window.open(url, '_blank');
 }
 
 function openVibeModal() {
@@ -6715,7 +6791,7 @@ function submitAddSpot() {
   closeAddSpotModal();
   setTimeout(() => {
     const toast = document.createElement('div');
-    toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;';
+    toast.style.cssText = 'position:absolute;bottom:114px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;';
     toast.textContent = 'SPOT SUBMITTED — THANKS!';
     document.querySelector('.phone').appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
@@ -7671,7 +7747,7 @@ async function p3Vote(dir) {
 
 function _showVoteToast(msg) {
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.2);color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-weight:300;font-size:12px;letter-spacing:1.4px;z-index:300;white-space:nowrap;pointer-events:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);';
+  toast.style.cssText = 'position:absolute;bottom:114px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-weight:300;font-size:12px;letter-spacing:1.4px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = msg.toLowerCase();
   document.querySelector('.phone').appendChild(toast);
   setTimeout(() => toast.remove(), 3000);

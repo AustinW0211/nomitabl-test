@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>NomiTabl</title>
+<title>NomiTabl v9</title>
 <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300&family=Just+Another+Hand&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,7 +52,6 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 }
 .p3-details-panel::-webkit-scrollbar { display: none; }
 .hide-scrollbar::-webkit-scrollbar { display: none; }
-.spot-suggestion-message { padding:12px 14px; font-family:'Inter',sans-serif; font-size:11px; color:#888; letter-spacing:0.3px; line-height:1.5; }
 .p3-details-panel.revealed { transform: translateY(0); transition: transform .4s cubic-bezier(.4,0,.2,1); }
 .p3-details-panel > *:not(.p3-panel-bg) { position: relative; z-index: 1; }
 .p3-hero {
@@ -231,8 +230,8 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       <div onclick="openResoModal()" style="position:absolute;left:267px;width:28px;height:28px;top:53px;cursor:pointer;z-index:5;">
         <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 28 28"><rect fill="#1E1E1E" height="28" rx="14" width="28"/><path d="M18.2785 19.8849L9.85806 11.4644V17.8656C9.85806 17.9793 9.81286 18.0885 9.7324 18.1689C9.65194 18.2494 9.54282 18.2946 9.42903 18.2946C9.31524 18.2946 9.20612 18.2494 9.12566 18.1689C9.0452 18.0885 9 17.9793 9 17.8656V10.429C9 10.3152 9.0452 10.2061 9.12566 10.1257C9.20612 10.0452 9.31524 10 9.42903 10H16.8656C16.9793 10 17.0885 10.0452 17.1689 10.1257C17.2494 10.2061 17.2946 10.3152 17.2946 10.429C17.2946 10.5428 17.2494 10.6519 17.1689 10.7324C17.0885 10.8129 16.9793 10.8581 16.8656 10.8581H10.4644L18.8849 19.2785C18.9606 19.3598 19.0019 19.4674 18.9999 19.5785C18.998 19.6897 18.9529 19.7957 18.8743 19.8743C18.7957 19.9529 18.6897 19.998 18.5785 19.9999C18.4674 20.0019 18.3598 19.9606 18.2785 19.8849Z" fill="white"/></svg>
       </div>
-      <div id="p3s1-identity-wrap" onclick="handleIdentityTap()" style="position:absolute;display:flex;height:40px;align-items:center;left:12px;padding-left:32px;padding-right:23px;padding-top:10px;padding-bottom:10px;top:68px;cursor:pointer;z-index:2;">
-        <p id="p3s1-identity-label" class="fa" style="font-weight:400;font-size:15px;color:white;letter-spacing:1.4px;white-space:nowrap;line-height:15px;">Login With Google</p>
+      <div id="p3s1-identity-wrap" onclick="handleIdentityTap()" style="position:absolute;display:flex;height:40px;align-items:center;left:12px;overflow:hidden;padding-left:32px;padding-right:23px;padding-top:10px;padding-bottom:10px;top:68px;cursor:pointer;z-index:2;">
+        <p id="p3s1-identity-label" class="fa" style="font-weight:400;font-size:12px;color:white;letter-spacing:1.2px;white-space:nowrap;line-height:14px;">Login With Google</p>
       </div>
       <div style="position:absolute;left:296px;top:33px;width:86px;height:75px;overflow:hidden;">
         <div style="position:absolute;left:calc(50% - 15.5px);top:18px;transform:translate(-50%,-50%);height:12px;width:51px;display:flex;justify-content:center;align-items:center;"><p class="fi" style="font-weight:200;font-size:16px;color:white;letter-spacing:1.6px;text-transform:uppercase;text-align:center;line-height:12px;">make</p></div>
@@ -353,8 +352,8 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       <div onclick="openResoModal()" style="position:absolute;left:267px;width:28px;height:28px;top:119px;cursor:pointer;z-index:5;">
         <svg style="position:absolute;display:block;width:100%;height:100%;" fill="none" viewBox="0 0 28 28"><rect fill="#1E1E1E" height="28" rx="14" width="28"/><path d="M18.2785 19.8849L9.85806 11.4644V17.8656C9.85806 17.9793 9.81286 18.0885 9.7324 18.1689C9.65194 18.2494 9.54282 18.2946 9.42903 18.2946C9.31524 18.2946 9.20612 18.2494 9.12566 18.1689C9.0452 18.0885 9 17.9793 9 17.8656V10.429C9 10.3152 9.0452 10.2061 9.12566 10.1257C9.20612 10.0452 9.31524 10 9.42903 10H16.8656C16.9793 10 17.0885 10.0452 17.1689 10.1257C17.2494 10.2061 17.2946 10.3152 17.2946 10.429C17.2946 10.5428 17.2494 10.6519 17.1689 10.7324C17.0885 10.8129 16.9793 10.8581 16.8656 10.8581H10.4644L18.8849 19.2785C18.9606 19.3598 19.0019 19.4674 18.9999 19.5785C18.998 19.6897 18.9529 19.7957 18.8743 19.8743C18.7957 19.9529 18.6897 19.998 18.5785 19.9999C18.4674 20.0019 18.3598 19.9606 18.2785 19.8849Z" fill="white"/></svg>
       </div>
-      <div id="p3-identity-wrap" onclick="handleIdentityTap()" style="position:absolute;display:flex;height:40px;align-items:center;left:12px;overflow:hidden;padding-left:32px;padding-right:23px;padding-top:10px;padding-bottom:10px;top:134px;cursor:pointer;">
-        <p id="p3-identity-label" class="fa" style="font-weight:400;font-size:15px;color:white;letter-spacing:1.4px;white-space:nowrap;line-height:15px;">Login With Google</p>
+      <div id="p3-identity-wrap" onclick="handleIdentityTap()" style="position:absolute;display:flex;height:40px;align-items:center;left:12px;overflow:hidden;padding-left:32px;padding-right:23px;padding-top:10px;padding-bottom:10px;top:134px;cursor:pointer;z-index:2;">
+        <p id="p3-identity-label" class="fa" style="font-weight:400;font-size:12px;color:white;letter-spacing:1.2px;white-space:nowrap;line-height:14px;">Login With Google</p>
       </div>
       <div style="position:absolute;left:296px;top:99px;width:86px;height:75px;overflow:hidden;">
         <div style="position:absolute;left:calc(50% - 15.5px);top:18px;transform:translate(-50%,-50%);height:12px;width:51px;display:flex;justify-content:center;align-items:center;"><p class="fi" style="font-weight:200;font-size:16px;color:white;letter-spacing:1.6px;text-transform:uppercase;text-align:center;line-height:12px;">make</p></div>
@@ -636,7 +635,23 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <p id="reso-intel-text" class="fi" style="font-size:11px;font-weight:300;color:black;letter-spacing:0.5px;line-height:1.5;"></p>
         <p class="fi" style="font-size:9px;font-weight:300;color:#888;letter-spacing:0.5px;margin-top:3px;">community reported</p>
       </div>
-      <div id="reso-options" style="display:flex;flex-direction:column;gap:10px;"></div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <!-- OpenTable -->
+        <div onclick="openResoOption('opentable')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Book with OpenTable</p>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <!-- Resy -->
+        <div onclick="openResoOption('resy')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Book with Resy</p>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <!-- Google -->
+        <div onclick="openResoOption('google')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">Book with Google</p>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -781,7 +796,39 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
         <p class="fa" style="font-weight:600;font-size:16px;letter-spacing:2px;color:black;">Get there</p>
         <div onclick="closeDirectionsModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;">✕</div>
       </div>
-      <div id="directions-options" style="display:flex;flex-direction:column;gap:10px;"></div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <!-- Uber -->
+        <div onclick="openDirection('uber')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <p class="fi" style="font-size:13px;font-weight:600;color:black;">Ride with Uber</p>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- Lyft -->
+        <div onclick="openDirection('lyft')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <p class="fi" style="font-size:13px;font-weight:600;color:black;">Ride with Lyft</p>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- Evo -->
+        <div onclick="openDirection('evo')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <p class="fi" style="font-size:13px;font-weight:600;color:black;">Find an Evo</p>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- Google Maps -->
+        <div onclick="openDirection('google')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <p class="fi" style="font-size:13px;font-weight:600;color:black;">Open in Google Maps</p>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <!-- Apple Maps — iOS only -->
+        <div id="apple-maps-row" onclick="openDirection('apple')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <p class="fi" style="font-size:13px;font-weight:600;color:black;">Open in Apple Maps</p>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+      </div>
     </div>
   </div>
 
@@ -828,7 +875,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
 
         <!-- Section 2: More Vibes -->
         <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;">More Vibes</p>
-        <p class="fi" style="font-size:11px;color:#555;letter-spacing:0.3px;margin-bottom:12px;">Pick up to 3 vibes that feel right.</p>
+        <p class="fi" style="font-size:11px;color:#555;letter-spacing:0.3px;margin-bottom:12px;">Pick up to 3 vibes that feel right. <span id="p3vm-slot-counter" style="margin-left:6px;color:rgba(0,0,0,0.45);">0 of 3</span></p>
         <div id="p3vm-more" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;"></div>
 
         <!-- Section 3: Suggest a vibe — always visible -->
@@ -990,14 +1037,13 @@ function toTitleCase(str) {
 const SUPABASE_URL  = 'https://hmlmxgcdirrapbjjuqgd.supabase.co';   // e.g. https://xxxx.supabase.co
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_5MGLInFwgMYAVTrNrXI5ug_96IFRxnd'; // anon/public key only — never use secret key here
 
-// ── Auth ─────────────────────────────────────────────────────────────────────
-// _authToken: live bearer token. Anon key for guests, access token when signed in.
+// ── Auth (G8: restored from v7, migration modernized to the server RPC) ─────
+// _authToken: live bearer. Anon key for guests, access token when signed in.
 // Updated exclusively by onAuthStateChange — never set directly elsewhere.
 let _authToken  = SUPABASE_PUBLISHABLE_KEY;
 let currentUser = null;  // supabase User object | null
 
-// Header factory. Always reads live _authToken so every sb request carries correct identity.
-// Usage: fetch(url, { headers: _sbHeaders() })  or  headers: { ..._sbHeaders(), 'Content-Type': ... }
+// Header factory — every request carries the CURRENT identity.
 function _sbHeaders(extra) {
   return Object.assign(
     { 'apikey': SUPABASE_PUBLISHABLE_KEY, 'Authorization': 'Bearer ' + _authToken },
@@ -1005,59 +1051,54 @@ function _sbHeaders(extra) {
   );
 }
 
-// Supabase JS client — auth only. Data calls go through the custom sb REST helper below.
+// Supabase JS client — auth only. Data calls go through the sb REST helper.
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-// Single source of auth truth. Fires on page load (stored session) + every sign-in/sign-out.
+// Single source of auth truth. Fires on load (stored session) + sign-in/out.
 supabaseClient.auth.onAuthStateChange(function(event, session) {
   _authToken  = (session && session.access_token) ? session.access_token : SUPABASE_PUBLISHABLE_KEY;
   currentUser = (session && session.user) ? session.user : null;
   if (typeof updateIdentityCard === 'function') updateIdentityCard();
-  // Migrate anon saves into auth account exactly once per sign-in, then reload
   if (event === 'SIGNED_IN' && currentUser) {
-    _migrateAnonSaves(currentUser.id).then(function() {
-      if (typeof loadSaves === 'function') loadSaves();
-    });
+    // Server-side migration: flips saves/votes/vibes/slots/batches atomically
+    // (Step-2 wrapper + Step-4 file-72 extension). Idempotent per session.
+    fetch(`${SUPABASE_URL}/rest/v1/rpc/migrate_anon_to_auth`, {
+      method: 'POST',
+      headers: _sbHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ p_session_id: SESSION_ID }),
+    }).then(r => r.json())
+      .then(j => console.log('[auth] migration:', j && j.ok ? 'ok' : j))
+      .catch(e => console.warn('[auth] migration failed:', e.message))
+      .finally(() => { if (typeof loadSaves === 'function') loadSaves(); });
   } else {
     if (typeof loadSaves === 'function') loadSaves();
   }
 });
 
-// Copies current session's anon saves to the auth account, then removes the anon rows.
-// Runs once on SIGNED_IN. Safe to call multiple times — upsert is idempotent.
-async function _migrateAnonSaves(userId) {
-  if (!supabaseReady() || !userId || !SESSION_ID) return;
-  try {
-    // 1. Fetch anon saves for this session
-    const anonUrl = `${SUPABASE_URL}/rest/v1/saves?select=restaurant_id&session_id=eq.${encodeURIComponent(SESSION_ID)}&user_id=is.null`;
-    const anonRes = await fetch(anonUrl, { headers: _sbHeaders() });
-    if (!anonRes.ok) return;
-    const anonRows = await anonRes.json();
-    if (!anonRows || anonRows.length === 0) return;
+async function signInWithGoogle() {
+  await supabaseClient.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href.split('#')[0] },
+  });
+}
+async function signOut() { await supabaseClient.auth.signOut(); }
 
-    // 2. Upsert each anon save as an auth save — ON CONFLICT DO NOTHING via prefer header
-    const authRows = anonRows.map(function(r) {
-      return { restaurant_id: r.restaurant_id, user_id: userId, session_id: SESSION_ID };
-    });
-    const upsertRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/saves?on_conflict=restaurant_id,user_id`,
-      {
-        method: 'POST',
-        headers: _sbHeaders({ 'Content-Type': 'application/json', 'Prefer': 'resolution=ignore-duplicates,return=minimal' }),
-        body: JSON.stringify(authRows),
-      }
-    );
-    if (!upsertRes.ok) return;
-
-    // 3. Delete the anon rows for this session — only after successful upsert
-    await fetch(
-      `${SUPABASE_URL}/rest/v1/saves?session_id=eq.${encodeURIComponent(SESSION_ID)}&user_id=is.null`,
-      { method: 'DELETE', headers: _sbHeaders() }
-    );
-  } catch (err) {
-    console.warn('_migrateAnonSaves failed:', err.message);
-    // Silent fail — anon saves remain intact, no data loss
-  }
+// Updates both green-card identity labels. Called by onAuthStateChange.
+function updateIdentityCard() {
+  ['p3s1-identity-label','p3-identity-label'].forEach(function(id) {
+    var label = document.getElementById(id);
+    if (!label) return;
+    if (currentUser) {
+      label.textContent = (currentUser.user_metadata && currentUser.user_metadata.full_name)
+        ? currentUser.user_metadata.full_name : (currentUser.email || 'Signed In');
+    } else {
+      label.textContent = 'Login With Google';
+    }
+  });
+}
+function handleIdentityTap() {
+  if (currentUser) { if (confirm('Sign out of NomiTabl?')) signOut(); }
+  else { signInWithGoogle(); }
 }
 
 // Minimal Supabase REST helper — no SDK needed
@@ -1070,7 +1111,8 @@ const sb = {
         const params = new URLSearchParams({ select: cols, ...opts });
         const res = await fetch(`${base}?${params}`, {
           headers: {
-            ..._sbHeaders(),
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': 'Bearer ' + _authToken,
           }
         });
         if (!res.ok) throw new Error(`Supabase GET ${table}: ${res.status} ${await res.text()}`);
@@ -1080,7 +1122,8 @@ const sb = {
         const res = await fetch(base, {
           method: 'POST',
           headers: {
-            ..._sbHeaders(),
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': 'Bearer ' + _authToken,
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal',
           },
@@ -1094,7 +1137,8 @@ const sb = {
         const res = await fetch(`${base}?${params}`, {
           method: 'POST',
           headers: {
-            ..._sbHeaders(),
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': 'Bearer ' + _authToken,
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal,resolution=merge-duplicates',
           },
@@ -1110,7 +1154,8 @@ const sb = {
         const res = await fetch(`${base}?${params}`, {
           method: 'DELETE',
           headers: {
-            ..._sbHeaders(),
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': 'Bearer ' + _authToken,
           },
         });
         if (!res.ok) throw new Error(`Supabase DELETE ${table}: ${res.status} ${await res.text()}`);
@@ -1121,7 +1166,8 @@ const sb = {
         Object.entries(match).forEach(([k, v]) => params.set(k, `eq.${v}`));
         const res = await fetch(`${base}?${params}`, {
           headers: {
-            ..._sbHeaders(),
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': 'Bearer ' + _authToken,
           },
         });
         if (!res.ok) throw new Error(`Supabase SELECT ${table}: ${res.status} ${await res.text()}`);
@@ -1135,7 +1181,8 @@ const sb = {
     const res = await fetch(url, {
       method: 'POST',
       headers: {
-        ..._sbHeaders(),
+        'apikey': SUPABASE_PUBLISHABLE_KEY,
+        'Authorization': 'Bearer ' + _authToken,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(params),
@@ -1262,10 +1309,6 @@ function mapRestaurantRow(row) {
     // reservation
     reso_note:               row.reso_note   || null,
     reso_reports:            row.reso_reports || 0,
-    website:                 row.website || null,
-    phone:                   row.phone   || null,
-    reservation_url:         row.reservation_url    || null,
-    reservation_method:      row.reservation_method || null,
     // parking
     parking_type:            row.parking_type || 'street',
     // vibe
@@ -2060,28 +2103,14 @@ const hcmMenuReported = {};
 async function loadFeatureItems(restaurantId, mode) {
   if (!supabaseReady()) return;
   try {
-    // Votes: always fetch by session_id (covers anon + auth votes stored with session).
-    // When authenticated, also fetch by user_id to catch votes stored against auth identity.
-    // Both sets are merged — union naturally deduplicates by item_id value.
-    const votePromises = [
+    const [scoredItems, votes] = await Promise.all([
+      sb.rpc('get_item_scores', { p_restaurant_id: restaurantId, p_mode: mode, p_session_id: SESSION_ID }),
       sb.from('restaurant_item_votes').then(c => c.selectWhere(
         { restaurant_id: restaurantId, session_id: SESSION_ID }, 'item_id'
       )),
-    ];
-    if (currentUser && currentUser.id) {
-      votePromises.push(
-        sb.from('restaurant_item_votes').then(c => c.selectWhere(
-          { restaurant_id: restaurantId, user_id: currentUser.id }, 'item_id'
-        ))
-      );
-    }
-    const [scoredItems, ...voteResults] = await Promise.all([
-      sb.rpc('get_item_scores', { p_restaurant_id: restaurantId, p_mode: mode }),
-      ...votePromises,
     ]);
     hcm.dbItems   = scoredItems || [];
-    const allVotes = voteResults.flat().filter(Boolean);
-    hcm.userVotes = new Set(allVotes.map(v => v.item_id));
+    hcm.userVotes = new Set((votes || []).map(v => v.item_id));
     // Caller controls rendering after state is set
   } catch (err) {
     console.warn('loadFeatureItems failed:', err.message);
@@ -2167,16 +2196,52 @@ async function openHappyCardModal() {
   await loadFeatureItems(currentRestaurant.id, mode);
 
   // Reconcile session entries against DB truth:
-  // If a session item now exists as an approved DB item, drop the session entry.
-  // This prevents approved DB pill + session pill duplicates on reopen.
+  //   • If a session item now exists as an approved DB item, drop the
+  //     session entry (prevents approved DB pill + session pill duplicates).
+  //   • If a session item has status='rejected' (moderation completed and
+  //     rejected — duplicate_of soft match left it visible until this
+  //     reopen, OR an earlier-tab/window persisted state), drop it now.
+  //     For duplicate_of rejections, this is where the pending pill stops
+  //     being shown; the matched item appears selected via loadFeatureItems
+  //     above. For real rejections the entry was already deleted at
+  //     rejection time, but checking status='rejected' here is defensive
+  //     against any future code path that leaves a rejected entry behind.
   const _sk2 = `${currentRestaurant.id}:${mode}`;
   if (hcm.session[_sk2]) {
     const _normR = s => s.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/ +/g, ' ').trim();
     const _approvedNorms = new Set(hcm.dbItems.map(it => _normR(it.item)));
     Object.keys(hcm.session[_sk2]).forEach(tid => {
       const entry = hcm.session[_sk2][tid];
-      if (_approvedNorms.has(_normR(entry.val))) {
-        delete hcm.session[_sk2][tid];  // approved in DB — drop session duplicate
+      if (_approvedNorms.has(_normR(entry.val)) || entry.status === 'rejected') {
+        delete hcm.session[_sk2][tid];
+      }
+    });
+  }
+
+  // ── L2 refire ─────────────────────────────────────────────────────
+  // For session entries that survived reconciliation (have itemId,
+  // status='pending', val didn't normalize-match anything in dbItems
+  // AND status wasn't 'rejected'), fire moderation again. Backend
+  // idempotency returns the cached result if already moderated, or
+  // processes the row if still pending. Fire-and-forget — does NOT
+  // block modal render. Result updates session entry status; pill
+  // visual stays pending until NEXT modal reopen per the locked
+  // frontend rule. Reuses the L1 retry helper so each refire also
+  // gets transient-error retries.
+  if (hcm.session[_sk2]) {
+    Object.values(hcm.session[_sk2]).forEach(entry => {
+      if (entry.itemId && entry.status === 'pending') {
+        _moderationFetchWithRetry(`${SUPABASE_URL}/functions/v1/moderate-content`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _authToken },
+          body: JSON.stringify({ content_type: 'feature_item', item_id: entry.itemId }),
+        })
+          .then(async (res) => {
+            if (!res.ok) return;
+            const modData = await res.json();
+            if (modData?.status) entry.status = modData.status;
+          })
+          .catch(err => console.warn('L2 refire failed for', entry.itemId, err.message));
       }
     });
   }
@@ -2220,18 +2285,16 @@ function _hcmMergeFeatureItems() {
 
   const norm = s => s.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/ +/g, ' ').trim();
 
+  // Invariant (May 29, audited clean): every feature_item_N card string
+  // has a backing restaurant_feature_items row — resolve_top_items derives
+  // the strings FROM rows, and the orphan audit returned zero. So we only
+  // bump matching rows to the top; there is no "string without a row" case
+  // to paper over. (Previous code pushed a fake un-votable 'feat-*' entry
+  // here — removed. A string with no row is corrupt cache, fixed by
+  // backfill, not by faking a pill.)
   featNames.forEach(fi => {
     const existing = hcm.dbItems.find(it => norm(it.item) === norm(fi));
-    if (existing) {
-      existing.weighted_score = 999;  // bump to top
-    } else {
-      hcm.dbItems.push({
-        item_id: 'feat-' + fi.toUpperCase().replace(/ +/g, '-'),
-        item: fi,
-        weighted_score: 999,
-        source: 'system',
-      });
-    }
+    if (existing) existing.weighted_score = 999;  // bump to top
   });
 
   // Sort: score desc
@@ -2239,58 +2302,47 @@ function _hcmMergeFeatureItems() {
 }
 
 // ── Master render ─────────────────────────────────────────────────────
-// Single function that reads all three layers and writes to the correct container.
+// Single unified renderer for all six modes (May 29 unification).
+// Two behavior FAMILIES (product distinction, locked):
+//   selection (coffee/sweets/carbs): community top-3 voting — 3-cap,
+//     top-3 partition (_hcmOrderedItemsForSelection), cap sync dimming.
+//     Votes feed public feature_item_1/2/3 via resolve_top_items.
+//   favs (eats/hh/locals): personal favorites — uncapped, selected-first
+//     partition (_hcmOrderedItemsForVote). Personal ranking signal.
+// Containers differ per mode because the modal SECTIONS have genuinely
+// different surrounding UI (eats: website+notify; selection: community
+// framing + done; favs: personal-tags framing). Render logic is
+// otherwise identical, hence one renderer with a mode-derived config.
+// Pill IDs use the single 'hcm-pill-' prefix everywhere: items are
+// mode-scoped in the DB, so an item_id can only ever render in one
+// container — no collision possible.
 // Called after any state change.
 function _hcmRender() {
-  const mode = hcm.mode;
-  if (mode === 'eats')   return _hcmRenderEats();
-  if (mode === 'hh' || mode === 'locals') return _hcmRenderFavs();
-  if (hcm.isSelection)  return _hcmRenderSelection();
-}
+  const cfg = hcm.isSelection
+    ? { container: 'hcm-item-pills',      order: _hcmOrderedItemsForSelection, empty: 'No items listed yet.' }
+    : hcm.mode === 'eats'
+    ? { container: 'hcm-item-pills-eats', order: _hcmOrderedItemsForVote,      empty: 'No items listed yet.' }
+    : { container: 'hcm-item-pills-favs', order: _hcmOrderedItemsForVote,      empty: 'Nothing tagged yet.'  };
 
-// ── Pill builder ──────────────────────────────────────────────────────
-// Returns an HTML string for a DB item pill.
-// black = voted/selected, white = unvoted/unselected
-function _hcmPillHTML(id, itemText, isVoted, pillIdPrefix, onclickStr) {
-  const bg = isVoted ? 'black' : 'white';
-  const fg = isVoted ? 'white' : 'black';
-  const disp = itemText.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
-  return `<div id="${pillIdPrefix}${id}" onclick="${onclickStr}"
-    style="padding:8px 16px;border-radius:20px;border:1px solid black;background:${bg};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
-    <p class="fi" style="font-size:11px;font-weight:600;color:${fg};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>
-  </div>`;
-}
-
-// Returns a DOM element for a session (pending/needs_review) item pill.
-// In-session: always black/white/tail while modal is open.
-// On reopen: restored from hcm.session as black/white/tail (pending+selected state).
-function _hcmMakePendingPillEl(tempId, val) {
-  const el = document.createElement('div');
-  el.id = `hcm-sess-${tempId}`;
-  el.style.cssText = 'padding:8px 16px;border-radius:20px;border:1px solid black;background:black;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;';
-  el.innerHTML = `<p class="fi" style="font-size:11px;font-weight:600;color:white;letter-spacing:0.5px;white-space:nowrap;">${val}</p><span style="font-size:9px;color:rgba(255,255,255,0.5);flex-shrink:0;">✦</span>`;
-  return el;
-}
-
-// ── Render: coffee/sweets/carbs ───────────────────────────────────────
-function _hcmRenderSelection() {
-  const container = document.getElementById('hcm-item-pills');
+  const container = document.getElementById(cfg.container);
   if (!container) return;
 
   const sk = `${currentRestaurant?.id}:${hcm.mode}`;
   const sessionItems = hcm.session[sk] || {};
 
-  if (hcm.dbItems.length === 0 && Object.keys(sessionItems).length === 0) {
-    container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">No items listed yet.</p>';
+  // DB items — partitioned per behavior family
+  const dbHTML = cfg.order(hcm.dbItems, hcm.userVotes).map(it => {
+    const id = it.item_id || it.id;
+    const isVoted = hcm.userVotes.has(id);
+    return _hcmPillHTML(id, it.canonical_text || it.item, isVoted, 'hcm-pill-', `toggleItemVote('${id}')`, it.status);
+  }).join('');
+
+  if (!dbHTML && Object.keys(sessionItems).length === 0) {
+    container.innerHTML = `<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">${cfg.empty}</p>`;
     return;
   }
 
-  // DB items
-  container.innerHTML = hcm.dbItems.map(it => {
-    const id = it.item_id || it.id;
-    const isVoted = hcm.userVotes.has(id);
-    return _hcmPillHTML(id, it.item, isVoted, 'hcm-pill-', `toggleItemVote('${id}')`);
-  }).join('');
+  container.innerHTML = dbHTML;
 
   // Session items (pending/needs_review) — appended after DB items
   Object.entries(sessionItems).forEach(([tid, s]) => {
@@ -2305,73 +2357,80 @@ function _hcmRenderSelection() {
     container.appendChild(el);
   });
 
-  _hcmSyncCap();
+  _hcmSyncCap();  // self-guards: no-ops unless hcm.isSelection
 }
 
-// ── Render: eats ──────────────────────────────────────────────────────
-function _hcmRenderEats() {
-  const container = document.getElementById('hcm-item-pills-eats');
-  if (!container) return;
-
-  const sk = `${currentRestaurant?.id}:${hcm.mode}`;
-  const sessionItems = hcm.session[sk] || {};
-
-  const dbHTML = hcm.dbItems.map(it => {
-    const id = it.item_id || it.id;
-    const isVoted = hcm.userVotes.has(id);
-    return _hcmPillHTML(id, it.item, isVoted, 'hcm-pill-eats-', `toggleItemVote('${id}', true)`);
-  }).join('');
-
-  if (!dbHTML && Object.keys(sessionItems).length === 0) {
-    container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">No items listed yet.</p>';
-    return;
-  }
-
-  container.innerHTML = dbHTML;
-
-  Object.entries(sessionItems).forEach(([tid, s]) => {
-    const el = _hcmMakePendingPillEl(tid, s.val);
-    if (s.selected === false) {
-      el.style.background = 'white';
-      el.querySelector('p').style.color = 'black';
-      const tail = el.querySelector('span');
-      if (tail) tail.style.color = 'rgba(0,0,0,0.4)';
-    }
-    container.appendChild(el);
-  });
+// ── Pill builder ──────────────────────────────────────────────────────
+// Returns an HTML string for a DB item pill.
+// black = voted/selected, white = unvoted/unselected
+// Pending/needs_review (item 2.1, May 6): always render as black/white selected
+// styling with ✦ tail, non-clickable. No onclick attribute. Other users never
+// see these (item 1.2 backend filter scopes them to the submitter via
+// session_id_submitted = p_session_id).
+function _hcmPillHTML(id, itemText, isVoted, pillIdPrefix, onclickStr, status) {
+  const isPending = status === 'pending' || status === 'needs_review';
+  const bg = (isPending || isVoted) ? 'black' : 'white';
+  const fg = (isPending || isVoted) ? 'white' : 'black';
+  const cursor = isPending ? 'default' : 'pointer';
+  const onclickAttr = isPending ? '' : `onclick="${onclickStr}"`;
+  const tail = isPending
+    ? `<span style="font-size:9px;color:rgba(255,255,255,0.5);flex-shrink:0;">✦</span>`
+    : '';
+  // Bug A fix (May 5): display itemText as-is. Previous inline toTitleCase
+  // mangled brand names and acronyms (BBQ → Bbq, McDonald's → Mcdonald'S,
+  // IPA → Ipa). The moderation pipeline already produces canonically-cased
+  // labels via GPT casing patches + preferredCanonicalLabel, so callers
+  // pass labels that should display verbatim.
+  const disp = itemText;
+  return `<div id="${pillIdPrefix}${id}" ${onclickAttr}
+    style="padding:8px 16px;border-radius:20px;border:1px solid black;background:${bg};cursor:${cursor};transition:all 0.15s;display:flex;align-items:center;gap:5px;">
+    <p class="fi" style="font-size:11px;font-weight:600;color:${fg};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>${tail}
+  </div>`;
 }
 
-// ── Render: hh/locals ─────────────────────────────────────────────────
-function _hcmRenderFavs() {
-  const container = document.getElementById('hcm-item-pills-favs');
-  if (!container) return;
+// Returns a DOM element for a session (pending/needs_review) item pill.
+// In-session: always black/white/tail while modal is open.
+// On reopen: restored from hcm.session as black/white/tail (pending+selected state).
+function _hcmMakePendingPillEl(tempId, val) {
+  const el = document.createElement('div');
+  el.id = `hcm-sess-${tempId}`;
+  el.style.cssText = 'padding:8px 16px;border-radius:20px;border:1px solid black;background:black;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;';
+  el.innerHTML = `<p class="fi" style="font-size:11px;font-weight:600;color:white;letter-spacing:0.5px;white-space:nowrap;">${val}</p><span style="font-size:9px;color:rgba(255,255,255,0.5);flex-shrink:0;">✦</span>`;
+  return el;
+}
 
-  const sk = `${currentRestaurant?.id}:${hcm.mode}`;
-  const sessionItems = hcm.session[sk] || {};
+// ── Item ordering helpers (item 2.2 step B, May 13) ───────────────────
+// Used by the unified _hcmRender to partition dbItems into render groups
+// per behavior family. Sort within groups is weighted_score desc.
+// Order is computed at modal-open / render time only — does NOT live-reshuffle
+// during the modal session (user votes update individual pill state, not
+// position).
+//
+// Note: today this uses live weighted_score. Future work (see §8) will
+// replace the top-3 partition with a daily-stable snapshot at midnight.
 
-  const dbHTML = hcm.dbItems.map(it => {
-    const id = it.item_id || it.id;
-    const isVoted = hcm.userVotes.has(id);
-    return _hcmPillHTML(id, it.item, isVoted, 'hcm-pill-favs-', `toggleItemVote('${id}', false, true)`);
-  }).join('');
+// Selection modes (carbs/coffee/sweets): top 3 public-voted, then user-
+// selected-not-in-top-3, then remaining. Personal selection does NOT
+// override the public top 3.
+function _hcmOrderedItemsForSelection(items, voted) {
+  const sorted = [...items].sort((a, b) =>
+    (b.weighted_score || 0) - (a.weighted_score || 0)
+  );
+  const top3 = sorted.slice(0, 3);
+  const rest = sorted.slice(3);
+  const userSelectedNotTop3 = rest.filter(it => voted.has(it.item_id || it.id));
+  const others              = rest.filter(it => !voted.has(it.item_id || it.id));
+  return [...top3, ...userSelectedNotTop3, ...others];
+}
 
-  if (!dbHTML && Object.keys(sessionItems).length === 0) {
-    container.innerHTML = '<p class="fi" style="font-size:11px;color:#888;letter-spacing:0.5px;">Nothing tagged yet.</p>';
-    return;
-  }
-
-  container.innerHTML = dbHTML;
-
-  Object.entries(sessionItems).forEach(([tid, s]) => {
-    const el = _hcmMakePendingPillEl(tid, s.val);
-    if (s.selected === false) {
-      el.style.background = 'white';
-      el.querySelector('p').style.color = 'black';
-      const tail = el.querySelector('span');
-      if (tail) tail.style.color = 'rgba(0,0,0,0.4)';
-    }
-    container.appendChild(el);
-  });
+// Vote modes (eats/hh/locals): selected items first, unselected follow.
+function _hcmOrderedItemsForVote(items, voted) {
+  const sorted = [...items].sort((a, b) =>
+    (b.weighted_score || 0) - (a.weighted_score || 0)
+  );
+  const selected   = sorted.filter(it => voted.has(it.item_id || it.id));
+  const unselected = sorted.filter(it => !voted.has(it.item_id || it.id));
+  return [...selected, ...unselected];
 }
 
 // ── Cap sync (coffee/sweets/carbs only) ───────────────────────────────
@@ -2392,11 +2451,12 @@ function _hcmSyncCap() {
 }
 
 // ── Toggle vote ───────────────────────────────────────────────────────
-async function toggleItemVote(itemId, isEats, isFavs) {
+async function toggleItemVote(itemId) {
   if (!currentRestaurant || !supabaseReady()) return;
   const isVoted = hcm.userVotes.has(itemId);
-  const pillPrefix = isFavs ? 'hcm-pill-favs-' : isEats ? 'hcm-pill-eats-' : 'hcm-pill-';
-  const pill = document.getElementById(`${pillPrefix}${itemId}`);
+  // Unified pill prefix (May 29): items are mode-scoped, so hcm-pill-${id}
+  // is unique document-wide. No per-mode prefix mapping needed.
+  const pill = document.getElementById(`hcm-pill-${itemId}`);
 
   if (isVoted) {
     // Deselect
@@ -2404,17 +2464,54 @@ async function toggleItemVote(itemId, isEats, isFavs) {
     hcm.selOrder = hcm.selOrder.filter(id => id !== itemId);
     if (pill) { pill.style.background = 'white'; pill.querySelector('p').style.color = 'black'; }
   } else {
-    // Select — auto-deselect oldest if at cap in selection mode
+    // Select — at cap: route through replace_oldest_item_selection (boxes model).
+    // Server retargets the oldest slot atomically. No race, no visible stutter.
     if (hcm.isSelection && hcm.userVotes.size >= 3) {
       const oldestId = hcm.selOrder[0];
-      if (oldestId) {
-        hcm.userVotes.delete(oldestId);
-        hcm.selOrder.shift();
-        const oldPill = document.getElementById(`hcm-pill-${oldestId}`);
-        if (oldPill) { oldPill.style.background = 'white'; oldPill.querySelector('p').style.color = 'black'; }
-        // Persist deselect to DB
-        sb.rpc('remove_item_vote', { p_item_id: oldestId, p_session_id: SESSION_ID }).catch(() => {});
+      if (!oldestId) {
+        // Defensive — shouldn't happen if state is consistent
+        return;
       }
+      // Optimistic UI: both pills update simultaneously (no awaited gap)
+      hcm.userVotes.delete(oldestId);
+      hcm.selOrder.shift();
+      const oldPill = document.getElementById(`hcm-pill-${oldestId}`);
+      if (oldPill) { oldPill.style.background = 'white'; oldPill.querySelector('p').style.color = 'black'; }
+      hcm.userVotes.add(itemId);
+      hcm.selOrder.push(itemId);
+      if (pill) { pill.style.background = 'black'; pill.querySelector('p').style.color = 'white'; }
+      _hcmSyncCap();
+
+      // Single atomic call — UPDATE-based slot retarget on the server.
+      // Rate limit enforced server-side via shared _enforce_item_vote_rate_limit.
+      try {
+        const res = await sb.rpc('replace_oldest_item_selection', {
+          p_restaurant_id: currentRestaurant.id,
+          p_mode:          hcm.mode,
+          p_new_item_id:   itemId,
+          p_session_id:    SESSION_ID,
+        });
+        if (res && !res.ok) {
+          // Revert both optimistic updates
+          hcm.userVotes.add(oldestId);
+          hcm.selOrder.unshift(oldestId);
+          hcm.userVotes.delete(itemId);
+          hcm.selOrder = hcm.selOrder.filter(id => id !== itemId);
+          if (oldPill) { oldPill.style.background = 'black'; oldPill.querySelector('p').style.color = 'white'; }
+          if (pill) { pill.style.background = 'white'; pill.querySelector('p').style.color = 'black'; }
+          _hcmSyncCap();
+          if (res.error === 'ITEM_VOTE_RATE_LIMIT_EXCEEDED') {
+            _showVoteToast('Daily limit reached');
+          } else {
+            _showVoteToast('Could not update selection');
+          }
+        }
+        // 'already_voted' returns ok:true with no DB change — optimistic UI
+        // already matches reality (new pill shown selected). No revert needed.
+      } catch (err) {
+        console.warn('replace_oldest_item_selection failed:', err.message);
+      }
+      return;  // Skip the normal submit_item_vote path below
     }
     hcm.userVotes.add(itemId);
     hcm.selOrder.push(itemId);
@@ -2434,7 +2531,7 @@ async function toggleItemVote(itemId, isEats, isFavs) {
         p_session_id:    SESSION_ID,
       });
     }
-    if (res && res.error) {
+    if (res && !res.ok) {
       // Revert
       if (isVoted) {
         hcm.userVotes.add(itemId);
@@ -2446,12 +2543,39 @@ async function toggleItemVote(itemId, isEats, isFavs) {
         if (pill) { pill.style.background = 'white'; pill.querySelector('p').style.color = 'black'; }
       }
       if (hcm.isSelection) _hcmSyncCap();
-      if (res.error === 'ITEM_VOTE_RATE_LIMIT_EXCEEDED') _showVoteToast('Daily vote limit reached');
-      if (res.error === 'ITEM_CAP_EXCEEDED') _showVoteToast('Max 3 favourites per restaurant');
+      if (res.error === 'ITEM_VOTE_RATE_LIMIT_EXCEEDED') _showVoteToast('Daily limit reached');
+      if (res.error === 'ITEM_CAP_EXCEEDED') _showVoteToast('Max 3 selections');
     }
   } catch (err) {
     console.warn('toggleItemVote failed:', err.message);
   }
+}
+
+// ── Moderation fetch with retry (L1) ──────────────────────────────────
+// Wraps the moderate-content edge function call with transient-error
+// retry. Safe because moderate-content is idempotent on item_id.
+// Retries on: network throws and 5xx HTTP responses.
+// Does NOT retry: 2xx success, 4xx validation errors (both terminal).
+// Backoff: immediate, then 1s, then 3s. Max 3 attempts.
+// On exhaustion: throws lastError; caller's catch block applies E4
+// preservation (pill stays visible, toast shown).
+async function _moderationFetchWithRetry(url, options) {
+  const delays = [0, 1000, 3000];
+  let lastError = null;
+  for (let i = 0; i < delays.length; i++) {
+    if (delays[i] > 0) await new Promise(r => setTimeout(r, delays[i]));
+    try {
+      const res = await fetch(url, options);
+      // 2xx or 4xx — terminal. Caller handles both via existing logic.
+      if (res.status < 500) return res;
+      // 5xx — transient, retry
+      lastError = new Error(`HTTP ${res.status}`);
+    } catch (err) {
+      // Network throw — transient, retry
+      lastError = err;
+    }
+  }
+  throw lastError || new Error('moderation fetch failed after retries');
 }
 
 // ── Add item ──────────────────────────────────────────────────────────
@@ -2473,16 +2597,14 @@ async function addFeatureItemCandidate(suffix) {
   const sessionCount = Object.keys(sessionItems).length;
   if (sessionCount >= 5) {
     input.value = '';
-    input.placeholder = 'max items reached';
-    setTimeout(() => { input.placeholder = 'type an item...'; }, 2000);
+    _showVoteToast('Weekly limit reached');
     return;
   }
 
   // ── Gate 2: bad words ─────────────────────────────────────────────────
   if (!_vibeIsClean(val)) {
     input.value = '';
-    input.placeholder = 'keep it clean';
-    setTimeout(() => { input.placeholder = 'type an item...'; }, 2000);
+    _showVoteToast('Keep it clean');
     return;
   }
 
@@ -2490,16 +2612,38 @@ async function addFeatureItemCandidate(suffix) {
   const norm = s => s.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/ +/g, ' ').trim();
   const valNorm = norm(val);
 
-  if (hcm.dbItems.some(it => norm(it.item) === valNorm)) {
+  // Item 2.2 (May 13): when a typed item matches an existing dbItem, apply
+  // the same auto-select behavior as the RPC ALREADY_EXISTS handler below
+  // (lines ~2524). Otherwise the UX would differ based on whether the dup
+  // was caught client-side vs server-side — invisible to the user.
+  const matchingDbItem = hcm.dbItems.find(it => norm(it.item) === valNorm);
+  if (matchingDbItem) {
     input.value = '';
-    input.placeholder = 'already on the list';
-    setTimeout(() => { input.placeholder = 'type an item...'; }, 2000);
+    const existingId = matchingDbItem.item_id;
+    const existingStatus = matchingDbItem.status;
+    let toastText;
+
+    if (existingStatus === 'approved' && existingId) {
+      if (!hcm.userVotes.has(existingId)) {
+        // Auto-select: toggleItemVote handles cap-deselect, DB vote, DOM update.
+        // SILENT — the pill turning selected IS the feedback; no toast.
+        await toggleItemVote(existingId);
+        return;
+      } else {
+        toastText = 'Already selected';
+      }
+    } else if (existingStatus === 'pending' || existingStatus === 'needs_review') {
+      toastText = 'Already submitted, awaiting review';
+    } else {
+      toastText = 'Already added';
+    }
+
+    _showVoteToast(toastText);
     return;
   }
   if (Object.values(sessionItems).some(s => norm(s.val) === valNorm)) {
     input.value = '';
-    input.placeholder = 'already added';
-    setTimeout(() => { input.placeholder = 'type an item...'; }, 2000);
+    _showVoteToast('Already added');
     return;
   }
 
@@ -2536,10 +2680,36 @@ async function addFeatureItemCandidate(suffix) {
       hcm.inFlight--;
 
       if (errCode === 'ALREADY_EXISTS') {
-        // Item in DB already — remove session entry, show feedback
+        // Item already in DB. Per item 1.1 response shape:
+        //   { ok, error, action, id, item, canonical_text, status }
+        // Item 2.2 (May 13): auto-select approved items via toggleItemVote.
+        // For pending/needs_review items, the pill is already visible with
+        // ✦ tail (per item 1.2) — just inform the user.
         delete hcm.session[sk][tempId];
         _hcmRender();
-        if (input) { input.placeholder = 'already on the list'; setTimeout(() => { input.placeholder = 'type an item...'; }, 3000); }
+
+        const existingId = rpcResult?.id;
+        const existingStatus = rpcResult?.status;
+        let toastText;
+
+        if (existingStatus === 'approved' && existingId) {
+          if (!hcm.userVotes.has(existingId)) {
+            // Auto-select: toggleItemVote handles cap-deselect, DB vote, DOM update.
+            // SILENT — the pill turning selected IS the feedback; no toast.
+            await toggleItemVote(existingId);
+            if (addBtn) { addBtn.style.background = 'black'; addBtn.style.pointerEvents = 'auto'; }
+            if (input) input.disabled = false;
+            return;
+          } else {
+            toastText = 'Already selected';
+          }
+        } else if (existingStatus === 'pending' || existingStatus === 'needs_review') {
+          toastText = 'Already submitted, awaiting review';
+        } else {
+          toastText = 'Already added';
+        }
+
+        _showVoteToast(toastText);
         if (addBtn) { addBtn.style.background = 'black'; addBtn.style.pointerEvents = 'auto'; }
         if (input) input.disabled = false;
         return;
@@ -2547,7 +2717,7 @@ async function addFeatureItemCandidate(suffix) {
       if (errCode === 'CANDIDATE_RATE_LIMIT_EXCEEDED') {
         delete hcm.session[sk][tempId];
         _hcmRender();
-        _showVoteToast('Item limit reached for this week');
+        _showVoteToast('Weekly limit reached');
         if (addBtn) { addBtn.style.background = 'black'; addBtn.style.pointerEvents = 'auto'; }
         if (input) input.disabled = false;
         return;
@@ -2555,7 +2725,7 @@ async function addFeatureItemCandidate(suffix) {
       // Other RPC error
       delete hcm.session[sk][tempId];
       _hcmRender();
-      if (input) { input.placeholder = 'try again later'; setTimeout(() => { input.placeholder = 'type an item...'; }, 3000); }
+      _showVoteToast('Try again later');
       if (addBtn) { addBtn.style.background = 'black'; addBtn.style.pointerEvents = 'auto'; }
       if (input) input.disabled = false;
       return;
@@ -2568,13 +2738,25 @@ async function addFeatureItemCandidate(suffix) {
     hcm.session[sk][tempId].itemId = itemId;
 
     // ── Moderate ──────────────────────────────────────────────────────
-    const modRes = await fetch(`${SUPABASE_URL}/functions/v1/moderate-content`, {
+    const modRes = await _moderationFetchWithRetry(`${SUPABASE_URL}/functions/v1/moderate-content`, {
       method: 'POST',
-      headers: _sbHeaders({ 'Content-Type': 'application/json' }),
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + _authToken },
       body: JSON.stringify({ content_type: 'feature_item', item_id: itemId }),
     });
     const modData = await modRes.json();
     hcm.inFlight--;
+
+    // Option E4: moderation API errored or returned malformed response.
+    // The DB row exists (itemId was assigned above) and will remain in
+    // pending status. Preserve the pending pill so the user sees their
+    // submission is still in the system; toast acknowledges the hiccup.
+    // On modal reopen, get_item_scores returns the actual DB state and
+    // L2 refire retries moderation.
+    if (!modRes.ok || !modData?.status) {
+      _showVoteToast('Submission received, having trouble checking');
+      console.warn('moderate-content non-OK response:', modRes.status, modData);
+      return;
+    }
 
     hcm.session[sk][tempId].status = modData.status;
 
@@ -2591,22 +2773,41 @@ async function addFeatureItemCandidate(suffix) {
       }).catch(() => {});
       // No live re-render — pill stays visible as pending until modal reopen
     } else if (modData.status === 'rejected') {
-      // Remove from session — will be gone on reopen
-      delete hcm.session[sk][tempId];
-      const el = document.getElementById(`hcm-sess-${tempId}`);
-      if (el) el.remove();
-      const _dupMsg = (modData.reason && String(modData.reason).startsWith('duplicate_of:'))
-        ? 'already on the list'
-        : "doesn't fit this spot";
-      if (input) { input.placeholder = _dupMsg; setTimeout(() => { input.placeholder = 'type an item...'; }, 3000); }
+      // Frontend rule (locked): modal NEVER live-updates from backend
+      // moderation, including rejections. The pending pill (✦) stays
+      // visible for ALL outcomes — duplicate_of, real rejection, etc.
+      // Session entry status is already 'rejected' (set above before
+      // this branch). Reconciliation in openHappyCardModal drops the
+      // session entry on next modal open; the user sees the resolved
+      // state then (matched approved item with auto-promoted vote for
+      // duplicate_of; nothing for real rejection).
+      //
+      // No live messages of any kind. Rationale in ARCHITECTURE.md
+      // §3.12: live messages tied to submitted items go stale across
+      // sessions; modal state = backend state at modal-open time.
     }
     // needs_review: leave pill as-is (pending style) — no live change
 
   } catch (err) {
     hcm.inFlight--;
-    delete hcm.session[sk]?.[tempId];
-    _hcmRender();
-    if (input) { input.placeholder = 'try again later'; setTimeout(() => { input.placeholder = 'type an item...'; }, 3000); }
+    // Option E4: distinguish pre-RPC errors (no DB row was created —
+    // safe to remove the pill) from post-RPC errors (DB row exists in
+    // pending state — preserve pill + toast so the user knows the
+    // submission was received). The session entry's `itemId` is set
+    // immediately after the candidate INSERT succeeds (see above);
+    // its presence is the signal that the DB row exists.
+    const sessionEntry = hcm.session[sk]?.[tempId];
+    if (sessionEntry?.itemId) {
+      // DB row exists — preserve pill, toast. Input/addBtn state stays
+      // as-is because the session count is unchanged. L2 refire on next
+      // modal open retries moderation.
+      _showVoteToast('Submission received, having trouble checking');
+    } else {
+      // No DB row — safe to remove pill.
+      delete hcm.session[sk]?.[tempId];
+      _hcmRender();
+      _showVoteToast('Try again later');
+    }
     console.warn('addFeatureItemCandidate failed:', err.message);
   }
 }
@@ -2674,42 +2875,6 @@ function openRestaurantWebsite() {
   if (url) window.open(url, '_blank');
 }
 
-function _updateNotifyRow() {
-  const row = document.getElementById('hcm-notify-row');
-  if (!row) return;
-  const sub = document.getElementById('hcm-notify-sub');
-  if (currentRestaurant && hcmMenuReported[currentRestaurant.id]) {
-    row.style.opacity = '0.5';
-    row.style.cursor  = 'default';
-    row.style.pointerEvents = 'none';
-    row.querySelector('p').textContent = "Thanks — we'll take a look";
-    if (sub) sub.textContent = 'Report received';
-  } else {
-    row.style.opacity = '1';
-    row.style.cursor  = 'pointer';
-    row.style.pointerEvents = 'auto';
-    row.querySelector('p').textContent = 'Something new? Notify us';
-    if (sub) sub.textContent = 'Let us know if the menu has changed';
-  }
-}
-
-async function submitMenuReport() {
-  if (!currentRestaurant || hcmMenuReported[currentRestaurant.id] || !supabaseReady()) return;
-  try {
-    const res = await sb.rpc('submit_menu_report', {
-      p_restaurant_id: currentRestaurant.id,
-      p_session_id:    SESSION_ID,
-    });
-    if (res?.ok) {
-      hcmMenuReported[currentRestaurant.id] = true;
-      _updateNotifyRow();
-    }
-  } catch (err) {
-    console.warn('submitMenuReport failed:', err.message);
-  }
-}
-
-
 function closeReminderModal() {
   const m = document.getElementById('reminder-modal');
   const s = document.getElementById('reminder-modal-sheet');
@@ -2738,10 +2903,10 @@ function setReminderBefore(minsBefore) {
   closeReminderModal();
   const label = targetStr ? `at ${targetStr}` : `${minsBefore} min from now`;
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:114px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
+  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = `REMINDER SET — ${label.toUpperCase()}`;
   document.querySelector('.phone').appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
+  setTimeout(() => toast.remove(), 2500);
 }
 
 
@@ -2753,10 +2918,10 @@ function setReminderAtTime() {
   const ap = parseInt(hh) >= 12 ? 'pm' : 'am';
   closeReminderModal();
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:114px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
+  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = `REMINDER SET — ${h12}:${mm} ${ap.toUpperCase()}`;
   document.querySelector('.phone').appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
+  setTimeout(() => toast.remove(), 2500);
 }
 
 function setReminderWhen(when) {
@@ -2772,10 +2937,10 @@ function setReminderWhen(when) {
   console.log(`Reminder: ${label} for ${currentRestaurant.name}`);
   // Lightweight toast confirmation
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:114px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
+  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = `REMINDER SET — ${label.toUpperCase()}`;
   document.querySelector('.phone').appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
+  setTimeout(() => toast.remove(), 2500);
 }
 
 function reminderSaveForLater() {
@@ -2790,10 +2955,10 @@ function reminderSaveForLater() {
     console.log('save (from reminder):', { restaurant_id });
   }
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:114px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
+  toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = 'SAVED TO FAVOURITES';
   document.querySelector('.phone').appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
+  setTimeout(() => toast.remove(), 2500);
 }
 
 
@@ -2898,7 +3063,11 @@ function p3WalkinToggle(mode) {
   const repEl = document.getElementById('p3-walkin-reports');
   if (repEl) {
     if (_slotStats) {
-      const wCount = _slotStats.total_walkin_count ?? _slotStats.walkin_family_count ?? 0;
+      const wCount = _slotStats.mode === 'reso'
+        ? (_slotStats.reso_leadtime_count ?? 0)
+        : (_slotStats.walkin_family_count != null
+            ? _slotStats.walkin_family_count
+            : (() => { const w=(_slotStats.walkin_weight||0)+(_slotStats.reso_rec_weight||0); return w>0?Math.max(1,Math.round(w/0.6)):0; })());
       repEl.textContent = wCount + ' reports';
     } else {
       repEl.textContent = '0 reports';
@@ -2924,7 +3093,6 @@ function p3WalkinToggle(mode) {
 const REPORT_CHOICE_KEY = 'nomi_report_choices';
 const NOMI_VOTE_KEY    = 'nomi_vote_state';   // permanent, no TTL
 const NOMI_VIBE_KEY    = 'nomi_vibe_state';   // 3-day TTL per restaurant
-const NOMI_ITEM_SEL_KEY = 'nomi_item_sel';    // 3-day TTL — item selections per restaurant
 const VIBE_TTL_MS      = 3 * 24 * 60 * 60 * 1000;
 
 // Save vibe selection state (off-vibes + add-vibes) to localStorage
@@ -2947,25 +3115,6 @@ function _getVibeState(restaurantId) {
     if (!entry) return null;
     if (Date.now() - entry.ts > VIBE_TTL_MS) return null;  // expired
     return entry;
-  } catch { return null; }
-}
-
-// ── Item selection localStorage — 3-day TTL ─────────────────────────
-function _saveItemSelections(restaurantId) {
-  try {
-    const state = JSON.parse(localStorage.getItem(NOMI_ITEM_SEL_KEY) || '{}');
-    state[restaurantId] = { ids: [...hcm.userVotes], ts: Date.now() };
-    localStorage.setItem(NOMI_ITEM_SEL_KEY, JSON.stringify(state));
-  } catch {}
-}
-
-function _loadItemSelections(restaurantId) {
-  try {
-    const state = JSON.parse(localStorage.getItem(NOMI_ITEM_SEL_KEY) || '{}');
-    const entry = state[restaurantId];
-    if (!entry) return null;
-    if (Date.now() - entry.ts > VIBE_TTL_MS) return null;  // expired
-    return new Set(entry.ids || []);
   } catch { return null; }
 }
 
@@ -3368,7 +3517,11 @@ async function loadReportStats(restaurantId, mealPeriod, dayType) {
           p3WalkinToggle(_visWMeal);
           const repEl = document.getElementById('p3-walkin-reports');
           if (repEl) {
-            const wCount = stats.total_walkin_count ?? stats.walkin_family_count ?? 0;
+            const wCount = stats.mode === 'reso'
+              ? (stats.reso_leadtime_count ?? 0)
+              : (stats.walkin_family_count != null
+                  ? stats.walkin_family_count
+                  : (() => { const w=(stats.walkin_weight||0)+(stats.reso_rec_weight||0); return w>0?Math.max(1,Math.round(w/0.6)):0; })());
             repEl.textContent = wCount + ' reports';
           }
         }
@@ -3380,7 +3533,9 @@ async function loadReportStats(restaurantId, mealPeriod, dayType) {
         p3ParkingToggle(_visPMeal);
         const parkRepEl = document.getElementById('p3-parking-reports');
         if (parkRepEl && stats.parking_weight != null) {
-          const pCount = stats.total_parking_count ?? stats.parking_count ?? 0;
+          const pCount = stats.parking_count != null
+            ? stats.parking_count
+            : (stats.parking_weight > 0 ? Math.max(1, Math.round(stats.parking_weight / 0.6)) : 0);
           parkRepEl.textContent = pCount + ' reports';
         }
       }
@@ -3568,8 +3723,8 @@ async function submitWaitReport() {
     const resData = Array.isArray(res) ? res[0] : res;
     if (resData && !resData.ok) {
       console.warn('[NomiTabl] submit failed:', resData.error);
-      if (resData.error === 'WALKIN_CHANGE_LIMIT_EXCEEDED') _showVoteToast('Walk-in report limit reached for today');
-      else if (resData.error === 'RESTAURANT_LIMIT_EXCEEDED') _showVoteToast('3 restaurant limit reached for today');
+      if (resData.error === 'WALKIN_CHANGE_LIMIT_EXCEEDED') _showVoteToast('Daily limit reached');
+      else if (resData.error === 'RESTAURANT_LIMIT_EXCEEDED') _showVoteToast('Daily limit reached');
     } else {
       _saveReportChoice(currentRestaurant.id, reportType, mealPeriod, dayType, bucket);
       // Refresh both slots so toggle always shows correct data regardless of current pill position
@@ -3831,9 +3986,9 @@ async function submitParkingReport() {
     const results = await Promise.all(calls);
     const failed = results.find(r => r && !r.ok);
     if (failed && failed.error === 'PARKING_CHANGE_LIMIT_EXCEEDED') {
-      _showVoteToast('Parking report limit reached for today');
+      _showVoteToast('Daily limit reached');
     } else if (failed && failed.error === 'RESTAURANT_LIMIT_EXCEEDED') {
-      _showVoteToast('3 restaurant limit reached for today');
+      _showVoteToast('Daily limit reached');
     } else {
       if (timeBucket) _saveReportChoice(currentRestaurant.id, 'parking_time', mealPeriod, dayType, timeBucket);
       if (capturedParkingType) _saveReportChoice(currentRestaurant.id, 'parking_type', mealPeriod, dayType, capturedParkingType);
@@ -3856,90 +4011,10 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   if (row) row.style.display = isIOS ? 'flex' : 'none';
 })();
 
-// Directions actions config — data-driven, extensible by city later
-// Each action: id, label, condition(r), buildUrl(destStr, r)
-// condition: returns true if action should render for this restaurant/context
-// buildUrl:  constructs the deep link, given already-encoded destStr + raw r
-const DIRECTION_ACTIONS = [
-  {
-    id: 'uber',
-    label: 'Ride with Uber',
-    condition: () => true,
-    buildUrl: (dest, r) => {
-      // Uber universal link format: https://m.uber.com/looking?drop[0]={json}
-      // Uses lat/lng + address for reliable destination pickup
-      if (r.lat != null && r.lng != null) {
-        const drop = {
-          latitude: r.lat,
-          longitude: r.lng,
-          addressLine1: r.name || '',
-          addressLine2: r.address || '',
-        };
-        return `https://m.uber.com/looking?drop[0]=${encodeURIComponent(JSON.stringify(drop))}`;
-      }
-      // Fallback to address-only if coords missing
-      const name = encodeURIComponent(r.name || '');
-      return `https://m.uber.com/ul/?action=setDestination&dropoff[nickname]=${name}&dropoff[formatted_address]=${dest}`;
-    },
-  },
-  {
-    id: 'lyft',
-    label: 'Ride with Lyft',
-    condition: () => true,
-    buildUrl: (dest, r) => {
-      const name = encodeURIComponent(r.name || '');
-      return `https://www.lyft.com/ride?destination[address]=${dest}&destination[name]=${name}`;
-    },
-  },
-  {
-    id: 'evo',
-    label: 'Find an Evo',
-    // BC-only service — show when restaurant address looks like it's in BC / Vancouver area
-    condition: (r) => {
-      const a = (r && r.address) ? r.address.toLowerCase() : '';
-      return a.includes('vancouver') || a.includes(' bc') || a.includes(', bc') || a.endsWith(' bc');
-    },
-    buildUrl: () => 'https://evo.ca',
-  },
-  {
-    id: 'google',
-    label: 'Open in Google Maps',
-    condition: () => true,
-    buildUrl: (dest) => `https://www.google.com/maps/dir/?api=1&destination=${dest}`,
-  },
-  {
-    id: 'apple',
-    label: 'Open in Apple Maps',
-    condition: () => isIOS,
-    buildUrl: (dest) => `https://maps.apple.com/?daddr=${dest}`,
-  },
-];
-
-// Build destination string — prefers full address, falls back to name only.
-// Never returns `undefined ...` or other broken strings.
-function _buildDirectionsDest(r) {
-  if (!r) return '';
-  const parts = [];
-  if (r.name)    parts.push(r.name);
-  if (r.address) parts.push(r.address);
-  if (!parts.length) return '';
-  return encodeURIComponent(parts.join(' '));
-}
-
 function openDirectionsModal() {
-  const optsEl = document.getElementById('directions-options');
-  if (optsEl && currentRestaurant) {
-    const arrow = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    const rows = DIRECTION_ACTIONS
-      .filter(a => a.condition(currentRestaurant))
-      .map(a =>
-        `<div onclick="openDirection('${a.id}')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-          <p class="fi" style="font-size:13px;font-weight:600;color:black;">${a.label}</p>
-          ${arrow}
-        </div>`
-      );
-    optsEl.innerHTML = rows.join('');
-  }
+  // Re-check in case DOM wasn't ready at parse time
+  const row = document.getElementById('apple-maps-row');
+  if (row) row.style.display = isIOS ? 'flex' : 'none';
   const m = document.getElementById('directions-modal');
   const s = document.getElementById('directions-modal-sheet');
   m.style.display = 'flex';
@@ -3954,16 +4029,19 @@ function closeDirectionsModal() {
   setTimeout(() => { m.style.display = 'none'; }, 400);
 }
 
-function openDirection(actionId) {
-  if (!currentRestaurant) { closeDirectionsModal(); return; }
-  const r    = currentRestaurant;
-  const dest = _buildDirectionsDest(r);
-  // Guard: if we have no destination info, fall back to plain Google Maps home
-  const action = DIRECTION_ACTIONS.find(a => a.id === actionId);
-  if (!action) { closeDirectionsModal(); return; }
-  const url = action.buildUrl(dest, r);
+function openDirection(platform) {
+  if (!currentRestaurant) return;
+  const addr = encodeURIComponent(currentRestaurant.address + ' Vancouver BC');
+  const name = encodeURIComponent(currentRestaurant.name);
+  const urls = {
+    uber:   `https://m.uber.com/ul/?action=setPickup&dropoff[nickname]=${name}&dropoff[formatted_address]=${addr}`,
+    lyft:   `https://www.lyft.com/ride?destination[address]=${addr}&destination[name]=${name}`,
+    evo:    `https://www.evocarshare.com`,
+    google: `https://www.google.com/maps/dir/?api=1&destination=${addr}`,
+    apple:  `https://maps.apple.com/?daddr=${addr}`
+  };
   closeDirectionsModal();
-  if (url) window.open(url, '_blank');
+  window.open(urls[platform], '_blank');
 }
 
 // Transport times — geolocation + distance estimation
@@ -4099,7 +4177,8 @@ async function initCommunityQuotes(r) {
       const url = `${SUPABASE_URL}/rest/v1/restaurant_quotes?restaurant_id=eq.${encodeURIComponent(r.id)}&status=eq.approved&select=quote,moderation_score,created_at&order=moderation_score.desc.nullslast`;
       const res = await fetch(url, {
         headers: {
-          ..._sbHeaders(),
+          'apikey': SUPABASE_PUBLISHABLE_KEY,
+          'Authorization': 'Bearer ' + _authToken,
         }
       });
       const rows = res.ok ? await res.json() : [];
@@ -4206,8 +4285,7 @@ async function submitQuote() {
   // Client-side content filter — same blocklist as vibes
   if (!_vibeIsClean(text)) {
     input.value = '';
-    input.placeholder = 'keep it respectful';
-    setTimeout(() => { input.placeholder = 'e.g. Best hidden patio in Gastown…'; }, 2500);
+    _showVoteToast('Keep it clean');
     return;
   }
 
@@ -4247,14 +4325,14 @@ async function submitQuote() {
     });
     if (res && !res.ok) {
       if (res.error === 'RATE_LIMIT_EXCEEDED') {
-        _showVoteToast('One quote per restaurant per day');
+        _showVoteToast('Daily limit reached');
       } else if (res.error === 'CONTENT_BLOCKED') {
         // Backend rejected content that slipped past frontend filter
         // Remove from local pending and show nudge
         if (pendingQuotes[rid]) {
           pendingQuotes[rid] = pendingQuotes[rid].filter(q => q !== text);
         }
-        _showVoteToast('keep it respectful');
+        _showVoteToast('Keep it clean');
       }
     }
   } catch (err) {
@@ -4776,37 +4854,6 @@ function openResoModal() {
       intel.textContent = `Walk-ins welcome — avg ${mins}–${mins + 8} min wait`;
     }
   }
-
-  // Dynamic action rendering — trust-first, only show actions with verified data
-  const optsEl = document.getElementById('reso-options');
-  if (optsEl && currentRestaurant) {
-    const r = currentRestaurant;
-    const rows = [];
-    const arrow = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="black" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    const mkRow = (action, label) =>
-      `<div onclick="openResoOption('${action}')" style="background:white;border-radius:16px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
-        <p class="fi" style="font-size:13px;font-weight:600;color:black;letter-spacing:0.3px;">${label}</p>
-        ${arrow}
-      </div>`;
-
-    // 1. Verified booking destination
-    if (r.reservation_url) {
-      const m = (r.reservation_method || '').toLowerCase();
-      const label = m === 'resy'       ? 'Book via Resy'
-                  : m === 'opentable'  ? 'Book via OpenTable'
-                  : 'Book with Restaurant';
-      rows.push(mkRow('reserve', label));
-    }
-    // 2. General website
-    if (r.website)              rows.push(mkRow('website', 'Visit Website'));
-    // 3. Phone
-    if (r.phone)                rows.push(mkRow('call',    'Call to Reserve'));
-    // 4. Google fallback — always shown
-    rows.push(mkRow('google', 'Look up on Google'));
-
-    optsEl.innerHTML = rows.join('');
-  }
-
   const m = document.getElementById('reso-modal');
   const s = document.getElementById('reso-modal-sheet');
   m.style.display = 'flex';
@@ -4824,27 +4871,15 @@ function closeResoModal() {
   setTimeout(() => { m.style.display = 'none'; }, 400);
 }
 
-function openResoOption(action) {
-  if (!currentRestaurant) { closeResoModal(); return; }
-  const r = currentRestaurant;
-  const normUrl = u => (u && !/^https?:\/\//i.test(u)) ? 'https://' + u : u;
-  let url = null;
-
-  if (action === 'reserve' && r.reservation_url) {
-    url = normUrl(r.reservation_url);
-  } else if (action === 'website' && r.website) {
-    url = normUrl(r.website);
-  } else if (action === 'call' && r.phone) {
-    closeResoModal();
-    window.location.href = 'tel:' + String(r.phone).replace(/\D/g, '');
-    return;
-  } else if (action === 'google') {
-    const q = encodeURIComponent(`${r.name || ''} ${r.address || ''}`.trim());
-    url = `https://www.google.com/search?q=${q}`;
-  }
-
+function openResoOption(platform) {
+  const name = currentRestaurant ? encodeURIComponent(currentRestaurant.name + ' Vancouver reservation') : 'restaurant+reservation+Vancouver';
+  const urls = {
+    opentable: `https://www.opentable.com/s/?term=${name}`,
+    resy: `https://resy.com/cities/van?query=${name}`,
+    google: `https://www.google.com/search?q=${name}`
+  };
   closeResoModal();
-  if (url) window.open(url, '_blank');
+  window.open(urls[platform], '_blank');
 }
 
 function openVibeModal() {
@@ -5057,7 +5092,7 @@ function populatePage2() {
     </div>`
   ).join('');
 
-  const showAddBtn = allCuisines.length < 3 ? addCuisineBtn : '';
+  const showAddBtn = !getCuisineCapState(allCuisines).maxed ? addCuisineBtn : '';
   cuisineEl.innerHTML = cuisineHTML + specialtyHTML + showAddBtn;
 
   // ── Vibe row ─────────────────────────────────────────────────
@@ -6072,51 +6107,6 @@ function executeSearch(q) {
   updateCtaVisibility(); // CTA stays lit via activeSearchTerm
 }
 
-
-// ── Google Auth ───────────────────────────────────────────────────────────────
-async function signInWithGoogle() {
-  await supabaseClient.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: window.location.href.split('#')[0] },
-  });
-}
-
-async function signOut() {
-  await supabaseClient.auth.signOut();
-}
-
-// Updates both P3 green card identity labels (S1 + S2). Called by onAuthStateChange.
-function updateIdentityCard() {
-  // S1 label sits over the light mint side of the gradient — needs dark text
-  // S2 label sits over the dark green side — white text works
-  var configs = [
-    { id: 'p3s1-identity-label', signedInColor: 'white', signedOutColor: 'white' },
-    { id: 'p3-identity-label',   signedInColor: 'white', signedOutColor: 'white' },
-  ];
-  configs.forEach(function(cfg) {
-    var label = document.getElementById(cfg.id);
-    if (!label) return;
-    if (currentUser) {
-      var name = (currentUser.user_metadata && currentUser.user_metadata.full_name)
-        ? currentUser.user_metadata.full_name
-        : (currentUser.email || 'Signed In');
-      label.textContent = name;
-      label.style.color = cfg.signedInColor;
-    } else {
-      label.textContent = 'Login With Google';
-      label.style.color = cfg.signedOutColor;
-    }
-  });
-}
-
-function handleIdentityTap() {
-  if (currentUser) {
-    if (confirm('Sign out of NomiTabl?')) signOut();
-  } else {
-    signInWithGoogle();
-  }
-}
-
 function doubleTapSave() {
   if (!currentRestaurant) return;
   const restaurant_id = currentRestaurant.id;
@@ -6245,7 +6235,7 @@ async function loadSaves() {
       // Anon: fetch by session_id AND user_id is null (partial index safe)
       const url = `${SUPABASE_URL}/rest/v1/saves?select=restaurant_id&session_id=eq.${encodeURIComponent(SESSION_ID)}&user_id=is.null`;
       const res = await fetch(url, {
-        headers: _sbHeaders()
+        headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY, 'Authorization': 'Bearer ' + _authToken }
       });
       rows = res.ok ? await res.json() : [];
     }
@@ -6266,7 +6256,8 @@ async function _insertSave(restaurant_id) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ..._sbHeaders(),
+        'apikey': SUPABASE_PUBLISHABLE_KEY,
+        'Authorization': 'Bearer ' + _authToken,
         'Prefer': 'resolution=merge-duplicates,return=minimal',
       },
       body: JSON.stringify(body),
@@ -6285,13 +6276,13 @@ async function _deleteSave(restaurant_id) {
   try {
     const identity = _saveIdentity();
     if (identity.user_id) {
-      await sb.from('saves').then(c => c.delete({ restaurant_id, user_id: identity.user_id }));
+      await sb.from('saves').then(c => c.deleteWhere({ restaurant_id, user_id: identity.user_id }));
     } else {
       // Anon: must include user_id=is.null to match partial index correctly
       const url = `${SUPABASE_URL}/rest/v1/saves?restaurant_id=eq.${restaurant_id}&session_id=eq.${encodeURIComponent(SESSION_ID)}&user_id=is.null`;
       await fetch(url, {
         method: 'DELETE',
-        headers: _sbHeaders()
+        headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY, 'Authorization': 'Bearer ' + _authToken }
       });
     }
     return true;
@@ -6617,13 +6608,14 @@ async function fetchSpotSuggestions(query) {
   }
   const limit = _placesCheckLimit();
   if (!limit.allowed) {
+    const box = document.getElementById('add-spot-suggestions');
+    if (box) box.style.display = 'none';
     if (limit.reason === 'daily') {
-      showSpotSuggestionsMessage('Daily search limit reached. Please try again tomorrow.');
+      _showVoteToast('Daily limit reached');
     } else if (limit.reason === 'session') {
-      showSpotSuggestionsMessage('Search limit reached for now. Close and reopen Add a Spot to try again.');
+      _showVoteToast('Search limit reached — reopen Add a Spot to retry');
     } else {
       renderSpotSuggestions([]);
-      if (box) box.style.display = 'none';
     }
     return;
   }
@@ -6665,15 +6657,10 @@ async function fetchSpotSuggestions(query) {
     renderSpotSuggestions(suggestions);
   } catch (e) {
     console.warn('Places autocomplete failed:', e);
-    showSpotSuggestionsMessage('Search is temporarily unavailable.');
+    const box = document.getElementById('add-spot-suggestions');
+    if (box) box.style.display = 'none';
+    _showVoteToast('Search is temporarily unavailable');
   }
-}
-
-function showSpotSuggestionsMessage(message) {
-  const box = document.getElementById('add-spot-suggestions');
-  if (!box) return;
-  box.innerHTML = `<div class="spot-suggestion-message">${message}</div>`;
-  box.style.display = 'block';
 }
 
 function renderSpotSuggestions(suggestions) {
@@ -6791,10 +6778,10 @@ function submitAddSpot() {
   closeAddSpotModal();
   setTimeout(() => {
     const toast = document.createElement('div');
-    toast.style.cssText = 'position:absolute;bottom:114px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;';
+    toast.style.cssText = 'position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-size:12px;letter-spacing:2px;z-index:300;white-space:nowrap;';
     toast.textContent = 'SPOT SUBMITTED — THANKS!';
     document.querySelector('.phone').appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
+    setTimeout(() => toast.remove(), 2500);
   }, 450);
 }
 
@@ -6814,13 +6801,15 @@ let selectedCuisines = [];
 function openCuisineModal() {
   const list = document.getElementById('cuisine-modal-list');
   selectedCuisines = [...activeCuisines];
+  const cap = getCuisineCapState();
   list.innerHTML = Object.entries(CUISINES_BY_CONTINENT).map(([continent, cuisines]) => `
     <div style="width:100%;margin-bottom:4px;">
       <p class="fi" style="font-size:9px;color:#999;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">${continent}</p>
       <div style="display:flex;flex-wrap:wrap;gap:6px;">
         ${cuisines.map(c => {
           const active = selectedCuisines.some(s => s.toLowerCase() === c.toLowerCase());
-          return `<div id="cuisine-pill-${c.replace(/\s/g,'_')}" onclick="toggleCuisinePill('${c}')" style="padding:6px 12px;border-radius:20px;border:1px solid ${active?'black':'#ccc'};cursor:pointer;background:${active?'black':'white'};opacity:1;transition:all 0.15s;">
+          const dimmed = !active && cap.maxed;
+          return `<div id="cuisine-pill-${c.replace(/\s/g,'_')}" onclick="toggleCuisinePill('${c}')" style="padding:6px 12px;border-radius:20px;border:1px solid ${active?'black':(dimmed?'#eee':'#ccc')};cursor:${dimmed?'default':'pointer'};background:${active?'black':'white'};opacity:${dimmed?'0.3':'1'};transition:all 0.15s;">
             <p class="fi" style="font-size:11px;color:${active?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${c}</p>
           </div>`;
         }).join('')}
@@ -6833,6 +6822,17 @@ function openCuisineModal() {
   requestAnimationFrame(() => { m.style.background = 'rgba(0,0,0,0.5)'; s.style.transform = 'translateY(0)'; });
 }
 
+// P2 cuisine cap: total filters (cuisines + specialties) capped at 3.
+// A specialty in the row reduces the cuisines that can fit alongside it.
+// Optional arg: pass a specific cuisine list (e.g. activeCuisines from the
+// P2 row render). Defaults to selectedCuisines (the in-modal staging state).
+function getCuisineCapState(cuisineList) {
+  const list  = cuisineList || selectedCuisines;
+  const limit = 3;
+  const used  = list.length + activeSpecialties.length;
+  return { maxed: used >= limit, remaining: Math.max(0, limit - used) };
+}
+
 function toggleCuisinePill(c) {
   const idx = selectedCuisines.findIndex(s => s.toLowerCase() === c.toLowerCase());
   const el = document.getElementById('cuisine-pill-' + c.replace(/\s/g,'_'));
@@ -6840,12 +6840,12 @@ function toggleCuisinePill(c) {
     selectedCuisines.splice(idx, 1);
     if (el) { el.style.background='white'; el.style.borderColor='#ccc'; el.querySelector('p').style.color='black'; }
   } else {
-    if (selectedCuisines.length >= 3) return;
+    if (getCuisineCapState().maxed) return;
     selectedCuisines.push(c);
     if (el) { el.style.background='black'; el.style.borderColor='black'; el.querySelector('p').style.color='white'; }
   }
   // Grey out unselected pills when maxed, restore when not
-  const maxed = selectedCuisines.length >= 3;
+  const maxed = getCuisineCapState().maxed;
   document.querySelectorAll('[id^="cuisine-pill-"]').forEach(pill => {
     const isChosen = pill.style.background === 'black';
     if (!isChosen) {
@@ -7296,7 +7296,7 @@ async function populatePage3(r) {
   // Clear session item store for previous restaurant — fresh state on new restaurant
   if (currentRestaurant && currentRestaurant.id !== r.id) {
     const prevKey = `${currentRestaurant.id}:${getHappyMode(currentRestaurant)}`;
-    delete hcm.session[prevKey];
+    delete hcmSessionItems[prevKey];
   }
   // Reset ring state for new restaurant — cancel any in-flight animation
   _p3RingLastScore = null;
@@ -7547,34 +7547,20 @@ async function loadVotesForRestaurant(restaurantId) {
   if (!supabaseReady()) return;
   try {
     // Fetch weighted aggregate via RPC
-    // Fetch score + user's own vote. When authenticated, also check by user_id
-    // so auth votes are correctly detected even if anon row is also present.
-    const voteRowPromises = [
-      sb.from('restaurant_votes').then(c => c.selectWhere(
-        { restaurant_id: restaurantId, session_id: SESSION_ID }, 'vote,user_id'
-      )),
-    ];
-    if (currentUser && currentUser.id) {
-      voteRowPromises.push(
-        sb.from('restaurant_votes').then(c => c.selectWhere(
-          { restaurant_id: restaurantId, user_id: currentUser.id }, 'vote,user_id'
-        ))
-      );
-    }
-    const [scoreRows, ...voteRowResults] = await Promise.all([
+    const [scoreRows, sessionRows] = await Promise.all([
       sb.rpc('get_restaurant_vote_score', { p_restaurant_id: restaurantId }),
-      ...voteRowPromises,
+      // Fetch this session's own vote separately
+      sb.from('restaurant_votes').then(c => c.selectWhere(
+        { restaurant_id: restaurantId, session_id: SESSION_ID },
+        'vote'
+      )),
     ]);
 
-    const agg      = Array.isArray(scoreRows) ? scoreRows[0] : scoreRows;
-    const upRaw    = parseInt(agg?.up_raw   || 0);
-    const downRaw  = parseInt(agg?.down_raw || 0);
-    const score    = agg?.score != null ? parseFloat(agg.score) : null;
-    // Prefer auth vote row if available — auth row is most authoritative
-    const allVoteRows = voteRowResults.flat().filter(Boolean);
-    const authRow  = allVoteRows.find(r => r.user_id != null);
-    const anonRow  = allVoteRows.find(r => r.user_id == null);
-    const userVote = (authRow || anonRow)?.vote ?? null;
+    const agg       = Array.isArray(scoreRows) ? scoreRows[0] : scoreRows;
+    const upRaw     = parseInt(agg?.up_raw    || 0);
+    const downRaw   = parseInt(agg?.down_raw  || 0);
+    const score     = agg?.score != null ? parseFloat(agg.score) : null;
+    const userVote  = sessionRows?.length ? sessionRows[0].vote : null;
 
     if (!p3Votes[restaurantId]) {
       p3Votes[restaurantId] = {
@@ -7716,7 +7702,7 @@ async function p3Vote(dir) {
     if (!result.ok) {
       // Handle known errors
       if (result.error === 'VOTE_RATE_LIMIT_EXCEEDED') {
-        _showVoteToast('Daily vote limit reached');
+        _showVoteToast('Daily limit reached');
       } else {
         console.warn('p3Vote RPC error:', result.error);
       }
@@ -7745,22 +7731,35 @@ async function p3Vote(dir) {
   }
 }
 
+// ── Unified feedback toast (May 29) ───────────────────────────────────
+// THE single user-feedback surface. All gates, limits, errors, and
+// notices surface here — white pill, black text, centered on screen.
+// Single-toast policy: a new message replaces any visible one.
+// Placeholder swaps are no longer used for feedback (neutral hints/
+// resets only). See ARCHITECTURE.md §3.12.
 function _showVoteToast(msg) {
+  document.querySelectorAll('.nomi-toast').forEach(t => t.remove());
   const toast = document.createElement('div');
-  toast.style.cssText = 'position:absolute;bottom:114px;left:50%;transform:translateX(-50%);background:black;color:white;padding:10px 20px;border-radius:20px;font-family:Inter,sans-serif;font-weight:300;font-size:12px;letter-spacing:1.4px;z-index:300;white-space:nowrap;pointer-events:none;';
+  toast.className = 'nomi-toast';
+  toast.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;color:black;padding:12px 22px;border-radius:22px;border:1px solid rgba(0,0,0,0.08);box-shadow:0 4px 24px rgba(0,0,0,0.18);font-family:Inter,sans-serif;font-size:12px;letter-spacing:1.5px;z-index:300;white-space:nowrap;pointer-events:none;';
   toast.textContent = msg.toLowerCase();
   document.querySelector('.phone').appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
+  setTimeout(() => toast.remove(), 2500);
 }
 
 // ── P3 dedicated vibe modal state ─────────────────────────────────
 let p3vmOffVibes = new Set();   // current vibes user marked as "off"
 let p3vmAddVibes = new Set();   // vibes picked from "more vibes"
-let p3vmCustomVibes = [];       // custom typed vibes
+let p3vmCustomVibes = [];       // custom typed vibes: [{label, candidateId, slotId}]
+// ── Step-5 ledger state (G1–G7) ──
+let p3vmSlots = [];             // THE source of truth — from get_my_vibe_slots (R1)
+let p3vmCapBlocked = new Set(); // labels the user tapped but the cap refused (recorder)
+let p3vmBatchRef = null;        // uuid per modal open (recorder idempotency)
+let p3vmCaptured = false;       // one capture per open
 
 // ── Vibe state for current restaurant ────────────────────────────────
 // Tracks candidates loaded from Supabase and prior signals this session sent
-let p3vmCandidates = [];       // [{vibe, source}] from restaurant_vibe_candidates
+let p3vmCandidates = [];       // [{vibe, source, status, canonical_vibe}] from get_visible_vibe_candidates RPC
 const p3vmPriorSignals = {};   // { restaurantId: { vibe: 'off'|'support' } }
 
 // Loads fresh vibes, tags, and candidates from Supabase for a restaurant.
@@ -7771,7 +7770,7 @@ async function loadVibesForRestaurant(restaurantId) {
     // Fetch vibes/tags, candidates, and this session's prior signals in parallel
     const [rRows, allCands, signals] = await Promise.all([
       sb.from('restaurants').then(c => c.selectWhere({ id: restaurantId }, 'vibes,tags')),
-      sb.from('restaurant_vibe_candidates').then(c => c.selectWhere({ restaurant_id: restaurantId }, 'vibe,source,session_id_submitted')),
+      sb.rpc('get_visible_vibe_candidates', { p_restaurant_id: restaurantId, p_session_id: SESSION_ID }),
       sb.from('restaurant_vibe_feedback').then(c => c.selectWhere({ restaurant_id: restaurantId, session_id: SESSION_ID }, 'vibe,action')),
     ]);
 
@@ -7789,13 +7788,13 @@ async function loadVibesForRestaurant(restaurantId) {
       });
     }
 
-    // Filter candidates:
-    // - source='system' → show to everyone
-    // - source='user'   → only show to the session that submitted it
-    p3vmCandidates = (allCands || []).filter(c =>
-      c.source === 'system' ||
-      (c.source === 'user' && c.session_id_submitted === SESSION_ID)
-    );
+    // Server-side filter (item 1.3, May 6) handles privacy:
+    // - system: always public
+    // - user+approved: public
+    // - user+pending/needs_review: submitter-only (matched via SESSION_ID)
+    // - rejected / merged: never returned
+    // RPC returns rows with {vibe, source, status, canonical_vibe}.
+    p3vmCandidates = allCands || [];
 
     // Restore prior signals for this session so modal shows correct state on re-open
     if (!p3vmPriorSignals[restaurantId]) p3vmPriorSignals[restaurantId] = {};
@@ -7812,9 +7811,13 @@ function p3OpenAddVibe() {
   if (!currentRestaurant) return;
   // Restore from localStorage (3-day TTL) — DB signals will confirm via p3vmPriorSignals
   const _cachedVibes = currentRestaurant ? _getVibeState(currentRestaurant.id) : null;
-  p3vmOffVibes    = new Set(_cachedVibes?.off || []);
+  p3vmOffVibes    = new Set(_cachedVibes?.off || []);   // paint-hint only — R1 wins on arrival
   p3vmAddVibes    = new Set(_cachedVibes?.add || []);
   p3vmCustomVibes = [];
+  p3vmSlots = [];
+  p3vmCapBlocked = new Set();
+  p3vmBatchRef = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + '-' + Math.random());
+  p3vmCaptured = false;
 
   const r = currentRestaurant;
   const rid = r.id;
@@ -7839,7 +7842,8 @@ function p3OpenAddVibe() {
   });
 
   // Section 2: More vibes — from p3vmCandidates (loaded from Supabase)
-  // Falls back to VIBE_CATEGORIES if candidates not yet loaded
+  // Per §3.9: no parallel frontend taxonomies. If RPC returns empty, show
+  // explicit empty-state message — do NOT fall back to hardcoded constants.
   const currentLower = current.map(v => v.toLowerCase());
   const moreEl = document.getElementById('p3vm-more');
 
@@ -7848,7 +7852,7 @@ function p3OpenAddVibe() {
       const v    = c.vibe; // lowercase from DB — used as key
       const disp = v.replace(/\b\w/g, ch => ch.toUpperCase()); // display: Title Case
       const isSupported = priorSignals[v] === 'support';
-      const isUserAdded = c.source === 'user'; // show ✦ for unreviewed user submissions
+      const isUserAdded = c.status === 'pending' || c.status === 'needs_review'; // show ✦ for unreviewed user submissions (item 1.3, May 6 — was source==='user')
       return `<div id="p3vm-more-${v.replace(/[\s&]/g,'_')}" onclick="toggleP3AddVibe('${v.replace(/'/g,"\'")}',this)"
         style="padding:6px 14px;border-radius:20px;border:1px solid black;background:${isSupported?'black':'white'};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
         <p class="fi" style="font-size:11px;color:${isSupported?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>${isUserAdded ? `<span style="font-size:9px;color:${isSupported?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.25)'};flex-shrink:0;">✦</span>` : ''}
@@ -7859,15 +7863,9 @@ function p3OpenAddVibe() {
       if (priorSignals[c.vibe] === 'support') p3vmAddVibes.add(c.vibe);
     });
   } else {
-    // Fallback to VIBE_CATEGORIES if Supabase candidates not loaded
-    const allVibes = [...new Set(Object.values(VIBE_CATEGORIES).flat())];
-    const moreVibes = allVibes.filter(v => !currentLower.includes(v.toLowerCase()));
-    moreEl.innerHTML = moreVibes.map(v =>
-      `<div id="p3vm-more-${v.replace(/[\s&]/g,'_')}" onclick="toggleP3AddVibe('${v.replace(/'/g,"\'")}',this)"
-        style="padding:6px 14px;border-radius:20px;border:1px solid black;background:white;cursor:pointer;transition:all 0.15s;">
-        <p class="fi" style="font-size:11px;color:black;letter-spacing:0.5px;white-space:nowrap;">${v}</p>
-      </div>`
-    ).join('');
+    // Empty state (issue 2 fix, May 8) — no community vibes yet for this restaurant.
+    // Don't fabricate from hardcoded VIBE_CATEGORIES. User can still submit via input below.
+    moreEl.innerHTML = `<div class="fi" style="font-size:11px;color:rgba(0,0,0,0.5);letter-spacing:0.3px;font-style:italic;padding:6px 0;">no community vibes yet — be the first to add one below</div>`;
   }
 
   // Reset custom input and placeholder
@@ -7884,9 +7882,13 @@ function p3OpenAddVibe() {
     m.style.background = 'rgba(0,0,0,0.5)';
     s.style.transform = 'translateY(0)';
   });
+
+  // R1: the ledger's slot picture arrives and overrides the paint-hints (G2/G4)
+  _refreshMySlots();
 }
 
 function closeP3VibeModal() {
+  _captureEvalBatch(); // G7: one recorder capture per modal open (both close paths land here)
   const m = document.getElementById('p3-vibe-modal');
   const s = document.getElementById('p3-vibe-modal-sheet');
   m.style.background = 'rgba(0,0,0,0)';
@@ -7919,32 +7921,49 @@ async function _submitVibeSignal(vibe, action) {
       else p3vmPriorSignals[rid][vibeLC] = action;
       // Reload tags after signal so P3 reflects resolver output
       loadVibesForRestaurant(rid);
+      _refreshMySlots();
+    } else if (res?.error === 'SLOT_CAP_REACHED') {
+      // G1: backend-truth fallback (stale local state) — revert paint, open the sheet
+      p3vmCapBlocked.add(vibeLC);
+      await _refreshMySlots();
+      _openReplaceSheet({ kind: 'support', vibe: vibeLC });
     } else if (res?.error === 'VIBE_RATE_LIMIT_EXCEEDED') {
-      _showVoteToast('Vibe feedback limit reached');
+      _showVoteToast('Daily limit reached');
+      _refreshMySlots();
+    } else if (res?.error) {
+      console.warn('[vibe] signal rejected:', res.error);
+      _refreshMySlots();
     }
   } catch (err) {
     console.warn('_submitVibeSignal failed:', err.message);
   }
 }
 
-// Fires submit_vibe_candidate immediately when user adds a custom vibe
+// Submits a custom vibe candidate. Returns {ok, candidateId} | {error}.
+// The candidate call itself RESERVES a ledger slot (Step-4 intent) — callers
+// must handle SLOT_CAP_REACHED. Moderation fires here on success (G3).
 async function _submitVibeCandidate(vibe) {
-  if (!currentRestaurant || !supabaseReady()) return;
+  if (!currentRestaurant || !supabaseReady()) return { error: 'NOT_READY' };
   try {
-    // Submit to DB first — get candidate id
     const res = await sb.rpc('submit_vibe_candidate', {
       p_restaurant_id: currentRestaurant.id,
       p_session_id:    SESSION_ID,
       p_vibe:          vibe,
     });
-    if (res?.error === 'CANDIDATE_RATE_LIMIT_EXCEEDED') {
-      _showVoteToast('Candidate limit reached');
-      return;
-    }
+    if (res?.error) return res;
     const candidateId = res?.id || res?.[0]?.id;
-    if (!candidateId) return; // no id = no moderation needed
+    if (!candidateId) return { error: 'NO_ID' };
+    _fireVibeModeration(candidateId);
+    return { ok: true, candidateId };
+  } catch (err) {
+    console.warn('_submitVibeCandidate failed:', err.message);
+    return { error: 'NETWORK' };
+  }
+}
 
-    // Call moderate-content — fire and forget, no UI update needed for vibes
+function _fireVibeModeration(candidateId) {
+  try {
+
     const _vibeUrl = `${SUPABASE_URL}/functions/v1/moderate-content`;
     const _vibePayload = { content_type: 'vibe_candidate', candidate_id: candidateId };
     console.log('[MC] vibe invoke url:', _vibeUrl);
@@ -7953,16 +7972,15 @@ async function _submitVibeCandidate(vibe) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ..._sbHeaders(),
+        'Authorization': 'Bearer ' + _authToken,
       },
       body: JSON.stringify(_vibePayload),
     }).then(async r => {
       const body = await r.text();
       console.log('[MC] vibe response status:', r.status, 'body:', body);
     }).catch(err => console.warn('[MC] vibe fetch error:', err.message));
-
   } catch (err) {
-    console.warn('_submitVibeCandidate failed:', err.message);
+    console.warn('_fireVibeModeration failed:', err.message);
   }
 }
 
@@ -7987,14 +8005,32 @@ function toggleP3OffVibe(vibe, el) {
 
 function toggleP3AddVibe(vibe, el) {
   const isUserAdded = !!el.querySelector('span');
+  const vibeLC = vibe.toLowerCase();
   if (p3vmAddVibes.has(vibe)) {
+    // G4: custom pills hold PENDING INTENTS — deselect = revoke, not remove:support
+    const custom = p3vmCustomVibes.find(c => c.label === vibeLC);
+    if (custom && custom.candidateId) {
+      p3vmAddVibes.delete(vibe);
+      el.style.background = 'white';
+      el.style.borderColor = 'black';
+      el.querySelector('p').style.color = 'black';
+      if (isUserAdded) el.querySelector('span').style.color = 'rgba(0,0,0,0.25)';
+      _revokeCustomVibe(custom);
+      return;
+    }
     p3vmAddVibes.delete(vibe);
     el.style.background = 'white';
     el.style.borderColor = 'black';
     el.querySelector('p').style.color = 'black';
     if (isUserAdded) el.querySelector('span').style.color = 'rgba(0,0,0,0.25)';
   } else {
-    if (p3vmAddVibes.size >= 3) return;
+    // G2/G6: the ledger count gates, not the local Set — 4th pick opens the sheet
+    if (p3vmSlots.length >= 3) {
+      p3vmCapBlocked.add(vibeLC);
+      _openReplaceSheet({ kind: 'support', vibe: vibeLC });
+      return;
+    }
+    if (p3vmAddVibes.size >= 3) return; // pre-R1-arrival fallback
     p3vmAddVibes.add(vibe);
     el.style.background = 'black';
     el.style.borderColor = 'black';
@@ -8062,7 +8098,7 @@ function addP3CustomVibe() {
   if (
     liveVibes.includes(valLC) ||
     candidateVibes.includes(valLC) ||
-    p3vmCustomVibes.some(v => v.toLowerCase() === valLC)
+    p3vmCustomVibes.some(v => (v.label || '') === valLC)
   ) {
     input.value = '';
     return;
@@ -8071,16 +8107,23 @@ function addP3CustomVibe() {
   // Client-side content filter
   if (!_vibeIsClean(val)) {
     input.value = '';
-    input.placeholder = 'keep it clean';
-    setTimeout(() => { _updateCustomPlaceholder(); }, 2000);
+    _showVoteToast('Keep it clean');
     return;
   }
 
   // Normalise: lowercase for DB key, display with first letter of each word capitalised
   const displayVal = valLC.replace(/\b\w/g, c => c.toUpperCase());
 
+  // G5 local-first: at cap, a custom submission goes straight to the sheet (A1)
+  if (p3vmSlots.length >= 3) {
+    input.value = '';
+    p3vmCapBlocked.add(valLC);
+    _openReplaceSheet({ kind: 'candidate', vibe: valLC, display: displayVal });
+    return;
+  }
+
   // Add to custom list and inject directly into more vibes pool as a selected pill
-  p3vmCustomVibes.push(valLC);
+  p3vmCustomVibes.push({ label: valLC, candidateId: null, slotId: null });
   p3vmAddVibes.add(valLC);  // auto-select it for the user
   input.value = '';
   _updateCustomPlaceholder();
@@ -8095,10 +8138,27 @@ function addP3CustomVibe() {
   pill.innerHTML = `<p class="fi" style="font-size:11px;color:white;letter-spacing:0.5px;white-space:nowrap;">${displayVal}</p><span style="font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:0px;flex-shrink:0;">✦</span>`;
   moreEl.appendChild(pill);
 
-  // Fire candidate submission immediately — also fire support signal
+  // G3 single-fire: the candidate call ITSELF reserves the intent slot.
+  // (The old extra support signal consumed a second slot + minted an
+  //  unmoderated canonical — deleted per the Step-5 plan.)
   console.log('[VIBE] calling _submitVibeCandidate with', valLC);
-  _submitVibeCandidate(valLC);
-  _submitVibeSignal(valLC, 'support');
+  _submitVibeCandidate(valLC).then(res => {
+    if (res?.ok) {
+      const entry = p3vmCustomVibes.find(c => c.label === valLC);
+      if (entry) entry.candidateId = res.candidateId;
+      _refreshMySlots();
+    } else if (res?.error === 'SLOT_CAP_REACHED') {
+      _removeCustomPill(valLC);
+      p3vmCapBlocked.add(valLC);
+      _refreshMySlots().then(() => _openReplaceSheet({ kind: 'candidate', vibe: valLC, display: displayVal }));
+    } else if (res?.error === 'CANDIDATE_RATE_LIMIT_EXCEEDED') {
+      _removeCustomPill(valLC);
+      _showVoteToast('Daily limit reached');
+    } else if (res?.error) {
+      _removeCustomPill(valLC);
+      console.warn('[vibe] candidate rejected:', res.error);
+    }
+  });
 
   // Update max greyed state
   const maxed = p3vmAddVibes.size >= 3;
@@ -8127,6 +8187,319 @@ function applyP3VibeModal() {
   // Signals are submitted immediately on tap via _submitVibeSignal and _submitVibeCandidate.
   // Done just closes the modal — no re-submission needed.
   closeP3VibeModal();
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// STEP-5 LEDGER MACHINERY (v9) — R1 refresh, revoke, Replacement Sheet,
+// recorder capture. Backend: get_my_vibe_slots / revoke_vibe_intent /
+// replace_vibe_slot / resolve_vibe_labels / record-eval edge fn.
+// ═══════════════════════════════════════════════════════════════════
+
+// R1 → p3vmSlots (source of truth), then reconcile paint (G2/G4).
+async function _refreshMySlots() {
+  if (!currentRestaurant || !supabaseReady()) return;
+  const rid = currentRestaurant.id;
+  try {
+    const res = await sb.rpc('get_my_vibe_slots', {
+      p_restaurant_id: rid, p_session_id: SESSION_ID,
+    });
+    if (!res?.ok || currentRestaurant?.id !== rid) return;
+    p3vmSlots = res.slots || [];
+    // Rebuild selection truth from slots
+    const slotLabels = new Set(p3vmSlots.map(s => (s.label || '').toLowerCase()));
+    // Every slot the identity holds must be VISIBLE (what you see = what you hold):
+    // intents → custom entries (survive reload — G4); supports not on screen → injected pills
+    p3vmSlots.forEach(s => {
+      const lbl = (s.label || '').toLowerCase();
+      if (s.kind === 'pending_intent') {
+        let entry = p3vmCustomVibes.find(c => c.label === lbl);
+        if (!entry) { entry = { label: lbl, candidateId: s.candidate_id, slotId: s.slot_id }; p3vmCustomVibes.push(entry); }
+        else { entry.candidateId = entry.candidateId || s.candidate_id; entry.slotId = s.slot_id; }
+        _ensureCustomPill(lbl, true);
+      } else {
+        _ensureCustomPill(lbl, false);
+      }
+    });
+    _updateSlotCounter();
+    // Drop custom entries whose intent vanished server-side (revoked elsewhere)
+    p3vmCustomVibes = p3vmCustomVibes.filter(c => !c.slotId || slotLabels.has(c.label) || !c.candidateId);
+    // AddVibes mirrors slot labels for pills that exist in the more-section
+    p3vmAddVibes = new Set();
+    document.querySelectorAll('[id^="p3vm-more-"]').forEach(pill => {
+      const p = pill.querySelector('p'); if (!p) return;
+      const lbl = p.textContent.trim().toLowerCase();
+      if (slotLabels.has(lbl)) p3vmAddVibes.add(lbl);
+    });
+    _repaintVibeSelections();
+  } catch (err) {
+    console.warn('_refreshMySlots failed:', err.message);
+  }
+}
+
+// Reconcile every more-pill's paint + the maxed grey state to p3vmSlots.
+function _repaintVibeSelections() {
+  _updateSlotCounter();
+  const maxed = p3vmSlots.length >= 3;
+  document.querySelectorAll('[id^="p3vm-more-"]').forEach(pill => {
+    const p = pill.querySelector('p'); if (!p) return;
+    const lbl = p.textContent.trim().toLowerCase();
+    const sel = p3vmAddVibes.has(lbl);
+    pill.style.background  = sel ? 'black' : 'white';
+    pill.style.borderColor = 'black';
+    p.style.color = sel ? 'white' : 'black';
+    const star = pill.querySelector('span');
+    if (star) star.style.color = sel ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.25)';
+    pill.style.opacity = (!sel && maxed) ? '0.35' : '1';
+    pill.style.cursor  = (!sel && maxed) ? 'default' : 'pointer';
+  });
+}
+
+// Create a custom pill in the more-section if absent (reload path).
+function _ensureCustomPill(lbl, pending) {
+  const safeId = `p3vm-more-${lbl.replace(/[\s&]/g,'_')}`;
+  if (document.getElementById(safeId)) return;
+  const moreEl = document.getElementById('p3vm-more');
+  if (!moreEl) return;
+  // Replace the empty-state message if it's the only thing there
+  if (moreEl.children.length === 1 && !moreEl.children[0].id) moreEl.innerHTML = '';
+  const disp = lbl.replace(/\b\w/g, c => c.toUpperCase());
+  const pill = document.createElement('div');
+  pill.id = safeId;
+  pill.onclick = function() { toggleP3AddVibe(lbl, this); };
+  pill.style.cssText = 'padding:6px 14px;border-radius:20px;border:1px solid black;background:black;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;';
+  pill.innerHTML = `<p class="fi" style="font-size:11px;color:white;letter-spacing:0.5px;white-space:nowrap;">${disp}</p>` +
+    (pending ? `<span style="font-size:9px;color:rgba(255,255,255,0.4);flex-shrink:0;">✦</span>` : '');
+  moreEl.appendChild(pill);
+}
+
+// Live "N of 3" counter beside the more-vibes hint
+function _updateSlotCounter() {
+  const el = document.getElementById('p3vm-slot-counter');
+  if (!el) return;
+  const n = p3vmSlots.length;
+  el.textContent = `${n} of 3`;
+  el.style.color = n >= 3 ? 'black' : 'rgba(0,0,0,0.45)';
+  el.style.fontWeight = n >= 3 ? '600' : '400';
+}
+
+// Remove a custom pill + entry (failed submission path).
+function _removeCustomPill(lbl) {
+  p3vmAddVibes.delete(lbl);
+  p3vmCustomVibes = p3vmCustomVibes.filter(c => c.label !== lbl);
+  const el = document.getElementById(`p3vm-more-${lbl.replace(/[\s&]/g,'_')}`);
+  if (el) el.remove();
+  _updateCustomPlaceholder();
+}
+
+// G4: revoke a pending intent (custom pill deselect).
+async function _revokeCustomVibe(custom) {
+  try {
+    const res = await sb.rpc('revoke_vibe_intent', {
+      p_candidate_id: custom.candidateId, p_session_id: SESSION_ID,
+    });
+    if (!res?.ok) console.warn('[vibe] revoke:', res?.error || 'failed');
+  } catch (err) {
+    console.warn('_revokeCustomVibe failed:', err.message);
+  } finally {
+    _refreshMySlots();
+  }
+}
+
+// ── The Replacement Sheet (G5/G6 — Rulings D1/D2, Amendment A1) ──────
+// One flow, both entry points. Copy per ruling: "You've picked 3 vibes /
+// Choose one to replace with {New}." Oldest preselected; ANY slot choosable.
+let _rsPending = null; // { kind:'support'|'candidate', vibe, display }
+
+function _openReplaceSheet(opts) {
+  if (!p3vmSlots.length) return; // nothing to replace against
+  _rsPending = opts;
+  _rsVictim = null; // fresh open → default to oldest
+  const disp = opts.display || opts.vibe.replace(/\b\w/g, c => c.toUpperCase());
+  let sheet = document.getElementById('p3-replace-sheet-backdrop');
+  if (!sheet) {
+    sheet = document.createElement('div');
+    sheet.id = 'p3-replace-sheet-backdrop';
+    sheet.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0);display:flex;align-items:flex-end;justify-content:center;z-index:9000;transition:background 0.3s;';
+    sheet.onclick = function(e) { if (e.target === sheet) _closeReplaceSheet(); };
+    sheet.innerHTML = `<div id="p3-replace-sheet" style="background:white;border-radius:24px 24px 0 0;width:100%;max-width:393px;padding:22px 20px calc(20px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);">
+      <p class="fa" style="font-weight:600;font-size:20px;color:black;letter-spacing:0.5px;">You've picked 3 vibes</p>
+      <p id="p3rs-sub" class="fi" style="font-size:12px;color:rgba(0,0,0,0.55);margin-top:4px;letter-spacing:0.3px;"></p>
+      <p id="p3rs-note" class="fi" style="display:none;font-size:11px;color:#b00020;margin-top:6px;"></p>
+      <div id="p3rs-rows" style="display:flex;flex-direction:column;gap:8px;margin-top:16px;"></div>
+      <div style="display:flex;gap:10px;margin-top:18px;">
+        <div onclick="_closeReplaceSheet()" style="flex:1;padding:12px 0;border-radius:14px;border:1px solid #ccc;text-align:center;cursor:pointer;"><p class="fi" style="font-size:13px;color:black;">Cancel</p></div>
+        <div id="p3rs-swap" onclick="_confirmReplaceSheet()" style="flex:1;padding:12px 0;border-radius:14px;background:black;text-align:center;cursor:pointer;"><p class="fi" style="font-size:13px;color:white;font-weight:600;">Swap</p></div>
+      </div>
+    </div>`;
+    document.body.appendChild(sheet);
+  }
+  document.getElementById('p3rs-sub').textContent = `Choose one to replace with \u201C${disp}\u201D.`;
+  const note = document.getElementById('p3rs-note');
+  note.style.display = 'none'; note.textContent = '';
+  _renderReplaceRows();
+  sheet.style.display = 'flex';
+  requestAnimationFrame(() => {
+    sheet.style.background = 'rgba(0,0,0,0.5)';
+    document.getElementById('p3-replace-sheet').style.transform = 'translateY(0)';
+  });
+}
+
+let _rsVictim = null;
+function _renderReplaceRows() {
+  const rows = document.getElementById('p3rs-rows');
+  const sorted = [...p3vmSlots].sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+  // Oldest = DEFAULT only (D2). Keep the user's pick across re-renders; fall
+  // back to oldest only when there is no pick or the picked slot vanished.
+  if (!_rsVictim || !sorted.some(s => s.slot_id === _rsVictim)) {
+    _rsVictim = sorted.length ? sorted[0].slot_id : null;
+  }
+  rows.innerHTML = sorted.map(s => {
+    const disp = (s.label || '?').replace(/\b\w/g, c => c.toUpperCase());
+    const pending = s.kind === 'pending_intent';
+    const sel = s.slot_id === _rsVictim;
+    return `<div data-slot="${s.slot_id}" onclick="_pickReplaceVictim('${s.slot_id}')"
+      style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:14px;border:1.5px solid ${sel?'black':'#ddd'};cursor:pointer;transition:border-color 0.15s;">
+      <div style="display:flex;align-items:center;gap:7px;">
+        <p class="fi" style="font-size:13px;color:black;">${disp}</p>
+        ${pending ? '<span class="fi" style="font-size:10px;color:rgba(0,0,0,0.4);">pending \u2726</span>' : ''}
+      </div>
+      <div style="width:16px;height:16px;border-radius:50%;border:1.5px solid ${sel?'black':'#ccc'};background:${sel?'black':'white'};"></div>
+    </div>`;
+  }).join('');
+}
+function _pickReplaceVictim(slotId) { _rsVictim = slotId; _renderReplaceRows(); }
+
+function _closeReplaceSheet() {
+  const sheet = document.getElementById('p3-replace-sheet-backdrop');
+  if (!sheet) return;
+  sheet.style.background = 'rgba(0,0,0,0)';
+  const inner = document.getElementById('p3-replace-sheet');
+  if (inner) inner.style.transform = 'translateY(100%)';
+  setTimeout(() => { sheet.style.display = 'none'; }, 350);
+  _rsPending = null;
+}
+
+async function _confirmReplaceSheet() {
+  if (!_rsPending || !_rsVictim || !currentRestaurant) return;
+  const btn = document.getElementById('p3rs-swap');
+  btn.style.pointerEvents = 'none'; btn.style.opacity = '0.6';
+  const req = _rsPending;
+  const victim = p3vmSlots.find(s => s.slot_id === _rsVictim);
+  try {
+    const res = await sb.rpc('replace_vibe_slot', {
+      p_restaurant_id: currentRestaurant.id,
+      p_session_id:    SESSION_ID,
+      p_victim_slot_id: _rsVictim,
+      p_new_vibe:      req.vibe,
+      p_new_kind:      req.kind,
+    });
+    if (res?.ok) {
+      _closeReplaceSheet();
+      const oldDisp = ((victim && victim.label) || res.dropped?.label || '?').replace(/\b\w/g, c => c.toUpperCase());
+      const newDisp = (res.added?.label || req.vibe).replace(/\b\w/g, c => c.toUpperCase());
+      _showVoteToast(`Swapped ${oldDisp} \u2192 ${newDisp}`);
+      if (req.kind === 'candidate') {
+        const cid = res.added?.candidate_id;
+        if (cid) {
+          p3vmCustomVibes.push({ label: req.vibe, candidateId: cid, slotId: null });
+          _ensureCustomPill(req.vibe);
+          _fireVibeModeration(cid);
+        }
+      }
+      // If a support victim was one of our custom-section pills, refresh handles paint
+      if (typeof loadVibesForRestaurant === 'function') loadVibesForRestaurant(currentRestaurant.id);
+      await _refreshMySlots();
+    } else if (res?.error === 'VICTIM_GONE') {
+      await _refreshMySlots();
+      if (!p3vmSlots.length) { _closeReplaceSheet(); return; }
+      const note = document.getElementById('p3rs-note');
+      note.textContent = 'That one changed \u2014 pick again';
+      note.style.display = 'block';
+      _renderReplaceRows();
+    } else if (res?.error === 'ALREADY_SUPPORTED' || res?.error === 'NOOP_SAME_VIBE') {
+      _closeReplaceSheet();
+      _showVoteToast('Already one of your vibes');
+      _refreshMySlots();
+    } else if (res?.error === 'CANDIDATE_ALREADY_APPROVED') {
+      _closeReplaceSheet();
+      _showVoteToast('That vibe just went live \u2014 tap it instead');
+      if (typeof loadVibesForRestaurant === 'function') loadVibesForRestaurant(currentRestaurant.id);
+      _refreshMySlots();
+    } else if (res?.error === 'VIBE_RATE_LIMIT_EXCEEDED' || res?.error === 'CANDIDATE_RATE_LIMIT_EXCEEDED') {
+      _closeReplaceSheet();
+      _showVoteToast('Daily limit reached');
+    } else {
+      _closeReplaceSheet();
+      console.warn('[vibe] replace failed:', res?.error);
+    }
+  } catch (err) {
+    _closeReplaceSheet();
+    console.warn('_confirmReplaceSheet failed:', err.message);
+  } finally {
+    btn.style.pointerEvents = 'auto'; btn.style.opacity = '1';
+  }
+}
+
+// ── G7: recorder capture — once per modal open, on close ─────────────
+// cap_state semantics (ruling): blocked_by_cap = THIS label was tried and
+// refused; at_cap = displayed while the allowance was full at close; none.
+async function _captureEvalBatch() {
+  if (p3vmCaptured || !p3vmBatchRef || !currentRestaurant || !supabaseReady()) return;
+  p3vmCaptured = true;
+  const rid = currentRestaurant.id;
+  try {
+    // The displayed universe, in render order
+    const shown = [];
+    const current = ((currentRestaurant.tags && currentRestaurant.tags.length ? currentRestaurant.tags : currentRestaurant.vibes) || []).slice(0, 3);
+    current.forEach(v => shown.push({ label: v.toLowerCase(), candidateId: null }));
+    (p3vmCandidates || []).forEach(c => {
+      if (!shown.some(s => s.label === c.vibe)) shown.push({ label: c.vibe, candidateId: null });
+    });
+    p3vmCustomVibes.forEach(c => {
+      const hit = shown.find(s => s.label === c.label);
+      if (hit) hit.candidateId = c.candidateId;
+      else shown.push({ label: c.label, candidateId: c.candidateId });
+    });
+    if (!shown.length) return;
+
+    // Resolve non-candidate labels → canonical ids (R2, one call)
+    const toResolve = shown.filter(s => !s.candidateId).map(s => s.label).slice(0, 40);
+    let resolved = {};
+    if (toResolve.length) {
+      const rr = await sb.rpc('resolve_vibe_labels', { p_labels: toResolve });
+      (rr?.labels || []).forEach(l => { resolved[l.label] = l.canonical_vibe_id; });
+    }
+
+    const slotLabels = new Set(p3vmSlots.map(s => (s.label || '').toLowerCase()));
+    const offLower = new Set([...p3vmOffVibes].map(v => v.toLowerCase()));
+    const atCap = p3vmSlots.length >= 3;
+
+    const items = [];
+    shown.forEach((s, i) => {
+      const canonical = s.candidateId ? null : resolved[s.label];
+      if (!s.candidateId && !canonical) return; // unresolved → skip (never mint)
+      const action = slotLabels.has(s.label) ? 'support' : (offLower.has(s.label) ? 'off' : 'neutral');
+      const cap = p3vmCapBlocked.has(s.label) ? 'blocked_by_cap' : (atCap ? 'at_cap' : 'none');
+      items.push({
+        canonical_vibe_id: canonical || undefined,
+        pending_candidate_id: s.candidateId || undefined,
+        raw_text: s.label, position_shown: i, was_visible: true,
+        terminal_action: action, cap_state: cap,
+      });
+    });
+    if (!items.length || items.length > 40) return;
+
+    fetch(`${SUPABASE_URL}/functions/v1/record-eval`, {
+      method: 'POST',
+      headers: _sbHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ restaurant_id: rid, session_id: SESSION_ID, client_batch_ref: p3vmBatchRef, items }),
+    }).then(r => r.json())
+      .then(j => console.log('[eval] capture:', j && j.ok ? `ok (${j.items ?? items.length} items)` : j))
+      .catch(err => console.warn('[eval] capture failed:', err.message));
+  } catch (err) {
+    console.warn('_captureEvalBatch failed:', err.message);
+  }
 }
 
 // City dropdown

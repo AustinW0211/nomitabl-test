@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>NomiTabl v9</title>
+<title>NomiTabl v10</title>
 <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300&family=Just+Another+Hand&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -868,15 +868,22 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
           <div onclick="closeP3VibeModal()" style="cursor:pointer;font-size:18px;color:black;line-height:1;margin-top:2px;">✕</div>
         </div>
 
-        <!-- Section 1: Current Vibes — top 3 from r.tags (matches what's displayed on P3) -->
-        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;">Current Vibes</p>
-        <p class="fi" style="font-size:11px;color:#555;letter-spacing:0.3px;margin-bottom:12px;">Select any that feel off.</p>
+        <!-- Section 1: Featured Vibes (R7-1) — black = featured, neutral for me · red = I support it -->
+        <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;">Featured Vibes</p>
+        <p class="fi" style="font-size:11px;color:#555;letter-spacing:0.3px;margin-bottom:12px;">Tap the ones you'd back. <span id="p3vm-slot-counter" style="margin-left:6px;color:rgba(0,0,0,0.45);">0 of 3</span></p>
         <div id="p3vm-current" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;"></div>
 
-        <!-- Section 2: More Vibes -->
+        <!-- Section 2: More Vibes — every other vibe, rotated for fair discovery (order frozen per open) -->
         <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;">More Vibes</p>
-        <p class="fi" style="font-size:11px;color:#555;letter-spacing:0.3px;margin-bottom:12px;">Pick up to 3 vibes that feel right. <span id="p3vm-slot-counter" style="margin-left:6px;color:rgba(0,0,0,0.45);">0 of 3</span></p>
+        <p class="fi" style="font-size:11px;color:#555;letter-spacing:0.3px;margin-bottom:12px;">Support up to 3 in total.</p>
         <div id="p3vm-more" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;"></div>
+
+        <!-- Section 2b: Pending community vibes (✦, not rotated) — join one to reserve a slot -->
+        <div id="p3vm-pending-wrap" style="display:none;">
+          <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;">Pending</p>
+          <p class="fi" style="font-size:11px;color:#555;letter-spacing:0.3px;margin-bottom:12px;">Suggested by others, awaiting review — back one to join.</p>
+          <div id="p3vm-pending" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;"></div>
+        </div>
 
         <!-- Section 3: Suggest a vibe — always visible -->
         <p class="fi" style="font-size:9px;color:#999;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;">Missing one?</p>
@@ -7753,7 +7760,7 @@ let p3vmAddVibes = new Set();   // vibes picked from "more vibes"
 let p3vmCustomVibes = [];       // custom typed vibes: [{label, candidateId, slotId}]
 // ── Step-5 ledger state (G1–G7) ──
 let p3vmSlots = [];             // THE source of truth — from get_my_vibe_slots (R1)
-let p3vmCapBlocked = new Set(); // labels the user tapped but the cap refused (recorder)
+let p3vmCapBlocked = new Map(); // label → capped-tap attempts this modal-open (recorder: blocked_attempts)
 let p3vmBatchRef = null;        // uuid per modal open (recorder idempotency)
 let p3vmCaptured = false;       // one capture per open
 
@@ -7815,58 +7822,24 @@ function p3OpenAddVibe() {
   p3vmAddVibes    = new Set(_cachedVibes?.add || []);
   p3vmCustomVibes = [];
   p3vmSlots = [];
-  p3vmCapBlocked = new Set();
+  p3vmCapBlocked = new Map();
   p3vmBatchRef = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + '-' + Math.random());
   p3vmCaptured = false;
 
   const r = currentRestaurant;
   const rid = r.id;
 
-  // Section 1: Current vibes — exactly the 3 shown on P3 (from r.tags)
-  // Users correct what they see on the card, not the full backend list
-  const current = (r.tags && r.tags.length ? r.tags : r.vibes || []).slice(0, 3);
-  const priorSignals = p3vmPriorSignals[rid] || {};
-
-  const currentEl = document.getElementById('p3vm-current');
-  currentEl.innerHTML = current.map(v => {
-    const isOff = priorSignals[v.toLowerCase()] === 'off';
-    return `<div id="p3vm-curr-${v.replace(/[\s&]/g,'_')}" onclick="toggleP3OffVibe('${v.replace(/'/g,"\'")}',this)"
-      style="padding:6px 14px;border-radius:20px;border:1px solid ${isOff?'#bbb':'black'};background:${isOff?'#ccc':'black'};opacity:${isOff?'0.5':'1'};cursor:pointer;transition:all 0.15s;">
-      <p class="fi" style="font-size:11px;color:${isOff?'#666':'white'};letter-spacing:0.5px;white-space:nowrap;">${v}</p>
-    </div>`;
-  }).join('');
-
-  // Pre-populate off set from prior signals
-  current.forEach(v => {
-    if (priorSignals[v.toLowerCase()] === 'off') p3vmOffVibes.add(v);
-  });
-
-  // Section 2: More vibes — from p3vmCandidates (loaded from Supabase)
-  // Per §3.9: no parallel frontend taxonomies. If RPC returns empty, show
-  // explicit empty-state message — do NOT fall back to hardcoded constants.
-  const currentLower = current.map(v => v.toLowerCase());
-  const moreEl = document.getElementById('p3vm-more');
-
-  if (p3vmCandidates.length > 0) {
-    moreEl.innerHTML = p3vmCandidates.map(c => {
-      const v    = c.vibe; // lowercase from DB — used as key
-      const disp = v.replace(/\b\w/g, ch => ch.toUpperCase()); // display: Title Case
-      const isSupported = priorSignals[v] === 'support';
-      const isUserAdded = c.status === 'pending' || c.status === 'needs_review'; // show ✦ for unreviewed user submissions (item 1.3, May 6 — was source==='user')
-      return `<div id="p3vm-more-${v.replace(/[\s&]/g,'_')}" onclick="toggleP3AddVibe('${v.replace(/'/g,"\'")}',this)"
-        style="padding:6px 14px;border-radius:20px;border:1px solid black;background:${isSupported?'black':'white'};cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
-        <p class="fi" style="font-size:11px;color:${isSupported?'white':'black'};letter-spacing:0.5px;white-space:nowrap;">${disp}</p>${isUserAdded ? `<span style="font-size:9px;color:${isSupported?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.25)'};flex-shrink:0;">✦</span>` : ''}
-      </div>`;
-    }).join('');
-    // Pre-populate support set from prior signals
-    p3vmCandidates.forEach(c => {
-      if (priorSignals[c.vibe] === 'support') p3vmAddVibes.add(c.vibe);
-    });
-  } else {
-    // Empty state (issue 2 fix, May 8) — no community vibes yet for this restaurant.
-    // Don't fabricate from hardcoded VIBE_CATEGORIES. User can still submit via input below.
-    moreEl.innerHTML = `<div class="fi" style="font-size:11px;color:rgba(0,0,0,0.5);letter-spacing:0.3px;font-style:italic;padding:6px 0;">no community vibes yet — be the first to add one below</div>`;
-  }
+  // R7 (v10): the whole modal is server-driven — ONE read (get_vibe_modal) gives featured
+  // (canonical, my_support), every challenger ranked+pooled (rotated here for discovery),
+  // pending community candidates, and my slots. Paint a light skeleton, then render on data.
+  p3vmAddVibes = new Set();
+  p3vmDisplayOrder = [];
+  document.getElementById('p3vm-current').innerHTML =
+    `<div class="fi" style="font-size:11px;color:rgba(0,0,0,0.4);padding:6px 0;">loading…</div>`;
+  document.getElementById('p3vm-more').innerHTML = '';
+  document.getElementById('p3vm-pending').innerHTML = '';
+  document.getElementById('p3vm-pending-wrap').style.display = 'none';
+  _renderP3ModalFromServer(rid);
 
   // Reset custom input and placeholder
   const input = document.getElementById('p3vm-custom-input');
@@ -7883,12 +7856,12 @@ function p3OpenAddVibe() {
     s.style.transform = 'translateY(0)';
   });
 
-  // R1: the ledger's slot picture arrives and overrides the paint-hints (G2/G4)
-  _refreshMySlots();
+  // (slots arrive with the modal payload — _renderP3ModalFromServer reconciles + repaints)
 }
 
 function closeP3VibeModal() {
   _captureEvalBatch(); // G7: one recorder capture per modal open (both close paths land here)
+  if (currentRestaurant) _refreshScores(currentRestaurant.id);
   const m = document.getElementById('p3-vibe-modal');
   const s = document.getElementById('p3-vibe-modal-sheet');
   m.style.background = 'rgba(0,0,0,0)';
@@ -7922,9 +7895,10 @@ async function _submitVibeSignal(vibe, action) {
       // Reload tags after signal so P3 reflects resolver output
       loadVibesForRestaurant(rid);
       _refreshMySlots();
+      _refreshScores(rid);       // shadow scores stay live (separate from voting — never blocks it)
     } else if (res?.error === 'SLOT_CAP_REACHED') {
       // G1: backend-truth fallback (stale local state) — revert paint, open the sheet
-      p3vmCapBlocked.add(vibeLC);
+      _noteCapBlocked(vibeLC);
       await _refreshMySlots();
       _openReplaceSheet({ kind: 'support', vibe: vibeLC });
     } else if (res?.error === 'VIBE_RATE_LIMIT_EXCEEDED') {
@@ -7984,23 +7958,10 @@ function _fireVibeModeration(candidateId) {
   }
 }
 
+// RETIRED (R7-1, v10): the UI has ONE action system — select = support, deselect = remove
+// support. Featured taps are supports (toggleP3FeaturedVibe). No new OFF events are created.
 function toggleP3OffVibe(vibe, el) {
-  if (p3vmOffVibes.has(vibe)) {
-    p3vmOffVibes.delete(vibe);
-    el.style.background = 'black';
-    el.style.opacity = '1';
-    el.style.borderColor = 'black';
-    el.querySelector('p').style.color = 'white';
-  } else {
-    p3vmOffVibes.add(vibe);
-    el.style.background = '#ccc';
-    el.style.opacity = '0.5';
-    el.style.borderColor = '#bbb';
-    el.querySelector('p').style.color = '#666';
-  }
-  // Fire immediately — no Done needed
-  _submitVibeSignal(vibe, 'off');
-  if (currentRestaurant) _saveVibeState(currentRestaurant.id, p3vmOffVibes, p3vmAddVibes);
+  console.warn('[vibe] toggleP3OffVibe is retired (R7-1); use toggleP3FeaturedVibe');
 }
 
 function toggleP3AddVibe(vibe, el) {
@@ -8026,7 +7987,7 @@ function toggleP3AddVibe(vibe, el) {
   } else {
     // G2/G6: the ledger count gates, not the local Set — 4th pick opens the sheet
     if (p3vmSlots.length >= 3) {
-      p3vmCapBlocked.add(vibeLC);
+      _noteCapBlocked(vibeLC);
       _openReplaceSheet({ kind: 'support', vibe: vibeLC });
       return;
     }
@@ -8095,6 +8056,12 @@ function addP3CustomVibe() {
   // Reject if already in live vibes, candidates, or already typed this session
   const liveVibes = (currentRestaurant?.vibes || []).map(v => v.toLowerCase());
   const candidateVibes = p3vmCandidates.map(c => c.vibe.toLowerCase());
+  // R7: the modal already shows EVERY canonical — a typed match is a tap, not a new candidate
+  if (p3vmDisplayOrder.some(d => d.label === valLC)) {
+    input.value = '';
+    _showVoteToast("That one's already here \u2014 tap it");
+    return;
+  }
   if (
     liveVibes.includes(valLC) ||
     candidateVibes.includes(valLC) ||
@@ -8117,7 +8084,7 @@ function addP3CustomVibe() {
   // G5 local-first: at cap, a custom submission goes straight to the sheet (A1)
   if (p3vmSlots.length >= 3) {
     input.value = '';
-    p3vmCapBlocked.add(valLC);
+    _noteCapBlocked(valLC);
     _openReplaceSheet({ kind: 'candidate', vibe: valLC, display: displayVal });
     return;
   }
@@ -8147,9 +8114,10 @@ function addP3CustomVibe() {
       const entry = p3vmCustomVibes.find(c => c.label === valLC);
       if (entry) entry.candidateId = res.candidateId;
       _refreshMySlots();
+      if (currentRestaurant) _refreshScores(currentRestaurant.id);
     } else if (res?.error === 'SLOT_CAP_REACHED') {
       _removeCustomPill(valLC);
-      p3vmCapBlocked.add(valLC);
+      _noteCapBlocked(valLC);
       _refreshMySlots().then(() => _openReplaceSheet({ kind: 'candidate', vibe: valLC, display: displayVal }));
     } else if (res?.error === 'CANDIDATE_RATE_LIMIT_EXCEEDED') {
       _removeCustomPill(valLC);
@@ -8196,12 +8164,18 @@ function applyP3VibeModal() {
 // replace_vibe_slot / resolve_vibe_labels / record-eval edge fn.
 // ═══════════════════════════════════════════════════════════════════
 
+// Two-tier intent ladder (Step 6): count capped taps per label within ONE
+// modal open. 1st tap = exploratory, a re-tap after Cancel = deliberate.
+function _noteCapBlocked(lbl) {
+  p3vmCapBlocked.set(lbl, (p3vmCapBlocked.get(lbl) || 0) + 1);
+}
+
 // R1 → p3vmSlots (source of truth), then reconcile paint (G2/G4).
-async function _refreshMySlots() {
+async function _refreshMySlots(prefetched) {
   if (!currentRestaurant || !supabaseReady()) return;
   const rid = currentRestaurant.id;
   try {
-    const res = await sb.rpc('get_my_vibe_slots', {
+    const res = prefetched || await sb.rpc('get_my_vibe_slots', {
       p_restaurant_id: rid, p_session_id: SESSION_ID,
     });
     if (!res?.ok || currentRestaurant?.id !== rid) return;
@@ -8232,6 +8206,7 @@ async function _refreshMySlots() {
       if (slotLabels.has(lbl)) p3vmAddVibes.add(lbl);
     });
     _repaintVibeSelections();
+    _repaintFeaturedPills();   // R7-1: featured pills go red from the ledger, never from local taps
   } catch (err) {
     console.warn('_refreshMySlots failed:', err.message);
   }
@@ -8303,6 +8278,7 @@ async function _revokeCustomVibe(custom) {
     console.warn('_revokeCustomVibe failed:', err.message);
   } finally {
     _refreshMySlots();
+    if (currentRestaurant) _refreshScores(currentRestaurant.id);
   }
 }
 
@@ -8396,6 +8372,7 @@ async function _confirmReplaceSheet() {
     });
     if (res?.ok) {
       _closeReplaceSheet();
+      p3vmCapBlocked.delete(req.vibe); // it's a real support now — latent cleared (never count both)
       const oldDisp = ((victim && victim.label) || res.dropped?.label || '?').replace(/\b\w/g, c => c.toUpperCase());
       const newDisp = (res.added?.label || req.vibe).replace(/\b\w/g, c => c.toUpperCase());
       _showVoteToast(`Swapped ${oldDisp} \u2192 ${newDisp}`);
@@ -8410,6 +8387,7 @@ async function _confirmReplaceSheet() {
       // If a support victim was one of our custom-section pills, refresh handles paint
       if (typeof loadVibesForRestaurant === 'function') loadVibesForRestaurant(currentRestaurant.id);
       await _refreshMySlots();
+      _refreshScores(currentRestaurant.id);
     } else if (res?.error === 'VICTIM_GONE') {
       await _refreshMySlots();
       if (!p3vmSlots.length) { _closeReplaceSheet(); return; }
@@ -8449,13 +8427,9 @@ async function _captureEvalBatch() {
   p3vmCaptured = true;
   const rid = currentRestaurant.id;
   try {
-    // The displayed universe, in render order
-    const shown = [];
-    const current = ((currentRestaurant.tags && currentRestaurant.tags.length ? currentRestaurant.tags : currentRestaurant.vibes) || []).slice(0, 3);
-    current.forEach(v => shown.push({ label: v.toLowerCase(), candidateId: null }));
-    (p3vmCandidates || []).forEach(c => {
-      if (!shown.some(s => s.label === c.vibe)) shown.push({ label: c.vibe, candidateId: null });
-    });
+    // The displayed universe in the ACTUAL displayed order (featured, then the rotated
+    // challengers, then pending/custom) — recorded at render time, frozen for this open.
+    const shown = p3vmDisplayOrder.map(d => ({ label: d.label, candidateId: d.candidateId || null }));
     p3vmCustomVibes.forEach(c => {
       const hit = shown.find(s => s.label === c.label);
       if (hit) hit.candidateId = c.candidateId;
@@ -8479,13 +8453,17 @@ async function _captureEvalBatch() {
     shown.forEach((s, i) => {
       const canonical = s.candidateId ? null : resolved[s.label];
       if (!s.candidateId && !canonical) return; // unresolved → skip (never mint)
-      const action = slotLabels.has(s.label) ? 'support' : (offLower.has(s.label) ? 'off' : 'neutral');
-      const cap = p3vmCapBlocked.has(s.label) ? 'blocked_by_cap' : (atCap ? 'at_cap' : 'none');
+      const action = slotLabels.has(s.label) ? 'support' : 'neutral';   // R7-1: no OFF is ever emitted
+      const attempts = p3vmCapBlocked.get(s.label) || 0;
+      // A completed replacement lands as terminal 'support' → never also blocked (one state)
+      const blocked = attempts > 0 && action !== 'support';
+      const cap = blocked ? 'blocked_by_cap' : (atCap ? 'at_cap' : 'none');
       items.push({
         canonical_vibe_id: canonical || undefined,
         pending_candidate_id: s.candidateId || undefined,
         raw_text: s.label, position_shown: i, was_visible: true,
         terminal_action: action, cap_state: cap,
+        blocked_attempts: blocked ? Math.min(attempts, 9) : undefined,
       });
     });
     if (!items.length || items.length > 40) return;
@@ -8500,6 +8478,180 @@ async function _captureEvalBatch() {
   } catch (err) {
     console.warn('_captureEvalBatch failed:', err.message);
   }
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// STEP-7 R7 UI (v10) — server-driven modal, featured support (black/red),
+// challenger rotation (frontend-only; backend stays ranked truth), pending
+// community candidates, shadow-score refresh. Backend: get_vibe_modal /
+// refresh_vibe_scores + the Step-4/5 writers.
+// ═══════════════════════════════════════════════════════════════════
+let p3vmDisplayOrder = [];   // [{label, candidateId}] in the ACTUAL displayed order (recorder)
+let p3vmFeatured = [];       // [{label, cvid}] from the server, display order
+const _P3_RED = '#d32f2f';
+
+const _p3Key  = lbl => lbl.replace(/[\s&]/g, '_');
+const _p3Disp = lbl => lbl.replace(/\b\w/g, c => c.toUpperCase());
+
+// Deterministic per-restaurant rotation counter (localStorage). The counter only
+// changes discovery ORDER for this identity; it never touches backend ranking.
+function _rotationCounter(rid) {
+  try {
+    const k = 'nomitabl_rot_' + rid;
+    const n = parseInt(localStorage.getItem(k) || '0', 10) || 0;
+    localStorage.setItem(k, String(n + 1));
+    return n;
+  } catch (_) { return 0; }
+}
+
+// LOCKED rule: Featured 3 → 3 LOWER (rotating) → 3 most popular → 2L+1P / 2P+1L
+// alternating (rotating) until exhausted. No duplicates; cross-fill when a pool
+// runs dry; order computed once per open and frozen.
+function _rotateChallengers(challengers, n) {
+  const popular = challengers.filter(c => c.pool === 'popular');   // rank order
+  const lower   = challengers.filter(c => c.pool !== 'popular');
+  const top3 = popular.slice(0, 3);
+  const popRest = popular.slice(3);
+  const rot = (arr, k) => arr.length ? arr.slice(k % arr.length).concat(arr.slice(0, k % arr.length)) : [];
+  const L = rot(lower, (n * 3));
+  const P = rot(popRest, (n * 3));
+  const take = (primary, fallback, count) => {
+    const out = [];
+    while (out.length < count && (primary.length || fallback.length)) {
+      out.push(primary.length ? primary.shift() : fallback.shift());
+    }
+    return out;
+  };
+  const rows = [];
+  rows.push(take(L, P, 3));           // row 1: 3 lower — prime discovery space
+  rows.push(top3);                    // row 2: 3 most popular
+  let flip = true;
+  while (L.length || P.length) {
+    rows.push(flip ? [...take(L, P, 2), ...take(P, L, 1)]
+                   : [...take(P, L, 2), ...take(L, P, 1)]);
+    flip = !flip;
+  }
+  return rows.flat().filter(Boolean);
+}
+
+async function _renderP3ModalFromServer(rid) {
+  if (!supabaseReady()) return;
+  try {
+    const data = await sb.rpc('get_vibe_modal', { p_restaurant_id: rid, p_session_id: SESSION_ID });
+    if (!data?.ok || currentRestaurant?.id !== rid) return;
+    const n = _rotationCounter(rid);
+    p3vmDisplayOrder = [];
+
+    // ── featured (black neutral / red = my support) ──
+    p3vmFeatured = (data.featured || []).map(f => ({ label: f.label, cvid: f.canonical_vibe_id }));
+    const featEl = document.getElementById('p3vm-current');
+    featEl.innerHTML = p3vmFeatured.map(f => {
+      const lbl = f.label.toLowerCase();
+      p3vmDisplayOrder.push({ label: lbl, candidateId: null });
+      return `<div id="p3vm-feat-${_p3Key(lbl)}" onclick="toggleP3FeaturedVibe('${lbl.replace(/'/g,"\\'")}',this)"
+        style="padding:6px 14px;border-radius:20px;border:1.5px solid black;background:black;cursor:pointer;transition:all 0.15s;">
+        <p class="fi" style="font-size:11px;color:white;letter-spacing:0.5px;white-space:nowrap;">${_p3Disp(lbl)}</p></div>`;
+    }).join('') || `<div class="fi" style="font-size:11px;color:rgba(0,0,0,0.5);font-style:italic;padding:6px 0;">no featured vibes yet</div>`;
+
+    // ── challengers: rotated for discovery; white neutral / black = my support ──
+    const ordered = _rotateChallengers(data.challengers || [], n);
+    const moreEl = document.getElementById('p3vm-more');
+    moreEl.innerHTML = ordered.map(c => {
+      const lbl = c.label.toLowerCase();
+      p3vmDisplayOrder.push({ label: lbl, candidateId: null });
+      return `<div id="p3vm-more-${_p3Key(lbl)}" onclick="toggleP3AddVibe('${lbl.replace(/'/g,"\\'")}',this)"
+        style="padding:6px 14px;border-radius:20px;border:1px solid black;background:white;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
+        <p class="fi" style="font-size:11px;color:black;letter-spacing:0.5px;white-space:nowrap;">${_p3Disp(lbl)}</p></div>`;
+    }).join('');
+
+    // ── pending community candidates (✦, not rotated); mine become ✦ slot pills via R1 ──
+    const others = (data.pending || []).filter(p => !p.my_intent);
+    const pendWrap = document.getElementById('p3vm-pending-wrap');
+    const pendEl = document.getElementById('p3vm-pending');
+    if (others.length) {
+      pendWrap.style.display = 'block';
+      pendEl.innerHTML = others.map(p => {
+        const lbl = (p.label || '').toLowerCase();
+        return `<div id="p3vm-pend-${_p3Key(lbl)}" onclick="joinP3PendingCandidate('${lbl.replace(/'/g,"\\'")}','${p.candidate_id}',this)"
+          style="padding:6px 14px;border-radius:20px;border:1px dashed rgba(0,0,0,0.5);background:white;cursor:pointer;display:flex;align-items:center;gap:5px;">
+          <p class="fi" style="font-size:11px;color:black;letter-spacing:0.5px;white-space:nowrap;">${_p3Disp(lbl)}</p>
+          <span style="font-size:9px;color:rgba(0,0,0,0.35);flex-shrink:0;">✦</span></div>`;
+      }).join('');
+    } else { pendWrap.style.display = 'none'; pendEl.innerHTML = ''; }
+
+    // ── my slots (embedded R1 payload) → reconcile + repaint everything ──
+    await _refreshMySlots(data.my_slots);
+  } catch (err) {
+    console.warn('_renderP3ModalFromServer failed:', err.message);
+    document.getElementById('p3vm-current').innerHTML =
+      `<div class="fi" style="font-size:11px;color:rgba(0,0,0,0.5);font-style:italic;padding:6px 0;">couldn't load vibes — try again</div>`;
+  }
+}
+
+// R7-1: featured pills — black = featured (neutral for me), red = I support it.
+// Tap black → support (at 3/3 → Replacement Sheet, like any challenger).
+// Tap red → remove my support → back to black (it stays featured — that's global).
+function toggleP3FeaturedVibe(lbl, el) {
+  const slotLabels = new Set(p3vmSlots.map(s => (s.label || '').toLowerCase()));
+  if (slotLabels.has(lbl)) {
+    _paintFeatured(el, false);
+    _submitVibeSignal(lbl, 'remove:support');
+    return;
+  }
+  if (p3vmSlots.length >= 3) {
+    _noteCapBlocked(lbl);
+    _openReplaceSheet({ kind: 'support', vibe: lbl });
+    return;
+  }
+  _paintFeatured(el, true);
+  _submitVibeSignal(lbl, 'support');
+}
+function _paintFeatured(el, supported) {
+  if (!el) return;
+  el.style.background = supported ? _P3_RED : 'black';
+  el.style.border = supported ? '1.5px solid white' : '1.5px solid black';
+  el.style.boxShadow = supported ? `0 0 0 1.5px ${_P3_RED}` : 'none';
+  const p = el.querySelector('p'); if (p) p.style.color = 'white';
+}
+function _repaintFeaturedPills() {
+  const slotLabels = new Set(p3vmSlots.map(s => (s.label || '').toLowerCase()));
+  p3vmFeatured.forEach(f => {
+    const lbl = f.label.toLowerCase();
+    _paintFeatured(document.getElementById('p3vm-feat-' + _p3Key(lbl)), slotLabels.has(lbl));
+  });
+}
+
+// Join someone else's pending candidate: the existing-candidate path reserves an intent
+// slot (Ruling 3 multi-intent). Consumes 1 of 3; at cap → the sheet (candidate kind).
+async function joinP3PendingCandidate(lbl, candidateId, el) {
+  if (p3vmSlots.length >= 3) {
+    _noteCapBlocked(lbl);
+    _openReplaceSheet({ kind: 'candidate', vibe: lbl, display: _p3Disp(lbl) });
+    return;
+  }
+  if (el) { el.style.opacity = '0.5'; el.style.pointerEvents = 'none'; }
+  const res = await _submitVibeCandidate(lbl);
+  if (res?.ok) {
+    p3vmCustomVibes.push({ label: lbl, candidateId: res.candidateId, slotId: null });
+    if (el) el.remove();
+    if (!document.getElementById('p3vm-pending').children.length)
+      document.getElementById('p3vm-pending-wrap').style.display = 'none';
+    _ensureCustomPill(lbl, true);
+    _refreshMySlots();
+    if (currentRestaurant) _refreshScores(currentRestaurant.id);
+  } else {
+    if (el) { el.style.opacity = '1'; el.style.pointerEvents = 'auto'; }
+    if (res?.error === 'SLOT_CAP_REACHED') { _noteCapBlocked(lbl); _refreshMySlots().then(() => _openReplaceSheet({ kind: 'candidate', vibe: lbl, display: _p3Disp(lbl) })); }
+    else if (res?.error === 'CANDIDATE_RATE_LIMIT_EXCEEDED') _showVoteToast('Daily limit reached');
+    else console.warn('[vibe] join pending failed:', res?.error);
+  }
+}
+
+// Shadow-score refresh — fire-and-forget, throttled server-side, never blocks voting.
+function _refreshScores(rid) {
+  if (!rid || !supabaseReady()) return;
+  try { sb.rpc('refresh_vibe_scores', { p_restaurant_id: rid }).catch(() => {}); } catch (_) {}
 }
 
 // City dropdown

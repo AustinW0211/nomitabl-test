@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>NomiTabl v10.3</title>
+<title>NomiTabl v10.4</title>
 <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300&family=Just+Another+Hand&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -8587,17 +8587,19 @@ async function _renderP3ModalFromServer(rid) {
     // ── challengers: rotated for discovery; white neutral / black = my support ──
     const rows = _rotateChallengers(data.challengers || [], n);
     const moreEl = document.getElementById('p3vm-more');
-    // explicit rows of three: the layout IS the rotation rule (long labels ellipsize, never wrap)
-    moreEl.style.display = 'grid';
-    moreEl.style.gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';
+    // The rotation rule governs ORDER (3 lower → 3 top → alternating groups), not a rigid
+    // column count: pills flow naturally and a row may hold two when three won't fit —
+    // readable labels and comfortable tap targets over strict grouping (ruling, Sep 23).
+    moreEl.style.display = 'flex';
+    moreEl.style.flexWrap = 'wrap';
     moreEl.style.gap = '8px';
-    moreEl.innerHTML = rows.map(row => row.map(c => {
+    moreEl.innerHTML = rows.flat().map(c => {
       const lbl = c.label.toLowerCase();
       p3vmDisplayOrder.push({ label: lbl, candidateId: null });
-      return `<div id="p3vm-more-${_p3Key(lbl)}" onclick="toggleP3AddVibe('${lbl.replace(/'/g,"\\'")}',this)" title="${_p3Disp(lbl)}"
-        style="padding:6px 10px;border-radius:20px;border:1px solid black;background:white;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;">
-        <p class="fi" style="font-size:11px;color:black;letter-spacing:0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;">${_p3Disp(lbl)}</p></div>`;
-    }).join('')).join('');
+      return `<div id="p3vm-more-${_p3Key(lbl)}" onclick="toggleP3AddVibe('${lbl.replace(/'/g,"\\'")}',this)"
+        style="padding:6px 14px;border-radius:20px;border:1px solid black;background:white;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
+        <p class="fi" style="font-size:11px;color:black;letter-spacing:0.5px;white-space:nowrap;">${_p3Disp(lbl)}</p></div>`;
+    }).join('');
 
     // ── pending community candidates (✦, not rotated); mine become ✦ slot pills via R1 ──
     const displayed = new Set(p3vmDisplayOrder.map(d => d.label));

@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>NomiTabl v10</title>
+<title>NomiTabl v10.3</title>
 <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300&family=Just+Another+Hand&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1275,6 +1275,7 @@ const RESTAURANTS_FALLBACK = [
 ];
 
 let restaurants = []; // populated by loadRestaurants() on app init
+let _restaurantsReady = null; // promise: resolves when loadRestaurants() completes (Let's Vibe awaits it)
 let currentRestaurant = null;
 let matchedRestaurants = [];
 let currentCardIndex = 0;
@@ -6035,9 +6036,18 @@ const container   = document.getElementById('tags-container');
 })();
 
 
-function _letsVibeTap() {
+async function _letsVibeTap() {
   const active = selected.size > 0 || !!activeSearchTerm || !!pinnedRestaurant;
   if (!active) return;
+  // Loading-race guard: never build the results screen before the restaurant list exists
+  // (a fast first tap used to produce an empty "1/0" carousel).
+  if (!restaurants.length && _restaurantsReady) {
+    const btn = document.getElementById('lets-vibe-btn');
+    if (btn) { btn.style.opacity = '0.6'; btn.style.pointerEvents = 'none'; }
+    try { await _restaurantsReady; } catch (_) {}
+    if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+    if (!restaurants.length) return;   // still nothing (offline/fallback failure) — stay on P1
+  }
   populatePage2();
   navigateSwipe('page2');
 }
@@ -7127,7 +7137,8 @@ searchInput.addEventListener('keydown', e => {
 // loadRestaurants must complete before the app is interactive.
 // On Supabase success: real data. On failure: silent fallback to mock.
 (async function initApp() {
-  await loadRestaurants();
+  _restaurantsReady = loadRestaurants();
+  await _restaurantsReady;
   document.getElementById('screen-starter').classList.add('active');
 })();
 
@@ -8184,6 +8195,7 @@ async function _refreshMySlots(prefetched) {
     const slotLabels = new Set(p3vmSlots.map(s => (s.label || '').toLowerCase()));
     // Every slot the identity holds must be VISIBLE (what you see = what you hold):
     // intents → custom entries (survive reload — G4); supports not on screen → injected pills
+    const featuredLabels = new Set((typeof p3vmFeatured !== 'undefined' ? p3vmFeatured : []).map(f => f.label.toLowerCase()));
     p3vmSlots.forEach(s => {
       const lbl = (s.label || '').toLowerCase();
       if (s.kind === 'pending_intent') {
@@ -8191,9 +8203,15 @@ async function _refreshMySlots(prefetched) {
         if (!entry) { entry = { label: lbl, candidateId: s.candidate_id, slotId: s.slot_id }; p3vmCustomVibes.push(entry); }
         else { entry.candidateId = entry.candidateId || s.candidate_id; entry.slotId = s.slot_id; }
         _ensureCustomPill(lbl, true);
-      } else {
+      } else if (!featuredLabels.has(lbl)) {      // featured supports render RED on the featured pill — never duplicated below
         _ensureCustomPill(lbl, false);
       }
+    });
+    // prune INJECTED support pills whose slot no longer exists (server-rendered pills always stay)
+    document.querySelectorAll('[id^="p3vm-more-"][data-injected="1"]').forEach(pill => {
+      const p = pill.querySelector('p'); if (!p) return;
+      const lbl = p.textContent.trim().toLowerCase();
+      if (!slotLabels.has(lbl) && !p3vmCustomVibes.some(c => c.label === lbl)) pill.remove();
     });
     _updateSlotCounter();
     // Drop custom entries whose intent vanished server-side (revoked elsewhere)
@@ -8233,7 +8251,18 @@ function _repaintVibeSelections() {
 // Create a custom pill in the more-section if absent (reload path).
 function _ensureCustomPill(lbl, pending) {
   const safeId = `p3vm-more-${lbl.replace(/[\s&]/g,'_')}`;
-  if (document.getElementById(safeId)) return;
+  const existing = document.getElementById(safeId);
+  if (existing) {
+    // an intent landing on an already-rendered challenger pill: mark it ✦ so the user can tell
+    // "my pending intent" from "my support" (deselect routes to revoke, not remove:support)
+    if (pending && !existing.querySelector('span')) {
+      const star = document.createElement('span');
+      star.style.cssText = 'font-size:9px;color:rgba(0,0,0,0.25);flex-shrink:0;';
+      star.textContent = '\u2726';
+      existing.appendChild(star);
+    }
+    return;
+  }
   const moreEl = document.getElementById('p3vm-more');
   if (!moreEl) return;
   // Replace the empty-state message if it's the only thing there
@@ -8241,6 +8270,7 @@ function _ensureCustomPill(lbl, pending) {
   const disp = lbl.replace(/\b\w/g, c => c.toUpperCase());
   const pill = document.createElement('div');
   pill.id = safeId;
+  pill.dataset.injected = '1';
   pill.onclick = function() { toggleP3AddVibe(lbl, this); };
   pill.style.cssText = 'padding:6px 14px;border-radius:20px;border:1px solid black;background:black;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;';
   pill.innerHTML = `<p class="fi" style="font-size:11px;color:white;letter-spacing:0.5px;white-space:nowrap;">${disp}</p>` +
@@ -8532,7 +8562,7 @@ function _rotateChallengers(challengers, n) {
                    : [...take(P, L, 2), ...take(L, P, 1)]);
     flip = !flip;
   }
-  return rows.flat().filter(Boolean);
+  return rows.map(r => r.filter(Boolean)).filter(r => r.length);   // rows of ≤3, in rule order
 }
 
 async function _renderP3ModalFromServer(rid) {
@@ -8555,18 +8585,23 @@ async function _renderP3ModalFromServer(rid) {
     }).join('') || `<div class="fi" style="font-size:11px;color:rgba(0,0,0,0.5);font-style:italic;padding:6px 0;">no featured vibes yet</div>`;
 
     // ── challengers: rotated for discovery; white neutral / black = my support ──
-    const ordered = _rotateChallengers(data.challengers || [], n);
+    const rows = _rotateChallengers(data.challengers || [], n);
     const moreEl = document.getElementById('p3vm-more');
-    moreEl.innerHTML = ordered.map(c => {
+    // explicit rows of three: the layout IS the rotation rule (long labels ellipsize, never wrap)
+    moreEl.style.display = 'grid';
+    moreEl.style.gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';
+    moreEl.style.gap = '8px';
+    moreEl.innerHTML = rows.map(row => row.map(c => {
       const lbl = c.label.toLowerCase();
       p3vmDisplayOrder.push({ label: lbl, candidateId: null });
-      return `<div id="p3vm-more-${_p3Key(lbl)}" onclick="toggleP3AddVibe('${lbl.replace(/'/g,"\\'")}',this)"
-        style="padding:6px 14px;border-radius:20px;border:1px solid black;background:white;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;">
-        <p class="fi" style="font-size:11px;color:black;letter-spacing:0.5px;white-space:nowrap;">${_p3Disp(lbl)}</p></div>`;
-    }).join('');
+      return `<div id="p3vm-more-${_p3Key(lbl)}" onclick="toggleP3AddVibe('${lbl.replace(/'/g,"\\'")}',this)" title="${_p3Disp(lbl)}"
+        style="padding:6px 10px;border-radius:20px;border:1px solid black;background:white;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;">
+        <p class="fi" style="font-size:11px;color:black;letter-spacing:0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;">${_p3Disp(lbl)}</p></div>`;
+    }).join('')).join('');
 
     // ── pending community candidates (✦, not rotated); mine become ✦ slot pills via R1 ──
-    const others = (data.pending || []).filter(p => !p.my_intent);
+    const displayed = new Set(p3vmDisplayOrder.map(d => d.label));
+    const others = (data.pending || []).filter(p => !p.my_intent && !displayed.has((p.label || '').toLowerCase()));
     const pendWrap = document.getElementById('p3vm-pending-wrap');
     const pendEl = document.getElementById('p3vm-pending');
     if (others.length) {

@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>NomiTabl v10.4</title>
+<title>NomiTabl v10.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300&family=Just+Another+Hand&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -3014,6 +3014,12 @@ function p3WalkinToggle(mode) {
   const isReso = (_slotStats && _slotStats.mode === 'reso') ||
                  (!_slotStats && isDinner && !!r.reso_note && (r.reso_reports || 0) >= 5);
 
+  // file 90: no current estimate → historical average (window or all-time), muted, with its age
+  const _walkHist = (mins == null)
+    ? _reportHistory(_slotStats, isReso ? 'reso' : 'walkin', isReso ? 'reso_hist_days' : 'walkin_hist_mins')
+    : null;
+  if (_walkHist) mins = _walkHist.value;
+
   // Title: walk-in or reservation
   const title = document.getElementById('p3-walkin-title');
   if (title) title.textContent = isReso ? 'reservation' : 'walk - in';
@@ -3043,6 +3049,7 @@ function p3WalkinToggle(mode) {
     if (minsEl) { minsEl.textContent = display; minsEl.style.fontSize = '32px'; minsEl.style.letterSpacing = display.length >= 4 ? '0px' : '3.2px'; }
     if (unitEl) { unitEl.querySelector('p').textContent = unit; unitEl.style.left = leftPos; }
   }
+  if (minsEl) minsEl.style.color = _walkHist ? 'rgba(0,0,0,0.42)' : 'black';   // muted = historical, not current
 
   // Subtitle
   const sub = document.getElementById('p3-walkin-subtitle');
@@ -3059,7 +3066,8 @@ function p3WalkinToggle(mode) {
       const subWrap = sub.parentElement;
       if (subWrap) { subWrap.style.transform = 'translateY(-50%)'; subWrap.style.top = '92.5px'; }
     } else {
-      sub.textContent = 'avg wait · community reported';
+      sub.textContent = _walkHist ? `avg wait · reported ${_walkHist.ageText}`
+        : (mins == null ? 'no reports yet' : 'avg wait · community reported');
       sub.style.whiteSpace = 'nowrap';
       sub.style.letterSpacing = '0';
       const subWrap = sub.parentElement;
@@ -3071,12 +3079,15 @@ function p3WalkinToggle(mode) {
   const repEl = document.getElementById('p3-walkin-reports');
   if (repEl) {
     if (_slotStats) {
-      const wCount = _slotStats.mode === 'reso'
-        ? (_slotStats.reso_leadtime_count ?? 0)
-        : (_slotStats.walkin_family_count != null
-            ? _slotStats.walkin_family_count
-            : (() => { const w=(_slotStats.walkin_weight||0)+(_slotStats.reso_rec_weight||0); return w>0?Math.max(1,Math.round(w/0.6)):0; })());
-      repEl.textContent = wCount + ' reports';
+      // file 90: ACTUAL matching reports across ALL ages — the count never drops to 0 as reports age
+      const allN = _slotStats.mode === 'reso' ? _slotStats.reso_report_count_all : _slotStats.walkin_report_count_all;
+      const wCount = allN != null ? allN
+        : (_slotStats.mode === 'reso'
+            ? (_slotStats.reso_leadtime_count ?? 0)
+            : (_slotStats.walkin_family_count != null
+                ? _slotStats.walkin_family_count
+                : (() => { const w=(_slotStats.walkin_weight||0)+(_slotStats.reso_rec_weight||0); return w>0?Math.max(1,Math.round(w/0.6)):0; })()));
+      repEl.textContent = wCount + (wCount === 1 ? ' report' : ' reports');
     } else {
       repEl.textContent = '0 reports';
     }
@@ -3476,6 +3487,38 @@ function normaliseReportValue(val) {
 // Falls back silently — cards keep showing cached/seed data if RPC unavailable.
 const _reportStatsCache = {}; // { "id-lunch-weekday": { mode, walkin_mins, ... } }
 
+// Step-9 (file 90): report HISTORY layer. When no CURRENT estimate exists, the backend exposes a
+// historical weighted average (*_hist_*), the latest contributing timestamp (*_latest_at) and the
+// ACTUAL all-ages report count (*_report_count_all). We show the average muted with an honest
+// age caption — never as a current number. "today/yesterday" use Vancouver CALENDAR dates.
+function _reportHistory(stats, family, valueKey) {
+  if (!stats) return null;
+  const v = stats[valueKey];
+  if (v == null) return null;
+  return { value: v, ageText: _reportAgeText(stats[family + '_latest_at']) };
+}
+function _vanDate(d) {   // 'YYYY-MM-DD' in America/Vancouver
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Vancouver', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+}
+function _reportAgeText(iso) {
+  if (!iso) return 'a while ago';
+  const then = new Date(iso); if (isNaN(then)) return 'a while ago';
+  const dToday = _vanDate(new Date()), dThen = _vanDate(then);
+  if (dThen === dToday) return 'today';
+  const dYest = _vanDate(new Date(Date.now() - 86400000));
+  if (dThen === dYest) return 'yesterday';
+  const days = Math.round((Date.now() - then.getTime()) / 86400000);
+  if (days < 14) return `${days} days ago`;
+  if (days < 60) return `${Math.round(days / 7)} wks ago`;
+  if (days < 365) return `${Math.round(days / 30)} mo ago`;
+  return `${Math.round(days / 365)} yr ago`;
+}
+function _reportCountText(stats, family, fallbackCount) {
+  const n = stats && stats[family + '_report_count_all'] != null ? stats[family + '_report_count_all'] : fallbackCount;
+  if (n == null) return null;
+  return `${n} report${n === 1 ? '' : 's'}`;
+}
+
 async function loadReportStats(restaurantId, mealPeriod, dayType) {
   if (!supabaseReady()) return;
   try {
@@ -3758,10 +3801,13 @@ function p3ParkingToggle(mode) {
   const _parkStats2    = _reportStatsCache[_parkSlotKey2];
 
   // Read parking mins from stats cache first — prevents cross-slot contamination on toggle
-  const mins = _parkStats2 ? (_parkStats2.parking_mins ?? null)
+  let mins = _parkStats2 ? (_parkStats2.parking_mins ?? null)
     : (parkingIsWeekend
         ? (isDinner ? r.parking_dinner_we ?? null : r.parking_lunch_we ?? null)
         : (isDinner ? r.parking_dinner_wd ?? null : r.parking_lunch_wd ?? null));
+  // file 90: parking has its OWN history (independent freshness from walk-in)
+  const _parkHist = (mins == null) ? _reportHistory(_parkStats2, 'parking', 'parking_hist_mins') : null;
+  if (_parkHist) mins = _parkHist.value;
   const reports = null; // no longer used — replaced by cache below
 
   // Title from slot-specific cache only — never from global r.parking_type
@@ -3791,17 +3837,23 @@ function p3ParkingToggle(mode) {
     }
     minsEl.textContent = display;
     minsEl.style.letterSpacing = display.length >= 4 ? '0px' : '3.2px';
+    minsEl.style.color = _parkHist ? 'rgba(0,0,0,0.42)' : 'black';   // muted = historical
     if (unitEl) { unitEl.querySelector('p').textContent = unit; unitEl.style.left = leftPos; }
   }
+  const _parkSub = document.getElementById('p3-parking-subtitle');
+  if (_parkSub) _parkSub.textContent = _parkHist ? `avg to find · reported ${_parkHist.ageText}`
+    : (mins == null ? 'no reports yet' : 'avg to find · community reported');
 
   // Parking count from parking_weight — type-specific, no walk-in contamination
   const repEl = document.getElementById('p3-parking-reports');
   if (repEl) {
     if (_parkStats2) {
-      const pCount = _parkStats2.parking_count != null
-        ? _parkStats2.parking_count
-        : (_parkStats2.parking_weight > 0 ? Math.max(1, Math.round(_parkStats2.parking_weight / 0.6)) : 0);
-      repEl.textContent = pCount + ' reports';
+      // file 90: all-ages actual count (parking has its own)
+      const pCount = _parkStats2.parking_report_count_all != null ? _parkStats2.parking_report_count_all
+        : (_parkStats2.parking_count != null
+            ? _parkStats2.parking_count
+            : (_parkStats2.parking_weight > 0 ? Math.max(1, Math.round(_parkStats2.parking_weight / 0.6)) : 0));
+      repEl.textContent = pCount + (pCount === 1 ? ' report' : ' reports');
     } else {
       repEl.textContent = '0 reports';
     }

@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>NomiTabl v10.6</title>
+<title>NomiTabl v10.7</title>
 <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300&family=Just+Another+Hand&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1103,9 +1103,64 @@ function updateIdentityCard() {
     }
   });
 }
+// Dev/test sign-in (email + password) — enabled ONLY by ?devlogin=1 in the URL. Purpose:
+// automated / agent testing of signed-in flows without routing through Google OAuth (bot
+// detection, 2FA). Uses Supabase's Email provider with pre-created test accounts. Same
+// onAuthStateChange handles everything after sign-in (identity card, migration, lanes).
+const _DEV_LOGIN = (() => { try { return new URLSearchParams(location.search).has('devlogin'); } catch (_) { return false; } })();
+
 function handleIdentityTap() {
-  if (currentUser) { if (confirm('Sign out of NomiTabl?')) signOut(); }
-  else { signInWithGoogle(); }
+  if (currentUser) { if (confirm('Sign out of NomiTabl?')) signOut(); return; }
+  if (_DEV_LOGIN) { _openDevLogin(); return; }
+  signInWithGoogle();
+}
+
+function _openDevLogin() {
+  let wrap = document.getElementById('dev-login-backdrop');
+  if (!wrap) {
+    wrap = document.createElement('div');
+    wrap.id = 'dev-login-backdrop';
+    wrap.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9500;';
+    wrap.onclick = e => { if (e.target === wrap) wrap.style.display = 'none'; };
+    wrap.innerHTML = `<div style="background:white;border-radius:20px;width:300px;padding:22px 20px;">
+      <p class="fa" style="font-weight:600;font-size:18px;color:black;">Test sign-in</p>
+      <p class="fi" style="font-size:11px;color:rgba(0,0,0,0.55);margin-top:4px;">Email + password (dev accounts only)</p>
+      <input id="dev-login-email" type="email" placeholder="email" autocomplete="username"
+        style="width:100%;margin-top:14px;padding:10px 12px;border:1px solid #ccc;border-radius:12px;font-size:14px;">
+      <input id="dev-login-pass" type="password" placeholder="password" autocomplete="current-password"
+        style="width:100%;margin-top:8px;padding:10px 12px;border:1px solid #ccc;border-radius:12px;font-size:14px;">
+      <p id="dev-login-err" class="fi" style="display:none;font-size:11px;color:#b00020;margin-top:8px;"></p>
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <div onclick="document.getElementById('dev-login-backdrop').style.display='none'; signInWithGoogle();"
+          style="flex:1;padding:11px 0;border-radius:14px;border:1px solid #ccc;text-align:center;cursor:pointer;"><p class="fi" style="font-size:12px;color:black;">Use Google</p></div>
+        <div id="dev-login-go" onclick="_devLoginSubmit()"
+          style="flex:1;padding:11px 0;border-radius:14px;background:black;text-align:center;cursor:pointer;"><p class="fi" style="font-size:12px;color:white;font-weight:600;">Sign in</p></div>
+      </div></div>`;
+    document.body.appendChild(wrap);
+    document.getElementById('dev-login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') _devLoginSubmit(); });
+  }
+  const err = document.getElementById('dev-login-err'); err.style.display = 'none'; err.textContent = '';
+  wrap.style.display = 'flex';
+  setTimeout(() => document.getElementById('dev-login-email')?.focus(), 50);
+}
+
+async function _devLoginSubmit() {
+  const email = (document.getElementById('dev-login-email')?.value || '').trim();
+  const password = document.getElementById('dev-login-pass')?.value || '';
+  const err = document.getElementById('dev-login-err');
+  const btn = document.getElementById('dev-login-go');
+  if (!email || !password) { err.textContent = 'Email and password required'; err.style.display = 'block'; return; }
+  btn.style.opacity = '0.6'; btn.style.pointerEvents = 'none';
+  try {
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) { err.textContent = error.message; err.style.display = 'block'; return; }
+    document.getElementById('dev-login-backdrop').style.display = 'none';
+    // onAuthStateChange (SIGNED_IN) takes it from here: identity card, migration, lanes
+  } catch (e) {
+    err.textContent = e.message || 'Sign-in failed'; err.style.display = 'block';
+  } finally {
+    btn.style.opacity = '1'; btn.style.pointerEvents = 'auto';
+  }
 }
 
 // Minimal Supabase REST helper — no SDK needed

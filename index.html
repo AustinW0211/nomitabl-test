@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>NomiTabl v10.7</title>
+<title>NomiTabl v10.8</title>
 <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Mono:wght@300&family=Just+Another+Hand&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1434,7 +1434,9 @@ async function loadRestaurants() {
 
 
 function getSelectedVibeLabels() {
-  return [...selected].map(i => VIBE_CARDS[i]?.label.trim().toLowerCase()).filter(Boolean);
+  // v10.8 F1: card labels carry DOUBLE spaces for two-line pills ('Date  Night'); collapse them so P2 vibe scoring
+  // compares 'date night' with 'date night' (before this, 10 of 13 cards could never match a restaurant tag).
+  return [...selected].map(i => VIBE_CARDS[i]?.label.replace(/\s+/g,' ').trim().toLowerCase()).filter(Boolean);
 }
 
 // ── Shared hours helper ──────────────────────────────────────────────
@@ -1708,6 +1710,8 @@ let pinnedRestaurant = null;  // restaurant pinned from search — always shown 
 let activeCuisines   = [];  // parsed broad cuisines from phrase
 let activeSpecialties = []; // parsed dish/specialty terms
 let activeSearchVibes = []; // parsed vibe terms from phrase
+let activeSearchParsed = false; // v10.8 F2: true when the parser consumed the phrase (cuisine/specialty/vibe found)
+let searchNotice = '';          // v10.8 F3/F4: one-line honesty notice rendered on P2 ('' = none)
 
 // ── Phrase parser ─────────────────────────────────────────────
 const FILLER_WORDS = new Set([
@@ -1932,15 +1936,21 @@ function parseSearchPhrase(raw) {
     }
   }
 
-  // --- Vibes: exact word match ---
+  // --- Vibes: bigrams first (consuming both words), then single words (v10.8 F5: 'date night' no longer also
+  //     triggers 'late night' through the loose word 'night')
+  const vibeUsed = new Set();
   for (let i = 0; i < words.length; i++) {
-    const w = words[i];
-    const bg = i < words.length - 1 ? w + ' ' + words[i+1] : null;
-    for (const [word, vibeLabels] of Object.entries(VIBE_WORD_MAP)) {
-      if (w === word || (bg && bg === word)) {
-        vibeLabels.forEach(v => { if (!found.vibes.includes(v)) found.vibes.push(v); });
-      }
-    }
+    if (vibeUsed.has(i)) continue;
+    const bg = i < words.length - 1 ? words[i] + ' ' + words[i+1] : null;
+    const labels = VIBE_WORD_MAP[words[i]] || (bg && VIBE_WORD_MAP[bg]) || null;
+    if (!labels) continue;
+    labels.forEach(v => {
+      if (!found.vibes.includes(v)) found.vibes.push(v);
+      // if this label continues with the NEXT typed word ('date' → 'date night', next word 'night'), consume it
+      const lw = v.split(' '); const k = lw.indexOf(words[i]);
+      if (k >= 0 && lw[k+1] && words[i+1] === lw[k+1]) vibeUsed.add(i+1);
+    });
+    if (bg && VIBE_WORD_MAP[bg]) vibeUsed.add(i+1);
   }
 
   return found;
@@ -1966,6 +1976,7 @@ function applyParsedSearch(parsed) {
 function findMatchingRestaurants() {
   const vibes = getSelectedVibeLabels();
   let pool = restaurants;
+  searchNotice = '';   // v10.8: recomputed on every call
 
   // Filter by cuisines
   if (activeCuisines.length > 0) {
@@ -1988,12 +1999,19 @@ function findMatchingRestaurants() {
         );
       })
     );
-    // Fall back to full pool if specialty filter returns nothing
-    if (specPool.length > 0) pool = specPool;
+    // Fall back to full pool if specialty filter returns nothing — and SAY SO (v10.8 F3)
+    if (specPool.length > 0) { pool = specPool; }
+    else {
+      // say what is ACTUALLY shown: the rest of the active filters, or everything if none remain
+      const rest = activeCuisines.length ? activeCuisines.map(c => c.toLowerCase()).join(' / ') + ' spots' : (vibes.length ? 'your vibe matches' : 'everything');
+      searchNotice = `no ${activeSpecialties.map(s => s.toLowerCase()).join(' / ')} spots yet — showing ${rest}`;
+    }
   }
 
-  // Fall back to raw keyword search if parser produced nothing useful
-  if (activeCuisines.length === 0 && activeSpecialties.length === 0 && activeSearchTerm) {
+  // Fall back to raw keyword search ONLY if the parser produced nothing at search time (v10.8 F2).
+  // Before: any search that parsed only vibes ('romantic'), or any P2 pill removal that emptied cuisines/specialties,
+  // re-armed the raw phrase as a substring filter and wiped the pool.
+  if (!activeSearchParsed && activeCuisines.length === 0 && activeSpecialties.length === 0 && activeSearchTerm) {
     const term = activeSearchTerm.toLowerCase().trim();
     pool = pool.filter(r =>
       r.name?.toLowerCase().includes(term) ||
@@ -2018,6 +2036,21 @@ function findMatchingRestaurants() {
   }
 
   return pool;
+}
+
+// v10.8: one-line notice under the P2 pill rows (created once; hidden when empty)
+function renderSearchNotice() {
+  let el = document.getElementById('p2-search-notice');
+  if (!el) {
+    const anchor = document.getElementById('p2-tags');
+    if (!anchor || !anchor.parentNode) return;
+    el = document.createElement('p');
+    el.id = 'p2-search-notice'; el.className = 'fi';
+    el.style.cssText = 'font-size:10px;letter-spacing:0.6px;color:rgba(255,255,255,0.75);margin:6px 0 0 2px;line-height:1.3;';
+    anchor.parentNode.insertBefore(el, anchor.nextSibling);
+  }
+  el.textContent = searchNotice;
+  el.style.display = searchNotice ? 'block' : 'none';
 }
 
 function removeVibeTag(vibeLabel, e) {
@@ -5152,7 +5185,11 @@ function applyVibeModal() {
 
 function populatePage2() {
   matchedRestaurants = findMatchingRestaurants();
-  if (matchedRestaurants.length===0) matchedRestaurants = restaurants.slice(0,8);
+  if (matchedRestaurants.length===0) {   // v10.8 F4: keep the fallback, stop hiding it
+    matchedRestaurants = restaurants.slice(0,8);
+    searchNotice = 'nothing matched all of that — here are a few spots';   // the general fallback REPLACES any earlier notice
+  }
+  renderSearchNotice();
   // Reset refresh cap — new restaurant set means all cards need fresh vote data
   Object.keys(_p2RefreshCap).forEach(k => delete _p2RefreshCap[k]);
 
@@ -6184,6 +6221,7 @@ function clearVibeSearch() {
   if (clear) clear.style.display = 'none';
   pinnedRestaurant = null;   // clear pinned restaurant when X is tapped
   activeSearchTerm = '';     // clear active search term so CTA hides if no bubbles
+  activeSearchParsed = false; searchNotice = '';   // v10.8
   searchInput.style.color = '';
   searchInput.style.fontWeight = '';
   updateCtaVisibility();
@@ -6220,6 +6258,7 @@ function executeSearch(q) {
   if (clear) clear.style.display = 'flex'; // keep X visible so user can clear
 
   const parsed = parseSearchPhrase(term);
+  activeSearchParsed = parsed.cuisines.length > 0 || parsed.specialties.length > 0 || parsed.vibes.length > 0;   // v10.8 F2
   applyParsedSearch(parsed);
 
   updateCtaVisibility(); // CTA stays lit via activeSearchTerm

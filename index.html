@@ -148,7 +148,7 @@ body { background: #000; display: flex; justify-content: flex-start; align-items
       <div style="position:absolute;left:calc(50% - 179.5px);top:25px;transform:translateY(-50%);white-space:nowrap;">
         <span style="font-family:'Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:2px;color:white;">So...what we </span><span style="font-family:'Inter',sans-serif;font-weight:600;font-size:20px;letter-spacing:2px;background:linear-gradient(90deg,rgb(174,0,255) 0%,rgb(0,255,106) 29.808%,rgb(245,90,24) 66.827%,rgb(255,0,153) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Vibing &gt;:)...</span>
       </div>
-      <div style="position:absolute;left:calc(50% + 0.5px);top:calc(50% - 2px);transform:translate(-50%,-50%);width:364px;">
+      <div style="position:absolute;left:calc(50% + 0.5px);top:calc(50% - 2px);transform:translate(-50%,-50%);width:364px;z-index:30;">
       <div id="search-suggest-dropdown" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:white;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.18);z-index:200;overflow:hidden;max-height:260px;overflow-y:auto;-webkit-overflow-scrolling:touch;"></div>
       <div style="background:white;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:32px;width:100%;overflow:visible;">
         <svg style="flex-shrink:0;width:28px;height:28px;" fill="none" viewBox="0 0 28 28">
@@ -1711,6 +1711,7 @@ let activeCuisines   = [];  // parsed broad cuisines from phrase
 let activeSpecialties = []; // parsed dish/specialty terms
 let activeSearchVibes = []; // parsed vibe terms from phrase
 let activeSearchParsed = false; // v10.8 F2: true when the parser consumed the phrase (cuisine/specialty/vibe found)
+let lastCommittedPhrase = '';   // v10.8 F12: the phrase whose parse currently owns the typed state; survives navigation
 let searchNotice = '';          // v10.8 F3/F4: one-line honesty notice rendered on P2 ('' = none)
 
 // ── Phrase parser ─────────────────────────────────────────────
@@ -1960,6 +1961,9 @@ function applyParsedSearch(parsed) {
   activeCuisines   = parsed.cuisines;
   activeSpecialties = parsed.specialties;
   activeSearchVibes = parsed.vibes;
+  // v10.8 F9: typed vibe selections belong to the phrase that produced them — a NEW phrase replaces them.
+  // Bubble taps (in selectedWrappers) are explicit and persist.
+  _clearTyped();
 
   // Apply vibe matches to the card selector if high-confidence
   parsed.vibes.forEach(vibeFragment => {
@@ -5037,9 +5041,11 @@ function openVibeModal() {
   document.getElementById('vibe-slots-left').textContent = slotsLeft;
   const container = document.getElementById('vibe-modal-bubbles');
 
-  // A display label is selected if a wrapper with that exact label is in selectedWrappers
+  // A display label is selected if its CARD is selected — tapped (any alias) or typed (v10.8 F12)
   function isDisplayLabelSelected(displayLabel) {
-    return [...selectedWrappers].some(w => w.dataset.label === displayLabel);
+    if ([...selectedWrappers].some(w => w.dataset.label === displayLabel)) return true;
+    const idx = _idxOfDisplayLabel(displayLabel);
+    return idx >= 0 && selected.has(idx);
   }
 
   container.innerHTML = Object.entries(VIBE_CATEGORIES).map(([cat, vibes]) => `
@@ -5083,7 +5089,7 @@ function activateBubble(label) {
     // Wire up interactions
     const cardIdx = parseInt(w.dataset.entryIdx);
     w.addEventListener('mouseenter', () => {
-      if (selectedWrappers.has(w) || selectedWrappers.size >= 3) return;
+      if (selectedWrappers.has(w) || selected.size >= 3) return;
       w.style.transform = 'scale(1.05)';
     });
     w.addEventListener('mouseleave', () => {
@@ -5096,7 +5102,7 @@ function activateBubble(label) {
         const stillSelected = [...selectedWrappers].some(x => parseInt(x.dataset.entryIdx) === cardIdx);
         if (!stillSelected) selected.delete(cardIdx);
       } else {
-        if (selectedWrappers.size >= 3) return;
+        if (selected.size >= 3) return;
         selectedWrappers.add(w);
         selected.add(cardIdx);
       }
@@ -5121,44 +5127,41 @@ function getLabelIdx(displayLabel) {
 }
 
 function toggleModalVibe(vibe, slotsLeft) {
-  const key = vibe.replace(/[\s&]/g,'_');
-  const el = document.getElementById('modal-vibe-'+key);
-  const inPending = modalPendingSelection.has(vibe);
-  const inSelected = [...selectedWrappers].some(w => w.dataset.label === vibe);
-
-  if (inPending || inSelected) {
-    // Deselect
+  // v10.8 F13: the picker is CARD-based end to end (it already DISPLAYS by card). Deselecting any highlighted option
+  // removes the card — every tapped alias wrapper, every pending alias label, the typed idx — then every option's
+  // appearance is recomputed from state, so an alias cannot stay lit and Apply cannot restore the removed card.
+  const idxV = _idxOfDisplayLabel(vibe);
+  const labelsOf = i => Object.values(VIBE_CATEGORIES).flat().filter(l => _idxOfDisplayLabel(l) === i);
+  const isOn = (idxV >= 0 && selected.has(idxV)) || modalPendingSelection.has(vibe);
+  if (isOn) {
+    if (idxV >= 0) { _deselectIdx(idxV); labelsOf(idxV).forEach(l => modalPendingSelection.delete(l)); }
     modalPendingSelection.delete(vibe);
-    const wrapper = [...selectedWrappers].find(w => w.dataset.label === vibe);
-    if (wrapper) {
-      selectedWrappers.delete(wrapper);
-      const cardIdx = parseInt(wrapper.dataset.entryIdx);
-      if (![...selectedWrappers].some(w => parseInt(w.dataset.entryIdx) === cardIdx)) selected.delete(cardIdx);
-    }
-    if (el) { el.style.background='white'; el.style.borderColor='black'; el.style.opacity='1'; el.querySelector('p').style.color='black'; }
   } else {
-    if (selectedWrappers.size >= 3) return;
+    if (idxV >= 0 && !selected.has(idxV) && selected.size >= 3) return;   // cap: only a NEW card is refused
     modalPendingSelection.add(vibe);
     const wrapper = [...document.querySelectorAll('.vibe-bubble-wrapper')]
       .find(w => w.dataset.label === vibe && w.dataset.inactive !== '1');
-    if (wrapper) {
-      selectedWrappers.add(wrapper);
-      selected.add(parseInt(wrapper.dataset.entryIdx));
-    }
-    if (el) { el.style.background='black'; el.style.borderColor='black'; el.style.opacity='1'; el.querySelector('p').style.color='white'; }
+    if (wrapper) { selectedWrappers.add(wrapper); selected.add(parseInt(wrapper.dataset.entryIdx)); }
+    else if (idxV >= 0) selected.add(idxV);
   }
-  // Grey out unselected pills when maxed, restore when not
-  const maxed = selectedWrappers.size >= 3;
-  document.querySelectorAll('[id^="modal-vibe-"]').forEach(pill => {
-    const isChosen = pill.style.background === 'black';
-    if (!isChosen) {
-      pill.style.opacity = maxed ? '0.3' : '1';
-      pill.style.cursor = maxed ? 'default' : 'pointer';
-      pill.style.borderColor = maxed ? '#ddd' : 'black';
-    }
-  });
   syncAllWrappers();
-  populatePage2();
+  _refreshModalOptions();
+  populatePage2();   // selections change IMMEDIATELY (as before F13) — P2 pills/results must follow, Apply or not
+}
+
+// every option's appearance from STATE (selected card, or pending label), plus the cap greying
+function _refreshModalOptions() {
+  const maxed = selected.size >= 3;
+  Object.values(VIBE_CATEGORIES).flat().forEach(l => {
+    const el = document.getElementById('modal-vibe-' + l.replace(/[\s&]/g,'_'));
+    if (!el) return;
+    const i = _idxOfDisplayLabel(l);
+    const on = (i >= 0 && selected.has(i)) || modalPendingSelection.has(l);
+    el.style.background = on ? 'black' : 'white'; el.style.borderColor = 'black';
+    el.style.opacity = (!on && maxed) ? '0.3' : '1'; el.style.cursor = (!on && maxed) ? 'default' : 'pointer';
+    const p = el.querySelector('p'); if (p) p.style.color = on ? 'white' : 'black';
+  });
+  const left = document.getElementById('vibe-slots-left'); if (left) left.textContent = Math.max(0, 3 - selected.size);
 }
 
 function closeVibeModal() {
@@ -5171,6 +5174,7 @@ function closeVibeModal() {
 }
 
 function applyVibeModal() {
+  // v10.8 F13: pending holds only what is still selected (card removals purge every alias label), so Apply adds, never restores
   modalPendingSelection.forEach(vibe => {
     // Find the bubble wrapper with this display label and add to selectedWrappers
     const wrapper = [...document.querySelectorAll('.vibe-bubble-wrapper')]
@@ -5191,9 +5195,9 @@ function applyVibeModal() {
 
 function populatePage2() {
   matchedRestaurants = findMatchingRestaurants();
-  if (matchedRestaurants.length===0) {   // v10.8 F4: keep the fallback, stop hiding it
+  if (matchedRestaurants.length===0) {   // v10.8: keep the general fallback (never a blank screen); no sentence (Austin, Sep 30)
     matchedRestaurants = restaurants.slice(0,8);
-    searchNotice = 'nothing matched all of that — here are a few spots';   // the general fallback REPLACES any earlier notice
+    searchNotice = '';   // and no stale specialty notice either — the list shown is not "italian spots"
   }
   renderSearchNotice();
   // Reset refresh cap — new restaurant set means all cards need fresh vote data
@@ -5605,12 +5609,9 @@ function navigate(screen) {
 
 // Swipe gesture navigation — horizontal slide
 function navigateSwipe(screen) {
-  if (screen === 'starter') {
-    activeSearchTerm = '';
-    activeCuisines = [];
-    activeSpecialties = [];
-    activeSearchVibes = [];
-  }
+  // v10.8 F12: BACK no longer clears the search. Phrase-owned state (typed vibes, parsed cuisines/specialties) belongs
+  // to the committed phrase and is cleared by the search X or replaced by a new phrase — never by navigation. This is
+  // what lets P2 edits survive "back → Let's Vibe" with an unchanged phrase. (Both callers of 'starter' are the P2 back.)
 
   const currentActive = document.querySelector('.screen.active');
   const currentId = currentActive ? currentActive.id.replace('screen-', '') : null;
@@ -5880,6 +5881,28 @@ const VIBE_BADGES = computeVibeBadges();
 
 const selected = new Set();
 const selectedWrappers = new Set(); // tracks individual wrapper elements for per-bubble visual state
+// ── SELECTION MODEL (v10.8 F12) — the one rule every path follows ─────────────────────────────────
+//   selected         = Set<card idx>  — what FILTERS. The union of tapped and typed.
+//   selectedWrappers = Set<element>   — TAPPED bubbles only. Several bubbles can share one card idx
+//                                       ('Date Night' and 'First Date' → 0); each tapped one is its own pill.
+//   typed(idx)       = selected.has(idx) && no tapped wrapper has idx — owned by the committed PHRASE:
+//                      replaced by a new phrase, cleared by the search X, never by navigation.
+//   glow / hover / the 3-cap are DERIVED from `selected`; a glowing typed bubble deselects on tap.
+//   P2 pills = tapped wrappers (by their own label) + typed idx (by card label); removing either updates `selected`.
+//   The P2 picker and the X button use the same helpers below — no path touches the sets by hand.
+function _idxTapped(idx) { return [...selectedWrappers].some(w => parseInt(w.dataset.entryIdx) === idx); }
+function _isTyped(idx)   { return selected.has(idx) && !_idxTapped(idx); }
+function _deselectIdx(idx) {                                   // remove a card entirely: every tapped wrapper + the idx
+  [...selectedWrappers].forEach(w => { if (parseInt(w.dataset.entryIdx) === idx) selectedWrappers.delete(w); });
+  selected.delete(idx);
+}
+function _clearTyped() { [...selected].forEach(i => { if (!_idxTapped(i)) selected.delete(i); }); }
+function _idxOfDisplayLabel(label) {                           // bubble label → card idx (wrapper first, then the card list)
+  const w = [...document.querySelectorAll('.vibe-bubble-wrapper')].find(x => x.dataset.label === label);
+  if (w) return parseInt(w.dataset.entryIdx);
+  const norm = s => (s || '').replace(/\s+/g,' ').trim().toLowerCase();
+  return VIBE_CARDS.findIndex(c => norm(c.label) === norm(label));
+}
 // Map card label (lowercase) → index for downstream matching
 const allBubbleEntries = VIBE_CARDS.map((c, i) => ({ label: c.label, isOriginal: true, idx: i }));
 
@@ -5890,8 +5913,8 @@ function syncAllWrappers() {
     const ws = allWrappers[i] || [];
     ws.forEach(w => {
       if (w.dataset.inactive === '1') return; // never touch inactive bubbles
-      const isSel = selectedWrappers.has(w);
-      const isMaxed = !isSel && selectedWrappers.size >= 3;
+      const isSel = selectedWrappers.has(w) || selected.has(i);   // v10.8 F11: tapped OR typed → looks selected
+      const isMaxed = !isSel && selected.size >= 3;                // the cap counts both
       w.style.opacity            = isMaxed ? '0.4' : '1';
       w.style.cursor             = isMaxed ? 'not-allowed' : 'pointer';
       w.style.animationPlayState = isSel ? 'paused' : 'running';
@@ -5969,7 +5992,7 @@ const CLUSTERS = [
     { label:'Late Night',     size:92,left:252, top:155,  idx:10, bg:G.lateNight },
     { label:'Feeling Cozy',     size:66,left:246, top:78,  idx:3, bg:G.cozy66 },
     { label:'__inactive__',     size:84,left:-29, top:170,  idx:7, bg:G.treatYou },
-    { label:'Romantic',     size:72,left:340, top:19,  idx:2, bg:G.gno },
+    { label:'Romantic',     size:72,left:340, top:19,  idx:0, bg:G.dateNight },   // v10.8 F12: was idx 2 (Girls Night Out); typed 'romantic' → Date Night
     { label:'Comfort Craving',     size:66,left:187, top:124,  idx:3, bg:G.cozy66 },
     { label:'Hangover Cure',     size:72,left:173, top:42,  idx:12, bg:G.hang },
     { label:'Recovery Mode',     size:84,left:100, top:89,  idx:12, bg:G.hang },
@@ -6114,7 +6137,7 @@ const container   = document.getElementById('tags-container');
 
     if (!isInactive) {
       wrapper.addEventListener('mouseenter', () => {
-        if (selectedWrappers.has(wrapper) || selectedWrappers.size >= 3) return;
+        if (selectedWrappers.has(wrapper) || selected.has(cardIdx) || selected.size >= 3) return;
         wrapper.style.transform = 'scale(1.05)';
       });
       wrapper.addEventListener('mouseleave', () => {
@@ -6127,8 +6150,12 @@ const container   = document.getElementById('tags-container');
           // Remove cardIdx from selected only if no other active wrapper with same idx is selected
           const stillSelected = [...selectedWrappers].some(w => parseInt(w.dataset.entryIdx) === cardIdx);
           if (!stillSelected) selected.delete(cardIdx);
+        } else if (_isTyped(cardIdx)) {
+          selected.delete(cardIdx);                       // a typed (glowing) bubble deselects on tap
         } else {
-          if (selectedWrappers.size >= 3) return;
+          // not selected, OR selected through ANOTHER tapped bubble with the same idx (an alias): add this one too —
+          // the cap applies only when this would occupy a NEW card
+          if (!selected.has(cardIdx) && selected.size >= 3) return;
           selectedWrappers.add(wrapper);
           selected.add(cardIdx);
         }
@@ -6184,7 +6211,23 @@ const container   = document.getElementById('tags-container');
 })();
 
 
+// v10.8 F9: the ONE place typed input becomes search state. Enter, Let's Vibe, and dropdown picks all call this.
+// Commits the CURRENT input if it differs from what was last committed (so a stale term is never reused).
+function commitTypedSearch() {
+  const input = document.getElementById('vibe-search');
+  const text = (input?.value || '').trim();
+  if (!text) return false;
+  if (pinnedRestaurant && text === pinnedRestaurant.name) return true;          // a pinned restaurant is already committed
+  if (text === activeSearchTerm) return true;                                    // already committed, nothing to redo
+  if (text === lastCommittedPhrase) { activeSearchTerm = text; return true; }    // unchanged phrase after navigation: keep P2 edits, do NOT re-parse
+  hideSuggestions();
+  executeSearch(text);
+  lastCommittedPhrase = text;
+  return true;
+}
+
 async function _letsVibeTap() {
+  commitTypedSearch();                                                           // F9: parse what is in the bar right now
   const active = selected.size > 0 || !!activeSearchTerm || !!pinnedRestaurant;
   if (!active) return;
   // Loading-race guard: never build the results screen before the restaurant list exists
@@ -6206,8 +6249,8 @@ function updateCtaVisibility() {
   if (!foot) return;
   const searchFilled = document.getElementById('vibe-search')?.value.trim().length > 0;
   const show   = selected.size > 0 || searchFilled || !!activeSearchTerm || !!pinnedRestaurant;
-  // Active = can actually navigate (search confirmed or bubbles selected, not just mid-typing)
-  const active = selected.size > 0 || !!activeSearchTerm || !!pinnedRestaurant;
+  // Active = a tap will navigate: bubbles, a committed search, a pin — or typed text (F9: the tap commits it)
+  const active = selected.size > 0 || !!activeSearchTerm || !!pinnedRestaurant || searchFilled;
   foot.style.opacity      = show ? '1' : '0';
   foot.style.pointerEvents = show ? 'all' : 'none';
   if (btn) {
@@ -6232,6 +6275,9 @@ function clearVibeSearch() {
   pinnedRestaurant = null;   // clear pinned restaurant when X is tapped
   activeSearchTerm = '';     // clear active search term so CTA hides if no bubbles
   activeSearchParsed = false; searchNotice = '';   // v10.8
+  // v10.8 F12: everything the PHRASE owned goes with it — typed vibes, parsed cuisines/specialties; taps stay
+  _clearTyped(); activeCuisines = []; activeSpecialties = []; activeSearchVibes = []; lastCommittedPhrase = '';
+  syncAllWrappers();
   searchInput.style.color = '';
   searchInput.style.fontWeight = '';
   updateCtaVisibility();
@@ -7248,22 +7294,16 @@ function selectSuggestion(type, value, e) {
     searchInput.blur();
     const clear2 = document.getElementById('vibe-search-clear');
     if (clear2) clear2.style.display = 'flex';
-    // Always set activeSearchTerm so CTA stays active
-    activeSearchTerm = value;
   }
 
+  // v10.8 F9: every non-restaurant pick is committed through the SAME path as Enter / Let's Vibe (before this,
+  // the dropdown applied the parse directly and never set activeSearchParsed → the raw-phrase fallback fired).
+  commitTypedSearch();
   if (type === 'vibe') {
-    const labelNorm = value.replace(/\s+/g,' ').trim().toLowerCase();
-    const wrapper = [...document.querySelectorAll('.vibe-bubble-wrapper')]
-      .find(w => w.dataset.label && w.dataset.label.replace(/\s+/g,' ').trim().toLowerCase() === labelNorm && w.dataset.inactive !== '1');
-    if (wrapper && selectedWrappers.size < 3) {
-      selectedWrappers.add(wrapper);
-      selected.add(parseInt(wrapper.dataset.entryIdx));
-      syncAllWrappers();
-    } else {
-      const parsed = parseSearchPhrase(value);
-      applyParsedSearch(parsed);
-    }
+    // v10.8 F11: a dropdown pick is a TYPED selection — it lives in `selected` only (commitTypedSearch put it there).
+    // The bubble glow is derived from `selected` in syncAllWrappers; `selectedWrappers` means "tapped, persists" and
+    // must NOT be touched here (that is what let a picked Date Night survive into the next phrase).
+    syncAllWrappers();
   } else if (type === 'cuisine') {
     if (!activeCuisines.includes(value)) activeCuisines.push(value);
   } else if (type === 'specialty') {
@@ -7280,7 +7320,7 @@ document.addEventListener('click', e => {
 });
 
 searchInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') { hideSuggestions(); executeSearch(searchInput.value); }
+  if (e.key === 'Enter') { commitTypedSearch(); }   // F9: same path as Let's Vibe and dropdown picks
   if (e.key === 'Escape') hideSuggestions();
 });
 // ── App initialisation ───────────────────────────────────────────

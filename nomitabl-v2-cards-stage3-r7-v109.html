@@ -5328,8 +5328,9 @@ const NomiSearch = (() => {
     e.answer_ms = Math.round(performance.now() - e.t0);
     const js = a.ok ? a.js : null;
     e.request_id = js ? js.request_id : (a.request_id || null); e.code = a.ok ? null : a.code;
-    if (js && js.timings) e.server = { total_ms: js.timings.total_ms ?? null, model_ms: js.timings.model_ms ?? null, database_ms: js.timings.database_ms ?? null };
-    if (js) { e.version = js.version; e.route = js.route || null; e.model = js.ai ? { used: !!js.ai.used, ms: js.ai.latency_ms ?? null, attempts: js.ai.attempt_ms ?? null, retry: js.ai.retry_outcome ?? null, prompt: js.ai.prompt_version ?? null } : null; }
+    if (js && js.timings) e.server = { total_ms: js.timings.total_ms ?? null, model_ms: js.timings.model_ms ?? null, database_ms: js.timings.database_ms ?? null, lookups: js.timings.lookups ?? null, engine: js.timings.engine ?? null };
+    if (js) { e.version = js.version; e.route = js.route || null; e.model = js.ai ? { used: !!js.ai.used, ms: js.ai.latency_ms ?? null, attempts: js.ai.attempt_ms ?? null, retry: js.ai.retry_outcome ?? null, prompt: js.ai.prompt_version ?? null,
+      name: js.ai.model ?? null, reasoning: js.ai.reasoning ?? null, cache: js.ai.used ? (js.ai.cache ?? null) : null, why_repeated: js.ai.attempt_outcomes ?? null } : null; }   // cache: a 'hit' made no model call — it must not be read as a fast model
   }
   // outcome: cards · empty · name_offer · error · load_failure · display_mismatch. "Correct" is NOT decided here: whether the
   // pills and cards are the right ones for the wording is judged against the expected interpretation when the log is read.
@@ -5659,8 +5660,9 @@ const NomiSearch = (() => {
     const med = a => { const v = a.filter(x => x != null).sort((x, y) => x - y); return v.length ? v[Math.floor((v.length - 1) / 2)] : null; };
     const span = s => ({ n: s.length, median_answer_ms: med(s.map(e => e.answer_ms)), median_shown_ms: med(s.map(e => e.shown_ms)), median_page_ms: med(s.map(e => e.where_ms ? e.where_ms.page : null)),
                          slowest_shown_ms: s.length ? Math.max(...s.map(e => e.shown_ms || 0)) : null });
+    const hitN = timing.filter(e => e.model && e.model.cache === 'hit').length, missN = timing.filter(e => e.model && e.model.cache === 'miss').length;
     const p1s = timing.filter(e => e.outcome && (e.kind === 'search' || e.kind === 'selected_restaurant' || e.kind === 'name_lookup')), p2s = timing.filter(e => e.outcome && e.kind === 'refine');
-    return { env: NOMI_ENV_NAME, p1_tap_to_visible: span(p1s), p2_first_edit: span(p2s.filter(e => e.first_edit)), p2_later_edits: span(p2s.filter(e => !e.first_edit)), search: of('search'), name_lookup: of('name_lookup'), selected_restaurant: of('selected_restaurant'), refine: of('refine'), reshow: of('reshow'),
+    return { env: NOMI_ENV_NAME, interpretation_cache: { model_calls: missN, cache_hits: hitN }, p1_tap_to_visible: span(p1s), p1_model_calls_only: span(p1s.filter(e => e.model && e.model.cache === 'miss')), p2_first_edit: span(p2s.filter(e => e.first_edit)), p2_later_edits: span(p2s.filter(e => !e.first_edit)), search: of('search'), name_lookup: of('name_lookup'), selected_restaurant: of('selected_restaurant'), refine: of('refine'), reshow: of('reshow'),
              note: 'The clock runs from the tap to the result on screen. "shown" means the page displayed cards, a genuine empty result or a name offer — NOT that the result is correct; correctness is judged against the expected pills when the log is read. Every error, load failure, display mismatch, late result and incorrect result is a miss. The page waits up to 20 s so a late answer can be seen; that is a diagnostic limit, not the five-second requirement.' };
   }
   function exportLog() { return JSON.stringify({ summary: summary(), vibes: vibesReport(), tester_id: NomiTester.getId(), feedback_mode: FEEDBACK_MODE, timing, feedback: feedbackLog }, null, 1); }

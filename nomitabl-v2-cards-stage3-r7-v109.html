@@ -5418,33 +5418,34 @@ const NomiSearch = (() => {
   // LET'S VIBE → VIBING the moment the tap lands, so the start of the search is noticed even with the eyes on the search bar:
   //   · P1 is dimmed (P1_DIM charcoal over everything except the button, which keeps full contrast) and a processing indicator
   //     sits in the centre of the screen: a rounded square holding twelve ticks, like the marks of a clock, lit in turn;
-  //   · the label becomes VIBING at the label's own 14 px in six fixed-width cells, and each letter grows to 31 px as it rises — the pill keeps its size and position;
-  //   · the word makes ONE clear lift, then a gentler wave runs V → G for as long as the search lasts: each letter turns bold as it
-  //     rises, crosses the pill's top edge and settles back. Nothing is clipped; a dark shadow keeps the white readable off the pill.
+  //   · the label becomes VIBING, typeset exactly as LET'S VIBE is — the span's own Inter Bold, 14 px and 8.4 px letter spacing are
+  //     left untouched; each letter is only wrapped so that it can move. Nothing changes width, so the pill and the word stay put;
+  //   · the word makes ONE clear lift, then a wave runs V → G for as long as the search lasts: each letter jumps from 14 px to
+  //     31 px past the pill's top edge and lands back at the label's own size and weight. Nothing is clipped; a dark shadow keeps
+  //     the white readable off the pill.
   // With reduced motion: the larger static label and the dim, no movement. P1 only — P2 edits use "Updating…".
   // The state ends the moment the search does (results, a name offer, an empty result, an error), wherever the wave is.
-  const P1_DIM = 0.5, VIBING_PX = 14, VIBING_PEAK_PX = 31, VIBING_CELL = 22.4, LIFT_S = 0.45, WAVE_STEP_S = 0.11;
+  const P1_DIM = 0.5, VIBING_PX = 14, VIBING_PEAK_PX = 31, LABEL_SPACING_PX = 8.4, LIFT_S = 0.45, WAVE_STEP_S = 0.11;
   function vibing(on) {
     const btn = document.getElementById('lets-vibe-btn'), sp = btn && btn.querySelector('span'); if (!sp) return;
     if (on === (sp.dataset.vibing === '1')) return;
     if (!document.getElementById('nomi-vibing-style')) { const c = document.createElement('style'); c.id = 'nomi-vibing-style';
       c.textContent = '#lets-vibe-btn .nv-w{display:inline-block;white-space:nowrap;animation:nomiLift ' + LIFT_S + 's cubic-bezier(.2,.7,.3,1) 1;}'
-        + '#lets-vibe-btn .nv-l{display:inline-block;width:' + VIBING_CELL + 'px;text-align:center;transform-origin:50% 100%;will-change:transform;font-weight:400;text-shadow:0 1px 3px rgba(0,0,0,.6),0 0 2px rgba(0,0,0,.7);animation:nomiWave 1.4s ease-in-out infinite;}'
+        + '#lets-vibe-btn .nv-l{display:inline-block;transform-origin:calc(50% - ' + (LABEL_SPACING_PX / 2) + 'px) 100%;will-change:transform;text-shadow:0 1px 3px rgba(0,0,0,.6),0 0 2px rgba(0,0,0,.7);animation:nomiWave 1.4s ease-in-out infinite;}'
         + '@keyframes nomiLift{0%{transform:translateY(0)}45%{transform:translateY(-26px)}100%{transform:translateY(0)}}'
-        + '@keyframes nomiWave{0%{transform:translateY(0) scale(1);font-weight:400}10%{transform:translateY(-14px) scale(' + (VIBING_PEAK_PX / VIBING_PX).toFixed(3) + ');font-weight:700}22%,100%{transform:translateY(0) scale(1);font-weight:400}}'
+        + '@keyframes nomiWave{0%{transform:translateY(0) scale(1)}10%{transform:translateY(-14px) scale(' + (VIBING_PEAK_PX / VIBING_PX).toFixed(3) + ')}22%,100%{transform:translateY(0) scale(1)}}'
         + '#nomi-p1-dim{position:absolute;inset:0;z-index:49;pointer-events:none;background:rgba(22,22,26,' + P1_DIM + ');opacity:0;transition:opacity .12s ease-out;}'
         + '#nomi-p1-spin{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px 0 0 -21px;border-radius:9px;background:rgba(44,44,50,.88);box-shadow:0 3px 12px rgba(0,0,0,.35);}'
         + '#nomi-p1-spin i{position:absolute;left:50%;top:50%;width:2px;height:5px;margin:-2.5px 0 0 -1px;border-radius:1px;background:#fff;opacity:.18;animation:nomiTick 1s linear infinite;}'
         + '@keyframes nomiTick{0%{opacity:1}100%{opacity:.18}}'
-        + '@media (prefers-reduced-motion: reduce){#lets-vibe-btn .nv-w{animation:none;}#lets-vibe-btn .nv-l{animation:none;font-weight:700;}#nomi-p1-dim{transition:none;}#nomi-p1-spin i{animation:none;}}';
+        + '@media (prefers-reduced-motion: reduce){#lets-vibe-btn .nv-w{animation:none;}#lets-vibe-btn .nv-l{animation:none;}#nomi-p1-dim{transition:none;}#nomi-p1-spin i{animation:none;}}';
       document.head.appendChild(c); }
     let dim = document.getElementById('nomi-p1-dim'); const p1 = document.getElementById('screen-starter');
     if (!dim && p1) { dim = document.createElement('div'); dim.id = 'nomi-p1-dim'; dim.setAttribute('aria-hidden', 'true'); dim.innerHTML = '<div id="nomi-p1-spin">' + Array.from({ length: 12 }, (_, k) => `<i style="transform:rotate(${k * 30}deg) translateY(-8.5px);animation-delay:${(k / 12 - 1).toFixed(3)}s;opacity:${(0.18 + 0.82 * (k + 1) / 12).toFixed(2)}"></i>`).join('') + '</div>'; p1.appendChild(dim); }
     if (on) { sp.dataset.vibing = '1'; sp.dataset.rest = sp.textContent; sp.setAttribute('aria-label', 'Vibing'); btn.setAttribute('aria-busy', 'true');
-      sp.style.letterSpacing = '0'; sp.style.fontSize = VIBING_PX + 'px'; sp.style.lineHeight = '1';
       sp.innerHTML = '<span class="nv-w">' + 'VIBING'.split('').map((ch, i) => `<span class="nv-l" aria-hidden="true" style="animation-delay:${(LIFT_S + i * WAVE_STEP_S).toFixed(2)}s">${ch}</span>`).join('') + '</span>';
       if (dim) { dim.getBoundingClientRect(); dim.style.opacity = '1'; } }
-    else { delete sp.dataset.vibing; sp.textContent = sp.dataset.rest || "LET'S VIBE"; sp.style.letterSpacing = '8.4px'; sp.style.fontSize = '14px'; sp.style.lineHeight = ''; sp.removeAttribute('aria-label'); btn.removeAttribute('aria-busy');
+    else { delete sp.dataset.vibing; sp.textContent = sp.dataset.rest || "LET'S VIBE"; sp.removeAttribute('aria-label'); btn.removeAttribute('aria-busy');
       if (dim) { dim.style.transition = 'none'; dim.style.opacity = '0'; dim.getBoundingClientRect(); dim.style.transition = ''; } }   // cleared at once, not faded
   }
 

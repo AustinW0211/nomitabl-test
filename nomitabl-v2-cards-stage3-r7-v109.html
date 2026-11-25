@@ -5308,14 +5308,18 @@ const NomiSearch = (() => {
   // kind: search (typed words and/or bubbles) · name_lookup (a restaurant's name typed; the match is offered) ·
   //       selected_restaurant (a search with a restaurant selected) · reshow (back → Let's Vibe, nothing asked) · refine (a P2 edit)
   function tStart(kind, what) { const e = { n: timing.length + 1, kind, what, at: new Date().toISOString(), t0: performance.now(), answer_ms: null, shown_ms: null, outcome: null }; timing.push(e); return e; }
+  const since = e => Math.round(performance.now() - e.t0);
   // The clock for Let's Vibe starts AT THE TAP — before the typed text is committed and before any wait for the restaurant list.
   function tapStart() { return tStart('search', ''); }
   function tapCancel(e) { const i = timing.indexOf(e); if (i >= 0) timing.splice(i, 1); }            // the tap did nothing (nothing to search)
-  function tapFailed(e, code) { e.code = code; e.answer_ms = null; p1Line(FAIL_LINE); tShown(e, 'error'); }
+  function tapFailed(e, code) { vibing(false); e.code = code; e.answer_ms = null; p1Line(FAIL_LINE); tShown(e, 'error'); }
   // What is ACTUALLY on screen when the clock stops — read from the page, not assumed from the answer.
+  // how far a screen still is from its resting place, in px, read from the transform the browser is actually drawing
+  // (independent of where the app sits in the window or of any scrolling)
+  function slideX(el) { try { const t = getComputedStyle(el).transform; return t && t !== 'none' ? new DOMMatrixReadOnly(t).m41 : 0; } catch (_) { return 0; } }
   function seen() {
     const vis = id => { const el = document.getElementById(id); return !!el && el.style.display !== 'none' && !!el.textContent; };
-    const act = document.querySelector('.screen.active');
+    const acts = [...document.querySelectorAll('.screen.active')], act = acts.find(el => Math.abs(slideX(el)) < 1) || acts[0];   // while a slide is finishing two screens are marked active: the one in view is the one seen
     return { screen: act ? act.id.replace('screen-', '') : null, cards: document.querySelectorAll('#p2-strip [data-restaurant-id]').length,
              empty_line: vis('p2-empty-line'), fail_line: vis('p1-search-line') || (vis('p2-search-notice') && document.getElementById('p2-search-notice').textContent === FAIL_LINE),
              offers: (typeof suggestDropdown !== 'undefined' && suggestDropdown.style.display !== 'none') ? suggestDropdown.querySelectorAll('[data-offered]').length : 0 };
@@ -5324,14 +5328,26 @@ const NomiSearch = (() => {
     e.answer_ms = Math.round(performance.now() - e.t0);
     const js = a.ok ? a.js : null;
     e.request_id = js ? js.request_id : (a.request_id || null); e.code = a.ok ? null : a.code;
+    if (js && js.timings) e.server = { total_ms: js.timings.total_ms ?? null, model_ms: js.timings.model_ms ?? null, database_ms: js.timings.database_ms ?? null };
     if (js) { e.version = js.version; e.route = js.route || null; e.model = js.ai ? { used: !!js.ai.used, ms: js.ai.latency_ms ?? null, attempts: js.ai.attempt_ms ?? null, retry: js.ai.retry_outcome ?? null, prompt: js.ai.prompt_version ?? null } : null; }
   }
   // outcome: cards · empty · name_offer · error · load_failure · display_mismatch. "Correct" is NOT decided here: whether the
   // pills and cards are the right ones for the wording is judged against the expected interpretation when the log is read.
   // The outcome is only kept if the page really shows it; otherwise it is recorded as display_mismatch — a miss.
-  function tShown(e, outcome, js, cards) {
+  // WHEN the clock stops is measured, not assumed:
+  //   'slide' — P1 → P2: the results page slides in. The page is followed frame by frame; first_frame_ms is the first frame with the
+  //             results on their way in, half_ms the frame where half of the page is in view, and shown_ms the moment the whole
+  //             results page is in view (the slide has ended). No fixed allowance is added.
+  //   'frame' — nothing slides (a P2 edit, a failure line, an offered name): shown_ms is the second frame after the change.
+  // where_ms splits the wait: before the request · the model · the rest of the function · the network (and the browser's own
+  // request handling) · this page (answer → fully in view).
+  function tShown(e, outcome, js, cards, when) {
     const done = () => {
-      e.shown_ms = Math.round(performance.now() - e.t0); e.seen = seen();
+      if (e.outcome) return;
+      e.shown_ms = since(e); e.seen = seen();
+      if (e.answer_ms != null) { const sv = e.server || {}, before = e.data_wait_ms || 0, wait = e.handoff_wait_ms || 0;
+        e.where_ms = { before_request: before + wait, model: sv.model_ms ?? null, function_other: sv.total_ms != null ? sv.total_ms - (sv.model_ms || 0) : null,
+                       network: sv.total_ms != null ? Math.max(0, e.answer_ms - before - wait - sv.total_ms) : null, page: e.shown_ms - e.answer_ms }; }
       const s = e.seen, real = outcome === 'cards' ? (s.screen === 'page2' && s.cards === (cards || []).length && s.cards > 0 && !s.empty_line)
                              : outcome === 'empty' ? (s.screen === 'page2' && s.cards === 0 && s.empty_line)
                              : outcome === 'name_offer' ? (s.screen === 'starter' && s.offers > 0)
@@ -5344,7 +5360,18 @@ const NomiSearch = (() => {
       delete e.t0; try { sessionStorage.setItem('nomi_timing', JSON.stringify(timing)); } catch (_) {}
       if (DEBUG) debugBadge();
     };
-    requestAnimationFrame(() => requestAnimationFrame(done));   // two frames: the result has been painted
+    if (when !== 'slide') { requestAnimationFrame(() => requestAnimationFrame(done)); setTimeout(done, 1000); return; }   // two frames: the result has been painted (the timer only covers a browser that is not drawing)
+    const pg = document.getElementById('screen-page2'); let over = false;
+    const end = by => { if (over) return; over = true; e.slide_end = by; pg && pg.removeEventListener('transitionend', onEnd); done(); };
+    const onEnd = ev => { if (ev.target === pg && ev.propertyName === 'transform') end('transition'); };
+    if (pg) pg.addEventListener('transitionend', onEnd);
+    const step = () => { if (over) return;
+      const left = pg ? slideX(pg) : 0, w = (pg && pg.offsetWidth) || 393;
+      if (e.first_frame_ms == null) e.first_frame_ms = since(e);
+      if (e.half_ms == null && left <= w / 2) e.half_ms = since(e);
+      if (left <= 0.5) return end('frame');
+      requestAnimationFrame(step); };
+    requestAnimationFrame(step); setTimeout(() => { if (!over) end('timeout'); }, 1500);
   }
 
   // ── feedback: what happened, never why. OFF unless ?feedback=synthetic — and then it only fills an in-memory list ────────────
@@ -5379,10 +5406,29 @@ const NomiSearch = (() => {
       strip.parentNode.appendChild(el); }
     el.textContent = EMPTY_LINE; el.style.display = show ? 'block' : 'none';
   }
+  // While a request is out: nothing on screen is dimmed or removed. P1 shows VIBING (below); P2 shows "Updating…" on the line
+  // under the pills, where the retry message appears if the edit fails. Taps on the button and the pills do nothing meanwhile.
   function busy(on) {
     st.busy = on;
-    const btn = document.getElementById('lets-vibe-btn'); if (btn) { btn.style.opacity = on ? '0.6' : '1'; btn.style.pointerEvents = on ? 'none' : 'auto'; }
-    ['p2-cuisine-tags', 'p2-tags'].forEach(id => { const el = document.getElementById(id); if (el) { el.style.opacity = on ? '0.5' : '1'; el.style.pointerEvents = on ? 'none' : 'auto'; } });
+    const btn = document.getElementById('lets-vibe-btn'); if (btn) btn.style.pointerEvents = on ? 'none' : 'auto';
+    ['p2-cuisine-tags', 'p2-tags'].forEach(id => { const el = document.getElementById(id); if (el) el.style.pointerEvents = on ? 'none' : 'auto'; });
+  }
+  const UPDATING_LINE = 'Updating…';
+  function updating(on) { if (on) p2Line(UPDATING_LINE); else if (searchNotice === UPDATING_LINE) p2Line(''); const el = document.getElementById('p2-search-notice'); if (el) el.setAttribute('aria-live', 'polite'); }
+  // LET'S VIBE → VIBING the moment the tap lands. Six fixed-width cells, so the button and the spacing never move; each letter
+  // rises and turns bold in turn, V to G, and settles back as the next one rises. With reduced motion the label is static.
+  // The label never delays the result: the answer is shown the moment it is ready, wherever the wave is.
+  function vibing(on) {
+    const btn = document.getElementById('lets-vibe-btn'), sp = btn && btn.querySelector('span'); if (!sp) return;
+    if (on === (sp.dataset.vibing === '1')) return;
+    if (!document.getElementById('nomi-vibing-style')) { const c = document.createElement('style'); c.id = 'nomi-vibing-style';
+      c.textContent = '#lets-vibe-btn .nv-l{display:inline-block;width:22.4px;text-align:center;font-weight:400;animation:nomiWave 1.32s ease-in-out infinite;}'
+        + '@keyframes nomiWave{0%{transform:translateY(0);font-weight:400}9%{transform:translateY(-4px);font-weight:700}20%,100%{transform:translateY(0);font-weight:400}}'
+        + '@media (prefers-reduced-motion: reduce){#lets-vibe-btn .nv-l{animation:none;font-weight:700;}}';
+      document.head.appendChild(c); }
+    if (on) { sp.dataset.vibing = '1'; sp.dataset.rest = sp.textContent; sp.style.letterSpacing = '0'; sp.setAttribute('aria-label', 'Vibing'); btn.setAttribute('aria-busy', 'true');
+      sp.innerHTML = 'VIBING'.split('').map((ch, i) => `<span class="nv-l" aria-hidden="true" style="animation-delay:${(i * 0.11).toFixed(2)}s">${ch}</span>`).join(''); }
+    else { delete sp.dataset.vibing; sp.textContent = sp.dataset.rest || "LET'S VIBE"; sp.style.letterSpacing = '8.4px'; sp.removeAttribute('aria-label'); btn.removeAttribute('aria-busy'); }
   }
 
   // ── P2: pills and cards from the answer on screen ───────────────────────────────────────────────────────────────────────────
@@ -5417,19 +5463,28 @@ const NomiSearch = (() => {
     p2Empty(js.results.length === 0);                            // ONLY a genuine empty answer
     matchedRestaurants.forEach(r => { if (p3Votes[r.id]) _updateP2CardScore(r.id); });
   }
-  // The labels of ONE card: exactly the backend's match_labels for that restaurant in the answer on screen.
+  // The labels of ONE card: exactly the backend's match_labels for that restaurant in the answer on screen — nothing is worked
+  // out here. They sit under the score, right-aligned: a food row and a vibe row, in the order of the P2 channels; a row exists
+  // only when this restaurant has a label for it; several matched vibes share the vibe row.
   function cardLabelsHTML(r) {
     const x = st.resp ? st.resp.results.find(q => q.restaurant_id === r.id) : null;
-    const ls = x ? (x.match_labels || []).map(l => l.label).filter(Boolean) : [];
-    if (!ls.length) return '';
-    return `<div data-match-labels style="position:absolute;left:16px;right:16px;bottom:18px;z-index:4;pointer-events:none;overflow:hidden;">
-        <p class="fi" style="font-weight:600;font-size:10px;color:white;letter-spacing:0.6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:normal;">${ls.map(l => '#' + esc(l)).join(' · ')}</p>
+    const ls = x ? (x.match_labels || []).filter(l => l && l.label) : [];
+    const rows = [['food', ls.filter(l => l.evidence !== 'vibe')], ['vibe', ls.filter(l => l.evidence === 'vibe')]].filter(q => q[1].length);
+    if (!rows.length) return '';
+    return `<div data-match-labels style="position:absolute;right:9.5px;top:78px;max-width:340px;z-index:4;pointer-events:none;display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
+        ${rows.map(([ch, q]) => `<p data-match-row="${ch}" class="fi" style="margin:0;max-width:100%;padding:4px 9px;border-radius:11px;background:rgba(0,0,0,0.45);font-weight:600;font-size:11px;color:white;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.25;">${q.map((l, i) => `<span data-match-tag style="${i ? 'margin-left:9px;' : ''}">#${esc(l.label)}</span>`).join('')}</p>`).join('')}
       </div>`;
   }
 
   // ── P1: Let's Vibe ───────────────────────────────────────────────────────────────────────────────────────────────────────────
   async function letsVibe(tap) {
-    if (st.busy) { if (tap) tapCancel(tap); return; }
+    if (st.busy) { if (tap) tapCancel(tap); return; }               // a search is already out: this tap asks nothing
+    vibing(true);
+    let moved = false;
+    try { moved = await runLetsVibe(tap); }
+    finally { if (moved) setTimeout(() => vibing(false), 420); else vibing(false); }   // after a slide to P2 the label is put back once P1 is off screen
+  }
+  async function runLetsVibe(tap) {
     const e = tap || tapStart();                                 // the tap's clock; started here only when called without one (an offered name picked)
     e.data_wait_ms = Math.round(performance.now() - e.t0);       // time already spent before the request (waiting for the restaurant list)
     const text = pinnedRestaurant ? '' : (activeSearchTerm || '').trim();
@@ -5439,7 +5494,7 @@ const NomiSearch = (() => {
     const sig = JSON.stringify([text, vibes, pinnedRestaurant ? pinnedRestaurant.id : null]);
     if (st.resp && st.sig === sig) {                             // unchanged request: P2 as the user left it — nothing is asked, and it is not a search in the count
       e.kind = 'reshow'; p1Line(''); renderP2(); navigateSwipe('page2');
-      const js = st.resp, cs = cardsFor(js).cards; setTimeout(() => tShown(e, js.results.length ? 'cards' : 'empty', js, cs), 400); return; }
+      const js = st.resp, cs = cardsFor(js).cards; tShown(e, js.results.length ? 'cards' : 'empty', js, cs, 'slide'); return true; }
     const body = { op: 'search', text, bubbles: { vibe: vibes }, local_time: localTime(), limit: 50 };
     if (pinnedRestaurant) body.selected_restaurant_id = pinnedRestaurant.id;
     if (typeof userLat === 'number' && typeof userLng === 'number') body.location = { lat: userLat, lng: userLng };   // only when already granted
@@ -5459,9 +5514,10 @@ const NomiSearch = (() => {
     st.resp = js; st.sig = sig; st.searchId = js.request_id; st.state = null; st.replace = null;
     // Let's Vibe is not an edit: the handoff changes nothing on screen, so it runs behind the cards and is awaited by the first edit
     st.handoff = call({ op: 'handoff', state: js.state, limit: 50 }).then(h => { if (h.ok && st.resp === js) st.state = h.js.state; return h.ok; });
-    busy(false); p2Line(''); renderP2(); navigateSwipe('page2');
-    setTimeout(() => tShown(e, js.results.length ? 'cards' : 'empty', js, c.cards), 400);   // the page slide takes 0.38 s: "on screen" is its end
+    busy(false); p2Line(''); renderP2(); e.render_ms = since(e); navigateSwipe('page2');
+    tShown(e, js.results.length ? 'cards' : 'empty', js, c.cards, 'slide');                  // followed to the end of the slide, frame by frame
     feedbackShown(js, c.cards);
+    return true;
   }
   function offerNames(matches) {
     const dd = suggestDropdown;                                  // the existing autocomplete dropdown
@@ -5482,9 +5538,11 @@ const NomiSearch = (() => {
   // ── P2: one edit = one refinement; on failure nothing on screen changes ─────────────────────────────────────────────────────
   async function refine(channel, action, what, fb) {
     if (st.busy || !st.resp) return;
-    const e = tStart('refine', what); busy(true); p2Line('');
+    const e = tStart('refine', what); busy(true); updating(true);
+    e.search_id = st.searchId; e.first_edit = !timing.some(x => x !== e && x.kind === 'refine' && x.search_id === st.searchId);   // the first edit after a search can wait for the handoff
     if (!st.state) { const ok = st.handoff ? await st.handoff : false;
       if (!ok || !st.state) { const h = await call({ op: 'handoff', state: st.resp.state, limit: 50 }); if (h.ok) st.state = h.js.state; } }
+    e.handoff_wait_ms = since(e);
     if (!st.state) { busy(false); p2Line(FAIL_LINE); e.code = 'handoff_failed'; e.answer_ms = Math.round(performance.now() - e.t0); tShown(e, 'error'); return; }
     const body = { op: 'refine', state: st.state, channel, action, limit: 50 };
     if (typeof userLat === 'number' && typeof userLng === 'number') body.location = { lat: userLat, lng: userLng };
@@ -5493,7 +5551,7 @@ const NomiSearch = (() => {
     const c = await usable(a.js);
     if (c.missing.length) { busy(false); p2Line(FAIL_LINE); e.missing_cards = c.missing; tShown(e, 'load_failure', a.js, c.cards); return; }
     st.resp = a.js; st.state = a.js.state;
-    busy(false); renderP2(); tShown(e, a.js.results.length ? 'cards' : 'empty', a.js, c.cards);
+    busy(false); updating(false); renderP2(); e.render_ms = since(e); tShown(e, a.js.results.length ? 'cards' : 'empty', a.js, c.cards);   // pills and cards change together
     if (fb) feedback(fb.type, fb.data); feedbackShown(a.js, c.cards);
   }
   function removePill(ch, lane, ev) {
@@ -5529,8 +5587,30 @@ const NomiSearch = (() => {
     w.style.display = on ? 'flex' : 'none'; w.style.opacity = on ? '1' : '0'; w.style.pointerEvents = on ? 'auto' : 'none';
     if (on) delete w.dataset.inactive; else { w.dataset.inactive = '1'; if (selectedWrappers.has(w)) { selectedWrappers.delete(w); } }
   }
+  // Where the offered bubbles sit: the page's bubble POSITIONS are fixed places on the track; the offered vibes fill the places
+  // nearest the middle and grow outward, so hiding a vibe never leaves a hole. A vibe whose own place is among those keeps it;
+  // the others take the places left free (larger bubbles to larger places). Only left/top/size move — label, colour, tap
+  // handling and search identity stay with the bubble.
+  function packBubbles() {
+    const all = [...document.querySelectorAll('.vibe-bubble-wrapper')];
+    if (!vocab.slots) vocab.slots = all.map(w => ({ w, left: parseInt(w.style.left), top: parseInt(w.style.top), size: parseInt(w.style.width) }));
+    const shown = vocab.wrappers.filter(w => w.dataset.inactive !== '1'); if (!shown.length) return;
+    const cx = PADDING + 2 * (CLUSTER_W + CLUSTER_GAP) + CLUSTER_W / 2, cy = 151;
+    const dist = s => Math.hypot(s.left + s.size / 2 - cx, s.top + s.size / 2 - cy);
+    const places = [...vocab.slots].sort((a, b) => dist(a) - dist(b)).slice(0, shown.length);
+    const stay = new Set(shown.filter(w => places.some(p => p.w === w)));
+    const free = places.filter(p => !stay.has(p.w)).sort((a, b) => b.size - a.size || dist(a) - dist(b));
+    const own = w => vocab.slots.find(s => s.w === w);
+    const movers = shown.filter(w => !stay.has(w)).sort((a, b) => own(b).size - own(a).size || dist(own(a)) - dist(own(b)));
+    const put = (w, p) => { w.style.left = p.left + 'px'; w.style.top = p.top + 'px'; w.style.width = p.size + 'px'; w.style.height = p.size + 'px'; };
+    stay.forEach(w => put(w, own(w))); movers.forEach((w, i) => put(w, free[i]));
+    if (typeof setActiveBounds === 'function') setActiveBounds();
+    const track = shown[0].parentElement, shift = -(parseInt(track.style.marginLeft) || 0);
+    if (!vocab.centred && container) { container.scrollLeft = Math.max(0, cx - shift - 393 / 2); vocab.centred = true; }
+  }
   function applyVocab() {
     vocab.wrappers.forEach(w => showBubble(w, vocab.state === 'ready' && vibeKnown(w.dataset.label)));
+    if (vocab.state === 'ready') packBubbles();
     selected.forEach(i => { if (![...selectedWrappers].some(w => parseInt(w.dataset.entryIdx) === i)) selected.delete(i); });
     syncAllWrappers();
   }
@@ -5558,7 +5638,11 @@ const NomiSearch = (() => {
     const of = k => { const s = timing.filter(e => e.kind === k && e.outcome); const good = s.filter(e => e.outcome === 'cards' || e.outcome === 'empty' || e.outcome === 'name_offer');
       return { total: s.length, shown: good.length, shown_within_5s: good.filter(e => e.within_5s).length, shown_late: good.filter(e => !e.within_5s).length,
                errors: s.filter(e => e.outcome === 'error').length, load_failures: s.filter(e => e.outcome === 'load_failure').length, display_mismatches: s.filter(e => e.outcome === 'display_mismatch').length }; };
-    return { env: NOMI_ENV_NAME, search: of('search'), name_lookup: of('name_lookup'), selected_restaurant: of('selected_restaurant'), refine: of('refine'), reshow: of('reshow'),
+    const med = a => { const v = a.filter(x => x != null).sort((x, y) => x - y); return v.length ? v[Math.floor((v.length - 1) / 2)] : null; };
+    const span = s => ({ n: s.length, median_answer_ms: med(s.map(e => e.answer_ms)), median_shown_ms: med(s.map(e => e.shown_ms)), median_page_ms: med(s.map(e => e.where_ms ? e.where_ms.page : null)),
+                         slowest_shown_ms: s.length ? Math.max(...s.map(e => e.shown_ms || 0)) : null });
+    const p1s = timing.filter(e => e.outcome && (e.kind === 'search' || e.kind === 'selected_restaurant' || e.kind === 'name_lookup')), p2s = timing.filter(e => e.outcome && e.kind === 'refine');
+    return { env: NOMI_ENV_NAME, p1_tap_to_visible: span(p1s), p2_first_edit: span(p2s.filter(e => e.first_edit)), p2_later_edits: span(p2s.filter(e => !e.first_edit)), search: of('search'), name_lookup: of('name_lookup'), selected_restaurant: of('selected_restaurant'), refine: of('refine'), reshow: of('reshow'),
              note: 'The clock runs from the tap to the result on screen. "shown" means the page displayed cards, a genuine empty result or a name offer — NOT that the result is correct; correctness is judged against the expected pills when the log is read. Every error, load failure, display mismatch, late result and incorrect result is a miss. The page waits up to 20 s so a late answer can be seen; that is a diagnostic limit, not the five-second requirement.' };
   }
   function exportLog() { return JSON.stringify({ summary: summary(), vibes: vibesReport(), tester_id: NomiTester.getId(), feedback_mode: FEEDBACK_MODE, timing, feedback: feedbackLog }, null, 1); }
@@ -5585,7 +5669,7 @@ const NomiSearch = (() => {
   const boot = () => { envTag(); if (DEBUG) debugBadge(); if (SEARCH_V2) loadVibes(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else setTimeout(boot, 0);
 
-  return { letsVibe, tapStart, tapCancel, tapFailed, renderP2, reset, removePill, changePill, openAdd, modalPick, pickOffered, pillLabels, hasVibeDisplayLabel, cardLabelsHTML, feedback, vibeKnown, knownCategories, vibesReport, loadVibes,
+  return { vibing, letsVibe, tapStart, tapCancel, tapFailed, renderP2, reset, removePill, changePill, openAdd, modalPick, pickOffered, pillLabels, hasVibeDisplayLabel, cardLabelsHTML, feedback, vibeKnown, knownCategories, vibesReport, loadVibes,
            timing, feedbackLog, exportLog, summary, _state: st };
 })();
 
@@ -6631,6 +6715,7 @@ async function _letsVibeTap() {
   commitTypedSearch();                                                           // F9: parse what is in the bar right now
   const active = selected.size > 0 || !!activeSearchTerm || !!pinnedRestaurant;
   if (!active) { if (_tap) NomiSearch.tapCancel(_tap); return; }
+  if (SEARCH_V2) NomiSearch.vibing(true);                                        // v10.9: the label changes the moment the tap lands
   // Loading-race guard: never build the results screen before the restaurant list exists
   // (a fast first tap used to produce an empty "1/0" carousel).
   if (!restaurants.length && _restaurantsReady) {

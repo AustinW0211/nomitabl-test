@@ -5478,7 +5478,8 @@ const NomiSearch = (() => {
     }
     const strip = document.getElementById('p2-strip'), counter = document.getElementById('p2-counter');
     p2RebuildStrip(strip, counter);
-    if (!cards.length && counter) counter.style.opacity = '0';   // no "1/0"
+    // No cards: no counter at all — not drawn, not readable as text, not announced ("1/0" must never be on the page).
+    if (counter) { const none = !cards.length; counter.style.opacity = none ? '0' : '1'; counter.style.visibility = none ? 'hidden' : 'visible'; if (none) { counter.textContent = ''; counter.setAttribute('aria-hidden', 'true'); } else counter.removeAttribute('aria-hidden'); }
     p2Empty(js.results.length === 0);                            // ONLY a genuine empty answer
     matchedRestaurants.forEach(r => { if (p3Votes[r.id]) _updateP2CardScore(r.id); });
   }
@@ -5918,7 +5919,7 @@ function setupSwipe() {
       strip.style.transform = `translateX(-${currentCardIndex * 393}px)`;
       currentRestaurant = matchedRestaurants[currentCardIndex];
       const counter = document.getElementById('p2-counter');
-      if (counter) counter.textContent = `${currentCardIndex + 1}/${matchedRestaurants.length}`;
+      if (counter && matchedRestaurants.length) counter.textContent = `${currentCardIndex + 1}/${matchedRestaurants.length}`;   // v10.9: a swipe on an empty result writes no "1/0"
     } else {
       if (dx < 0) navigateSwipe('starter');
     }

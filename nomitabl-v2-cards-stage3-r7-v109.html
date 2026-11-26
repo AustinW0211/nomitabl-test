@@ -5257,7 +5257,7 @@ const NomiSearch = (() => {
   const FEEDBACK_MODE = QS.get('feedback') === 'synthetic' ? 'synthetic' : 'off';   // real collection does not exist in this version
 
   // st.resp is ALWAYS the answer whose pills and cards are on screen. It changes only when a new answer is fully usable.
-  const st = { sig: null, resp: null, state: null, handoff: null, searchId: null, busy: false, replace: null };
+  const st = { sig: null, resp: null, state: null, handoff: null, searchId: null, busy: false, replace: null, p1: null, words: null };
   const timing = [];          // one entry per search or edit, tap → on screen
   const feedbackLog = [];     // synthetic mode only
 
@@ -5330,6 +5330,7 @@ const NomiSearch = (() => {
     e.request_id = js ? js.request_id : (a.request_id || null); e.code = a.ok ? null : a.code;
     if (js && js.timings) e.server = { total_ms: js.timings.total_ms ?? null, model_ms: js.timings.model_ms ?? null, database_ms: js.timings.database_ms ?? null, lookups: js.timings.lookups ?? null, engine: js.timings.engine ?? null };
     if (js) { e.version = js.version; e.route = js.route || null; e.model = js.ai ? { used: !!js.ai.used, ms: js.ai.latency_ms ?? null, attempts: js.ai.attempt_ms ?? null, retry: js.ai.retry_outcome ?? null, prompt: js.ai.prompt_version ?? null,
+      calls: js.ai.used && js.ai.cache !== 'hit' ? (js.ai.attempts ?? (js.ai.attempt_ms || []).length) : 0,
       name: js.ai.model ?? null, reasoning: js.ai.reasoning ?? null, cache: js.ai.used ? (js.ai.cache ?? null) : null, why_repeated: js.ai.attempt_outcomes ?? null } : null; }   // cache: a 'hit' made no model call — it must not be read as a fast model
   }
   // outcome: cards · empty · name_offer · error · load_failure · display_mismatch. "Correct" is NOT decided here: whether the
@@ -5496,6 +5497,111 @@ const NomiSearch = (() => {
       </div>`;
   }
 
+  // ── P1 AND P2 SHOW THE SAME SEARCH ───────────────────────────────────────────────────────────────────────────────────────────
+  // P1's inputs are the typed text, the lit bubbles and the restaurant selected through the search field. st.p1 holds the inputs
+  // that the answer on screen (st.resp) stands for. After a search they are the inputs as entered. After an edit on P2 they are
+  // changed to match the edit, and P1 is redrawn from them — so going back shows WHY the results are what they are:
+  //   a vibe pill removed or replaced → its bubble is unlit, and the words it came from leave the search bar ("date night pasta"
+  //     → "pasta"); the rest of the wording is kept as typed;
+  //   a vibe pill added → its bubble is lit;   a food pill removed → its words leave the bar;   a food pill added → its label
+  //     joins the bar.
+  // With no edit, nothing on P1 is touched. A restaurant selected through the field stays selected; a vibe that came from that
+  // restaurant has nothing on P1 to remove. The words a pill came from are the backend's own account (understood.food / .meal /
+  // .vibe of the search answer) — nothing is parsed here.
+  const p1Inputs = () => ({ text: pinnedRestaurant ? '' : (activeSearchTerm || '').trim(), vibes: bubbleVibes(), pin: pinnedRestaurant ? pinnedRestaurant.id : null });
+  const sigOf = i => JSON.stringify([i.text, [...i.vibes].map(norm).sort(), i.pin]);       // the same bubbles in another tap order are the same inputs
+  function wordsOf(js) {
+    const w = { food: new Map(), vibe: new Map() }, u = (js && js.understood) || {};
+    const put = (ch, x) => { if (x && x.key && x.text) { const a = w[ch].get(x.key) || []; if (!a.includes(x.text)) a.push(x.text); w[ch].set(x.key, a); } };
+    (u.food || []).forEach(x => put('food', x)); (u.meal || []).forEach(x => put('food', x)); (u.vibe || []).forEach(x => put('vibe', x));
+    return w;
+  }
+  // Take one run of words out of the wording. Small joining words left hanging by the cut go with it ("pasta for date night" →
+  // "pasta", "pasta on a date night with wine" → "pasta with wine"); everything else stays exactly as typed.
+  const JOINERS = new Set(['for', 'with', 'and', 'on', 'in', 'at', 'a', 'an', 'the', 'to', 'of', 'some', 'or', 'but']);
+  function cutWords(text, words) {
+    const toks = [...text.matchAll(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu)].map(m => ({ t: m[0].toLowerCase(), a: m.index, b: m.index + m[0].length }));
+    const want = (words.toLowerCase().match(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu) || []); if (!want.length) return text;
+    let at = -1; for (let i = 0; i + want.length <= toks.length && at < 0; i++) if (want.every((x, k) => toks[i + k].t === x)) at = i;
+    if (at < 0) return text;
+    const drop = new Set(); for (let k = 0; k < want.length; k++) drop.add(at + k);
+    const after = toks[at + want.length];
+    if (!after || JOINERS.has(after.t)) for (let i = at - 1; i >= 0 && JOINERS.has(toks[i].t); i--) drop.add(i);       // "… on a [cut] with …", "… for [cut]"
+    let keep = toks.map((_, i) => i).filter(i => !drop.has(i));
+    while (keep.length && JOINERS.has(toks[keep[0]].t)) { drop.add(keep[0]); keep = keep.slice(1); }                     // "[cut] with pasta"
+    while (keep.length && JOINERS.has(toks[keep[keep.length - 1]].t)) { drop.add(keep[keep.length - 1]); keep = keep.slice(0, -1); }
+    let out = ''; let pos = 0; toks.forEach((k, i) => { if (drop.has(i)) { out += text.slice(pos, k.a); pos = k.b; } }); out += text.slice(pos);
+    return out.replace(/\s+/g, ' ').replace(/\s+([,;.!?])/g, '$1').replace(/([,;])(?:\s*[,;])+/g, '$1').replace(/^[\s,;.&-]+|[\s,;&-]+$/g, '');
+  }
+  document.addEventListener('input', ev => { if (ev.target && ev.target.id === 'vibe-search' && st.resp) { try { syncAllWrappers(); } catch (_) {} } });   // the slot count depends on whether the text is still the answer's
+  function setP1Text(t) {
+    const input = document.getElementById('vibe-search'), clear = document.getElementById('vibe-search-clear');
+    activeSearchTerm = t; lastCommittedPhrase = t;
+    if (input) { input.value = t; input.style.color = t ? '#111' : ''; input.style.fontWeight = t ? '600' : ''; }
+    if (clear) clear.style.display = t ? 'flex' : 'none';
+  }
+  function setBubble(label, on) {
+    const w = [...document.querySelectorAll('.vibe-bubble-wrapper')].find(x => x.dataset.inactive !== '1' && norm(x.dataset.label) === norm(label)); if (!w) return false;
+    const idx = parseInt(w.dataset.entryIdx);
+    if (on) { selectedWrappers.add(w); selected.add(idx); }
+    else { selectedWrappers.delete(w); if (![...selectedWrappers].some(x => parseInt(x.dataset.entryIdx) === idx)) selected.delete(idx); }
+    return true;
+  }
+  function syncP1(before, after) {
+    if (!st.p1) return null;
+    let text = st.p1.text; const pinned = !!st.p1.pin, done = [];
+    for (const ch of ['food', 'vibe']) {
+      const was = pillsOf(before, ch), now = pillsOf(after, ch);
+      was.filter(p => !now.some(q => q.key === p.key)).forEach(p => {
+        if (ch === 'vibe') setBubble(p.label, false);
+        const ws = (st.words && st.words[ch].get(p.key)) || []; if (!pinned) ws.forEach(w => { text = cutWords(text, w); });
+        if (st.words) st.words[ch].delete(p.key); done.push(`- ${ch} ${p.label}`); });
+      now.filter(p => !was.some(q => q.key === p.key)).forEach(p => {
+        if (ch === 'vibe') { if (!setBubble(p.label, true) && !pinned) { text = (text + ' ' + p.label.toLowerCase()).trim(); if (st.words) st.words.vibe.set(p.key, [p.label.toLowerCase()]); } }
+        else if (!pinned) { text = (text + ' ' + p.label.toLowerCase()).trim(); if (st.words) st.words.food.set(p.key, [p.label.toLowerCase()]); }
+        done.push(`+ ${ch} ${p.label}`); });
+    }
+    if (!pinned && text !== st.p1.text) setP1Text(text);
+    syncAllWrappers(); updateCtaVisibility();
+    st.p1 = p1Inputs(); st.sig = sigOf(st.p1);
+    return { changes: done, text: st.p1.text, bubbles: st.p1.vibes };
+  }
+  // THREE VIBE SLOTS, on P1 as on P2. Lit bubbles fill slots; so do the vibe pills of the answer on screen that are not bubbles
+  // (typed, suggested, or from the selected restaurant) — for as long as P1's text and selected restaurant are still that
+  // answer's. When the slots are full no further bubble can be lit: one has to be untapped first, exactly as P2 offers no
+  // "+ add vibe" when its three pills are in place. Full slots never turn a bubble change into a new search.
+  function vibeSlotsFull() {
+    let other = 0;
+    if (st.resp && st.p1) { const input = document.getElementById('vibe-search'), t = ((input && input.value) || '').trim();
+      const same = (pinnedRestaurant ? pinnedRestaurant.id : null) === st.p1.pin && (st.p1.pin ? true : t === st.p1.text);
+      if (same) other = pillsOf(st.resp, 'vibe').filter(p => !st.p1.vibes.some(v => norm(v) === norm(p.label))).length; }
+    return other + selectedWrappers.size >= 3;
+  }
+  // P1, text and selected restaurant unchanged, only the bubbles differ from the answer on screen: the interpretation of the
+  // text is kept and the change is made as the SAME edits P2 makes, under the same three-track rules — no model call:
+  //   a bubble untapped and another tapped → REPLACE in that pill's slot;   a bubble untapped → REMOVE;   a bubble tapped → ADD
+  //   to the first free slot. All or nothing: if any step fails, the answer on screen is left exactly as it was.
+  // Returns null only when the edit state cannot be obtained; the caller then runs an ordinary search. A bubble for which no
+  // slot is free (the tap is normally refused before it gets here) is not added and is unlit again.
+  async function bubbleChange(e, cur) {
+    if (!st.state) { const ok = st.handoff ? await st.handoff : false;
+      if (!ok || !st.state) { const h = await call({ op: 'handoff', state: st.resp.state, limit: 50 }); if (h.ok) st.state = h.js.state; } }
+    if (!st.state) return null;
+    const off = st.p1.vibes.filter(v => !cur.vibes.some(x => norm(x) === norm(v))), on = cur.vibes.filter(v => !st.p1.vibes.some(x => norm(x) === norm(v)));
+    let js = st.resp, state = st.state, last = null; const steps = [];
+    const step = async (action) => { const body = { op: 'refine', state, channel: 'vibe', action, limit: 50 };
+      if (typeof userLat === 'number' && typeof userLng === 'number') body.location = { lat: userLat, lng: userLng };
+      const a = await call(body); last = a; if (a.ok) { js = a.js; state = a.js.state; } return a.ok; };
+    const refused = [];
+    for (let i = 0; i < off.length; i++) { const p = pillsOf(js, 'vibe').find(x => norm(x.label) === norm(off[i])); if (!p) continue;   // not a pill of this answer: nothing to take out
+      if (i < on.length) { steps.push(`replace ${off[i]} → ${on[i]}`); if (!await step({ kind: 'replace', lane: p.lane, text: on[i] })) return { ok: false, last, steps }; }
+      else { steps.push('remove ' + off[i]); if (!await step({ kind: 'remove', lane: p.lane })) return { ok: false, last, steps }; } }
+    for (const label of on.slice(off.length)) { const free = [0, 1, 2].find(i => !lanes(js, 'vibe')[i]);
+      if (free === undefined) { refused.push(label); continue; }
+      steps.push('add ' + label); if (!await step({ kind: 'add', lane: free, text: label })) return { ok: false, last, steps }; }
+    return { ok: true, js, state, last, steps, refused };
+  }
+
   // ── P1: Let's Vibe ───────────────────────────────────────────────────────────────────────────────────────────────────────────
   async function letsVibe(tap) {
     if (st.busy) { if (tap) tapCancel(tap); return; }               // a search is already out: this tap asks nothing
@@ -5507,14 +5613,30 @@ const NomiSearch = (() => {
   async function runLetsVibe(tap) {
     const e = tap || tapStart();                                 // the tap's clock; started here only when called without one (an offered name picked)
     e.data_wait_ms = Math.round(performance.now() - e.t0);       // time already spent before the request (waiting for the restaurant list)
-    const text = pinnedRestaurant ? '' : (activeSearchTerm || '').trim();
-    const vibes = bubbleVibes();
+    const cur = p1Inputs(), text = cur.text, vibes = cur.vibes;
     e.kind = pinnedRestaurant ? 'selected_restaurant' : 'search';
     e.what = text || (pinnedRestaurant ? '[selected] ' + pinnedRestaurant.name : '[bubbles] ' + vibes.join(' + '));
-    const sig = JSON.stringify([text, vibes, pinnedRestaurant ? pinnedRestaurant.id : null]);
-    if (st.resp && st.sig === sig) {                             // unchanged request: P2 as the user left it — nothing is asked, and it is not a search in the count
-      e.kind = 'reshow'; p1Line(''); renderP2(); navigateSwipe('page2');
+    e.p1 = { text, bubbles: vibes, selected_restaurant: pinnedRestaurant ? pinnedRestaurant.name : null };
+    const sig = sigOf(cur);
+    if (st.resp && st.sig === sig) {                             // P1 shows the inputs of the answer on screen: P2 as the user left it — nothing is asked, and it is not a search in the count
+      e.kind = 'reshow'; e.requests = 0; e.ai_calls = 0; p1Line(''); renderP2(); navigateSwipe('page2');
       const js = st.resp, cs = cardsFor(js).cards; tShown(e, js.results.length ? 'cards' : 'empty', js, cs, 'slide'); return true; }
+    if (st.resp && st.p1 && st.p1.text === cur.text && st.p1.pin === cur.pin) {                  // only the bubbles changed
+      busy(true); p1Line('');
+      const r = await bubbleChange(e, cur);
+      if (r && !r.ok) { busy(false); e.kind = 'bubble_change'; e.steps = r.steps; tAnswer(e, r.last); p1Line(FAIL_LINE); tShown(e, 'error'); return; }   // the answer on screen is untouched
+      if (r) {
+        e.kind = 'bubble_change'; e.steps = r.steps; e.requests = r.steps.length; e.ai_calls = 0; tAnswer(e, r.last);
+        const c = await usable(r.js);
+        if (c.missing.length) { busy(false); p1Line(FAIL_LINE); e.missing_cards = c.missing; tShown(e, 'load_failure', r.js, c.cards); return; }
+        const before = st.resp;
+        if (r.refused.length) { r.refused.forEach(l => setBubble(l, false)); e.refused = r.refused; cur.vibes = bubbleVibes(); }
+        st.resp = r.js; st.state = r.state; st.handoff = null; st.p1 = cur; st.sig = sigOf(cur); st.replace = null;
+        e.p1_after = syncP1(before, r.js);                       // a bubble unlit whose vibe was also typed: its words leave the bar too
+        busy(false); vibing(false); e.loading_cleared_ms = since(e); p2Line(''); renderP2(); e.render_ms = since(e); navigateSwipe('page2');
+        tShown(e, r.js.results.length ? 'cards' : 'empty', r.js, c.cards, 'slide'); feedbackShown(r.js, c.cards); return true; }
+      busy(false);                                               // not possible as edits: an ordinary search follows
+    }
     const body = { op: 'search', text, bubbles: { vibe: vibes }, local_time: localTime(), limit: 50 };
     if (pinnedRestaurant) body.selected_restaurant_id = pinnedRestaurant.id;
     if (typeof userLat === 'number' && typeof userLng === 'number') body.location = { lat: userLat, lng: userLng };   // only when already granted
@@ -5531,7 +5653,9 @@ const NomiSearch = (() => {
       e.offered = js.name_matches.map(m => m.name); tShown(e, 'name_offer', js, []); return; }
     const c = await usable(js);
     if (c.missing.length) { busy(false); p1Line(FAIL_LINE); e.missing_cards = c.missing; tShown(e, 'load_failure', js, c.cards); return; }
-    st.resp = js; st.sig = sig; st.searchId = js.request_id; st.state = null; st.replace = null;
+    st.resp = js; st.sig = sig; st.searchId = js.request_id; st.state = null; st.replace = null; st.p1 = cur; st.words = wordsOf(js);
+    e.requests = 1; e.ai_calls = e.model ? e.model.calls : 0;
+    try { syncAllWrappers(); } catch (_) {}                      // the slot count now includes this answer's typed and suggested vibes
     // Let's Vibe is not an edit: the handoff changes nothing on screen, so it runs behind the cards and is awaited by the first edit
     st.handoff = call({ op: 'handoff', state: js.state, limit: 50 }).then(h => { if (h.ok && st.resp === js) st.state = h.js.state; return h.ok; });
     busy(false); vibing(false); e.loading_cleared_ms = since(e); p2Line(''); renderP2(); e.render_ms = since(e); navigateSwipe('page2');
@@ -5570,7 +5694,8 @@ const NomiSearch = (() => {
     if (!a.ok) { busy(false); p2Line(FAIL_LINE); tShown(e, 'error'); return; }                   // previous pills AND cards stay
     const c = await usable(a.js);
     if (c.missing.length) { busy(false); p2Line(FAIL_LINE); e.missing_cards = c.missing; tShown(e, 'load_failure', a.js, c.cards); return; }
-    st.resp = a.js; st.state = a.js.state;
+    const before = st.resp; st.resp = a.js; st.state = a.js.state;
+    e.p1_after = syncP1(before, a.js);                                                              // P1 now shows the edited search
     busy(false); updating(false); renderP2(); e.render_ms = since(e); tShown(e, a.js.results.length ? 'cards' : 'empty', a.js, c.cards);   // pills and cards change together
     if (fb) feedback(fb.type, fb.data); feedbackShown(a.js, c.cards);
   }
@@ -5649,7 +5774,7 @@ const NomiSearch = (() => {
   function vibesReport() { return { state: vocab.state, tries: vocab.tries, request_id: vocab.request_id || null, version: vocab.version || null,
     offered: [...vocab.byLabel.values()].filter(v => v.resolved).map(v => ({ label: v.label, vibe: v.vibe })), hidden: [...vocab.byLabel.values()].filter(v => !v.resolved).map(v => v.label) }; }
 
-  function reset() { st.sig = null; st.resp = null; st.state = null; st.handoff = null; st.searchId = null; st.replace = null; p1Line(''); }
+  function reset() { st.sig = null; st.resp = null; st.state = null; st.handoff = null; st.searchId = null; st.replace = null; st.p1 = null; st.words = null; p1Line(''); }
 
   // ── ?debug=1: the timing and synthetic-feedback log, on screen and copyable ─────────────────────────────────────────────────
   // One line per kind, so the denominator is clear: a typed restaurant name is a name_lookup, picking the offer is a
@@ -5662,8 +5787,8 @@ const NomiSearch = (() => {
     const span = s => ({ n: s.length, median_answer_ms: med(s.map(e => e.answer_ms)), median_shown_ms: med(s.map(e => e.shown_ms)), median_page_ms: med(s.map(e => e.where_ms ? e.where_ms.page : null)),
                          slowest_shown_ms: s.length ? Math.max(...s.map(e => e.shown_ms || 0)) : null });
     const hitN = timing.filter(e => e.model && e.model.cache === 'hit').length, missN = timing.filter(e => e.model && e.model.cache === 'miss').length;
-    const p1s = timing.filter(e => e.outcome && (e.kind === 'search' || e.kind === 'selected_restaurant' || e.kind === 'name_lookup')), p2s = timing.filter(e => e.outcome && e.kind === 'refine');
-    return { env: NOMI_ENV_NAME, interpretation_cache: { model_calls: missN, cache_hits: hitN }, p1_tap_to_visible: span(p1s), p1_model_calls_only: span(p1s.filter(e => e.model && e.model.cache === 'miss')), p2_first_edit: span(p2s.filter(e => e.first_edit)), p2_later_edits: span(p2s.filter(e => !e.first_edit)), search: of('search'), name_lookup: of('name_lookup'), selected_restaurant: of('selected_restaurant'), refine: of('refine'), reshow: of('reshow'),
+    const p1s = timing.filter(e => e.outcome && (e.kind === 'search' || e.kind === 'selected_restaurant' || e.kind === 'name_lookup')), reuse = timing.filter(e => e.outcome && (e.kind === 'reshow' || e.kind === 'bubble_change')), p2s = timing.filter(e => e.outcome && e.kind === 'refine');
+    return { env: NOMI_ENV_NAME, interpretation_cache: { model_calls: missN, cache_hits: hitN }, p1_tap_to_visible: span(p1s), p1_reopened_unchanged: span(reuse.filter(e => e.kind === 'reshow')), p1_bubble_change_no_model: span(reuse.filter(e => e.kind === 'bubble_change')), p1_model_calls_only: span(p1s.filter(e => e.model && e.model.cache === 'miss')), p2_first_edit: span(p2s.filter(e => e.first_edit)), p2_later_edits: span(p2s.filter(e => !e.first_edit)), search: of('search'), name_lookup: of('name_lookup'), selected_restaurant: of('selected_restaurant'), refine: of('refine'), reshow: of('reshow'), bubble_change: of('bubble_change'),
              note: 'The clock runs from the tap to the result on screen. "shown" means the page displayed cards, a genuine empty result or a name offer — NOT that the result is correct; correctness is judged against the expected pills when the log is read. Every error, load failure, display mismatch, late result and incorrect result is a miss. The page waits up to 20 s so a late answer can be seen; that is a diagnostic limit, not the five-second requirement.' };
   }
   function exportLog() { return JSON.stringify({ summary: summary(), vibes: vibesReport(), tester_id: NomiTester.getId(), feedback_mode: FEEDBACK_MODE, timing, feedback: feedbackLog }, null, 1); }
@@ -5690,7 +5815,7 @@ const NomiSearch = (() => {
   const boot = () => { envTag(); if (DEBUG) debugBadge(); if (SEARCH_V2) loadVibes(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else setTimeout(boot, 0);
 
-  return { vibing, letsVibe, tapStart, tapCancel, tapFailed, renderP2, reset, removePill, changePill, openAdd, modalPick, pickOffered, pillLabels, hasVibeDisplayLabel, cardLabelsHTML, feedback, vibeKnown, knownCategories, vibesReport, loadVibes,
+  return { _cutWords: cutWords, vibeSlotsFull, vibing, letsVibe, tapStart, tapCancel, tapFailed, renderP2, reset, removePill, changePill, openAdd, modalPick, pickOffered, pillLabels, hasVibeDisplayLabel, cardLabelsHTML, feedback, vibeKnown, knownCategories, vibesReport, loadVibes,
            timing, feedbackLog, exportLog, summary, _state: st };
 })();
 
@@ -6419,7 +6544,7 @@ function syncAllWrappers() {
       // v10.9: a TAPPED bubble lights up alone. Before this, every bubble sharing its card index (colour group) lit up with it
       // (tap Feel Fancy → Treat Yourself too). A TYPED vibe (v10.8 search only) still lights the bubbles of its card.
       const isSel = selectedWrappers.has(w) || _isTyped(i);
-      const isMaxed = !isSel && (SEARCH_V2 ? selectedWrappers.size >= 3 : selected.size >= 3);   // v2: three vibe slots = three bubbles
+      const isMaxed = !isSel && (SEARCH_V2 ? NomiSearch.vibeSlotsFull() : selected.size >= 3);   // v2: three vibe slots, counted with the pills of the search on screen
       w.style.opacity            = isMaxed ? '0.4' : '1';
       w.style.cursor             = isMaxed ? 'not-allowed' : 'pointer';
       w.style.animationPlayState = isSel ? 'paused' : 'running';
@@ -6660,7 +6785,7 @@ const container   = document.getElementById('tags-container');
         } else {
           // not selected, OR selected through ANOTHER tapped bubble with the same idx (an alias): add this one too —
           // the cap applies only when this would occupy a NEW card
-          if (SEARCH_V2 ? selectedWrappers.size >= 3 : (!selected.has(cardIdx) && selected.size >= 3)) return;   // v10.9
+          if (SEARCH_V2 ? NomiSearch.vibeSlotsFull() : (!selected.has(cardIdx) && selected.size >= 3)) return;   // v10.9
           selectedWrappers.add(wrapper);
           selected.add(cardIdx);
         }
